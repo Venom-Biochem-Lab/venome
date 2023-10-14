@@ -1,2 +1,3 @@
-# venome
-The Unkown Venome Project at Oregon State University
+# The Unkown Venome Project
+
+A system to store, search, organize, visualize, and download venom protein data. 
