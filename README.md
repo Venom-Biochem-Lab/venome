@@ -1,4 +1,4 @@
-![banner](https://github.com/xnought/venome/assets/65095341/5e89ef8f-afaa-49f2-b4ec-7e4203b9dff8)
+<img width="100%" alt="banner" src="https://github.com/xnought/venome/assets/65095341/9abaef4e-b4ac-488f-b190-86fca1a1c940">
 
 A system to store, search, organize, visualize, and download venom protein data. 
 
