@@ -2,6 +2,27 @@
 
 A user friendly system to discover insights into venom protein data.
 
+## Getting Started
+
+### Frontend
+
+First install the [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable) package manager.
+
+Then, use yarn to install the frontend packages
+
+```bash
+cd frontend
+yarn install
+```
+
+To start the development server then do
+
+```bash
+yarn dev --open
+```
+
+Now navigate to your browser at [http://127.0.0.1:5173/](http://127.0.0.1:5173/).
+
 ## Files
 
 -   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
