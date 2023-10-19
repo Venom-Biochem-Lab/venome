@@ -54,6 +54,9 @@ yarn dev
 
 -   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
 -   [`backend`](./backend/README.md) contains the HTTP server and Database
+-   [`docs`](./docs/README.md) contains the documentation website generator (starlight/astro)
+-   [`wip`](/wip/README.md) contains 🚧work-in-progress🚧 documents
+
 
 ## Resources
 
