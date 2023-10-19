@@ -13,3 +13,20 @@ cd frontend
 yarn install
 yarn dev --open
 ```
+
+## Access to Backend Functions
+
+You can create functions in the [`backend/server.py`](../backend/server.py) and import them into the frontend.
+
+To do this, you need to have saved your changes in the backend, restart the server, then run `yarn openapi` in the frontend to transfer the types and functions into a readable frontend format.
+
+Now you can simply import the `Backend` object and call the functions by name (which will subsequently call the server).
+
+Example
+
+```ts
+import { Backend } from './backend'; // referring to the frontend/src/backend.ts
+const response = await Backend.helloWord(); // since the python function in backend/server.py was hello_world
+```
+
+It's that easy!
