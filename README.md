@@ -2,6 +2,17 @@
 
 **A user friendly system to discover insights into venom protein data.**
 
+## Live Deployments
+- [Venome Docs](https://venome.vercel.app) contains the live deployment of [`docs`](./docs/README.md)
+
+## Files
+
+-   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
+-   [`backend`](./backend/README.md) contains the HTTP server and Database
+-   [`docs`](./docs/README.md) contains the documentation website generator (starlight/astro)
+-   [`wip`](/wip/README.md) contains 🚧work-in-progress🚧 documents
+
+
 ## Getting Started
 
 Both the **Frontend** and **Backend** need to be running at the same time.
@@ -49,13 +60,6 @@ cd docs
 yarn
 yarn dev
 ```
-
-## Files
-
--   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
--   [`backend`](./backend/README.md) contains the HTTP server and Database
--   [`docs`](./docs/README.md) contains the documentation website generator (starlight/astro)
--   [`wip`](/wip/README.md) contains 🚧work-in-progress🚧 documents
 
 
 ## Resources
