@@ -1,8 +1,6 @@
 <img width="100%" alt="banner" src="https://github.com/xnought/venome/assets/65095341/9abaef4e-b4ac-488f-b190-86fca1a1c940">
 
-A system to store, search, organize, visualize, and download venom protein data.
-
-Like [PDB](https://www.rcsb.org/), but tailored for venom proteins and way better (obviously).
+A user friendly system to discover insights into venom protein data.
 
 ## Files
 
