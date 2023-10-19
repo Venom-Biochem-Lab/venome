@@ -40,6 +40,16 @@ Then, run the HTTP server by
 python3 server.py
 ```
 
+## Docs
+
+To generate the documentation website, run
+
+```bash
+cd docs
+yarn
+yarn dev
+```
+
 ## Files
 
 -   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
