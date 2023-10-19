@@ -15,7 +15,7 @@ export class DefaultService {
      * @returns AllReturn Successful Response
      * @throws ApiError
      */
-    public static helloWorldGet(): CancelablePromise<AllReturn> {
+    public static helloWorld(): CancelablePromise<AllReturn> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/',

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from fastapi import FastAPI
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 import uvicorn
@@ -20,9 +21,20 @@ def custom_generate_unique_id(route: APIRoute):
     return route.name
 
 
-def init_fastapi() -> FastAPI:
+def to_camel(string):
+    components = string.split("_")
+    return components[0] + "".join(x.title() for x in components[1:])
+
+
+class CamelModel(BaseModel):
+    class Config:
+        alias_generator = to_camel
+        allow_population_by_field_name = True
+
+
+def init_fastapi_app() -> FastAPI:
     app = FastAPI(
-        name="Venome Backend", custom_generate_unique_id=custom_generate_unique_id
+        title="Venome Backend", generate_unique_id_function=custom_generate_unique_id
     )
     return app
 

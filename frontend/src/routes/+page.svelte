@@ -6,7 +6,7 @@
 	import { Backend } from '../backend';
 
 	onMount(async () => {
-		const output = await Backend.helloWorldGet();
+		const output = await Backend.helloWorld();
 		console.log(output);
 	});
 </script>

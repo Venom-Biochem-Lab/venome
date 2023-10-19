@@ -1,11 +1,13 @@
 from __future__ import annotations
 from fastapi import FastAPI
 from pydantic import BaseModel
-from config import init_fastapi, run_http_server
-
-app: FastAPI = init_fastapi()
+from config import init_fastapi_app, run_http_server
 
 
+app: FastAPI = init_fastapi_app()
+
+
+# indicates the type that gets returned
 class AllReturn(BaseModel):
     message: str
 
