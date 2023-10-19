@@ -1,7 +1,14 @@
-<script>
+<script lang="ts">
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import { onMount } from 'svelte';
+	import { Backend } from '../backend';
+
+	onMount(async () => {
+		const output = await Backend.helloWorldGet();
+		console.log(output);
+	});
 </script>
 
 <svelte:head>
