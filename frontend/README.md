@@ -25,8 +25,8 @@ Now you can simply import the `Backend` object and call the functions by name (w
 Example
 
 ```ts
-import { Backend } from './backend'; // referring to the frontend/src/backend.ts
-const response = await Backend.helloWord(); // since the python function in backend/server.py was hello_world
+import { Backend } from '$lib/backend';
+console.log(await Backend.helloWord()) // > {"message": "Hello World"}
 ```
 
 It's that easy!
