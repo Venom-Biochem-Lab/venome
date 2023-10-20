@@ -51,17 +51,6 @@ Then, run the HTTP server by
 python3 server.py
 ```
 
-## Docs
-
-To generate the documentation website, run
-
-```bash
-cd docs
-yarn
-yarn dev
-```
-
-
 ## Resources
 
 -   [Design Space (Figma)](https://www.figma.com/file/G1pbQsYy4lCTVCvMEnGydX/Unknown-Venome-Project?type=design&node-id=0%3A1&mode=design&t=re8tfITwMPw75A2I-1)
