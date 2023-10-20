@@ -3,7 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type AllReturn = {
-    message: string;
+export type ValidationError = {
+    loc: Array<(string | number)>;
+    msg: string;
+    type: string;
 };
 
