@@ -30,3 +30,7 @@ const response = await Backend.helloWord(); // since the python function in back
 ```
 
 It's that easy!
+
+## Need help?
+
+First check [SvelteKit](https://kit.svelte.dev/) docs to figure out what files mean what. Then ask @xnought.
