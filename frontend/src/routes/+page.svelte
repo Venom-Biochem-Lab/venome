@@ -3,8 +3,15 @@
 	import { Backend } from "$lib/backend";
 
 	onMount(async () => {
-		const output = await Backend.helloWorld();
-		console.log(output);
+		const hello = await Backend.helloWorld();
+		console.log("test hello world", hello);
+
+		const { data } = await Backend.randomNormal({
+			numValues: 512,
+			mean: 0,
+			stdVar: 1,
+		});
+		console.log("random values", data);
 	});
 </script>
 
