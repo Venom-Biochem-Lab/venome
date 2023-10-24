@@ -74,3 +74,43 @@ which should open up your browser to the user interface at [http://localhost:517
 In the future, from the root directory you can use make commands to quickly run things instead of having to `cd` to different places and run different commands. Check out [`Makefile`](./Makefile). 
 
 But don't use it unless you understand what it's running.
+
+## Navigating the codebase
+
+First let's look at the frontend, then I'll show you how we interact with the backend.
+
+### Frontend Code
+TODO
+
+### Backend Code
+TODO
+
+## FAQ
+
+### How to add JavaScript packages to the frontend?
+
+```bash
+cd frontend
+yarn add npm_package_name
+```
+
+for example if I wanted to install [D3](https://www.npmjs.com/package/d3):
+
+```bash
+cd frontend
+yarn add d3
+```
+
+### How to add Python packages to the backend?
+
+```bash
+cd backend
+poetry add pypi_package_name
+```
+
+for example if I wanted to install [PyTorch](https://pypi.org/project/torch/):
+
+```bash
+cd backend
+poetry add torch
+```
