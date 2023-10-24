@@ -1,7 +1,7 @@
 install-front:
 	cd frontend; yarn install
 
-intall-back:
+install-back:
 	cd backend; poetry install
 
 front:
