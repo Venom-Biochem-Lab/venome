@@ -19,7 +19,12 @@
 	<title>Home</title>
 </svelte:head>
 
-<section />
+<section>
+	<h1 class="massive">Hello World!</h1>
+</section>
 
 <style>
+	.massive {
+		font-size: 100px;
+	}
 </style>

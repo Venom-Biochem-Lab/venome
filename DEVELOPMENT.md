@@ -70,3 +70,7 @@ yarn dev --open
 which should open up your browser to the user interface at [http://localhost:5173/](http://localhost:5173/).
 
 **🥳 You now should be up an running!**
+
+In the future, from the root directory you can use make commands to quickly run things instead of having to `cd` to different places and run different commands. Check out [`Makefile`](./Makefile). 
+
+But don't use it unless you understand what it's running.

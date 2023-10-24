@@ -21,7 +21,7 @@
 	header {
 		display: flex;
 		justify-content: space-between;
-		background-color: hsla(15, 98%, 51%, 0.164);
+		background-color: hsla(15, 98%, 51%, 0.06);
 		box-shadow: 0px 0px 3px 2px hsla(0, 0%, 0%, 0.208);
 	}
 
