@@ -2,7 +2,8 @@
 
 By the time you finish this guide, you will be able to run the JS frontend [Svelte](https://kit.svelte.dev/) and the Python backend [FastAPI](https://fastapi.tiangolo.com/).
 
-Note that this will be using bash and not powershell.
+> **Note**
+> We use bash for everything and **NOT** Powershell
 
 ## Installation
 
