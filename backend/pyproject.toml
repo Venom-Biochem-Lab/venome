@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "venome-backend"
+name = "src"
 version = "0.0.1"
 description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
+
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
@@ -15,3 +16,7 @@ fastapi = "^0.104.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+dev = "src.server:main" # run src/server.py at main()

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from fastapi import FastAPI
-from config import init_fastapi_app, run_http_server, CamelModel
+from .config import init_fastapi_app, run_http_server, CamelModel
 
 
 app: FastAPI = init_fastapi_app()
@@ -39,5 +39,9 @@ def random_normal(body: RandNormBody):
     return RandNormResponse(data=normal_distribution.tolist())
 
 
-if __name__ == "__main__":
+def main():
     run_http_server(app, host="localhost", port=8000)
+
+
+if __name__ == "__main__":
+    main()

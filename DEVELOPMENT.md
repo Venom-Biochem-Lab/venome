@@ -54,10 +54,10 @@ On the first terminal, run the backend
 
 ```bash
 cd backend
-poetry run python3 server.py
+poetry run dev
 ```
 
-which will run the HTTP server on port 8000.
+which will run the [ `server.py` ](./backend/src/server.py) HTTP server on localhost port 8000.
 
 Then, in the other terminal, run the frontend development server
 
