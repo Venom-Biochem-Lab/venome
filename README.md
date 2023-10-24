@@ -2,53 +2,37 @@
 
 **A user friendly system to discover insights into venom protein data.**
 
-## Live Deployments
-- [Venome Docs](https://venome.vercel.app) contains the live deployment of [`docs`](./docs/README.md)
+<!-- ## Live Deployments
+- [Venome Docs](https://venome.vercel.app) contains the live deployment of [`docs`](./docs/README.md) -->
 
 ## Files
 
 -   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
 -   [`backend`](./backend/README.md) contains the HTTP server and Database
--   [`docs`](./docs/README.md) contains the documentation website generator (starlight/astro)
--   [`wip`](/wip/README.md) contains 🚧work-in-progress🚧 documents
+<!-- -   [`docs`](./docs/README.md) contains the documentation website generator (starlight/astro)
+-   [`wip`](/wip/README.md) contains 🚧work-in-progress🚧 documents -->
 
 
-## Getting Started
+## Quick start
 
-Both the **Frontend** and **Backend** need to be running at the same time.
+For an in depth guide of the installation and running, go to [`DEVELOPMENT.md`](./DEVELOPMENT.md).
+
+If you have everything nicely installed, then you can quickly do:
 
 ### Frontend
-
-First install the [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable) package manager.
-
-Then, use yarn to install the frontend packages
 
 ```bash
 cd frontend
 yarn install
+yarn dev 
 ```
-
-To start the development server then do
-
-```bash
-yarn dev --open
-```
-
-Now navigate to your browser at [http://127.0.0.1:5173/](http://127.0.0.1:5173/).
 
 ### Backend
 
-First install the backend python packages
-
 ```bash
 cd backend
-pip3 install -r requirements.txt
-```
-
-Then, run the HTTP server by
-
-```bash
-python3 server.py
+poetry install
+poetry run dev
 ```
 
 ## Resources
