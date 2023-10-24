@@ -5,7 +5,7 @@
 <!-- ## Live Deployments
 - [Venome Docs](https://venome.vercel.app) contains the live deployment of [`docs`](./docs/README.md) -->
 
-## Files
+## Structure
 
 -   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
 -   [`backend`](./backend/README.md) contains the HTTP server and Database
