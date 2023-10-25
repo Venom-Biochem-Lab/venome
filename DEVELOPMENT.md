@@ -49,7 +49,7 @@ yarn install
 
 ## Running the Development Servers 
 
-It's very simple! You need two terminals open though.
+It's very simple! You need two terminals open:
 
 On the first terminal, run the backend
 
