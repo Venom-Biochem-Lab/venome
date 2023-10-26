@@ -9,3 +9,6 @@ front:
 
 back:
 	cd backend; poetry run dev
+
+api: # the backend server needs to be running too
+	cd frontend; yarn openapi
