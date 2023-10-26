@@ -81,6 +81,10 @@ I'll explain top-down how to understand the structure of this repository. First 
 
 ### Frontend
 
+> **Important**
+> 🎥 [Click here](https://drive.google.com/file/d/1KD3Hgbul0_7cIZiCaQZ1U4meCBthcrfS/view?usp=drive_link) to watch the frontend video overview by @xnought.
+
+
 The main code for frontend is in [`frontend/src`](./frontend/src). We use the JavaScript framework called [Svelte](https://svelte.dev/) which makes writing frontends super easy and is the standard for websites with visualizations. To be very specific, we use [SvelteKit](https://kit.svelte.dev/) which is a framework built on the Svelte compiler for websites with multiple routes.
 
 The home page you see when you run the frontend server is defined in [`frontend/src/routes/+page.svelte`](./frontend/src/routes/+page.svelte).
@@ -94,6 +98,9 @@ See SvelteKit documentation for more info on how to add more complicated behavio
 
 ### Backend
 
+> **Important**
+> 🎥 [Click here](https://drive.google.com/file/d/1zOV_Gz-_MFURB0nupxCt965w1siUAaMl/view?usp=drive_link) to watch the backend video overview by @xnought.
+
 The frontend calls to the backend. The backend is in Python3 and specifically [FastAPI](https://fastapi.tiangolo.com/). FastAPI is a nice HTTP REST server where we can make HTTP requests to the backend from the frontend.
 
 The main server lives in [`backend/src/server.py`](./backend/src/server.py).
@@ -101,6 +108,9 @@ The main server lives in [`backend/src/server.py`](./backend/src/server.py).
 Check out the FastAPI docs for more info.
 
 ### Frontend and Backend Interaction
+
+> **Important**
+> 🎥 [Click here](https://drive.google.com/file/d/1micYztZj8q5oufOhVctzPvsE9U1NgnyS/view?usp=drive_link) to watch how to interact with the backend from the frontend
 
 Once we created the HTTP endpoints in the backend, we can call 
 ```bash

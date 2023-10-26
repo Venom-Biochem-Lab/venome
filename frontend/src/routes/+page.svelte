@@ -1,23 +1,18 @@
 <script lang="ts">
-	let fakeData = [
-		{
-			name: "Donny",
-			age: 21,
-		},
-		{
-			name: "Donny2",
-			age: 22,
-		},
-		{
-			name: "Donny3",
-			age: 23,
-		},
-	];
+	import { onMount } from "svelte";
+	import { Backend } from "$lib/backend";
+
+	onMount(async () => {
+		const dist = await Backend.genNormDist({
+			stdDev: 2,
+			mean: 0,
+			length: 100_000,
+		});
+		console.log(dist);
+	});
 </script>
 
-{#each fakeData as d}
-	<div>{d.name}</div>
-{/each}
+<div class="massive">Hello World</div>
 
 <style>
 	.massive {

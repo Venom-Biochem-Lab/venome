@@ -36,9 +36,9 @@ def init_fastapi_app() -> FastAPI:
     app = FastAPI(
         title="Venome Backend", generate_unique_id_function=custom_generate_unique_id
     )
+    disable_cors(app)
     return app
 
 
-def run_http_server(app: FastAPI, host="localhost", port=8000, reload=True):
-    disable_cors(app)
-    uvicorn.run("src.server:app", host=host, port=port, reload=reload)
+def run_http_server(app: FastAPI, host="localhost", port=8000):
+    uvicorn.run(app, host=host, port=port)

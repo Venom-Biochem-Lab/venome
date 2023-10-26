@@ -4,7 +4,6 @@
 /* eslint-disable */
 import type { AllResponse } from '../models/AllResponse';
 import type { RandNormBody } from '../models/RandNormBody';
-import type { RandNormResponse } from '../models/RandNormResponse';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -25,17 +24,17 @@ export class DefaultService {
     }
 
     /**
-     * Random Normal
+     * Gen Norm Dist
      * @param requestBody
-     * @returns RandNormResponse Successful Response
+     * @returns number Successful Response
      * @throws ApiError
      */
-    public static randomNormal(
+    public static genNormDist(
         requestBody: RandNormBody,
-    ): CancelablePromise<RandNormResponse> {
+    ): CancelablePromise<Array<number>> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/random-normal',
+            url: '/gen-norm-dist',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

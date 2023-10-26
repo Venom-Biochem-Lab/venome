@@ -4,8 +4,8 @@
 /* eslint-disable */
 
 export type RandNormBody = {
-    numValues: number;
+    length: number;
     mean?: number;
-    stdVar?: number;
+    stdDev?: number;
 };
 
