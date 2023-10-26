@@ -1,6 +1,6 @@
 from __future__ import annotations
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 import uvicorn
@@ -21,15 +21,25 @@ def custom_generate_unique_id(route: APIRoute):
     return route.name
 
 
-def to_camel(string):
+# https://github.com/zeno-ml/zeno-hub/blob/9d2f8b5841d99aeba9ec405b0bc6a5b1272b276f/backend/zeno_backend/classes/base.py#L20
+def to_camel(string: str) -> str:
+    """Converter for variables from snake_case to camelCase.
+
+    Args:
+        string (str): the variable to convert to camelCase.
+
+    Returns:
+        str: camelCase representation of the variable.
+    """
     components = string.split("_")
     return components[0] + "".join(x.title() for x in components[1:])
 
 
+# https://github.com/zeno-ml/zeno-hub/blob/9d2f8b5841d99aeba9ec405b0bc6a5b1272b276f/backend/zeno_backend/classes/base.py#L20
 class CamelModel(BaseModel):
-    class Config:
-        alias_generator = to_camel
-        allow_population_by_field_name = True
+    """Converting snake_case pydantic models to camelCase models."""
+
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
 
 def init_fastapi_app() -> FastAPI:
