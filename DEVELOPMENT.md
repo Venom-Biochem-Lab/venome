@@ -99,7 +99,7 @@ See SvelteKit documentation for more info on how to add more complicated behavio
 ### Backend
 
 > **Important**
-> 🎥 [Click here](https://drive.google.com/file/d/1zOV_Gz-_MFURB0nupxCt965w1siUAaMl/view?usp=drive_link) to watch the backend video overview by @xnought.
+> 🎥 [Click here](https://drive.google.com/file/d/1mmZqsALCY4UhcT592GR0Q1PMtZPogXkq/view?usp=drive_link) to watch the backend video overview by @xnought.
 
 The frontend calls to the backend. The backend is in Python3 and specifically [FastAPI](https://fastapi.tiangolo.com/). FastAPI is a nice HTTP REST server where we can make HTTP requests to the backend from the frontend.
 
