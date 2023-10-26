@@ -77,13 +77,38 @@ But don't use it unless you understand what it's running.
 
 ## Navigating the codebase
 
-First let's look at the frontend, then I'll show you how we interact with the backend.
+I'll explain top-down how to understand the structure of this repository. First of all, you want to mainly pay attention to the [`frontend`](./frontend/) then the [`backend`](./backend/) code. I'll explain:
 
-### Frontend Code
-TODO
+### Frontend
 
-### Backend Code
-TODO
+The main code for frontend is in [`frontend/src`](./frontend/src). We use the JavaScript framework called [Svelte](https://svelte.dev/) which makes writing frontends super easy and is the standard for websites with visualizations. To be very specific, we use [SvelteKit](https://kit.svelte.dev/) which is a framework built on the Svelte compiler for websites with multiple routes.
+
+The home page you see when you run the frontend server is defined in [`frontend/src/routes/+page.svelte`](./frontend/src/routes/+page.svelte).
+
+To make another route, for example an `/about` to show an about page in the frontend, we just create a directory with another `+page.svelte`.
+
+
+For example, [`frontend/src/routes/about/+page.svelte`](./frontend/src/routes/about/+page.svelte).
+
+See SvelteKit documentation for more info on how to add more complicated behavior. There are a ton of nice things to loop over data directly in the DOM, insert reactive variables, and maintain reactive global state. Ask @xnought if you want to learn more.
+
+### Backend
+
+The frontend calls to the backend. The backend is in Python3 and specifically [FastAPI](https://fastapi.tiangolo.com/). FastAPI is a nice HTTP REST server where we can make HTTP requests to the backend from the frontend.
+
+The main server lives in [`backend/src/server.py`](./backend/src/server.py).
+
+Check out the FastAPI docs for more info.
+
+### Frontend and Backend Interaction
+
+Once we created the HTTP endpoints in the backend, we can call 
+```bash
+cd frontend
+yarn openapi
+```
+
+which generates frontend bindings/functions we can use in the frontend. See the [`+page.svelte`](./frontend/src/routes/page.svelte) for an example usage with the `Backend` object (generated from the command above). You'll see in the network tab that it just makes a `fetch` call to the backend.
 
 ## FAQ
 
