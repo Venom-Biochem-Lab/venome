@@ -39,6 +39,6 @@ def init_fastapi_app() -> FastAPI:
     return app
 
 
-def run_http_server(app: FastAPI, host="localhost", port=8000):
+def run_http_server(app: FastAPI, host="localhost", port=8000, reload=True):
     disable_cors(app)
-    uvicorn.run(app, host=host, port=port)
+    uvicorn.run("src.server:app", host=host, port=port, reload=reload)

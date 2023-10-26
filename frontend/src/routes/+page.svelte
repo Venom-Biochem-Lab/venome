@@ -1,20 +1,23 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { Backend } from "$lib/backend";
-
-	onMount(async () => {
-		const hello = await Backend.helloWorld();
-		console.log("test hello world", hello);
-	});
+	let fakeData = [
+		{
+			name: "Donny",
+			age: 21,
+		},
+		{
+			name: "Donny2",
+			age: 22,
+		},
+		{
+			name: "Donny3",
+			age: 23,
+		},
+	];
 </script>
 
-<svelte:head>
-	<title>Home</title>
-</svelte:head>
-
-<section>
-	<h1 class="massive">Hello World!</h1>
-</section>
+{#each fakeData as d}
+	<div>{d.name}</div>
+{/each}
 
 <style>
 	.massive {

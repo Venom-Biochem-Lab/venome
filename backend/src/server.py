@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from .config import init_fastapi_app, run_http_server, CamelModel
 
 
+HOST = "localhost"
+PORT = 8000
+DEV_MODE = True
 app: FastAPI = init_fastapi_app()
 
 
@@ -13,7 +16,7 @@ class AllResponse(CamelModel):
 
 @app.get("/", response_model=AllResponse)
 def hello_world():
-    return AllResponse(message="Hello World")
+    return AllResponse(message="Hello World!")
 
 
 """
@@ -40,7 +43,10 @@ def random_normal(body: RandNormBody):
 
 
 def main():
-    run_http_server(app, host="localhost", port=8000)
+    if DEV_MODE:
+        run_http_server(app, HOST, PORT, reload=True)
+    else:
+        raise NotImplementedError("Production mode not implemented yet.")
 
 
 if __name__ == "__main__":
