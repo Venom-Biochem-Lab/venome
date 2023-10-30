@@ -10,6 +10,10 @@ restart:
 	make down
 	make up
 
+hard-restart:
+	make down
+	docker-compose up --build -d	
+
 api: # generates the api for the frontend to call the backend 
 	cd frontend; yarn openapi
 
