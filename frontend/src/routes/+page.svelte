@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Counter from "$lib/Counter.svelte";
 	import { onMount } from "svelte";
 	import { Backend } from "$lib/backend";
 
@@ -15,6 +16,8 @@
 </script>
 
 <div class="massive">Hello World</div>
+
+<Counter count={400} increment={5} />
 
 <style>
 	.massive {

@@ -5,7 +5,7 @@ from .db import Database
 
 
 app = init_fastapi_app()
-disable_cors(app, origins=["http://0.0.0.0:5173"])
+disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
 
 
 @app.get("/", response_model=AllResponse)
