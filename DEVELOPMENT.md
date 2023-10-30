@@ -2,7 +2,7 @@
 
 By the time you finish this guide, you will be able to run the JS frontend [Svelte](https://kit.svelte.dev/) and the Python backend [FastAPI](https://fastapi.tiangolo.com/).
 
-Note that we use `docker-compose` as defined in the `docker-compose.yml`.
+Note that we use `docker-compose` as defined in the [`docker-compose.yml`](./docker-compose.yml).
 
 ## Installation
 
