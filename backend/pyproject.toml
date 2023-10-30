@@ -11,6 +11,8 @@ python = ">=3.9,<3.13"
 numpy = "^1.26.1"
 uvicorn = "^0.23.2"
 fastapi = "^0.104.0"
+psycopg = "^3.1.12"
+psycopg-pool = "^3.1.8"
 
 
 [build-system]

@@ -18,3 +18,8 @@ install:
 	poetry config virtualenvs.in-project true
 	@echo "Install Docker Desktop https://www.docker.com/products/docker-desktop/"
 	@echo "and make sure `docker-compose` is available as a bash command"
+
+restart-venv:
+	cd backend; poetry config virtualenvs.in-project true;
+	cd backend; poetry env list; poetry env remove --all; 
+	cd backend; poetry install
