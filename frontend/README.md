@@ -4,21 +4,19 @@ In [SvelteKit](https://kit.svelte.dev/) which uses the [Svelte](https://svelte.d
 
 Here are [tutorials](https://learn.svelte.dev/tutorial/welcome-to-svelte) if you are interested, you'll find it simpler than regular JavaScript and much faster than other frameworks like React.
 
-## Development
 
-To run the frontend in your browser do
+## Add packages
 
 ```bash
 cd frontend
-yarn install
-yarn dev --open
+yarn add js_package_name
 ```
 
 ## Access to Backend Functions
 
 You can create functions in the [`backend/server.py`](../backend/server.py) and import them into the frontend.
 
-To do this, you need to have saved your changes in the backend, restart the server, then run `yarn openapi` in the frontend to transfer the types and functions into a readable frontend format.
+To do this, you need to have saved your changes in the backend, restart the server, then run `make api` from the project root.
 
 Now you can simply import the `Backend` object and call the functions by name (which will subsequently call the server).
 
@@ -36,7 +34,7 @@ It's that easy!
 > 
 > Check [`server.py`](../backend/server.py) and you'll find `hello_world` as a function too.
 >
-> If you must know, the frontend uses this interface `Backend.helloWorld()` to make a GET request to the backend at the function `hello_world` in [`server.py`](../backend/server.py). Luckily this is abstracted away with `yarn openapi` API generation.
+> If you must know, the frontend uses this interface `Backend.helloWorld()` to make a GET request to the backend at the function `hello_world` in [`server.py`](../backend/server.py). Luckily this is abstracted away with `yarn openapi` / `make api` API generation.
 
 
 ## Need help?

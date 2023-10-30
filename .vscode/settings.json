@@ -1,6 +1,16 @@
 {
+	"python.defaultInterpreterPath": "backend/.venv/bin/python",
+	"autoDocstring.docstringFormat": "google",
+	"editor.wordWrapColumn": 100,
+	"eslint.validate": ["javascript", "javascriptreact", "svelte"],
+	"python.testing.pytestEnabled": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"python.analysis.typeCheckingMode": "basic",
+	"editor.formatOnSave": true,
 	"[python]": {
-		"editor.defaultFormatter": "ms-python.black-formatter"
+		"editor.defaultFormatter": "charliermarsh.ruff"
 	},
-	"python.formatting.provider": "none"
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
 }

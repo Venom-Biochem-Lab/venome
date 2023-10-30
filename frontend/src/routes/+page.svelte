@@ -3,6 +3,8 @@
 	import { Backend } from "$lib/backend";
 
 	onMount(async () => {
+		const helloWorld = await Backend.helloWorld();
+		console.log(helloWorld);
 		const dist = await Backend.genNormDist({
 			stdDev: 2,
 			mean: 0,
