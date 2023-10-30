@@ -1,14 +1,20 @@
-install-front:
-	cd frontend; yarn install
+all: up
 
-install-back:
-	cd backend; poetry install
+up:
+	docker-compose up -d
 
-front:
-	cd frontend; yarn dev --open
+down:
+	docker-compose down
 
-back:
-	cd backend; poetry run dev
+restart:
+	make down
+	make up
 
-api: # the backend server needs to be running too
+api: # generates the api for the frontend to call the backend 
 	cd frontend; yarn openapi
+
+install:
+	pip3 intall poetry
+	poetry config virtualenvs.in-project true
+	@echo "Install Docker Desktop https://www.docker.com/products/docker-desktop/"
+	@echo "and make sure `docker-compose` is available as a bash command"

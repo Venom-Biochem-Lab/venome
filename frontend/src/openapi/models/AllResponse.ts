@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type AllResponse = {
-    name: string;
+    exampleMsg: string;
 };
 
