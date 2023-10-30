@@ -2,38 +2,16 @@
 
 **A user friendly system to discover insights into venom protein data.**
 
-<!-- ## Live Deployments
-- [Venome Docs](https://venome.vercel.app) contains the live deployment of [`docs`](./docs/README.md) -->
-
 ## Structure
 
+-   [`docker-compose.yml`](./docker-compose.yml) contains the Docker container build
 -   [`frontend`](./frontend/README.md) contains the user interface in Svelte/JS
 -   [`backend`](./backend/README.md) contains the HTTP server and Database
-<!-- -   [`docs`](./docs/README.md) contains the documentation website generator (starlight/astro)
--   [`wip`](/wip/README.md) contains 🚧work-in-progress🚧 documents -->
 
 
 ## Quick start
 
-For an in depth guide of the installation and running, go to [`DEVELOPMENT.md`](./DEVELOPMENT.md).
-
-If you have everything nicely installed, then you can quickly do:
-
-### Frontend
-
-```bash
-cd frontend
-yarn install
-yarn dev 
-```
-
-### Backend
-
-```bash
-cd backend
-poetry install
-poetry run dev
-```
+Go to [`DEVELOPMENT.md`](./DEVELOPMENT.md) to get up and running.
 
 ## Resources
 

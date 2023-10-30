@@ -1,16 +1,13 @@
 # Backend
 
-## Development
-
-First install the python libraries
+## Add packages
 
 ```bash
-cd backend
-pip3 install -r requirements.txt
+poetry add py_package_name
 ```
 
-Then, run the HTTP server by
+Note you'll need to rebuild the docker container after adding a new package
 
 ```bash
-python3 server.py
+make hard-restart
 ```

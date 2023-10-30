@@ -6,21 +6,31 @@ Note that we use `docker-compose` as defined in the `docker-compose.yml`.
 
 ## Installation
 
+> **Important**
+> You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
+
 You can run everything by doing
 
 ```bash
 make
 ```
 
+and navigate to [http://0.0.0.0:5173](http://0.0.0.0:5173) webserver.
+
 That's it. This will spin up a docker container with the backend, database, and frontend servers running.
 
-But you must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
+To turn it off do
+
+```bash
+make down
+```
+Check out the [`Makefile`](./Makefile) for more shortcuts like this.
 
 If you want intellisense/autocomplete in VSCode, continue to the rest of the installation. Otherwise you are done. Totally optional, but I'd do it for autocomplete.
 
 ### Backend 
 
-> **Warning**
+> **Important**
 > Before you do anything, make sure you have [Python](https://www.python.org/downloads/) installed.
 
 Then install the [Poetry Python Package Manager](https://python-poetry.org/) by doing 
@@ -40,7 +50,7 @@ poetry install
 
 ### Frontend
 
-> **Warning**
+> **Important**
 > Before you do anything, make sure you first have [Node](https://nodejs.org/en/download) installed.
 
 If you haven't already, also install [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable) globally as the package manager for node by doing 
@@ -64,6 +74,7 @@ yarn install
 > **Warning**
 > Ignore the build script in the video, they are outdated
 > We use docker now through `make`
+> Additionally the host has changed from `localhost` to `0.0.0.0`
 
 I'll explain top-down how to understand the structure of this repository. First of all, you want to mainly pay attention to the [`frontend`](./frontend/) then the [`backend`](./backend/) code. I'll explain:
 
@@ -102,8 +113,7 @@ Check out the FastAPI docs for more info.
 
 Once we created the HTTP endpoints in the backend, we can call 
 ```bash
-cd frontend
-yarn openapi
+make api
 ```
 
 which generates frontend bindings/functions we can use in the frontend. See the [`+page.svelte`](./frontend/src/routes/page.svelte) for an example usage with the `Backend` object (generated from the command above). You'll see in the network tab that it just makes a `fetch` call to the backend.
