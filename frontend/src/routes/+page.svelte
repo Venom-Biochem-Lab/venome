@@ -24,9 +24,14 @@
 	<div class="entries">
 		{#if all}
 			{#each all.proteinEntries as entry}
-				<div class="entry">
+				<div class="entry" title="Click to see {entry.name}">
 					<!-- routes to the protein entry itself (new page) -->
-					<a href="/protein/{entry.name}">{entry.name}</a>
+					<div class="name">
+						<a href="/protein/{entry.name}">{entry.name}</a>
+					</div>
+					<div class="description">
+						{entry.description}
+					</div>
 				</div>
 			{/each}
 		{/if}
@@ -34,9 +39,25 @@
 </section>
 
 <style>
+	section {
+		padding-left: 50px;
+	}
 	.entries {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: 20px;
+	}
+	.entry {
+		border: 1px solid var(--color-theme-1);
+		border-radius: 3px;
+		width: 400px;
+		padding: 10px;
+		cursor: pointer;
+	}
+	.entry:hover {
+		box-shadow: 0px 2px 3px 3px rgba(0, 0, 0, 0.09);
+	}
+	.name {
+		font-size: 1.5em;
 	}
 </style>
