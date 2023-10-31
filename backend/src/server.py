@@ -9,11 +9,12 @@ disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
 # important to note the return type (response_mode) so frontend can generate that type through `make api`
 @app.get("/all-entries", response_model=AllEntries)
 def get_all_entries():
-    #  dummy fake data
+    # dummy fake data
+    # TODO: Swap out with a real call to the database with real data
     fake_protein_entries = [
-        ProteinEntry(name="Protein A"),
-        ProteinEntry(name="Protein B"),
-        ProteinEntry(name="Protein C"),
+        ProteinEntry(name="Protein A", description="A for Apple"),
+        ProteinEntry(name="Protein B", description="B for Banana"),
+        ProteinEntry(name="Protein C", description="C for Code"),
     ]
 
     response = AllEntries(protein_entries=fake_protein_entries)
