@@ -3,9 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type RandNormBody = {
-    length: number;
-    mean?: number;
-    stdDev?: number;
+export type ProteinEntry = {
+    name: string;
 };
 
