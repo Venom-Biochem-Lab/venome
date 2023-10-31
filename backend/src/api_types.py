@@ -22,13 +22,9 @@ class CamelModel(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)  # type: ignore
 
 
-# indicates the type that gets returned
-class AllResponse(CamelModel):
-    example_msg: str
+class ProteinEntry(CamelModel):
+    name: str
 
 
-class RandNormBody(CamelModel):
-    length: int
-    mean: float = 0
-    # CamelModel will convert this to stdDev camel case when sent to frontend
-    std_dev: float = 1
+class AllEntries(CamelModel):
+    protein_entries: list[ProteinEntry]
