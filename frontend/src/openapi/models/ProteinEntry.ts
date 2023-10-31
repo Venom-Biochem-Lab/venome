@@ -5,5 +5,6 @@
 
 export type ProteinEntry = {
     name: string;
+    description?: string;
 };
 
