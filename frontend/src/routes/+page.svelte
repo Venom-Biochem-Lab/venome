@@ -1,26 +1,41 @@
 <script lang="ts">
-	import Counter from "$lib/Counter.svelte";
-	import { onMount } from "svelte";
-	import { Backend } from "$lib/backend";
-
-	onMount(async () => {
-		const helloWorld = await Backend.helloWorld();
-		console.log(helloWorld);
-		const dist = await Backend.genNormDist({
-			stdDev: 2,
-			mean: 0,
-			length: 100_000,
-		});
-		console.log(dist);
-	});
+	// at some point, this should be change to request from the backend
+	const allProteinEntries = [
+		{
+			name: "Protein A",
+		},
+		{
+			name: "Protein B",
+		},
+		{
+			name: "Protein C",
+		},
+	];
 </script>
 
-<div class="massive">Hello World</div>
+<!-- akin to <head /> in html -->
+<svelte:head>
+	<title>Home</title>
+</svelte:head>
 
-<Counter count={400} increment={5} />
+<section>
+	<h1>All Protein Entries</h1>
+
+	<!-- TODO: Organize this into a better looking table  -->
+	<div class="entries">
+		{#each allProteinEntries as entry}
+			<div class="entry">
+				<!-- routes to the protein entry itself (new page) -->
+				<a href="/protein/{entry.name}">{entry.name}</a>
+			</div>
+		{/each}
+	</div>
+</section>
 
 <style>
-	.massive {
-		font-size: 100px;
+	.entries {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
 	}
 </style>
