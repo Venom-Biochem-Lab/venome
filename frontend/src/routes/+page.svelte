@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { goto } from "$app/navigation";
 	import { Backend } from "$lib/backend";
 	import type { AllEntries } from "$lib/backend";
 
@@ -24,10 +25,15 @@
 	<div class="entries">
 		{#if all}
 			{#each all.proteinEntries as entry}
-				<div class="entry" title="Click to see {entry.name}">
+				<div
+					class="entry"
+					title="Click to see {entry.name}"
+					on:click={() => goto(`/protein/${entry.name}`)}
+					role="link"
+				>
 					<!-- routes to the protein entry itself (new page) -->
 					<div class="name">
-						<a href="/protein/{entry.name}">{entry.name}</a>
+						{entry.name}
 					</div>
 					<div class="description">
 						{entry.description}
@@ -59,5 +65,6 @@
 	}
 	.name {
 		font-size: 1.5em;
+		color: var(--color-theme-1);
 	}
 </style>
