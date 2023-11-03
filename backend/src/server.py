@@ -2,6 +2,7 @@ import numpy as np
 from .setup import init_fastapi_app, disable_cors
 from .api_types import AllResponse, RandNormBody
 from .db import Database
+import logging
 
 
 app = init_fastapi_app()
@@ -29,19 +30,6 @@ def export_app_for_docker():
 
 
 # some test usage of the database
-db = Database()
-db.connect()
-
-# insert some values in to test
-for i in range(15):
-    db.execute(
-        """INSERT INTO protein_entries (name) VALUES (%s);""",
-        [f"meat-{i}"],
-    )
-
-
-# print out those values
-result = db.execute_return("SELECT * FROM protein_entries")
-print("result", result)
-
-db.disconnect()
+with Database() as db:
+    result = db.execute_return("SELECT * FROM protein_entries")
+    logging.warn(result)

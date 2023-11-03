@@ -1,5 +1,7 @@
 # Backend
 
+Note that `print` is wonky on docker, so instead import `logging` and use `logging.warn(stuff)` to print stuff.
+
 ## Add packages
 
 ```bash
