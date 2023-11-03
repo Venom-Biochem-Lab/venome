@@ -2,7 +2,7 @@ import numpy as np
 from .setup import init_fastapi_app, disable_cors
 from .api_types import AllResponse, RandNormBody
 from .db import Database
-import logging
+import logging as log
 
 
 app = init_fastapi_app()
@@ -32,4 +32,4 @@ def export_app_for_docker():
 # some test usage of the database
 with Database() as db:
     result = db.execute_return("SELECT * FROM protein_entries")
-    logging.warn(result)
+    log.warn(result)
