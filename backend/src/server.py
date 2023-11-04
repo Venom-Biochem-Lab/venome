@@ -31,5 +31,12 @@ def export_app_for_docker():
 
 # some test usage of the database
 with Database() as db:
+    # insert a new entry
+    try:
+        db.execute("INSERT INTO protein_entries (name) VALUES (%s)", ["asdasdsad"])
+    except Exception as e:
+        log.error(e)
+
+    # print all existing entries
     result = db.execute_return("SELECT * FROM protein_entries")
     log.warn(result)
