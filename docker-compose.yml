@@ -44,6 +44,11 @@ services:
             POSTGRES_PASSWORD: mypassword
         volumes:
             - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+            - postgres_data:/var/lib/postgresql/data # so the inserted data persists even when docker is turned off
+
         ports:
             # Use a different port to avoid clashes with local postgres
             - "5431:5432"
+
+volumes:
+    postgres_data:
