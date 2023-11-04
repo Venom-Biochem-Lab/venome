@@ -116,7 +116,7 @@ Once we created the HTTP endpoints in the backend, we can call
 make api
 ```
 
-which generates frontend bindings/functions we can use in the frontend. See the [`+page.svelte`](./frontend/src/routes/page.svelte) for an example usage with the `Backend` object (generated from the command above). You'll see in the network tab that it just makes a `fetch` call to the backend.
+which generates frontend bindings/functions we can use in the frontend. See the [`+page.svelte`](./frontend/src/routes/+page.svelte) for an example usage with the `Backend` object (generated from the command above). You'll see in the network tab that it just makes a `fetch` call to the backend.
 
 ### Database
 
