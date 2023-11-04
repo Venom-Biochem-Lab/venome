@@ -18,6 +18,8 @@ class Database:
                 user=os.environ["DB_USER"],
                 password=os.environ["DB_PASSWORD"],
             )
+            # ensures we insert into the database immediately
+            self.conn.autocommit = True
             self.cur = self.conn.cursor()
         except (Exception, psycopg.DatabaseError) as error:
             raise Exception(error) from error
@@ -47,3 +49,10 @@ class Database:
         if self.cur is not None:
             self.execute(query, params)
             return self.cur.fetchall()
+
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.disconnect()

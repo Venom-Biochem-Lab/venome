@@ -1,5 +1,7 @@
 from .setup import init_fastapi_app, disable_cors
 from .api_types import AllEntries, ProteinEntry
+from .db import Database
+import logging as log
 
 
 app = init_fastapi_app()
@@ -34,3 +36,16 @@ def export_app_for_docker():
     Example: `uvicorn src.server:export_app_for_docker --reload --host 0.0.0.0`
     """
     return app
+
+
+# some test usage of the database
+with Database() as db:
+    # insert a new entry
+    try:
+        db.execute("INSERT INTO protein_entries (name) VALUES (%s)", ["asdasdsad"])
+    except Exception as e:
+        log.error(e)
+
+    # print all existing entries
+    result = db.execute_return("SELECT * FROM protein_entries")
+    log.warn(result)

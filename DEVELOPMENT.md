@@ -15,7 +15,7 @@ You can run everything by doing
 make
 ```
 
-and navigate to [http://0.0.0.0:5173](http://0.0.0.0:5173) webserver.
+and navigate to [http://0.0.0.0:5173](http://0.0.0.0:5173) webserver (or [http://localhost:5173](http://localhost:5173))
 
 That's it. This will spin up a docker container with the backend, database, and frontend servers running.
 
