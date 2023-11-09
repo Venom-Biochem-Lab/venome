@@ -12,7 +12,7 @@ Note that we use `docker-compose` as defined in the [`docker-compose.yml`](./doc
 You can run everything by doing
 
 ```bash
-make
+./run.sh
 ```
 
 and navigate to [http://0.0.0.0:5173](http://0.0.0.0:5173) webserver (or [http://localhost:5173](http://localhost:5173))
@@ -22,9 +22,9 @@ That's it. This will spin up a docker container with the backend, database, and 
 To turn it off do
 
 ```bash
-make down
+./run.sh stop
 ```
-Check out the [`Makefile`](./Makefile) for more shortcuts like this.
+Check out the [`run.sh`](./run.sh) for more shortcuts like this.
 
 If you want intellisense/autocomplete in VSCode, continue to the rest of the installation. Otherwise you are done. Totally optional, but I'd do it for autocomplete.
 

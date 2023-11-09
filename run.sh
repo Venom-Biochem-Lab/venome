@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# CALL STRUCTURE: sh run.sh <command>
+# EXAMPLE: sh run.sh start
+
 function all() {
 	start
 }
