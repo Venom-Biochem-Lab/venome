@@ -65,6 +65,7 @@ function scrape_func_names() {
 # if no command line args, just run the all function
 if [ -z "$1" ]; then
 	all
+	exit 0
 fi
 
 # otherwise run the user specified command
