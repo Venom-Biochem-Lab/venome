@@ -22,4 +22,25 @@ export class DefaultService {
         });
     }
 
+    /**
+     * Get Protein Entry
+     * @param proteinId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getProteinEntry(
+        proteinId: string,
+    ): CancelablePromise<(string | null)> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein-entry/{protein_id}',
+            path: {
+                'protein_id': proteinId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
 }

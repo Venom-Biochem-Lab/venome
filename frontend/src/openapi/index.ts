@@ -8,6 +8,8 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AllEntries } from './models/AllEntries';
+export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { ProteinEntry } from './models/ProteinEntry';
+export type { ValidationError } from './models/ValidationError';
 
 export { DefaultService } from './services/DefaultService';

@@ -33,7 +33,7 @@ function hard_restart() {
 # generates the api bridge between frontend and backend
 function api() {
 	cd frontend
-	yarn openapi
+	yarn openapi && restart
 }
 
 # clears the postgres persistent storage
