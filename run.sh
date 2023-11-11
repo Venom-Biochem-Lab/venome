@@ -27,7 +27,7 @@ function restart() {
 
 function hard_restart() {
 	stop
-	start-start-rebuild
+	start_rebuild
 }
 
 # generates the api bridge between frontend and backend
@@ -52,6 +52,12 @@ function restart_venv() {
 	poetry config virtualenvs.in-project true
 	poetry env list; poetry env remove --all
 	poetry install
+}
+
+function reset_db() {
+	stop
+	rm_volume
+	start	
 }
 
 function scrape_func_names() {
