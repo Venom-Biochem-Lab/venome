@@ -9,8 +9,11 @@ disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
 
 
 # important to note the return type (response_mode) so frontend can generate that type through `make api`
-@app.get("/all-entries", response_model=list[ProteinEntry])
+@app.get("/all-entries", response_model=list[ProteinEntry] | None)
 def get_all_entries():
+    """Gets all protein entries from the database
+    Returns: list[ProteinEntry] if found | None if not found
+    """
     with Database() as db:
         try:
             entries_sql = db.execute_return("""SELECT id, name FROM proteins""")
@@ -26,9 +29,27 @@ def get_all_entries():
             log.error(e)
 
 
-@app.get("/protein-entry/{protein_id:str}", response_model=str | None)
+@app.get("/protein-entry/{protein_id:str}", response_model=ProteinEntry | None)
 def get_protein_entry(protein_id: str):
-    return protein_id
+    """Get a single protein entry by its id
+    Returns: ProteinEntry if found | None if not found
+    """
+    with Database() as db:
+        try:
+            entry_sql = db.execute_return(
+                """SELECT id, name FROM proteins
+                    WHERE id = %s""",
+                [protein_id],
+            )
+            log.warn(entry_sql)
+
+            # if we got a result back
+            if entry_sql is not None and len(entry_sql) != 0:
+                # return the only entry
+                return ProteinEntry(id=str(entry_sql[0][0]), name=entry_sql[0][1])
+
+        except Exception as e:
+            log.error(e)
 
 
 def export_app_for_docker():
