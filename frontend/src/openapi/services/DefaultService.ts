@@ -25,12 +25,12 @@ export class DefaultService {
     /**
      * Get Protein Entry
      * @param proteinId
-     * @returns any Successful Response
+     * @returns ProteinEntry Successful Response
      * @throws ApiError
      */
     public static getProteinEntry(
         proteinId: string,
-    ): CancelablePromise<(string | null)> {
+    ): CancelablePromise<ProteinEntry> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/protein-entry/{protein_id}',
