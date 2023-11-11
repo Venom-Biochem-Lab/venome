@@ -31,6 +31,11 @@ def get_all_entries():
     return response
 
 
+@app.get("/protein-entry/{protein_id:str}", response_model=str | None)
+def get_protein_entry(protein_id: str):
+    return protein_id
+
+
 def export_app_for_docker():
     """Needed for the [docker-compose.yml](../../docker-compose.yml)
     Example: `uvicorn src.server:export_app_for_docker --reload --host 0.0.0.0`
