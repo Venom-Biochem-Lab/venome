@@ -3,20 +3,24 @@
 	import { Backend } from "$lib/backend";
 
 	export let data; // linked to +page.ts return (aka the id)
+	let entry: any;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
 		console.log("Requesting", data.proteinId, "info from backend");
-		const entry = await Backend.getProteinEntry(data.proteinId);
+		entry = await Backend.getProteinEntry(data.proteinId);
 		console.log("Received", entry);
 	});
 </script>
 
-<h1>Protein Wiki Entry</h1>
-<div>
-	{data.proteinId}
-</div>
+{#if entry}
+	<!-- if got entry from backend, display it -->
+	<h1>{entry}</h1>
+{:else}
+	<!-- Otherwise, tell user we have an error -->
+	<h1 style="color: red;">Error</h1>
+{/if}
 
 <style>
 </style>
