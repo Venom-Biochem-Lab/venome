@@ -2,14 +2,14 @@
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { Backend } from "$lib/backend";
-	import type { AllEntries } from "$lib/backend";
+	import type { ProteinEntry } from "$lib/backend";
 
 	// at some point, this should be change to request from the backend
-	let all: AllEntries;
+	let allEntries: ProteinEntry[] | null = null;
 	onMount(async () => {
 		// calls get_all_entries() from backend
 		// to generate this Backend object run `make api` for newly created server functions
-		all = await Backend.getAllEntries();
+		allEntries = await Backend.getAllEntries();
 	});
 </script>
 
@@ -23,12 +23,12 @@
 
 	<!-- TODO: Organize this into a better looking table  -->
 	<div class="entries">
-		{#if all}
-			{#each all.proteinEntries as entry}
+		{#if allEntries}
+			{#each allEntries as entry}
 				<div
 					class="entry"
 					title="Click to see {entry.name}"
-					on:click={() => goto(`/protein/${entry.name}`)}
+					on:click={() => goto(`/protein/${entry.id}`)}
 					role="link"
 				>
 					<!-- routes to the protein entry itself (new page) -->
@@ -36,7 +36,7 @@
 						{entry.name}
 					</div>
 					<div class="description">
-						{entry.description}
+						ID: {entry.id}
 					</div>
 				</div>
 			{/each}
