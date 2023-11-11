@@ -16,7 +16,7 @@ yarn add js_package_name
 
 You can create functions in the [`backend/server.py`](../backend/server.py) and import them into the frontend.
 
-To do this, you need to have saved your changes in the backend, restart the server, then run `make api` from the project root.
+To do this, you need to have saved your changes in the backend, restart the server, then run `./run.sh api` from the project root.
 
 Now you can simply import the `Backend` object and call the functions by name (which will subsequently call the server).
 
@@ -34,7 +34,7 @@ It's that easy!
 > 
 > Check [`server.py`](../backend/server.py) and you'll find `hello_world` as a function too.
 >
-> If you must know, the frontend uses this interface `Backend.helloWorld()` to make a GET request to the backend at the function `hello_world` in [`server.py`](../backend/server.py). Luckily this is abstracted away with `yarn openapi` / `make api` API generation.
+> If you must know, the frontend uses this interface `Backend.helloWorld()` to make a GET request to the backend at the function `hello_world` in [`server.py`](../backend/server.py). Luckily this is abstracted away with `yarn openapi` / `./run.sh api` API generation.
 
 
 ## Need help?

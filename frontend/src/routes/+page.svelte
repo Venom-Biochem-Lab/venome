@@ -8,7 +8,7 @@
 	let all: AllEntries;
 	onMount(async () => {
 		// calls get_all_entries() from backend
-		// to generate this Backend object run `make api` for newly created server functions
+		// to generate this Backend object run `./run.sh api` for newly created server functions
 		all = await Backend.getAllEntries();
 	});
 </script>

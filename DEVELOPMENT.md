@@ -73,7 +73,7 @@ yarn install
 
 > **Warning**
 > Ignore the build script in the video, they are outdated
-> We use docker now through `make`
+> We use docker now through `sh run.sh`
 > Additionally the host has changed from `localhost` to `0.0.0.0`
 
 I'll explain top-down how to understand the structure of this repository. First of all, you want to mainly pay attention to the [`frontend`](./frontend/) then the [`backend`](./backend/) code. I'll explain:
@@ -113,7 +113,7 @@ Check out the FastAPI docs for more info.
 
 Once we created the HTTP endpoints in the backend, we can call 
 ```bash
-make api
+sh run.sh api
 ```
 
 which generates frontend bindings/functions we can use in the frontend. See the [`+page.svelte`](./frontend/src/routes/+page.svelte) for an example usage with the `Backend` object (generated from the command above). You'll see in the network tab that it just makes a `fetch` call to the backend.
