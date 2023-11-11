@@ -1,6 +1,5 @@
-import numpy as np
 from .setup import init_fastapi_app, disable_cors
-from .api_types import AllResponse, RandNormBody
+from .api_types import AllEntries, ProteinEntry
 from .db import Database
 import logging as log
 
@@ -9,17 +8,27 @@ app = init_fastapi_app()
 disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
 
 
-@app.get("/", response_model=AllResponse)
-def hello_world():
-    """Example GET request"""
-    return AllResponse(example_msg="Donny")
+# important to note the return type (response_mode) so frontend can generate that type through `make api`
+@app.get("/all-entries", response_model=AllEntries)
+def get_all_entries():
+    # dummy fake data
+    # TODO: Swap out with a real call to the database with real data
+    fake_protein_entries = [
+        ProteinEntry(name="Protein A", description="A for Apple"),
+        ProteinEntry(name="Protein B", description="B for Banana"),
+        ProteinEntry(name="Protein C", description="C for Code"),
+    ]
 
+    response = AllEntries(protein_entries=fake_protein_entries)
 
-@app.post("/gen-norm-dist", response_model=list[float])
-def gen_norm_dist(body: RandNormBody):
-    """Example POST request"""
-    dist = np.random.randn(body.length) * body.std_dev + body.mean
-    return dist.tolist()
+    """
+        These python classes get transformed into json when sent to the frontend
+        So response really looks like 
+        {
+            proteinEntries: [{name: "Protein A", name: "Protein B", name: "Protein C"}]
+        } 
+    """
+    return response
 
 
 def export_app_for_docker():

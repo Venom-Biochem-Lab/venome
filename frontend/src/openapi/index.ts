@@ -7,9 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
-export type { AllResponse } from './models/AllResponse';
-export type { HTTPValidationError } from './models/HTTPValidationError';
-export type { RandNormBody } from './models/RandNormBody';
-export type { ValidationError } from './models/ValidationError';
+export type { AllEntries } from './models/AllEntries';
+export type { ProteinEntry } from './models/ProteinEntry';
 
 export { DefaultService } from './services/DefaultService';
