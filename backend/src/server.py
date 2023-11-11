@@ -8,7 +8,7 @@ app = init_fastapi_app()
 disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
 
 
-# important to note the return type (response_mode) so frontend can generate that type through `make api`
+# important to note the return type (response_mode) so frontend can generate that type through `./run.sh api`
 @app.get("/all-entries", response_model=list[ProteinEntry] | None)
 def get_all_entries():
     """Gets all protein entries from the database
