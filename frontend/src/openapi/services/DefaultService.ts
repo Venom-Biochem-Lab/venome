@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AllEntries } from '../models/AllEntries';
+import type { ProteinEntry } from '../models/ProteinEntry';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -12,10 +12,10 @@ export class DefaultService {
 
     /**
      * Get All Entries
-     * @returns AllEntries Successful Response
+     * @returns ProteinEntry Successful Response
      * @throws ApiError
      */
-    public static getAllEntries(): CancelablePromise<AllEntries> {
+    public static getAllEntries(): CancelablePromise<Array<ProteinEntry>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/all-entries',
