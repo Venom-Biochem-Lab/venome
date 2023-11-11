@@ -24,7 +24,7 @@ class CamelModel(BaseModel):
 
 class ProteinEntry(CamelModel):
     name: str
-    description: str = ""
+    id: str
 
 
 class AllEntries(CamelModel):

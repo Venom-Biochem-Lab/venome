@@ -1,5 +1,5 @@
 from .setup import init_fastapi_app, disable_cors
-from .api_types import AllEntries, ProteinEntry
+from .api_types import ProteinEntry
 from .db import Database
 import logging as log
 
@@ -9,33 +9,21 @@ disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
 
 
 # important to note the return type (response_mode) so frontend can generate that type through `make api`
-@app.get("/all-entries", response_model=AllEntries)
+@app.get("/all-entries", response_model=list[ProteinEntry])
 def get_all_entries():
     with Database() as db:
         try:
-            test = db.execute_return("""SELECT id, name FROM proteins""")
-            log.warn(test)
+            entries_sql = db.execute_return("""SELECT id, name FROM proteins""")
+            log.warn(entries_sql)
+
+            # if we got a result back
+            if entries_sql is not None:
+                return [
+                    ProteinEntry(id=str(entry[0]), name=entry[1])
+                    for entry in entries_sql
+                ]
         except Exception as e:
             log.error(e)
-
-    # dummy fake data
-    # TODO: Swap out with a real call to the database with real data
-    fake_protein_entries = [
-        ProteinEntry(name="Protein A", description="A for Apple"),
-        ProteinEntry(name="Protein B", description="B for Banana"),
-        ProteinEntry(name="Protein C", description="C for Code"),
-    ]
-
-    response = AllEntries(protein_entries=fake_protein_entries)
-
-    """
-        These python classes get transformed into json when sent to the frontend
-        So response really looks like 
-        {
-            proteinEntries: [{name: "Protein A", name: "Protein B", name: "Protein C"}]
-        } 
-    """
-    return response
 
 
 @app.get("/protein-entry/{protein_id:str}", response_model=str | None)
