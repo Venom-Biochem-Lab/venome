@@ -6,14 +6,13 @@ A wikipedia 📖 for venom proteins: upload, search, organize, visualize, and do
 
 🤝 In collaboration with the 🧪[Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
-> **Important**
-> Directories and files you'll need to know about
-> -   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
-> -   [`backend/`](./backend/) contains the backend HTTP server and Database
-> -   [`docs/`](./docs/README.md) contains code documentation
-> -   [`DEVELOPMENT.md`](./docs/DEVELOPMENT.md) contains the developer getting started docs
-> -   [`docker-compose.yml`](./docker-compose.yml) contains the Docker container build
-> -   [`run.sh`](./run.sh) contains shortcut commands to develop, deploy, and test
+**Important places to know about**
+-   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
+-   [`backend/`](./backend/) contains the backend HTTP server and Database
+-   [`docs/`](./docs/README.md) contains code documentation
+-   [`DEVELOPMENT.md`](./docs/DEVELOPMENT.md) contains the developer getting started docs
+-   [`docker-compose.yml`](./docker-compose.yml) contains the Docker container build
+-   [`run.sh`](./run.sh) contains shortcut commands to develop, deploy, and test
 
 ## Quick start
 
