@@ -1,8 +1,10 @@
 # Development
 
-By the time you finish this guide, you will be able to run the JS frontend [Svelte](https://kit.svelte.dev/) and the Python backend [FastAPI](https://fastapi.tiangolo.com/).
+By the time you finish this guide, you will be able to run the JS frontend [Svelte](https://kit.svelte.dev/) and the Python backend [FastAPI](https://fastapi.tiangolo.com/). 
 
 Note that we use `docker-compose` as defined in the [`docker-compose.yml`](./docker-compose.yml).
+
+If you want to see more specific docs go to the [ `docs/` ](./docs/README.md) for more info.
 
 ## Installation
 
@@ -12,7 +14,7 @@ Note that we use `docker-compose` as defined in the [`docker-compose.yml`](./doc
 You can run everything by doing
 
 ```bash
-./run.sh
+sh run.sh
 ```
 
 and navigate to [http://0.0.0.0:5173](http://0.0.0.0:5173) webserver (or [http://localhost:5173](http://localhost:5173))
@@ -22,7 +24,7 @@ That's it. This will spin up a docker container with the backend, database, and 
 To turn it off do
 
 ```bash
-./run.sh stop
+sh run.sh stop
 ```
 Check out the [`run.sh`](./run.sh) for more shortcuts like this.
 
@@ -120,6 +122,4 @@ which generates frontend bindings/functions we can use in the frontend. See the 
 
 ### Database
 
-We use a PostgreSQL database, but this can be swapped out later by changing the [`db.py`](./backend/src/db.py).
-
-The starting scheme is here in [`init.sql`](./backend/init.sql) for the initial tables to be created.
+We use PostgreSQL in Docker. For more information go to the docs at [`database.md`](./docs/database.md).
