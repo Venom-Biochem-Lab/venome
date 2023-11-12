@@ -48,7 +48,7 @@ services:
 
         ports:
             # Use a different port to avoid clashes with local postgres
-            - "5431:5432"
+            - "3000:5432"
 
 volumes:
     postgres_data:
