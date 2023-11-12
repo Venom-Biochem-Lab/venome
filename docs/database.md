@@ -42,6 +42,7 @@ Which will open up the `venome-posgres` docker image and login to `psql` (posgre
 
 You should get access to the psql shell now, where you can run stuff like
 
+<img width="599" alt="Screenshot 2023-11-11 at 4 17 16 PM" src="https://github.com/xnought/venome/assets/65095341/9a1b4fa6-6dac-4ae8-b5f9-7fcd6b23a75a">
 
 
 If you have errors, make sure the docker container is already running (`start` cmd).
