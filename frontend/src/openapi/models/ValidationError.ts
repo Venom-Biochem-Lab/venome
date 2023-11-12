@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ProteinEntry } from './ProteinEntry';
-
-export type AllEntries = {
-    proteinEntries: Array<ProteinEntry>;
+export type ValidationError = {
+    loc: Array<(string | number)>;
+    msg: string;
+    type: string;
 };
 

@@ -3,8 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ProteinEntry = {
-    name: string;
-    id: string;
+import type { ValidationError } from './ValidationError';
+
+export type HTTPValidationError = {
+    detail?: Array<ValidationError>;
 };
 

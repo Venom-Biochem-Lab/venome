@@ -1,5 +1,5 @@
 from .setup import init_fastapi_app, disable_cors
-from .api_types import AllEntries, ProteinEntry
+from .api_types import ProteinEntry
 from .db import Database
 import logging as log
 
@@ -9,26 +9,47 @@ disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
 
 
 # important to note the return type (response_mode) so frontend can generate that type through `./run.sh api`
-@app.get("/all-entries", response_model=AllEntries)
+@app.get("/all-entries", response_model=list[ProteinEntry] | None)
 def get_all_entries():
-    # dummy fake data
-    # TODO: Swap out with a real call to the database with real data
-    fake_protein_entries = [
-        ProteinEntry(name="Protein A", description="A for Apple"),
-        ProteinEntry(name="Protein B", description="B for Banana"),
-        ProteinEntry(name="Protein C", description="C for Code"),
-    ]
-
-    response = AllEntries(protein_entries=fake_protein_entries)
-
+    """Gets all protein entries from the database
+    Returns: list[ProteinEntry] if found | None if not found
     """
-        These python classes get transformed into json when sent to the frontend
-        So response really looks like 
-        {
-            proteinEntries: [{name: "Protein A", name: "Protein B", name: "Protein C"}]
-        } 
+    with Database() as db:
+        try:
+            entries_sql = db.execute_return("""SELECT id, name FROM proteins""")
+            log.warn(entries_sql)
+
+            # if we got a result back
+            if entries_sql is not None:
+                return [
+                    ProteinEntry(id=str(entry[0]), name=entry[1])
+                    for entry in entries_sql
+                ]
+        except Exception as e:
+            log.error(e)
+
+
+@app.get("/protein-entry/{protein_id:str}", response_model=ProteinEntry | None)
+def get_protein_entry(protein_id: str):
+    """Get a single protein entry by its id
+    Returns: ProteinEntry if found | None if not found
     """
-    return response
+    with Database() as db:
+        try:
+            entry_sql = db.execute_return(
+                """SELECT id, name FROM proteins
+                    WHERE id = %s""",
+                [protein_id],
+            )
+            log.warn(entry_sql)
+
+            # if we got a result back
+            if entry_sql is not None and len(entry_sql) != 0:
+                # return the only entry
+                return ProteinEntry(id=str(entry_sql[0][0]), name=entry_sql[0][1])
+
+        except Exception as e:
+            log.error(e)
 
 
 def export_app_for_docker():
@@ -36,16 +57,3 @@ def export_app_for_docker():
     Example: `uvicorn src.server:export_app_for_docker --reload --host 0.0.0.0`
     """
     return app
-
-
-# some test usage of the database
-with Database() as db:
-    # insert a new entry
-    try:
-        db.execute("INSERT INTO protein_entries (name) VALUES (%s)", ["asdasdsad"])
-    except Exception as e:
-        log.error(e)
-
-    # print all existing entries
-    result = db.execute_return("SELECT * FROM protein_entries")
-    log.warn(result)

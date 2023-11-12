@@ -1,0 +1,90 @@
+# modified from https://github.com/zeno-ml/zeno-hub/blob/main/.github/workflows/ci.yml
+name: ci
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    check-frontend:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install modules
+              run: cd frontend && npm i
+            - name: Svelte check
+              run: cd frontend && npm run check
+
+    backend:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: chartboost/ruff-action@v1
+              with:
+                  src: "backend/src/"
+            - uses: chartboost/ruff-action@v1
+              with:
+                  args: "format --check"
+                  src: "backend/src/"
+
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+            - uses: actions/setup-python@v4
+              with:
+                  python-version: 3.11
+
+            - name: Install Poetry
+              uses: snok/install-poetry@v1.3.4
+              with:
+                  virtualenvs-in-project: true
+                  virtualenvs-path: ~/.venv
+
+            - name: Cache Poetry virtualenv
+              uses: actions/cache@v3.3.2
+              id: cache-poetry
+              with:
+                  path: ~/.venv
+                  key: poetry-${{ hashFiles('**/poetry.lock') }}
+                  restore-keys: |
+                      poetry-${{ hashFiles('**/poetry.lock') }}
+            - name: Install Poetry Dependencies
+              if: steps.cache-poetry.outputs.cache-hit != 'true'
+              run: |
+                  cd backend
+                  poetry install --no-interaction --no-root
+
+            - name: Cache NPM packages
+              uses: actions/cache@v3.3.2
+              id: cache-npm
+              with:
+                  path: ~/frontend/node_modules
+                  key: npm-${{ hashFiles('~/frontend/**/package.lock') }}
+                  restore-keys: |
+                      npm-${{ hashFiles('~/frontend/**/package.lock') }}
+
+            - name: Install NPM packages
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: |
+                  cd frontend/
+                  npm i
+
+            - name: Build frontend
+              run: |
+                  cd frontend/
+                  npm run build
+
+            - name: Test Frontend
+              run: |
+                  cd frontend/
+                  npm run test
+
+            - name: Test Backend
+              run: |
+                  cd backend/
+                  poetry run pytest

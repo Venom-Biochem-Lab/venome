@@ -6,6 +6,10 @@ from psycopg import sql
 
 # inspired from https://github.com/zeno-ml/zeno-hub/blob/main/backend/zeno_backend/database/database.py
 class Database:
+    """Database class for interacting with the postgres database in docker
+    Check out docs/database.md for docs on this database and more
+    """
+
     conn: psycopg.Connection[tuple[Any, ...]] | None = None
     cur: psycopg.Cursor[tuple[Any, ...]] | None = None
 
