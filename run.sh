@@ -34,6 +34,7 @@ function hard_restart() {
 function api() {
 	cd frontend
 	yarn openapi && restart
+	cd ..
 }
 
 # clears the postgres persistent storage
@@ -70,6 +71,7 @@ function restart_venv() {
 	poetry config virtualenvs.in-project true
 	poetry env list; poetry env remove --all
 	poetry install
+	cd ..
 }
 
 # opens up the postgresql shell which directly accesses the db in the container
@@ -78,10 +80,24 @@ function psql() {
 	docker exec -it venome-postgres bash -c 'psql postgresql://myuser:mypassword@0.0.0.0:5432/venome'
 }
 
-function test() {
+function test_backend() {
 	cd backend
 	poetry run pytest
+	cd ..
 }
+
+function test_frontend() {
+	cd frontend
+	yarn test
+	cd ..
+}
+
+function test() {
+	test_backend
+	test_frontend
+}
+
+
 
 function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))
