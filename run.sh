@@ -74,6 +74,7 @@ function restart_venv() {
 
 # opens up the postgresql shell which directly accesses the db in the container
 function psql() {
+	start # make sure the docker is running
 	docker exec -it venome-postgres bash -c 'psql postgresql://myuser:mypassword@0.0.0.0:5432/venome'
 }
 
