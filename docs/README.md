@@ -6,3 +6,5 @@ Below are all the documentation for how to do things in this codebase. The only 
 
 - [`database.md`](./database.md)
 - [`testing.md`](./testing.md)
+- [`frontend.md`](./frontend.md)
+- [`backend.md`](./backend.md)
