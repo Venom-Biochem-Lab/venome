@@ -1,6 +1,10 @@
 <img width="100%" alt="banner" src="https://github.com/xnought/venome/assets/65095341/9abaef4e-b4ac-488f-b190-86fca1a1c940">
 
-**A user friendly system to discover insights into venom protein data.**
+![Github Actions CI tests](https://github.com/xnought/venome/actions/workflows/ci.yml/badge.svg)
+
+A wikipedia 📖 for proteins.
+
+🤝 In collaboration with the 🧪[Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
 ## Structure
 
