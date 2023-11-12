@@ -78,6 +78,11 @@ function psql() {
 	docker exec -it venome-postgres bash -c 'psql postgresql://myuser:mypassword@0.0.0.0:5432/venome'
 }
 
+function test() {
+	cd backend
+	poetry run pytest
+}
+
 function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))
 }
