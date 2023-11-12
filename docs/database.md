@@ -87,6 +87,10 @@ sh run.sh reload_init_sql
 
 **If you DON'T care about losing data**, consider simply editing the [`init.sql`](../backend/init.sql) with the updated schema, and reloading the db with this file as outlined in the [Previous Section](#reloading-from-the-initsql).
 
+> **Important**
+> As of now, we don't care about losing user data since we haven't deployed the system.
+> The following is a problem for future us.
+
 **If you DO care about losing data** we need to be more careful. Consider making a [Backup](#backups) first. Then doing the previous method. Then you can manually copy over the insert statements from the dump into the init.sql until we figure out a better way to make modifications.
 
 **Shell Method** You can also make alterations to the current table and schema with [modifications](https://www.postgresql.org/docs/current/ddl-alter.html) on the `venome-postgres` psql shell which I showed you how to access in the [PostgreSQL Shell](#postgresql-shell) previous section. You will need to make backups and reinsert these changes into the init.sql so everyone else also gets these alterations.
