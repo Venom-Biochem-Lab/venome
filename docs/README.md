@@ -5,3 +5,4 @@ Below are all the documentation for how to do things in this codebase. The only 
 **Table of Contents**
 
 - [`database.md`](./database.md)
+- [`testing.md`](./testing.md)
