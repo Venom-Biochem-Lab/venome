@@ -8,7 +8,7 @@ A wikipedia 📖 for venom proteins: upload, search, organize, visualize, and do
 
 > **Important**
 > Directories and files you'll need to know about
-> -   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
+> -   [`frontend/`](./frontend/src/routes/+page.svelte) contains the user interface in Svelte/TypeScript
 > -   [`backend/`](./backend/) contains the backend HTTP server and Database
 > -   [`docs/`](./docs/README.md) contains code documentation
 > -   [`DEVELOPMENT.md`](./docs/DEVELOPMENT.md) contains the developer getting started docs
