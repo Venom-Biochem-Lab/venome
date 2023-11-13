@@ -2,6 +2,7 @@
 	import { onMount } from "svelte";
 	import { Backend, type ProteinEntry } from "$lib/backend";
 	import ProteinVis from "$lib/ProteinVis.svelte";
+	import { Spinner } from "flowbite-svelte";
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
@@ -28,7 +29,7 @@
 	<ProteinVis />
 {:else if !error}
 	<!-- Otherwise, tell user we tell the user we are loading -->
-	<h1>Loading...</h1>
+	<h1>Loading Protein Entry <Spinner /></h1>
 {:else if error}
 	<!-- if we error out, tell the user the id is shiza -->
 	<h1>Error</h1>
