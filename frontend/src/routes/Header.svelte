@@ -10,6 +10,11 @@
 		</a>
 	</div>
 
+	<div class="nav">
+		<a href="/">Search</a>
+		<a href="/upload">Upload</a>
+	</div>
+
 	<div class="corner">
 		<a href="https://github.com/xnought/venome">
 			<img src={github} alt="GitHub" />
