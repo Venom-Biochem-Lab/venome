@@ -7,7 +7,7 @@
 	<div class="nav-container">
 		<div class="corner">
 			<a href="/">
-				<img src={logo} alt="Venome Logo" height="35" />
+				<img src={logo} alt="Venome Logo" />
 			</a>
 		</div>
 		<div class="nav">
@@ -18,7 +18,7 @@
 
 	<div class="corner">
 		<a href="https://github.com/xnought/venome">
-			<img src={github} alt="GitHub" height="35" />
+			<img src={github} alt="GitHub" />
 		</a>
 	</div>
 </header>
