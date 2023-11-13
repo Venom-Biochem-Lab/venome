@@ -7,6 +7,7 @@
 
 	onMount(async () => {
 		//Create plugin instance
+		// @ts-ignore
 		var viewerInstance = new PDBeMolstarPlugin(); // loaded through app.html
 
 		//Set options (Checkout available options list in the documentation)
