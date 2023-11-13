@@ -97,7 +97,13 @@ function test() {
 	test_frontend
 }
 
+function install_frontend() {
+	docker exec -it venome-frontend yarn install
+}
 
+function install_backend() {
+	docker exec -it venome-backend poetry install
+}
 
 function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { Backend, type ProteinEntry } from "$lib/backend";
+	import ProteinVis from "$lib/ProteinVis.svelte";
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
@@ -23,6 +24,8 @@
 	<!-- if got entry from backend, display it -->
 	<h1>{entry.name}</h1>
 	<p>ID: {entry.id}</p>
+
+	<ProteinVis />
 {:else if !error}
 	<!-- Otherwise, tell user we tell the user we are loading -->
 	<h1>Loading...</h1>
