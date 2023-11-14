@@ -4,10 +4,16 @@
 </script>
 
 <header>
-	<div class="corner">
-		<a href="/">
-			<img src={logo} alt="Venome Logo" />
-		</a>
+	<div class="nav-container">
+		<div class="corner">
+			<a href="/">
+				<img src={logo} alt="Venome Logo" />
+			</a>
+		</div>
+		<div class="nav">
+			<a href="/">Search</a>
+			<a href="/upload">Upload</a>
+		</div>
 	</div>
 
 	<div class="corner">
@@ -23,11 +29,24 @@
 		justify-content: space-between;
 		background-color: hsla(15, 98%, 51%, 0.06);
 		box-shadow: 0px 0px 3px 2px hsla(0, 0%, 0%, 0.208);
+		height: 60px;
+	}
+
+	.nav-container {
+		display: flex;
+		height: 60px;
+		gap: 10px;
+	}
+
+	.nav {
+		display: flex;
+		align-items: center;
+		gap: 10px;
 	}
 
 	.corner {
-		width: 3em;
-		height: 3em;
+		width: 60px;
+		height: 60px;
 	}
 
 	.corner a {
