@@ -1,3 +1,4 @@
+-- Postgres manual: https://www.postgresql.org/docs/current/
 -- IMPORTANT
 -- This file only gets run once, when the database is created.
 -- If you need to revise this file read:
@@ -10,6 +11,9 @@ CREATE TABLE proteins (
     -- todo: make the id meaningful, like Lb17_comp535_c2_seq1, discuss this
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,  -- increment id for now
     name text NOT NULL UNIQUE
+    -- TODO: filePDBAlphaFold
+    -- TODO: length
+    -- TODO: mass 
 );
 
 -- Some inserted values for now
