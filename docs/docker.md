@@ -43,6 +43,10 @@ more commands can be found in the [`run.md`](run.md) and more specific instructi
 
 While the docker venome container is running, go to the Docker Desktop GUI. You should see the same as the following video
 
+
+https://github.com/xnought/venome/assets/65095341/c44f1d8c-0d58-407c-9aa2-29c4a92fb666
+
+
 this is where you can see print statements and other debug info / errors.
 
 
