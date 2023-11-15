@@ -9,3 +9,4 @@ Below are all the documentation for how to do things in this codebase. The only 
 - [`frontend.md`](./frontend.md)
 - [`backend.md`](./backend.md)
 - [`run.md`](./run.md)
+- [`docker.md`](./docker.md)
