@@ -4,12 +4,31 @@ In [SvelteKit](https://kit.svelte.dev/) which uses the [Svelte](https://svelte.d
 
 Here are [tutorials](https://learn.svelte.dev/tutorial/welcome-to-svelte) if you are interested, you'll find it simpler than regular JavaScript and much faster than other frameworks like React.
 
+## UI Styling
+
+Our frontend uses [Flowbite Svelte Components](https://flowbite-svelte.com/) and [Tailwind CSS](https://tailwindcss.com/), although feel free to use native CSS.
+
+Check out Flowbite to use those ready-made svelte components (like buttons, dropdowns, tooltips, cards, and more).
 
 ## Add packages
 
 ```bash
 cd frontend
 yarn add js_package_name
+```
+
+which adds the package locally (so your intellisense can detect it).
+
+To have those packages also installed/reflected in the backend run
+
+```bash
+sh run.sh install_frontend
+```
+
+or rebuild the entire docker (this method is slower, but guaranteed to work) with 
+
+```bash
+sh run.sh hard_restart
 ```
 
 ## Access to Backend Functions

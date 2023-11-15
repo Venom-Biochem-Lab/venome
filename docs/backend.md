@@ -7,15 +7,21 @@ These docs go over the [`backend/`](../backend/) dir. Go to the [`database.md`](
 
 Note that `print` is wonky on docker, so instead import `logging as log` and use `log.warn(stuff)` to print stuff to the console in docker.
 
-## Docker Reset
-
-For a soft restart do
+## Add packages
 
 ```bash
-sh run.sh restart
+poetry add py_package_name
 ```
 
-for a hard cache clearing restart, do
+which adds the package locally (so your intellisense can detect it).
+
+To have those packages also installed/reflected in the backend run
+
+```bash
+sh run.sh install_backend
+```
+
+or rebuild the entire docker (this method is slower, but guaranteed to work) with 
 
 ```bash
 sh run.sh hard_restart
@@ -27,8 +33,3 @@ sh run.sh hard_restart
 sh run.sh test_backend
 ```
 
-## Add packages
-
-```bash
-poetry add py_package_name
-```
