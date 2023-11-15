@@ -11,9 +11,9 @@ CREATE TABLE proteins (
     -- todo: make the id meaningful, like Lb17_comp535_c2_seq1, discuss this
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,  -- increment id for now
     name text NOT NULL UNIQUE
-    -- TODO: filePDBAlphaFold
-    -- TODO: length
-    -- TODO: mass 
+    -- TODO: filePDBAlphaFold (string)
+    -- TODO: length (int)
+    -- TODO: mass (float)
 );
 
 -- Some inserted values for now
