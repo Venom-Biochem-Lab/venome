@@ -35,7 +35,7 @@ sh run.sh hard_restart
 
 You can create functions in the [`backend/server.py`](../backend/server.py) and import them into the frontend.
 
-To do this, you need to have saved your changes in the backend, restart the server, then run `./run.sh api` from the project root.
+To do this, you need to have saved your changes in the backend, restart the server, then run `./run.sh gen_api` from the project root.
 
 Now you can simply import the `Backend` object and call the functions by name (which will subsequently call the server).
 
