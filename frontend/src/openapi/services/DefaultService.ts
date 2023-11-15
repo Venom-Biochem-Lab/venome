@@ -12,10 +12,12 @@ export class DefaultService {
 
     /**
      * Get All Entries
-     * @returns ProteinEntry Successful Response
+     * Gets all protein entries from the database
+     * Returns: list[ProteinEntry] if found | None if not found
+     * @returns any Successful Response
      * @throws ApiError
      */
-    public static getAllEntries(): CancelablePromise<Array<ProteinEntry>> {
+    public static getAllEntries(): CancelablePromise<(Array<ProteinEntry> | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/all-entries',
@@ -24,13 +26,15 @@ export class DefaultService {
 
     /**
      * Get Protein Entry
+     * Get a single protein entry by its id
+     * Returns: ProteinEntry if found | None if not found
      * @param proteinId
-     * @returns ProteinEntry Successful Response
+     * @returns any Successful Response
      * @throws ApiError
      */
     public static getProteinEntry(
         proteinId: string,
-    ): CancelablePromise<ProteinEntry> {
+    ): CancelablePromise<(ProteinEntry | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/protein-entry/{protein_id}',
