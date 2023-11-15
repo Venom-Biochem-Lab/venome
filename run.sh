@@ -2,6 +2,7 @@
 
 # CALL STRUCTURE: sh run.sh <command>
 # EXAMPLE: sh run.sh start
+# more docs are in the docs/run.md file
 
 function all() {
 	start
@@ -31,7 +32,7 @@ function hard_restart() {
 }
 
 # generates the api bridge between frontend and backend
-function api() {
+function gen_api() {
 	cd frontend
 	yarn openapi && restart
 	cd ..
