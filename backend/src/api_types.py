@@ -29,3 +29,8 @@ class ProteinEntry(CamelModel):
 
 class AllEntries(CamelModel):
     protein_entries: list[ProteinEntry]
+
+
+class UploadBody(CamelModel):
+    pdb_file_base64: str
+    pdb_file_name: str

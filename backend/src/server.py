@@ -1,5 +1,5 @@
 from .setup import init_fastapi_app, disable_cors
-from .api_types import ProteinEntry
+from .api_types import ProteinEntry, UploadBody
 from .db import Database
 import logging as log
 
@@ -50,6 +50,11 @@ def get_protein_entry(protein_id: str):
 
         except Exception as e:
             log.error(e)
+
+
+@app.post("/protein-upload", response_model=None)
+def upload_protein_entry(body: UploadBody):
+    print(body.pdb_file_name, body.pdb_file_base64)
 
 
 def export_app_for_docker():
