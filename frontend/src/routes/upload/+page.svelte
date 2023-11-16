@@ -24,6 +24,7 @@
 		if (file === undefined) return; // no file selected
 
 		const base64Encoding = await fileToBase64(file);
+
 		try {
 			await Backend.uploadProteinEntry({
 				pdbFileBase64: base64Encoding,

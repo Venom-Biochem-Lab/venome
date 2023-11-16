@@ -1,6 +1,7 @@
 from .setup import init_fastapi_app, disable_cors
 from .api_types import ProteinEntry, UploadBody
 from .db import Database
+from .file import b64_to_bytes, valid_pdb_file
 import logging as log
 
 
@@ -54,7 +55,15 @@ def get_protein_entry(protein_id: str):
 
 @app.post("/protein-upload", response_model=None)
 def upload_protein_entry(body: UploadBody):
-    print(body.pdb_file_name, body.pdb_file_base64)
+    # TODO: implement and consider bytes / filesize limit
+
+    # read frontend file encoding (base 64) into bytes we can use
+    pdb_file_bytes = b64_to_bytes(body.pdb_file_base64)
+
+    if not valid_pdb_file(pdb_file_bytes):
+        raise Exception("Invalid PDB file, can't upload")
+
+    print(pdb_file_bytes)
 
 
 def export_app_for_docker():
