@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-	export let url = "http://localhost:8000/data/Gh_comp271_c0_seq1.pdb";
+	export let url =
+		"http://localhost:8000/data/pdbAlphaFold/Gh_comp271_c0_seq1.pdb";
 	export let format = "pdb";
 
 	onMount(async () => {
