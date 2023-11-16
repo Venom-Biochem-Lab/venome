@@ -22,18 +22,18 @@ CREATE TABLE proteins (
 -- TODO: Change file path links to something useful
 INSERT INTO proteins (name, filePDBAlphaFold, length, mass) VALUES (
     'Gh_comp271_c0_seq1', 
-    './backend/data/pdbAlphaFold/Gh_comp271_c0_seq1',
+    'data/pdbAlphaFold/Gh_comp271_c0_seq1.pdb',
     0,
     0.0);
 
 INSERT INTO proteins (name, filePDBAlphaFold, length, mass) VALUES (
     'Lb17_comp535_c2_seq1', 
-    './backend/data/pdbAlphaFold/Lb17_comp535_c2_seq1.pdb',
+    'data/pdbAlphaFold/Lb17_comp535_c2_seq1.pdb',
     0,
     0.0);
 
 INSERT INTO proteins (name, filePDBAlphaFold, length, mass) VALUES (
     'Lh14_comp2336_c0_seq1', 
-    './backend/data/pdbAlphaFold/Lh14_comp2336_c0_seq1',
+    'data/pdbAlphaFold/Lh14_comp2336_c0_seq1.pdb',
     0,
     0.0);
