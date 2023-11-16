@@ -46,7 +46,7 @@ function rm_volume() {
 
 # creates a sql dump file of the database (backup) into the backend/data folder
 function sql_dump() {
-	docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome > backend/data/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+	docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 }
 
 # runs db from scratch from the init.sql file
@@ -63,7 +63,7 @@ function reload_init_sql_no_backup() {
 
 # runs db from scratch from the init.sql file, but first backs up the existing db
 function reload_init_sql() {
-	sql_dump # backup the existing db to backend/data/backups
+	sql_dump # backup the existing db to backend/backups
 	reload_init_sql_no_backup
 }
 

@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-	export let url =
-		"https://alphafold.ebi.ac.uk/files/AF-O15552-F1-model_v1.cif";
-	export let format = "cif";
+	export let url = "http://localhost:8000/data/Gh_comp271_c0_seq1.pdb";
+	export let format = "pdb";
 
 	onMount(async () => {
 		//Create plugin instance

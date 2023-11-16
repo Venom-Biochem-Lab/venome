@@ -3,10 +3,13 @@ from .api_types import ProteinEntry, UploadBody
 from .db import Database
 from .file import decode_base64, PDB
 import logging as log
+from fastapi.staticfiles import StaticFiles
 
 
 app = init_fastapi_app()
 disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
+# mount the data directory so we can easily access files through the url
+app.mount("/data", StaticFiles(directory="src/data"), name="data")
 
 
 # important to note the return type (response_mode) so frontend can generate that type through `./run.sh api`
