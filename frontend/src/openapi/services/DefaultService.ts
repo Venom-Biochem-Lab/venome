@@ -30,18 +30,18 @@ export class DefaultService {
      * Get Protein Entry
      * Get a single protein entry by its id
      * Returns: ProteinEntry if found | None if not found
-     * @param proteinId
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static getProteinEntry(
-        proteinId: string,
+        proteinName: string,
     ): CancelablePromise<(ProteinEntry | null)> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/protein-entry/{protein_id}',
+            url: '/protein-entry/{protein_name}',
             path: {
-                'protein_id': proteinId,
+                'protein_name': proteinName,
             },
             errors: {
                 422: `Validation Error`,
