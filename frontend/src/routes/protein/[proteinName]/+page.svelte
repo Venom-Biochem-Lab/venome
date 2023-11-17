@@ -23,7 +23,7 @@
 
 {#if entry}
 	<!-- if got entry from backend, display it -->
-	<h1>{entry.name}</h1>
+	<h1>{entry.name.replaceAll("_", " ")}</h1>
 	<br />
 	<code>
 		<pre>
