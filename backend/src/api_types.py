@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict
+import enum
 
 
 # https://github.com/zeno-ml/zeno-hub/blob/9d2f8b5841d99aeba9ec405b0bc6a5b1272b276f/backend/zeno_backend/classes/base.py#L20
@@ -25,7 +26,6 @@ class CamelModel(BaseModel):
 class ProteinEntry(CamelModel):
     name: str
     id: str
-    filePDBAlphaFold: str
     length: int
     mass: float
 
@@ -35,5 +35,16 @@ class AllEntries(CamelModel):
 
 
 class UploadBody(CamelModel):
+    name: str
     pdb_file_base64: str
-    pdb_file_name: str
+
+
+class UploadError(str, enum.Enum):
+    NAME_NOT_UNIQUE = "NAME_NOT_UNIQUE"
+    PARSE_ERROR = "PARSE_ERROR"
+    WRITE_ERROR = "WRITE_ERROR"
+    QUERY_ERROR = "QUERY_ERROR"
+
+
+class UploadStatus(CamelModel):
+    status: UploadError

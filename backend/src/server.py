@@ -1,7 +1,7 @@
 from .setup import init_fastapi_app, disable_cors
-from .api_types import ProteinEntry, UploadBody
+from .api_types import ProteinEntry, UploadBody, UploadStatus, UploadError
 from .db import Database
-from .file import decode_base64, PDB
+from .protein import Protein
 import logging as log
 from fastapi.staticfiles import StaticFiles
 
@@ -21,7 +21,7 @@ def get_all_entries():
     with Database() as db:
         try:
             entries_sql = db.execute_return(
-                """SELECT id, name, filePDBAlphaFold, length, mass FROM proteins"""
+                """SELECT id, name, length, mass FROM proteins"""
             )
             log.warn(entries_sql)
 
@@ -31,9 +31,8 @@ def get_all_entries():
                     ProteinEntry(
                         id=str(entry[0]),
                         name=entry[1],
-                        filePDBAlphaFold=entry[2],
-                        length=entry[3],
-                        mass=entry[4],
+                        length=entry[2],
+                        mass=entry[3],
                     )
                     for entry in entries_sql
                 ]
@@ -49,7 +48,7 @@ def get_protein_entry(protein_id: str):
     with Database() as db:
         try:
             entry_sql = db.execute_return(
-                """SELECT id, name, filePDBAlphaFold, length, mass FROM proteins
+                """SELECT id, name, length, mass FROM proteins
                     WHERE id = %s""",
                 [protein_id],
             )
@@ -61,40 +60,34 @@ def get_protein_entry(protein_id: str):
                 return ProteinEntry(
                     id=str(entry_sql[0][0]),
                     name=entry_sql[0][1],
-                    filePDBAlphaFold=entry_sql[0][2],
-                    length=entry_sql[0][3],
-                    mass=entry_sql[0][4],
+                    length=entry_sql[0][2],
+                    mass=entry_sql[0][3],
                 )
 
         except Exception as e:
             log.error(e)
 
 
-@app.post("/protein-upload", response_model=None)
+# None return means success
+@app.post("/protein-upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody):
-    decoded_pdb = decode_base64(body.pdb_file_base64)
-    pdb = PDB(file_name=body.pdb_file_name, file_contents=decoded_pdb)
+    body.name = body.name.replace(" ", "_")
 
-    """
-    BELOW
-    TODO: add name to the body, change filepath to be consistent with other data
-    """
+    # check that the name is not already taken in the DB
+    if Protein.name_taken(body.name):
+        return UploadError.NAME_NOT_UNIQUE
 
-    # write file to disk
-    with open(f"data/pdbAlphaFold/{pdb.file_name}", "w") as f:
-        f.write(pdb.file_contents)
+    # if name is unique, save the pdb file and add the entry to the database
+    try:
+        pdb = Protein.parse_pdb(body.name, body.pdb_file_base64, encoding="b64")
+    except Exception:
+        return UploadError.PARSE_ERROR
 
-    # insert in database
-    with Database() as db:
-        db.execute(
-            """INSERT INTO proteins (name, filePDBAlphaFold, length, mass) VALUES (%s, %s, %s, %s);""",
-            [
-                "test2",
-                pdb.file_name,
-                pdb.num_amino_acids(),
-                pdb.computed_mass(),
-            ],
-        )
+    # Save to data/ folder and db
+    try:
+        Protein.save(pdb)
+    except Exception:
+        return UploadError.WRITE_ERROR
 
 
 def export_app_for_docker():
