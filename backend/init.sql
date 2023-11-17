@@ -13,27 +13,23 @@ CREATE TABLE proteins (
     -- todo: make the id meaningful, like Lb17_comp535_c2_seq1, discuss this
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,  -- increment id for now
     name text NOT NULL UNIQUE,
-    filePDBAlphaFold text UNIQUE,
     length integer,
     mass numeric
 );
 
 -- NOTE: These file path links are off-the-cuff, and might not be useful to the frontend, so
 -- TODO: Change file path links to something useful
-INSERT INTO proteins (name, filePDBAlphaFold, length, mass) VALUES (
+INSERT INTO proteins (name, length, mass) VALUES (
     'Gh_comp271_c0_seq1', 
-    'data/pdbAlphaFold/Gh_comp271_c0_seq1.pdb',
     0,
     0.0);
 
-INSERT INTO proteins (name, filePDBAlphaFold, length, mass) VALUES (
+INSERT INTO proteins (name, length, mass) VALUES (
     'Lb17_comp535_c2_seq1', 
-    'data/pdbAlphaFold/Lb17_comp535_c2_seq1.pdb',
     0,
     0.0);
 
-INSERT INTO proteins (name, filePDBAlphaFold, length, mass) VALUES (
+INSERT INTO proteins (name, length, mass) VALUES (
     'Lh14_comp2336_c0_seq1', 
-    'data/pdbAlphaFold/Lh14_comp2336_c0_seq1.pdb',
     0,
     0.0);
