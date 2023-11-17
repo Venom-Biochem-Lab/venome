@@ -25,7 +25,6 @@ class CamelModel(BaseModel):
 
 class ProteinEntry(CamelModel):
     name: str
-    id: str
     length: int
     mass: float
 

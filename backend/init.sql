@@ -10,9 +10,7 @@
 -- Note: "Numeric" data types have arbitrary precision which are good for calculations. This seems like what we want.
 -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-NUMERIC-DECIMAL
 CREATE TABLE proteins (
-    -- todo: make the id meaningful, like Lb17_comp535_c2_seq1, discuss this
-    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,  -- increment id for now
-    name text NOT NULL UNIQUE,
+    name text NOT NULL UNIQUE PRIMARY KEY,
     length integer,
     mass numeric
 );
