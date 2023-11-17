@@ -12,6 +12,7 @@
 		TableHeadCell,
 	} from "flowbite-svelte";
 	import { Tabs, TabItem } from "flowbite-svelte";
+	import { Card, Button, Toggle } from "flowbite-svelte";
 
 	// at some point, this should be change to request from the backend
 	let allEntries: ProteinEntry[] | null = null;
@@ -46,7 +47,11 @@
 									goto(`/protein/${entry.name}`);
 								}}
 							>
-								<TableBodyCell>{entry.name.replaceAll("_", " ")}</TableBodyCell>
+								<TableBodyCell
+									><span class="text-primary-700"
+										>{entry.name.replaceAll("_", " ")}</span
+									></TableBodyCell
+								>
 								<TableBodyCell>{entry.length}</TableBodyCell>
 								<TableBodyCell>{entry.mass}</TableBodyCell>
 							</TableBodyRow>
@@ -59,19 +64,18 @@
 			<div class="entries">
 				{#if allEntries}
 					{#each allEntries as entry}
-						<div
-							class="entry"
+						<Card
+							class="hover:shadow-lg cursor-pointer"
 							title="Click to see {entry.name}"
 							on:click={() => goto(`/protein/${entry.name}`)}
-							role="link"
 						>
-							<div class="name">
-								{entry.name}
+							<div class="name text-primary-700">
+								{entry.name.replaceAll("_", " ")}
 							</div>
 							<div class="description">
 								Seq Len: {entry.length}, Mass: {entry.mass}
 							</div>
-						</div>
+						</Card>
 					{/each}
 				{/if}
 			</div>
@@ -82,20 +86,10 @@
 <style>
 	.entries {
 		display: flex;
+		flex-wrap: wrap;
 		gap: 20px;
-	}
-	.entry {
-		border: 1px solid var(--color-theme-1);
-		border-radius: 3px;
-		width: 400px;
-		padding: 10px;
-		cursor: pointer;
-	}
-	.entry:hover {
-		box-shadow: 0px 2px 3px 3px rgba(0, 0, 0, 0.09);
 	}
 	.name {
 		font-size: 1.5em;
-		color: var(--color-theme-1);
 	}
 </style>
