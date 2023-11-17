@@ -14,6 +14,7 @@
 		console.log("Requesting", data.proteinId, "info from backend");
 
 		entry = await Backend.getProteinEntry(data.proteinId);
+		
 		// if we could not find the entry, the id is garbo
 		if (entry == null) error = true;
 
