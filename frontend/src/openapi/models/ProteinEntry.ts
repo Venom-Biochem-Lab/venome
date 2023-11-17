@@ -6,5 +6,8 @@
 export type ProteinEntry = {
     name: string;
     id: string;
+    filePDBAlphaFold: string;
+    length: number;
+    mass: number;
 };
 

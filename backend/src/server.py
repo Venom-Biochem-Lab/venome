@@ -20,13 +20,21 @@ def get_all_entries():
     """
     with Database() as db:
         try:
-            entries_sql = db.execute_return("""SELECT id, name FROM proteins""")
+            entries_sql = db.execute_return(
+                """SELECT id, name, filePDBAlphaFold, length, mass FROM proteins"""
+            )
             log.warn(entries_sql)
 
             # if we got a result back
             if entries_sql is not None:
                 return [
-                    ProteinEntry(id=str(entry[0]), name=entry[1])
+                    ProteinEntry(
+                        id=str(entry[0]),
+                        name=entry[1],
+                        filePDBAlphaFold=entry[2],
+                        length=entry[3],
+                        mass=entry[4],
+                    )
                     for entry in entries_sql
                 ]
         except Exception as e:
@@ -41,7 +49,7 @@ def get_protein_entry(protein_id: str):
     with Database() as db:
         try:
             entry_sql = db.execute_return(
-                """SELECT id, name FROM proteins
+                """SELECT id, name, filePDBAlphaFold, length, mass FROM proteins
                     WHERE id = %s""",
                 [protein_id],
             )
@@ -50,7 +58,13 @@ def get_protein_entry(protein_id: str):
             # if we got a result back
             if entry_sql is not None and len(entry_sql) != 0:
                 # return the only entry
-                return ProteinEntry(id=str(entry_sql[0][0]), name=entry_sql[0][1])
+                return ProteinEntry(
+                    id=str(entry_sql[0][0]),
+                    name=entry_sql[0][1],
+                    filePDBAlphaFold=entry_sql[0][2],
+                    length=entry_sql[0][3],
+                    mass=entry_sql[0][4],
+                )
 
         except Exception as e:
             log.error(e)

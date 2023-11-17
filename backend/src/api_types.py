@@ -25,6 +25,9 @@ class CamelModel(BaseModel):
 class ProteinEntry(CamelModel):
     name: str
     id: str
+    filePDBAlphaFold: str
+    length: int
+    mass: float
 
 
 class AllEntries(CamelModel):
