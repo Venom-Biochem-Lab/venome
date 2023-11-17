@@ -29,7 +29,7 @@
 				<div
 					class="entry"
 					title="Click to see {entry.name}"
-					on:click={() => goto(`/protein/${entry.id}`)}
+					on:click={() => goto(`/protein/${entry.name}`)}
 					role="link"
 				>
 					<!-- routes to the protein entry itself (new page) -->
@@ -37,7 +37,7 @@
 						{entry.name}
 					</div>
 					<div class="description">
-						ID: {entry.id}
+						Seq Len: {entry.length}, Mass: {entry.mass}
 					</div>
 				</div>
 			{/each}
@@ -46,9 +46,6 @@
 </section>
 
 <style>
-	section {
-		padding-left: 50px;
-	}
 	.entries {
 		display: flex;
 		flex-direction: column;

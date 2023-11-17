@@ -11,9 +11,9 @@
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
-		console.log("Requesting", data.proteinId, "info from backend");
+		console.log("Requesting", data.proteinName, "info from backend");
 
-		entry = await Backend.getProteinEntry(data.proteinId);
+		entry = await Backend.getProteinEntry(data.proteinName);
 		// if we could not find the entry, the id is garbo
 		if (entry == null) error = true;
 
@@ -41,7 +41,7 @@
 {:else if error}
 	<!-- if we error out, tell the user the id is shiza -->
 	<h1>Error</h1>
-	<p>Could not find a protein with the id <code>{data.proteinId}</code></p>
+	<p>Could not find a protein with the id <code>{data.proteinName}</code></p>
 {/if}
 
 <style>
