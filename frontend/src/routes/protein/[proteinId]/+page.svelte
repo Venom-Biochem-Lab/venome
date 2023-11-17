@@ -33,7 +33,7 @@
 
 	<ProteinVis
 		format="pdb"
-		url="http://localhost:8000/{entry.filePDBAlphaFold}"
+		url="http://localhost:8000/data/pdbAlphaFold/{entry.name}.pdb"
 	/>
 {:else if !error}
 	<!-- Otherwise, tell user we tell the user we are loading -->
