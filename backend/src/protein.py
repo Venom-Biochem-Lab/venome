@@ -67,7 +67,7 @@ class Protein:
         with Database() as db:
             try:
                 entry_sql = db.execute_return(
-                    """SELECT id FROM proteins
+                    """SELECT name FROM proteins
                         WHERE name = %s""",
                     [name],
                 )

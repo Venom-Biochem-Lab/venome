@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Backend, UploadError } from "$lib/backend";
-	import { Fileupload, Button, Input, Label } from "flowbite-svelte";
+	import { Fileupload, Button, Input, Label, Helper } from "flowbite-svelte";
+	import { goto } from "$app/navigation";
 
 	let name: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
@@ -22,13 +23,23 @@
 <section>
 	<div class="w-500 flex flex-col gap-5">
 		<div>
-			<Label for="protein-name" class="block mb-2">Protein Name</Label>
+			<Label
+				color={uploadError ? "red" : undefined}
+				for="protein-name"
+				class="block mb-2">Protein Name</Label
+			>
 			<Input
 				bind:value={name}
+				color={uploadError ? "red" : "base"}
 				style="width: 300px"
 				id="protein-name"
 				placeholder="Name"
 			/>
+			{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
+				<Helper class="mt-2" color="red"
+					>This name already exists, please create a unique name and resubmit</Helper
+				>
+			{/if}
 		</div>
 		<div>
 			<Fileupload class="w-100" bind:files />
@@ -39,7 +50,6 @@
 					if (file === undefined || name === "") return; // no file selected
 
 					const base64Encoding = await fileToBase64(file);
-
 					try {
 						const err = await Backend.uploadProteinEntry({
 							name,
@@ -49,7 +59,8 @@
 							uploadError = err;
 							console.log(uploadError);
 						} else {
-							console.log("Successfully uploaded!");
+							// success, so we can go back!
+							goto(`/protein/${name.replaceAll(" ", "_")}`);
 						}
 					} catch (e) {
 						console.log(e);
