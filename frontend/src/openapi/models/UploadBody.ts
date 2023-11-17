@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type UploadBody = {
+    name: string;
     pdbFileBase64: string;
-    pdbFileName: string;
 };
 

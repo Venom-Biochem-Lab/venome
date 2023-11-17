@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { UploadBody } from '../models/UploadBody';
+import type { UploadError } from '../models/UploadError';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -56,7 +57,7 @@ export class DefaultService {
      */
     public static uploadProteinEntry(
         requestBody: UploadBody,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<(UploadError | null)> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/protein-upload',
