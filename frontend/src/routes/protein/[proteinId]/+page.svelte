@@ -24,9 +24,17 @@
 {#if entry}
 	<!-- if got entry from backend, display it -->
 	<h1>{entry.name}</h1>
-	<p>ID: {entry.id}</p>
+	<br />
+	<code>
+		<pre>
+			{JSON.stringify(entry, null, 2)}
+		</pre>
+	</code>
 
-	<ProteinVis />
+	<ProteinVis
+		format="pdb"
+		url="http://localhost:8000/{entry.filePDBAlphaFold}"
+	/>
 {:else if !error}
 	<!-- Otherwise, tell user we tell the user we are loading -->
 	<h1>Loading Protein Entry <Spinner /></h1>
