@@ -79,19 +79,19 @@ function install_backend() {
 	docker exec -it venome-backend poetry install
 }
 
-# on the docker container, reinstall all packages listed in local env (package.json, poetry.lock)
-function refresh_packages() {
-	start
-	install_frontend
-	docker compose restart frontend
-	install_backend
-	docker compose restart backend
-}
-
 function restart() {
 	stop
 	start
 }
+
+# on the docker container, reinstall all packages listed in local env (package.json, poetry.lock)
+function refresh_packages() {
+	start
+	install_frontend
+	install_backend
+	restart
+}
+
 
 # only update dependencies and reload init sql
 function soft_restart() {

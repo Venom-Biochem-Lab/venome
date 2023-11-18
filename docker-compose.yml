@@ -8,7 +8,7 @@ services:
             dockerfile: Dockerfile
         volumes:
             - ./frontend:/app
-            - /app/node_modules/
+            - docker_node_modules:/app/node_modules/
         ports:
             - "5173:5173"
         command: ["yarn", "dev", "--", "--host", "0.0.0.0"]
@@ -21,7 +21,7 @@ services:
             - "8000:8000"
         volumes:
             - ./backend:/app
-            - /app/.venv/
+            - docker_venv:/app/.venv/
         depends_on:
             - postgres
         environment:
@@ -52,3 +52,5 @@ services:
 
 volumes:
     postgres_data:
+    docker_node_modules:
+    docker_venv:

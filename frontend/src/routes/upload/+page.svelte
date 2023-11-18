@@ -2,6 +2,7 @@
 	import { Backend, UploadError } from "$lib/backend";
 	import { Fileupload, Button, Input, Label, Helper } from "flowbite-svelte";
 	import { goto } from "$app/navigation";
+	import { formatProteinName } from "$lib/format";
 
 	let name: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
@@ -60,7 +61,7 @@
 							console.log(uploadError);
 						} else {
 							// success, so we can go back!
-							goto(`/protein/${name.replaceAll(" ", "_")}`);
+							goto(`/protein/${formatProteinName(name)}`);
 						}
 					} catch (e) {
 						console.log(e);

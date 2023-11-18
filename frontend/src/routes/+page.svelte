@@ -3,6 +3,7 @@
 	import { goto } from "$app/navigation";
 	import { Backend } from "$lib/backend";
 	import type { ProteinEntry } from "$lib/backend";
+	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
 	import {
 		Table,
 		TableBody,
@@ -35,7 +36,7 @@
 			<Table>
 				<TableHead>
 					<TableHeadCell>Protein name</TableHeadCell>
-					<TableHeadCell>Amino Acids</TableHeadCell>
+					<TableHeadCell>Length</TableHeadCell>
 					<TableHeadCell>Mass (Da)</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
@@ -49,11 +50,11 @@
 							>
 								<TableBodyCell
 									><span class="text-primary-700"
-										>{entry.name.replaceAll("_", " ")}</span
+										>{humanReadableProteinName(entry.name)}</span
 									></TableBodyCell
 								>
 								<TableBodyCell>{entry.length}</TableBodyCell>
-								<TableBodyCell>{entry.mass}</TableBodyCell>
+								<TableBodyCell>{numberWithCommas(entry.mass)}</TableBodyCell>
 							</TableBodyRow>
 						{/each}
 					{/if}
@@ -70,10 +71,12 @@
 							on:click={() => goto(`/protein/${entry.name}`)}
 						>
 							<div class="name text-primary-700">
-								{entry.name.replaceAll("_", " ")}
+								{humanReadableProteinName(entry.name)}
 							</div>
 							<div class="description">
-								Seq Len: {entry.length}, Mass: {entry.mass}
+								Length: {entry.length}, Mass (Da): {numberWithCommas(
+									entry.mass
+								)}
 							</div>
 						</Card>
 					{/each}

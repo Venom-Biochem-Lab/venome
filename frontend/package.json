@@ -21,6 +21,7 @@
 		"autoprefixer": "^10.4.14",
 		"flowbite": "^2.1.1",
 		"flowbite-svelte": "^0.44.19",
+		"flowbite-svelte-icons": "^0.4.5",
 		"openapi-typescript-codegen": "^0.25.0",
 		"postcss": "^8.4.24",
 		"postcss-load-config": "^4.0.1",
@@ -34,5 +35,8 @@
 		"vite": "^4.4.2",
 		"vitest": "^0.34.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"marked": "^10.0.0"
+	}
 }

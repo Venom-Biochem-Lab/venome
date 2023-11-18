@@ -761,6 +761,11 @@ fill-range@^7.0.1:
   dependencies:
     to-regex-range "^5.0.1"
 
+flowbite-svelte-icons@^0.4.5:
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/flowbite-svelte-icons/-/flowbite-svelte-icons-0.4.5.tgz#e022d39242b91f98ad10aec0553f86a274514c06"
+  integrity sha512-IBudEfw9B4UE2gCRMhbRnyE8p7qq7DDMauy0mPVIShzjaN3yVk2AmAHia1JRe9jUC98Wn7xNk/IdJlXeQj19Iw==
+
 flowbite-svelte@^0.44.19:
   version "0.44.19"
   resolved "https://registry.yarnpkg.com/flowbite-svelte/-/flowbite-svelte-0.44.19.tgz#f39e04a118104435fbcdf80529b9ba063af5a642"
@@ -1027,6 +1032,11 @@ magic-string@^0.30.0, magic-string@^0.30.1, magic-string@^0.30.3, magic-string@^
   integrity sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.15"
+
+marked@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-10.0.0.tgz#7fe1805bb908433d760e2de0fcc8841a2b2d745c"
+  integrity sha512-YiGcYcWj50YrwBgNzFoYhQ1hT6GmQbFG8SksnYJX1z4BXTHSOrz1GB5/Jm2yQvMg4nN1FHP4M6r03R10KrVUiA==
 
 mdn-data@2.0.30:
   version "2.0.30"
