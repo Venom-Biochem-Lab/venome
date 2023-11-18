@@ -4,6 +4,8 @@
 	export let url =
 		"http://localhost:8000/data/pdbAlphaFold/Gh_comp271_c0_seq1.pdb";
 	export let format = "pdb";
+	export let width = 500;
+	export let height = 500;
 
 	onMount(async () => {
 		//Create plugin instance
@@ -26,7 +28,7 @@
 			alphafoldView: true,
 			reactive: true,
 			sequencePanel: true,
-			hideControls: true,
+			hideControls: false,
 			hideCanvasControls: ["animation"],
 		};
 
@@ -38,7 +40,7 @@
 	});
 </script>
 
-<div id="myViewer" />
+<div id="myViewer" style="width: {width}px; height: {height}px;" />
 
 <style>
 	/* https://embed.plnkr.co/plunk/WlRx73uuGA9EJbpn */
@@ -47,8 +49,6 @@
 	}
 	#myViewer {
 		float: left;
-		width: 500px;
-		height: 500px;
 		position: relative;
 	}
 </style>
