@@ -3,10 +3,16 @@
 	import { Backend, type ProteinEntry } from "$lib/backend";
 	import ProteinVis from "$lib/ProteinVis.svelte";
 	import { Spinner } from "flowbite-svelte";
+	import Markdown from "$lib/Markdown.svelte";
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
 	let error = false;
+	let wikiEntry: string = `
+# nice
+
+This is the wiki entry! [google.com](https://google.com)
+	`;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
@@ -35,6 +41,8 @@
 		format="pdb"
 		url="http://localhost:8000/data/pdbAlphaFold/{entry.name}.pdb"
 	/>
+
+	<Markdown text={wikiEntry} />
 {:else if !error}
 	<!-- Otherwise, tell user we tell the user we are loading -->
 	<h1>Loading Protein Entry <Spinner /></h1>
