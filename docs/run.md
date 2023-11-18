@@ -14,10 +14,12 @@ sh run.sh <cmd>
 |---|---|
 |  `start` | 👉 Starts/runs the docker container |
 |  `stop` |  👉 Stops the docker container |
+|  `refresh_packages` | 👉  Updates or adds new packages in frontend and backend, needs to be run every time you add a new package locally |
 |  `restart` |  Stops, then Starts the docker container |
-|  `hard_restart` | 👉 Builds the docker container from scratch and starts it, do this if you're having errors |
+|  `soft_restart` | 👉 Updates or adds packages, reloads the init sql, and restarts. Use this if you're getting errors. |
+|  `hard_restart` | 👉 Builds the docker container from scratch and starts it, do this if you're having errors that even `soft_restart` can't fix |
 |  `gen_api` | 👉 Creates/Generates the frontend api code based on the backend endpoints |
-|  `reload_init_sql` | Reload/change the schema in [`init.sql`](../backend/init.sql)|
+|  `reload_init_sql` | 👉  When you change the the schema in [`init.sql`](../backend/init.sql), this reloads it, otherwise your changes won't show up in the docker |
 |  `sql_dump` | Dumps the current db contents and schema into [`backups/`](../backend/backups/).|
 |  `psql` | Opens up a direct terminal into the database to execute SQL commands live |
 |  `test` | Runs all unit tests |
