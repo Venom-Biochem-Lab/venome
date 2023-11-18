@@ -5,6 +5,7 @@
 	import { Button, Card, Spinner } from "flowbite-svelte";
 	import Markdown from "$lib/Markdown.svelte";
 	import { Heading, P, Span } from "flowbite-svelte";
+	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
@@ -54,7 +55,7 @@ Todo: add ways to cite papers here that automatically show up in references.`;
 				<Span
 					underline
 					decorationClass="decoration-8 decoration-primary-400 dark:decoration-primary-600"
-					>{entry.name.replaceAll("_", " ")}</Span
+					>{humanReadableProteinName(entry.name)}</Span
 				>
 			</Heading>
 			<P class="mt-4 text-lg">description of the protein here (optional)</P>
@@ -64,19 +65,27 @@ Todo: add ways to cite papers here that automatically show up in references.`;
 
 				<div class="grid grid-cols-2">
 					<div>Source Organism</div>
-					<div>Unknown</div>
+					<div>
+						<a href="/organism/unknown">unknown organism</a>
+					</div>
 
 					<div>Biological Function</div>
-					<div>Unknown</div>
+					<div>
+						<a href="/function/unknown">unknown function</a>
+					</div>
 
-					<div>Structure From</div>
-					<div>AlphaFold</div>
+					<div>Structure</div>
+					<div>
+						<a href="https://deepmind.google/technologies/alphafold/"
+							>AlphaFold</a
+						>
+					</div>
 
-					<div>Amino Acids Length</div>
-					<div>{entry.length}</div>
+					<div>Length</div>
+					<div><code>{entry.length}</code></div>
 
-					<div>Total Mass</div>
-					<div>{entry.mass}</div>
+					<div>Mass (Da)</div>
+					<div><code>{numberWithCommas(entry.mass)}</code></div>
 				</div>
 			</Card>
 
