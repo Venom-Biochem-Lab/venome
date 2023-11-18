@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ProteinEntry = {
+export type UploadBody = {
     name: string;
-    length: number;
-    mass: number;
+    pdbFileBase64: string;
 };
 

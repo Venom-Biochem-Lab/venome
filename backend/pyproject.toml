@@ -3,7 +3,6 @@ name = "src"
 version = "0.0.1"
 description = ""
 authors = ["Your Name <you@example.com>"]
-readme = "README.md"
 
 
 [tool.poetry.dependencies]
@@ -13,6 +12,7 @@ uvicorn = "^0.23.2"
 fastapi = "^0.104.0"
 psycopg = "^3.1.12"
 psycopg-pool = "^3.1.8"
+biopython = "^1.81"
 
 
 [tool.poetry.group.dev.dependencies]

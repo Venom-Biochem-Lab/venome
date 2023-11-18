@@ -68,7 +68,7 @@ If you plan to make any glaring changes, make sure to make backups/sql dumps wit
 ```bash
 sh run.sh sql_dump
 ```
-and verify the backup succeeded by checking the  [`backend/data/backups/`](../backend/data/backups/README.md).
+and verify the backup succeeded by checking the  [`backend/backups/`](../backend/backups/README.md).
 
 ## Reloading from the [`init.sql`](../backend/init.sql)
 

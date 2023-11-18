@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ProteinEntry } from '../models/ProteinEntry';
+import type { UploadBody } from '../models/UploadBody';
+import type { UploadError } from '../models/UploadError';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -28,19 +30,39 @@ export class DefaultService {
      * Get Protein Entry
      * Get a single protein entry by its id
      * Returns: ProteinEntry if found | None if not found
-     * @param proteinId
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static getProteinEntry(
-        proteinId: string,
+        proteinName: string,
     ): CancelablePromise<(ProteinEntry | null)> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/protein-entry/{protein_id}',
+            url: '/protein-entry/{protein_name}',
             path: {
-                'protein_id': proteinId,
+                'protein_name': proteinName,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Upload Protein Entry
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadProteinEntry(
+        requestBody: UploadBody,
+    ): CancelablePromise<(UploadError | null)> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/protein-upload',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

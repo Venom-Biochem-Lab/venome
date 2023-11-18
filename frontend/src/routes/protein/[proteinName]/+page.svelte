@@ -11,9 +11,9 @@
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
-		console.log("Requesting", data.proteinId, "info from backend");
+		console.log("Requesting", data.proteinName, "info from backend");
 
-		entry = await Backend.getProteinEntry(data.proteinId);
+		entry = await Backend.getProteinEntry(data.proteinName);
 		// if we could not find the entry, the id is garbo
 		if (entry == null) error = true;
 
@@ -23,17 +23,25 @@
 
 {#if entry}
 	<!-- if got entry from backend, display it -->
-	<h1>{entry.name}</h1>
-	<p>ID: {entry.id}</p>
+	<h1>{entry.name.replaceAll("_", " ")}</h1>
+	<br />
+	<code>
+		<pre>
+			{JSON.stringify(entry, null, 2)}
+		</pre>
+	</code>
 
-	<ProteinVis />
+	<ProteinVis
+		format="pdb"
+		url="http://localhost:8000/data/pdbAlphaFold/{entry.name}.pdb"
+	/>
 {:else if !error}
 	<!-- Otherwise, tell user we tell the user we are loading -->
 	<h1>Loading Protein Entry <Spinner /></h1>
 {:else if error}
 	<!-- if we error out, tell the user the id is shiza -->
 	<h1>Error</h1>
-	<p>Could not find a protein with the id <code>{data.proteinId}</code></p>
+	<p>Could not find a protein with the id <code>{data.proteinName}</code></p>
 {/if}
 
 <style>
