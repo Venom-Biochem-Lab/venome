@@ -16,25 +16,10 @@ function stop() {
 	docker-compose down
 }
 
-# start, but with new cache
-function start_rebuild() {
-	docker-compose up --build -d	
-}
-
-function restart() {
-	stop
-	start
-}
-
-function hard_restart() {
-	stop
-	start_rebuild
-}
-
 # generates the api bridge between frontend and backend
 function gen_api() {
 	cd frontend
-	yarn openapi && restart
+	yarn openapi && docker-compose restart frontend
 	cd ..
 }
 
@@ -44,27 +29,15 @@ function rm_volume() {
 	docker volume rm venome_postgres_data
 }
 
-# creates a sql dump file of the database (backup) into the backend/data folder
-function sql_dump() {
-	docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
-}
-
-# runs db from scratch from the init.sql file
-function reload_init_sql_no_backup() {
-	# stop the servers and remove the existing db data
-	echo Removing existing db data...
-	stop
+# runs db from scratch from the init.sql file, but first backs up the existing db
+function reload_init_sql() {
 	rm_volume
-
-	# start the servers again
-	echo Starting dbs from scratch...
 	start	
 }
 
-# runs db from scratch from the init.sql file, but first backs up the existing db
-function reload_init_sql() {
-	sql_dump # backup the existing db to backend/backups
-	reload_init_sql_no_backup
+# creates a sql dump file of the database (backup) into the backend/data folder
+function sql_dump() {
+	docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 }
 
 function restart_venv() {
@@ -104,6 +77,34 @@ function install_frontend() {
 
 function install_backend() {
 	docker exec -it venome-backend poetry install
+}
+
+# on the docker container, reinstall all packages listed in local env (package.json, poetry.lock)
+function refresh_packages() {
+	start
+	install_frontend
+	docker compose restart frontend
+	install_backend
+	docker compose restart backend
+}
+
+function restart() {
+	stop
+	start
+}
+
+# only update dependencies and reload init sql
+function soft_restart() {
+	stop
+	refresh_packages
+	reload_init_sql
+}
+
+# complete from scratch rebuild
+function hard_restart() {
+	stop
+	docker-compose up --build -d	
+	reload_init_sql
 }
 
 function scrape_func_names() {
