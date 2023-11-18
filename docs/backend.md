@@ -18,7 +18,7 @@ which adds the package locally (so your intellisense can detect it).
 To have those packages also installed/reflected in the backend run
 
 ```bash
-sh run.sh install_backend
+sh run.sh refresh_packages
 ```
 
 or rebuild the entire docker (this method is slower, but guaranteed to work) with 
