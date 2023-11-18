@@ -53,7 +53,7 @@ It's that easy!
 > 
 > Check [`server.py`](../backend/src/server.py) and you'll find `hello_world` as a function too.
 >
-> If you must know, the frontend uses this interface `Backend.helloWorld()` to make a GET request to the backend at the function `hello_world` in [`server.py`](../backend/server.py). Luckily this is abstracted away with `yarn openapi` / `./run.sh api` API generation.
+> If you must know, the frontend uses this interface `Backend.helloWorld()` to make a GET request to the backend at the function `hello_world` in [`server.py`](../backend/src/server.py). Luckily this is abstracted away with `yarn openapi` / `./run.sh api` API generation.
 
 
 ## Need help?
