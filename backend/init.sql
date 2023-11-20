@@ -45,20 +45,26 @@ CREATE TABLE species (
 /*
  * Inserts example proteins into proteins table
  */
-INSERT INTO proteins (name, length, mass) VALUES (
+INSERT INTO proteins (name, length, mass, content) VALUES (
     'Gh_comp271_c0_seq1', 
     0,
-    0.0);
+    0.0,
+    null
+);
 
-INSERT INTO proteins (name, length, mass) VALUES (
+INSERT INTO proteins (name, length, mass, content) VALUES (
     'Lb17_comp535_c2_seq1', 
     0,
-    0.0);
+    0.0,
+    null
+);
 
-INSERT INTO proteins (name, length, mass) VALUES (
+INSERT INTO proteins (name, length, mass, content) VALUES (
     'Lh14_comp2336_c0_seq1', 
     0,
-    0.0);
+    0.0,
+    null
+);
 
 /*
  * Inserts example species into species table

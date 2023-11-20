@@ -1,6 +1,6 @@
 from .setup import init_fastapi_app, disable_cors
 from .api_types import ProteinEntry, UploadBody, UploadError
-from .db import Database
+from .db import Database, str_to_bytea
 from .protein import Protein
 import logging as log
 from fastapi.staticfiles import StaticFiles
@@ -71,13 +71,27 @@ def upload_protein_entry(body: UploadBody):
 
     # if name is unique, save the pdb file and add the entry to the database
     try:
+        # TODO: consider somehow sending the file as a stream instead of a b6 string or send as regular string
         pdb = Protein.parse_pdb(body.name, body.pdb_file_base64, encoding="b64")
     except Exception:
         return UploadError.PARSE_ERROR
 
-    # Save to data/ folder and db
     try:
-        Protein.save(pdb)
+        # write to file to data/ folder
+        with open(pdb.pdb_file_name, "w") as f:
+            f.write(pdb.file_contents)
+
+        # save to db
+        with Database() as db:
+            db.execute(
+                """INSERT INTO proteins (name, length, mass, content) VALUES (%s, %s, %s, %s);""",
+                [
+                    pdb.name,
+                    pdb.num_amino_acids,
+                    pdb.mass_daltons,
+                    str_to_bytea(body.content),
+                ],
+            )
     except Exception:
         return UploadError.WRITE_ERROR
 

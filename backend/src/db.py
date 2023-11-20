@@ -60,3 +60,7 @@ class Database:
 
     def __exit__(self, type, value, traceback):
         self.disconnect()
+
+
+def str_to_bytea(_str: str):
+    return psycopg.Binary(_str.encode("utf-8"))
