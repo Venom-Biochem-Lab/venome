@@ -27,6 +27,7 @@ class ProteinEntry(CamelModel):
     name: str
     length: int
     mass: float
+    content: str = ""
 
 
 class AllEntries(CamelModel):

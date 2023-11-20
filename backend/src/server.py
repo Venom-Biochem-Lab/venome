@@ -43,7 +43,7 @@ def get_protein_entry(protein_name: str):
     with Database() as db:
         try:
             entry_sql = db.execute_return(
-                """SELECT name, length, mass FROM proteins
+                """SELECT name, length, mass, content FROM proteins
                     WHERE name = %s""",
                 [protein_name],
             )
@@ -53,8 +53,12 @@ def get_protein_entry(protein_name: str):
             if entry_sql is not None and len(entry_sql) != 0:
                 # return the only entry
                 only_returned_entry = entry_sql[0]
-                name, length, mass = only_returned_entry
-                return ProteinEntry(name=name, length=length, mass=mass)
+                name, length, mass, content_bytea = only_returned_entry
+                content = content_bytea.decode("utf-8")  # convert bytes to string
+
+                return ProteinEntry(
+                    name=name, length=length, mass=mass, content=content
+                )
 
         except Exception as e:
             log.error(e)
