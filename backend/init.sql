@@ -15,9 +15,10 @@
  * Proteins Table
  */
 CREATE TABLE proteins (
-    name text NOT NULL UNIQUE PRIMARY KEY,
-    length integer, -- 
-    mass numeric
+    name text NOT NULL UNIQUE PRIMARY KEY, -- user specified name of the protein (TODO: consider having a string limit)
+    length integer, -- length of amino acid sequence
+    mass numeric, -- mass in amu/daltons
+    content bytea -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
 );
 
 /*
