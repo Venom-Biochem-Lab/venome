@@ -10,22 +10,6 @@
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
 	let error = false;
-	// todo: request this from the user
-	let wikiEntry: string = `
-# H1
-
-## H2
-
-### H3
-
-#### H4
-
-**Bolded** versus _italic_
-and ~~strike through~~ and [links](/)
-
-You can write stuff down here about the proteins.
-
-Todo: add ways to cite papers here that automatically show up in references.`;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
@@ -92,7 +76,11 @@ Todo: add ways to cite papers here that automatically show up in references.`;
 			<!-- Article / Wiki entry -->
 			<Card title="Info" class="max-w-full mt-5">
 				<Heading tag="h4">Article</Heading>
-				<Markdown text={wikiEntry} />
+				{#if entry.content != null}
+					<Markdown text={entry.content} />
+				{:else}
+					No article added
+				{/if}
 			</Card>
 		</div>
 		<div id="right-side">

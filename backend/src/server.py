@@ -1,6 +1,6 @@
 from .setup import init_fastapi_app, disable_cors
 from .api_types import ProteinEntry, UploadBody, UploadError
-from .db import Database, str_to_bytea
+from .db import Database, str_to_bytea, bytea_to_str
 from .protein import Protein
 import logging as log
 from fastapi.staticfiles import StaticFiles
@@ -53,8 +53,10 @@ def get_protein_entry(protein_name: str):
             if entry_sql is not None and len(entry_sql) != 0:
                 # return the only entry
                 only_returned_entry = entry_sql[0]
-                name, length, mass, content_bytea = only_returned_entry
-                content = content_bytea.decode("utf-8")  # convert bytes to string
+                name, length, mass, content = only_returned_entry
+                # if bytes are present, decode them into a string
+                if content is not None:
+                    content = bytea_to_str(content)
 
                 return ProteinEntry(
                     name=name, length=length, mass=mass, content=content

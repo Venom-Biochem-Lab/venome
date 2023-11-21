@@ -64,3 +64,7 @@ class Database:
 
 def str_to_bytea(_str: str):
     return psycopg.Binary(_str.encode("utf-8"))
+
+
+def bytea_to_str(_bytea):
+    return _bytea.decode("utf-8")
