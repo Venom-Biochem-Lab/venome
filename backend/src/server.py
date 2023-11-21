@@ -77,7 +77,7 @@ def upload_protein_entry(body: UploadBody):
 
     # if name is unique, save the pdb file and add the entry to the database
     try:
-        # TODO: consider somehow sending the file as a stream instead of a b6 string or send as regular string
+        # TODO: consider somehow sending the file as a stream instead of a b64 string or send as regular string
         pdb = Protein.parse_pdb(body.name, body.pdb_file_base64, encoding="b64")
     except Exception:
         return UploadError.PARSE_ERROR
