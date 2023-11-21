@@ -76,7 +76,7 @@
 			<!-- Article / Wiki entry -->
 			<Card title="Info" class="max-w-full mt-5">
 				<Heading tag="h4">Article</Heading>
-				{#if entry.content != null}
+				{#if entry.content !== null}
 					<Markdown text={entry.content} />
 				{:else}
 					No article added
