@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { Backend, UploadError } from "$lib/backend";
-	import { Fileupload, Button, Input, Label, Helper } from "flowbite-svelte";
+	import {
+		Fileupload,
+		Button,
+		Input,
+		Label,
+		Helper,
+		Textarea,
+	} from "flowbite-svelte";
 	import { goto } from "$app/navigation";
 	import { formatProteinName } from "$lib/format";
 
 	let name: string = "";
+	let content: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
 	let uploadError: UploadError | undefined;
 	$: file = files ? files[0] : undefined; // we're just concerned with one file
+	$: console.log(content);
 
 	function fileToBase64(f: File): Promise<string> {
 		return new Promise((resolve, reject) => {
@@ -43,6 +52,15 @@
 			{/if}
 		</div>
 		<div>
+			<Label for="content" class="block mb-2">Protein Article</Label>
+			<Textarea
+				id="content"
+				placeholder="Enter markdown..."
+				rows={10}
+				bind:value={content}
+			/>
+		</div>
+		<div>
 			<Fileupload class="w-100" bind:files />
 		</div>
 		<div>
@@ -55,6 +73,7 @@
 						const err = await Backend.uploadProteinEntry({
 							name,
 							pdbFileBase64: base64Encoding,
+							content,
 						});
 						if (err) {
 							uploadError = err;
