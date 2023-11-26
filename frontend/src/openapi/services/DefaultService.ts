@@ -50,6 +50,27 @@ export class DefaultService {
     }
 
     /**
+     * Delete Protein Entry
+     * @param proteinName
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteProteinEntry(
+        proteinName: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/protein-entry/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Upload Protein Entry
      * @param requestBody
      * @returns any Successful Response
