@@ -1,10 +1,10 @@
-from .setup import init_fastapi_app, disable_cors
-from .api_types import ProteinEntry, UploadBody, UploadError
-from .db import Database, str_to_bytea, bytea_to_str
-from .protein import Protein
 import logging as log
+import os
 from fastapi.staticfiles import StaticFiles
-
+from .api_types import ProteinEntry, UploadBody, UploadError
+from .db import Database, bytea_to_str, str_to_bytea
+from .protein import parse_protein_pdb, pdb_file_name, protein_name_taken
+from .setup import disable_cors, init_fastapi_app
 
 app = init_fastapi_app()
 disable_cors(app, origins=["http://0.0.0.0:5173", "http://localhost:5173"])
@@ -77,6 +77,8 @@ def delete_protein_entry(protein_name: str):
                     WHERE name = %s""",
                 [protein_name],
             )
+        # delete the file from the data/ folder
+        os.remove(pdb_file_name(protein_name))
     except Exception as e:
         log.error(e)
 
@@ -87,19 +89,19 @@ def upload_protein_entry(body: UploadBody):
     body.name = body.name.replace(" ", "_")
 
     # check that the name is not already taken in the DB
-    if Protein.name_taken(body.name):
+    if protein_name_taken(body.name):
         return UploadError.NAME_NOT_UNIQUE
 
     # if name is unique, save the pdb file and add the entry to the database
     try:
         # TODO: consider somehow sending the file as a stream instead of a b64 string or send as regular string
-        pdb = Protein.parse_pdb(body.name, body.pdb_file_base64, encoding="b64")
+        pdb = parse_protein_pdb(body.name, body.pdb_file_base64, encoding="b64")
     except Exception:
         return UploadError.PARSE_ERROR
 
     try:
         # write to file to data/ folder
-        with open(pdb.pdb_file_name, "w") as f:
+        with open(pdb_file_name(pdb.name), "w") as f:
             f.write(pdb.file_contents)
 
         # save to db
