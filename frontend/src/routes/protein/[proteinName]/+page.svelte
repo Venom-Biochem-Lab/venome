@@ -6,6 +6,7 @@
 	import Markdown from "$lib/Markdown.svelte";
 	import { Heading, P, Span } from "flowbite-svelte";
 	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
+	import { goto } from "$app/navigation";
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
@@ -40,6 +41,13 @@
 					underline
 					decorationClass="decoration-8 decoration-primary-400 dark:decoration-primary-600"
 					>{humanReadableProteinName(entry.name)}</Span
+				>
+				<Button
+					outline
+					on:click={async () => {
+						await Backend.deleteProteinEntry(data.proteinName);
+						goto("/");
+					}}>Delete Protein</Button
 				>
 			</Heading>
 			<P class="mt-4 text-lg">description of the protein here (optional)</P>

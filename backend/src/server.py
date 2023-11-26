@@ -66,6 +66,21 @@ def get_protein_entry(protein_name: str):
             log.error(e)
 
 
+# TODO: add permissions so only the creator can delete not just anyone
+@app.delete("/protein-entry/{protein_name:str}", response_model=None)
+def delete_protein_entry(protein_name: str):
+    # Todo, have a meaningful error if the delete fails
+    try:
+        with Database() as db:
+            db.execute(
+                """DELETE FROM proteins
+                    WHERE name = %s""",
+                [protein_name],
+            )
+    except Exception as e:
+        log.error(e)
+
+
 # None return means success
 @app.post("/protein-upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody):
