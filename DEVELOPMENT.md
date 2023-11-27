@@ -8,7 +8,7 @@ If you want to see more specific docs go to the [ `docs/` ](./docs/README.md) fo
 
 ## Installation
 
-> **Important**
+> [!IMPORTANT]
 > You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
 
 You can run everything by doing
@@ -32,7 +32,7 @@ If you want intellisense/autocomplete in VSCode, continue to the rest of the ins
 
 ### Backend 
 
-> **Important**
+> [!IMPORTANT]
 > Before you do anything, make sure you have [Python](https://www.python.org/downloads/) installed.
 
 Then install the [Poetry Python Package Manager](https://python-poetry.org/) by doing 
@@ -52,7 +52,7 @@ poetry install
 
 ### Frontend
 
-> **Important**
+> [!IMPORTANT]
 > Before you do anything, make sure you first have [Node](https://nodejs.org/en/download) installed.
 
 If you haven't already, also install [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable) globally as the package manager for node by doing 
@@ -73,7 +73,7 @@ yarn install
 
 ## Navigating the codebase
 
-> **Warning**
+> [!WARNING]
 > Ignore the build script in the video, they are outdated
 > We use docker now through `sh run.sh`
 > Additionally the host has changed from `localhost` to `0.0.0.0`
@@ -82,7 +82,7 @@ I'll explain top-down how to understand the structure of this repository. First 
 
 ### Frontend
 
-> **Important**
+> [!IMPORTANT]
 > 🎥 [Click here](https://drive.google.com/file/d/1KD3Hgbul0_7cIZiCaQZ1U4meCBthcrfS/view?usp=drive_link) to watch the frontend video overview by @xnought.
 
 
@@ -99,7 +99,7 @@ See SvelteKit documentation for more info on how to add more complicated behavio
 
 ### Backend
 
-> **Important**
+> [!IMPORTANT]
 > 🎥 [Click here](https://drive.google.com/file/d/1mmZqsALCY4UhcT592GR0Q1PMtZPogXkq/view?usp=drive_link) to watch the backend video overview by @xnought.
 
 The frontend calls to the backend. The backend is in Python3 and specifically [FastAPI](https://fastapi.tiangolo.com/). FastAPI is a nice HTTP REST server where we can make HTTP requests to the backend from the frontend.
@@ -110,7 +110,7 @@ Check out the FastAPI docs for more info.
 
 ### Frontend and Backend Interaction
 
-> **Important**
+> [!IMPORTANT]
 > 🎥 [Click here](https://drive.google.com/file/d/1micYztZj8q5oufOhVctzPvsE9U1NgnyS/view?usp=drive_link) to watch how to interact with the backend from the frontend
 
 Once we created the HTTP endpoints in the backend, we can call 

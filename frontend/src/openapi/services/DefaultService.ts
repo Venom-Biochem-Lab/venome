@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { EditBody } from '../models/EditBody';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
@@ -50,6 +51,27 @@ export class DefaultService {
     }
 
     /**
+     * Delete Protein Entry
+     * @param proteinName
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteProteinEntry(
+        proteinName: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/protein-entry/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Upload Protein Entry
      * @param requestBody
      * @returns any Successful Response
@@ -61,6 +83,26 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/protein-upload',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Edit Protein Entry
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editProteinEntry(
+        requestBody: EditBody,
+    ): CancelablePromise<(UploadError | null)> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/protein-edit',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

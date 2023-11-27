@@ -27,7 +27,7 @@ with Database() as db:
 
 which will return a list of the results too. 
 
-> **Note**
+> [!NOTE]
 > `with Database() as db`
 > opens up the `db` connection, then closes it when the scope is finished
 
@@ -72,7 +72,7 @@ and verify the backup succeeded by checking the  [`backend/backups/`](../backend
 
 ## Reloading from the [`init.sql`](../backend/init.sql)
 
-> **Warning**
+> [!WARNING]
 > Reloading this file will override the existing data and schema in the running db
 
 The [`init.sql`](../backend/init.sql) only gets loaded on the first run of docker. It stops running this file on subsequent docker runs.
@@ -87,7 +87,7 @@ sh run.sh reload_init_sql
 
 **If you DON'T care about losing data**, consider simply editing the [`init.sql`](../backend/init.sql) with the updated schema, and reloading the db with this file as outlined in the [Previous Section](#reloading-from-the-initsql).
 
-> **Important**
+> [!IMPORTANT]
 > As of now, we don't care about losing user data since we haven't deployed the system.
 > The following is a problem for future us.
 

@@ -49,3 +49,9 @@ class UploadError(str, enum.Enum):
 
 class UploadStatus(CamelModel):
     status: UploadError
+
+
+class EditBody(CamelModel):
+    old_name: str  # so we can identify the exact row we need to change
+    new_name: str
+    new_content: str | None = None

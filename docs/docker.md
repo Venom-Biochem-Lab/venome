@@ -1,7 +1,7 @@
 # Docker
 
 
-> **Important**
+> [!IMPORTANT]
 > You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
 
 We use docker to run our environments. We compose three images
@@ -12,7 +12,7 @@ We use docker to run our environments. We compose three images
 
 all are defined in the [docker-compose.yml](../docker-compose.yml).
 
-> **Note**
+> [!NOTE]
 > The postgres db is available outside of the container (your computer) on port `3000` instead. The ports above are internal docker container ports.
 
 ## Getting Started
