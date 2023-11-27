@@ -3,6 +3,7 @@
 	import { Button, Input, Label, Helper, Textarea } from "flowbite-svelte";
 	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
+	import { formatProteinName, humanReadableProteinName } from "$lib/format";
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
 	// and reuploaded/edited
@@ -24,7 +25,7 @@
 		if (entry == null) {
 			error = true;
 		} else {
-			name = entry.name;
+			name = humanReadableProteinName(entry.name);
 			content = entry.content!;
 		}
 	});
@@ -64,31 +65,39 @@
 			<div>
 				<Button
 					on:click={async () => {
-						if (entry && name === entry.name && content === entry.content)
-							return; // no changes no edits!
+						if (entry) {
+							if (
+								name === humanReadableProteinName(entry.name) &&
+								content === entry.content
+							)
+								return; // no changes no edits!
 
-						try {
-							// const err = await Backend.uploadProteinEntry({
-							// 	name,
-							// 	pdbFileBase64: base64Encoding,
-							// 	content,
-							// });
-							// if (err) {
-							// 	uploadError = err;
-							// 	console.log(uploadError);
-							// } else {
-							// 	// success, so we can go back!
-							// 	goto(`/protein/${formatProteinName(name)}`);
-							// }
-						} catch (e) {
-							console.log(e);
+							try {
+								const err = await Backend.editProteinEntry({
+									newName: name,
+									oldName: entry.name,
+									newContent: content,
+								});
+								if (err) {
+									uploadError = err;
+									console.log(uploadError);
+								} else {
+									// success, so we can go back!
+									goto(`/protein/${formatProteinName(name)}`);
+								}
+							} catch (e) {
+								console.log(e);
+							}
 						}
 					}}
-					disabled={name === entry.name && content === entry.content}
-					>Edit Protein</Button
+					disabled={name === humanReadableProteinName(entry.name) &&
+						content === entry.content}>Edit Protein</Button
 				>
 
-				<Button outline on:click={() => goto(`/protein/${name}`)}>Cancel</Button
+				<Button
+					outline
+					on:click={() => goto(`/protein/${formatProteinName(name)}`)}
+					>Cancel</Button
 				>
 			</div>
 		</div>
