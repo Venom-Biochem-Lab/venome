@@ -49,6 +49,12 @@
 						goto("/");
 					}}>Delete Protein</Button
 				>
+				<Button
+					outline
+					on:click={async () => {
+						goto(`/edit/${entry?.name}`);
+					}}>Edit Protein</Button
+				>
 			</Heading>
 			<P class="mt-4 text-lg">description of the protein here (optional)</P>
 
