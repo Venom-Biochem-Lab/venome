@@ -1,7 +1,7 @@
 # Docker
 
 
-> **Important**
+> [!IMPORTANT]
 > You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
 
 We use docker to run our environments. We compose three images
