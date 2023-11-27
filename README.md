@@ -6,11 +6,11 @@ A wikipedia 📖 for venom proteins: upload, search, organize, visualize, and do
 
 🤝 In collaboration with the 🧪[Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
-**Important places to know about**
--   [`DEVELOPMENT.md`](./DEVELOPMENT.md) contains the developer getting started docs
--   [`docs/`](./docs/) contains code documentation
--   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
--   [`backend/`](./backend/) contains the backend HTTP server and Database
+> [!IMPORTANT]
+> -   [`DEVELOPMENT.md`](./DEVELOPMENT.md) contains the developer getting started docs
+> -   [`docs/`](./docs/) contains code documentation
+> -   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
+> -   [`backend/`](./backend/) contains the backend HTTP server and Database
 
 ## Quick start
 
