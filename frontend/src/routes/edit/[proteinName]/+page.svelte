@@ -90,8 +90,8 @@
 							}
 						}
 					}}
-					disabled={(name !== humanReadableProteinName(entry.name) ||
-						content !== entry.content) &&
+					disabled={(name === humanReadableProteinName(entry.name) &&
+						content === entry.content) ||
 						name.length === 0}>Edit Protein</Button
 				>
 
