@@ -1,7 +1,7 @@
 import logging as log
 import os
 from fastapi.staticfiles import StaticFiles
-from .api_types import ProteinEntry, UploadBody, UploadError
+from .api_types import ProteinEntry, UploadBody, UploadError, EditBody
 from .db import Database, bytea_to_str, str_to_bytea
 from .protein import parse_protein_pdb, pdb_file_name, protein_name_taken
 from .setup import disable_cors, init_fastapi_app
@@ -115,6 +115,39 @@ def upload_protein_entry(body: UploadBody):
                     str_to_bytea(body.content),
                 ],
             )
+    except Exception:
+        return UploadError.WRITE_ERROR
+
+
+# TODO: add more edits, now only does name and content edits
+@app.put("/protein-edit", response_model=UploadError | None)
+def edit_protein_entry(body: EditBody):
+    body.new_name = body.new_name.replace(" ", "_")
+    body.old_name = body.old_name.replace(" ", "_")
+
+    # check that the name is not already taken in the DB
+    # TODO: check if permission so we don't have people overriding other people's names
+
+    try:
+        if body.new_name != body.old_name:
+            os.rename(pdb_file_name(body.old_name), pdb_file_name(body.new_name))
+
+        with Database() as db:
+            # if we have content/markdown, then update it, otherwise just update the name
+            if body.new_content is not None:
+                db.execute(
+                    """UPDATE proteins SET name = %s, content = %s WHERE name = %s""",
+                    [
+                        body.new_name,
+                        str_to_bytea(body.new_content),
+                        body.old_name,
+                    ],
+                )
+            else:
+                db.execute(
+                    """UPDATE proteins SET name = %s WHERE name = %s""",
+                    [body.new_name, body.old_name],
+                )
     except Exception:
         return UploadError.WRITE_ERROR
 
