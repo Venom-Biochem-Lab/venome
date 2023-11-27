@@ -27,7 +27,7 @@ with Database() as db:
 
 which will return a list of the results too. 
 
-> **Note**
+> [!NOTE]
 > `with Database() as db`
 > opens up the `db` connection, then closes it when the scope is finished
 
