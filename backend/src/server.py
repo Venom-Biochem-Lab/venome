@@ -35,6 +35,30 @@ def get_all_entries():
             log.error(e)
 
 
+@app.get("/search-entries/{query:str}", response_model=list[ProteinEntry] | None)
+def search_entries(query: str):
+    """Gets a list of protein entries by a search string
+    Returns: list[ProteinEntry] if found | None if not found
+    """
+    with Database() as db:
+        try:
+            entries_sql = db.execute_return(
+                """SELECT name, length, mass FROM proteins
+                WHERE name LIKE %%%s%""",
+                [query]
+            )
+            log.warn(entries_sql)
+
+            # if we got a result back
+            if entries_sql is not None:
+                return [
+                    ProteinEntry(name=name, length=length, mass=mass)
+                    for name, length, mass in entries_sql
+                ]
+        except Exception as e:
+            log.error(e)
+
+
 @app.get("/protein-entry/{protein_name:str}", response_model=ProteinEntry | None)
 def get_protein_entry(protein_name: str):
     """Get a single protein entry by its id
