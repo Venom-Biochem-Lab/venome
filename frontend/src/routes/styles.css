@@ -35,8 +35,7 @@ p {
 }
 
 a {
-	color: var(--color-theme-1);
-	text-decoration: none;
+	color: #ef562f;
 }
 
 a:hover {

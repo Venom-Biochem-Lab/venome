@@ -34,11 +34,11 @@
 
 {#if bib}
 	{#each bib.entries_raw as entry, i}
-		<div class="mt-2" id={`#${entry._id}`}>
-			<div style="font-size: 12px;">
-				[{entry._id}]
+		<div class={i > 0 ? "mt-5" : ""} id={`#${entry._id}`}>
+			<div class="bg-gray-100">
+				[<span style="font-size: 15px;">{entry._id}</span>]
 			</div>
-			<div>
+			<div class="border-l-2 border-gray-400 pl-2">
 				<div style="font-size: 17px;">
 					{#if entry.getFieldAsString("url")}
 						<a href={`${entry.getFieldAsString("url")}`}>
