@@ -7,8 +7,7 @@
 	import { Heading, P, Span } from "flowbite-svelte";
 	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
-
-	import { parseBibFile, normalizeFieldValue, BibEntry } from "bibtex";
+	import References from "$lib/References.svelte";
 
 	const testBib = String.raw`@article{bertucci2022dendromap,
   title={DendroMap: Visual Exploration of Large-Scale Image Datasets for Machine Learning with Treemaps},
@@ -26,9 +25,6 @@
        year={2020},
        month={Jul}
 }`;
-
-	const bib = parseBibFile(testBib);
-	console.log(bib.entries_raw);
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
@@ -51,21 +47,6 @@
 	 */
 	function pdbFileURL(name: string) {
 		return `http://localhost:8000/data/pdbAlphaFold/${name}.pdb`;
-	}
-
-	/**
-	 * @returns string of authors
-	 */
-	function parseAuthors(entry: BibEntry) {
-		const authors = entry.getFieldAsString("author") as string;
-		const parsed = authors.split(" and ").map((author) =>
-			author
-				.split(",")
-				.map((d) => d.trim())
-				.reverse()
-				.join(" ")
-		);
-		return new Intl.ListFormat("en").format(parsed);
 	}
 </script>
 
@@ -137,37 +118,7 @@
 			<!-- References -->
 			<Card title="References" class="max-w-full mt-5 overflow-wrap">
 				<Heading tag="h4">References</Heading>
-				{#if bib.entries_raw.length > 0}
-					{#each bib.entries_raw as entry, i}
-						<div class="flex gap-2 mt-2">
-							<div class="w-5">
-								[{i + 1}]
-							</div>
-							<div>
-								{#if entry.getFieldAsString("url")}
-									<a href={`${entry.getFieldAsString("url")}`}>
-										<b>
-											{entry.getFieldAsString("title")}
-										</b>
-									</a>
-								{:else}
-									<b>
-										{entry.getFieldAsString("title")}
-									</b>
-								{/if}
-								<p>{parseAuthors(entry)}</p>
-								{#if entry.getFieldAsString("journal")}
-									<i>
-										{entry.getFieldAsString("journal")}
-										{entry.getFieldAsString("year")}
-									</i>
-								{/if}
-							</div>
-						</div>
-					{/each}
-				{:else}
-					No references, edit to add some
-				{/if}
+				<References bibtex={testBib} />
 			</Card>
 		</div>
 		<div id="right-side">
@@ -189,6 +140,7 @@
 <style>
 	#left-side {
 		min-width: 100ch;
+		max-width: 100ch;
 	}
 	#right-side {
 	}
