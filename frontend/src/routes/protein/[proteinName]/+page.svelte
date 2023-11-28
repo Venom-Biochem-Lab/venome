@@ -2,12 +2,19 @@
 	import { onMount } from "svelte";
 	import { Backend, type ProteinEntry } from "$lib/backend";
 	import ProteinVis from "$lib/ProteinVis.svelte";
-	import { Button, Card, Spinner } from "flowbite-svelte";
+	import {
+		Button,
+		Card,
+		Dropdown,
+		DropdownItem,
+		Spinner,
+	} from "flowbite-svelte";
 	import Markdown from "$lib/Markdown.svelte";
 	import { Heading, P, Span } from "flowbite-svelte";
 	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
 	import References from "$lib/References.svelte";
+	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
 
 	const testBib = String.raw`@article{bertucci2022dendromap,
   title={DendroMap: Visual Exploration of Large-Scale Image Datasets for Machine Learning with Treemaps},
@@ -60,21 +67,7 @@
 					decorationClass="decoration-8 decoration-primary-400 dark:decoration-primary-600"
 					>{humanReadableProteinName(entry.name)}</Span
 				>
-				<Button
-					outline
-					on:click={async () => {
-						await Backend.deleteProteinEntry(data.proteinName);
-						goto("/");
-					}}>Delete Protein</Button
-				>
-				<Button
-					outline
-					on:click={async () => {
-						goto(`/edit/${entry?.name}`);
-					}}>Edit Protein</Button
-				>
 			</Heading>
-			<P class="mt-4 text-lg">description of the protein here (optional)</P>
 
 			<Card title="Info" class="max-w-full mt-5">
 				<Heading tag="h4">Information</Heading>
@@ -122,7 +115,18 @@
 			</Card>
 		</div>
 		<div id="right-side">
-			<Button href={pdbFileURL(entry.name)}>Download .pdb file</Button>
+			<div class="flex gap-2">
+				<Button>Download <ChevronDownSolid size="xs" class="ml-2" /></Button>
+				<Dropdown>
+					<DropdownItem href={pdbFileURL(entry.name)}>PDB</DropdownItem>
+				</Dropdown>
+				<Button
+					on:click={async () => {
+						goto(`/edit/${entry?.name}`);
+					}}><PenOutline class="mr-2" size="sm" />Edit Entry</Button
+				>
+			</div>
+
 			<div class="mt-2">
 				<ProteinVis format="pdb" url={pdbFileURL(entry.name)} width={750} />
 			</div>

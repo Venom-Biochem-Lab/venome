@@ -101,6 +101,15 @@
 					>Cancel</Button
 				>
 			</div>
+			<div>
+				<Button
+					color="red"
+					on:click={async () => {
+						await Backend.deleteProteinEntry(data.proteinName);
+						goto("/");
+					}}>Delete Protein Entry</Button
+				>
+			</div>
 		</div>
 	{/if}
 </section>
