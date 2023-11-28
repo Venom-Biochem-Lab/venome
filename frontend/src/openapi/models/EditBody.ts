@@ -7,5 +7,6 @@ export type EditBody = {
     oldName: string;
     newName: string;
     newContent?: (string | null);
+    newRefs?: (string | null);
 };
 
