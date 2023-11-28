@@ -1,15 +1,26 @@
 <script lang="ts">
 	/* Put stuff here */
-	import { parseBibFile, type BibEntry } from "bibtex";
+	import { parseBibFile, type BibEntry, BibFilePresenter } from "bibtex";
 
 	export let bibtex = String.raw``;
-	$: bib = parseBibFile(bibtex);
+	let bib: BibFilePresenter;
+	$: {
+		try {
+			bib = parseBibFile(bibtex);
+		} catch (e) {
+			console.log("error in syntax");
+		}
+	}
 
 	/**
 	 * @returns string of authors
 	 */
 	function parseAuthors(entry: BibEntry) {
-		const authors = entry.getFieldAsString("author") as string;
+		const authors = entry.getFieldAsString("author");
+		// if a number or not found, error in parsing, so do nothing
+		if (!authors || typeof authors === "number")
+			return "[error in parsing authors]";
+
 		const parsed = authors.split(" and ").map((author) =>
 			author
 				.split(",")
@@ -21,7 +32,7 @@
 	}
 </script>
 
-{#if bib.entries_raw.length > 0}
+{#if bib}
 	{#each bib.entries_raw as entry, i}
 		<div class="flex gap-2 mt-2">
 			<div class="w-5">
@@ -52,4 +63,6 @@
 			</div>
 		</div>
 	{/each}
+{:else}
+	<span class="text-red-700 font-bold"> BibTeX Syntax Error </span>
 {/if}

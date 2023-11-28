@@ -15,6 +15,7 @@
 	import { goto } from "$app/navigation";
 	import { formatProteinName } from "$lib/format";
 	import Markdown from "$lib/Markdown.svelte";
+	import References from "$lib/References.svelte";
 
 	let name: string = "";
 	let content: string = "";
@@ -87,7 +88,7 @@
 					</div>
 				</TabItem>
 				<TabItem title="preview">
-					{#if content.length > 0}
+					{#if content.length > 0 || refs.length > 0}
 						<Card class="max-w-full">
 							<Heading tag="h4">Article</Heading>
 							<Markdown text={content} />
@@ -95,6 +96,7 @@
 
 						<Card class="max-w-full mt-5">
 							<Heading tag="h4">References</Heading>
+							<References bibtex={String.raw`${refs}`} />
 						</Card>
 					{:else}
 						No content to render/preview
