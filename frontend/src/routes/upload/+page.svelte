@@ -9,9 +9,12 @@
 		Textarea,
 		Tabs,
 		TabItem,
+		Card,
+		Heading,
 	} from "flowbite-svelte";
 	import { goto } from "$app/navigation";
 	import { formatProteinName } from "$lib/format";
+	import Markdown from "$lib/Markdown.svelte";
 
 	let name: string = "";
 	let content: string = "";
@@ -55,8 +58,11 @@
 			{/if}
 		</div>
 
-		<div>
-			<Tabs contentClass="bg-none p-5">
+		<Card
+			class="max-w-full"
+			style="height: 600px; overflow-y: scroll; padding: 0;"
+		>
+			<Tabs contentClass="bg-none p-5" style="underline">
 				<TabItem title="article content" open>
 					<div>
 						<Label for="content" class="block mb-2"
@@ -65,24 +71,38 @@
 						<Textarea
 							id="content"
 							placeholder="Enter markdown..."
-							rows={10}
+							rows={12}
 							bind:value={content}
 						/>
 					</div>
 
-					<div>
+					<div class="mt-3">
 						<Label for="refs" class="block mb-2">References (BibTeX)</Label>
 						<Textarea
 							id="refs"
 							placeholder="Enter bibtex with atleast an id, title, and author (optionally url and year)"
-							rows={10}
+							rows={4}
 							bind:value={refs}
 						/>
 					</div>
 				</TabItem>
-				<TabItem title="preview">...</TabItem>
+				<TabItem title="preview">
+					{#if content.length > 0}
+						<Card class="max-w-full">
+							<Heading tag="h4">Article</Heading>
+							<Markdown text={content} />
+						</Card>
+
+						<Card class="max-w-full mt-5">
+							<Heading tag="h4">References</Heading>
+						</Card>
+					{:else}
+						No content to render/preview
+					{/if}
+				</TabItem>
 			</Tabs>
-		</div>
+		</Card>
+
 		<div>
 			<Fileupload class="w-100" bind:files />
 		</div>
