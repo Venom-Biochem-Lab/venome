@@ -8,18 +8,28 @@
 	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
 
-	import { parseBibFile, normalizeFieldValue } from "bibtex";
+	import { parseBibFile, normalizeFieldValue, BibEntry } from "bibtex";
 
 	const testBib = String.raw`@article{bertucci2022dendromap,
-  title={{\textbf{\large\texttt{DendroMap}}: Visual Exploration of Large-Scale Image Datasets for Machine Learning with Treemaps}},
-  author={\textbf{Bertucci}, \textbf{Donald} and Hamid, Md Montaser and Anand, Yashwanthi and Ruangrotsakun, Anita and Tabatabai, Delyar and Perez, Melissa and Kahng, Minsuk},
+  title={DendroMap: Visual Exploration of Large-Scale Image Datasets for Machine Learning with Treemaps},
+  author={Bertucci, Donald and Hamid, Md Montaser and Anand, Yashwanthi and Ruangrotsakun, Anita and Tabatabai, Delyar and Perez, Melissa and Kahng, Minsuk},
   journal={IEEE Transactions on Visualization and Computer Graphics},
   year={2022},
   publisher={IEEE},
-  doi={10.1109/TVCG.2022.3209425}
+  doi={10.1109/TVCG.2022.3209425}}
+
+  @misc{silverthorne_2020,
+       title={A guide to rust programming language},
+       url={https://about.gitlab.com/blog/2020/07/21/rust-programming-language/},
+       journal={GitLab},
+       author={Silverthorne, Valerie},
+       year={2020},
+       month={Jul}
 }`;
 
 	const bib = parseBibFile(testBib);
+	console.log(bib.entries_raw);
+
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
 	let error = false;
@@ -41,6 +51,21 @@
 	 */
 	function pdbFileURL(name: string) {
 		return `http://localhost:8000/data/pdbAlphaFold/${name}.pdb`;
+	}
+
+	/**
+	 * @returns string of authors
+	 */
+	function parseAuthors(entry: BibEntry) {
+		const authors = entry.getFieldAsString("author") as string;
+		const parsed = authors.split(" and ").map((author) =>
+			author
+				.split(",")
+				.map((d) => d.trim())
+				.reverse()
+				.join(" ")
+		);
+		return new Intl.ListFormat("en").format(parsed);
 	}
 </script>
 
@@ -110,10 +135,36 @@
 			</Card>
 
 			<!-- References -->
-			<Card title="References" class="max-w-full mt-5">
+			<Card title="References" class="max-w-full mt-5 overflow-wrap">
 				<Heading tag="h4">References</Heading>
 				{#if bib.entries_raw.length > 0}
-					References
+					{#each bib.entries_raw as entry, i}
+						<div class="flex gap-2 mt-2">
+							<div class="w-5">
+								[{i + 1}]
+							</div>
+							<div>
+								{#if entry.getFieldAsString("url")}
+									<a href={`${entry.getFieldAsString("url")}`}>
+										<b>
+											{entry.getFieldAsString("title")}
+										</b>
+									</a>
+								{:else}
+									<b>
+										{entry.getFieldAsString("title")}
+									</b>
+								{/if}
+								<p>{parseAuthors(entry)}</p>
+								{#if entry.getFieldAsString("journal")}
+									<i>
+										{entry.getFieldAsString("journal")}
+										{entry.getFieldAsString("year")}
+									</i>
+								{/if}
+							</div>
+						</div>
+					{/each}
 				{:else}
 					No references, edit to add some
 				{/if}
