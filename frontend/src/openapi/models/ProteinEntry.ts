@@ -8,5 +8,6 @@ export type ProteinEntry = {
     length: number;
     mass: number;
     content?: (string | null);
+    refs?: (string | null);
 };
 
