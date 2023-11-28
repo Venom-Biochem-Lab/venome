@@ -110,12 +110,13 @@ def upload_protein_entry(body: UploadBody):
         # save to db
         with Database() as db:
             db.execute(
-                """INSERT INTO proteins (name, length, mass, content) VALUES (%s, %s, %s, %s);""",
+                """INSERT INTO proteins (name, length, mass, content, refs) VALUES (%s, %s, %s, %s, %s);""",
                 [
                     pdb.name,
                     pdb.num_amino_acids,
                     pdb.mass_daltons,
                     str_to_bytea(body.content),
+                    str_to_bytea(body.refs),
                 ],
             )
     except Exception:

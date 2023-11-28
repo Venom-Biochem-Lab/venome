@@ -119,6 +119,7 @@
 							name,
 							pdbFileBase64: base64Encoding,
 							content,
+							refs,
 						});
 						if (err) {
 							uploadError = err;
