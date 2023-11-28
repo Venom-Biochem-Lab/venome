@@ -34,9 +34,9 @@
 
 {#if bib}
 	{#each bib.entries_raw as entry, i}
-		<div class="flex gap-2 mt-2">
-			<div class="w-5">
-				[{i + 1}]
+		<div class="mt-2" id={`#${entry._id}`}>
+			<div style="font-size: 12px;">
+				[{entry._id}]
 			</div>
 			<div>
 				<div style="font-size: 17px;">

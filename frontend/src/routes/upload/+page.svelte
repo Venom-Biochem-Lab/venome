@@ -61,7 +61,7 @@
 
 		<Card
 			class="max-w-full"
-			style="height: 600px; overflow-y: scroll; padding: 0;"
+			style="height: 600px; overflow-y: scroll; padding: 0; padding-top: 4px; padding-left: 4px;"
 		>
 			<Tabs contentClass="bg-none p-5" style="underline">
 				<TabItem title="article content" open>
