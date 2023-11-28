@@ -7,6 +7,8 @@
 		Label,
 		Helper,
 		Textarea,
+		Tabs,
+		TabItem,
 	} from "flowbite-svelte";
 	import { goto } from "$app/navigation";
 	import { formatProteinName } from "$lib/format";
@@ -15,6 +17,7 @@
 	let content: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
 	let uploadError: UploadError | undefined;
+	let refs = "";
 	$: file = files ? files[0] : undefined; // we're just concerned with one file
 	$: console.log(content);
 
@@ -51,14 +54,34 @@
 				>
 			{/if}
 		</div>
+
 		<div>
-			<Label for="content" class="block mb-2">Protein Article</Label>
-			<Textarea
-				id="content"
-				placeholder="Enter markdown..."
-				rows={10}
-				bind:value={content}
-			/>
+			<Tabs contentClass="bg-none p-5">
+				<TabItem title="article content" open>
+					<div>
+						<Label for="content" class="block mb-2"
+							>Protein Article (Markdown)</Label
+						>
+						<Textarea
+							id="content"
+							placeholder="Enter markdown..."
+							rows={10}
+							bind:value={content}
+						/>
+					</div>
+
+					<div>
+						<Label for="refs" class="block mb-2">References (BibTeX)</Label>
+						<Textarea
+							id="refs"
+							placeholder="Enter bibtex with atleast an id, title, and author (optionally url and year)"
+							rows={10}
+							bind:value={refs}
+						/>
+					</div>
+				</TabItem>
+				<TabItem title="preview">...</TabItem>
+			</Tabs>
 		</div>
 		<div>
 			<Fileupload class="w-100" bind:files />
