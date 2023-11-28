@@ -8,6 +8,18 @@
 	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
 
+	import { parseBibFile, normalizeFieldValue } from "bibtex";
+
+	const testBib = String.raw`@article{bertucci2022dendromap,
+  title={{\textbf{\large\texttt{DendroMap}}: Visual Exploration of Large-Scale Image Datasets for Machine Learning with Treemaps}},
+  author={\textbf{Bertucci}, \textbf{Donald} and Hamid, Md Montaser and Anand, Yashwanthi and Ruangrotsakun, Anita and Tabatabai, Delyar and Perez, Melissa and Kahng, Minsuk},
+  journal={IEEE Transactions on Visualization and Computer Graphics},
+  year={2022},
+  publisher={IEEE},
+  doi={10.1109/TVCG.2022.3209425}
+}`;
+
+	const bib = parseBibFile(testBib);
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
 	let error = false;
@@ -93,7 +105,17 @@
 				{#if entry.content !== null}
 					<Markdown text={entry.content} />
 				{:else}
-					No article added
+					No article, edit to add one
+				{/if}
+			</Card>
+
+			<!-- References -->
+			<Card title="References" class="max-w-full mt-5">
+				<Heading tag="h4">References</Heading>
+				{#if bib.entries_raw.length > 0}
+					References
+				{:else}
+					No references, edit to add some
 				{/if}
 			</Card>
 		</div>
