@@ -28,6 +28,7 @@ class ProteinEntry(CamelModel):
     length: int
     mass: float
     content: str | None = None
+    refs: str | None = None
 
 
 class AllEntries(CamelModel):

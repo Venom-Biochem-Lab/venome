@@ -18,7 +18,8 @@ CREATE TABLE proteins (
     name text NOT NULL UNIQUE PRIMARY KEY, -- user specified name of the protein (TODO: consider having a string limit)
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
-    content bytea -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
+    content bytea, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
+    refs bytea -- bibtex references mentioned in the content/article
 );
 
 /*
@@ -45,24 +46,27 @@ CREATE TABLE species (
 /*
  * Inserts example proteins into proteins table
  */
-INSERT INTO proteins (name, length, mass, content) VALUES (
+INSERT INTO proteins (name, length, mass, content, refs) VALUES (
     'Gh_comp271_c0_seq1', 
     0,
     0.0,
+    null,
     null
 );
 
-INSERT INTO proteins (name, length, mass, content) VALUES (
+INSERT INTO proteins (name, length, mass, content, refs) VALUES (
     'Lb17_comp535_c2_seq1', 
     0,
     0.0,
+    null,
     null
 );
 
-INSERT INTO proteins (name, length, mass, content) VALUES (
+INSERT INTO proteins (name, length, mass, content, refs) VALUES (
     'Lh14_comp2336_c0_seq1', 
     0,
     0.0,
+    null,
     null
 );
 

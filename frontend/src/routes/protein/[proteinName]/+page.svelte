@@ -16,23 +16,6 @@
 	import References from "$lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
 
-	const testBib = String.raw`@article{bertucci2022dendromap,
-  title={DendroMap: Visual Exploration of Large-Scale Image Datasets for Machine Learning with Treemaps},
-  author={Bertucci, Donald and Hamid, Md Montaser and Anand, Yashwanthi and Ruangrotsakun, Anita and Tabatabai, Delyar and Perez, Melissa and Kahng, Minsuk},
-  journal={IEEE Transactions on Visualization and Computer Graphics},
-  year={2022},
-  publisher={IEEE},
-  doi={10.1109/TVCG.2022.3209425}}
-
-  @misc{silverthorne_2020,
-       title={A guide to rust programming language},
-       url={https://about.gitlab.com/blog/2020/07/21/rust-programming-language/},
-       journal={GitLab},
-       author={Silverthorne, Valerie},
-       year={2020},
-       month={Jul}
-}`;
-
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
 	let error = false;
@@ -99,20 +82,20 @@
 			</Card>
 
 			<!-- Article / Wiki entry -->
-			<Card title="Info" class="max-w-full mt-5">
-				<Heading tag="h4">Article</Heading>
-				{#if entry.content !== null}
+			{#if entry.content}
+				<Card title="Info" class="max-w-full mt-5">
+					<Heading tag="h4">Article</Heading>
 					<Markdown text={entry.content} />
-				{:else}
-					No article, edit to add one
-				{/if}
-			</Card>
+				</Card>
+			{/if}
 
 			<!-- References -->
-			<Card title="References" class="max-w-full mt-5 overflow-wrap">
-				<Heading tag="h4">References</Heading>
-				<References bibtex={testBib} />
-			</Card>
+			{#if entry.refs}
+				<Card title="References" class="max-w-full mt-5 overflow-wrap">
+					<Heading tag="h4">References</Heading>
+					<References bibtex={entry.refs} />
+				</Card>
+			{/if}
 		</div>
 		<div id="right-side">
 			<div class="flex gap-2">
