@@ -4,13 +4,20 @@
 	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
 	import { formatProteinName, humanReadableProteinName } from "$lib/format";
+	import ArticleEditor from "$lib/ArticleEditor.svelte";
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
 	// and reuploaded/edited
 	export let data;
 
 	let name: string;
-	let content: string | null;
+
+	// store original too so we can see if the user changed/edited the content
+	let ogContent: string;
+	let content: string;
+	let ogRefs: string;
+	let refs: string;
+
 	let uploadError: UploadError | undefined;
 	let entry: ProteinEntry | null = null;
 	let error = false;
@@ -26,7 +33,12 @@
 			error = true;
 		} else {
 			name = humanReadableProteinName(entry.name);
-			content = entry.content!;
+
+			content = entry.content ?? "";
+			ogContent = content; // log original content
+
+			refs = entry.refs ?? "";
+			ogRefs = refs; // log original refs
 		}
 	});
 </script>
@@ -54,13 +66,7 @@
 				{/if}
 			</div>
 			<div>
-				<Label for="content" class="block mb-2">Protein Article</Label>
-				<Textarea
-					id="content"
-					placeholder="Enter markdown..."
-					rows={10}
-					bind:value={content}
-				/>
+				<ArticleEditor bind:content bind:refs />
 			</div>
 			<div>
 				<Button
@@ -68,7 +74,8 @@
 						if (entry) {
 							if (
 								name === humanReadableProteinName(entry.name) &&
-								content === entry.content
+								content === ogContent &&
+								refs === ogRefs
 							)
 								return; // no changes no edits!
 
@@ -76,7 +83,8 @@
 								const err = await Backend.editProteinEntry({
 									newName: name,
 									oldName: entry.name,
-									newContent: content,
+									newContent: content !== ogContent ? content : undefined,
+									newRefs: refs !== ogRefs ? refs : undefined,
 								});
 								if (err) {
 									uploadError = err;
@@ -91,7 +99,8 @@
 						}
 					}}
 					disabled={(name === humanReadableProteinName(entry.name) &&
-						content === entry.content) ||
+						content === ogContent &&
+						refs === ogRefs) ||
 						name.length === 0}>Edit Protein</Button
 				>
 

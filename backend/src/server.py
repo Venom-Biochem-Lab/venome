@@ -137,21 +137,33 @@ def edit_protein_entry(body: EditBody):
             os.rename(pdb_file_name(body.old_name), pdb_file_name(body.new_name))
 
         with Database() as db:
-            # if we have content/markdown, then update it, otherwise just update the name
-            if body.new_content is not None:
+            if body.new_name != body.old_name:
                 db.execute(
-                    """UPDATE proteins SET name = %s, content = %s WHERE name = %s""",
+                    """UPDATE proteins SET name = %s WHERE name = %s""",
                     [
                         body.new_name,
+                        body.old_name,
+                    ],
+                )
+
+            if body.new_content is not None:
+                db.execute(
+                    """UPDATE proteins SET content = %s WHERE name = %s""",
+                    [
                         str_to_bytea(body.new_content),
                         body.old_name,
                     ],
                 )
-            else:
+
+            if body.new_refs is not None:
                 db.execute(
-                    """UPDATE proteins SET name = %s WHERE name = %s""",
-                    [body.new_name, body.old_name],
+                    """UPDATE proteins SET refs = %s WHERE name = %s""",
+                    [
+                        str_to_bytea(body.new_refs),
+                        body.old_name,
+                    ],
                 )
+
     except Exception:
         return UploadError.WRITE_ERROR
 
