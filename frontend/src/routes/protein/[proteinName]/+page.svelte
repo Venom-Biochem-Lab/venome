@@ -126,8 +126,7 @@
 
 <style>
 	#left-side {
-		min-width: 100ch;
-		max-width: 100ch;
+		width: 825px;
 	}
 	#right-side {
 	}

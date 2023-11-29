@@ -16,6 +16,23 @@
 	color: var(--color-text);
 }
 
+html {
+	scroll-behavior: smooth;
+}
+
+/* when I href an id and it scrolls to an element, highlight it momentarily */
+:target {
+	animation: target-fade 1s;
+}
+@keyframes target-fade {
+	from {
+		background-color: #ef562f;
+	}
+	to {
+		background-color: transparent;
+	}
+}
+
 body {
 	margin: 0;
 }
