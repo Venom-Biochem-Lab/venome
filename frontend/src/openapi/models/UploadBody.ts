@@ -8,4 +8,3 @@ export type UploadBody = {
     content: string;
     pdbFileBase64: string;
 };
-

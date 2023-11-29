@@ -8,4 +8,3 @@ export type EditBody = {
     newName: string;
     newContent?: (string | null);
 };
-

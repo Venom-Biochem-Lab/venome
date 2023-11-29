@@ -9,4 +9,3 @@ export type ProteinEntry = {
     mass: number;
     content?: (string | null);
 };
-
