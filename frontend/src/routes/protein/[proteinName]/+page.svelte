@@ -2,11 +2,19 @@
 	import { onMount } from "svelte";
 	import { Backend, type ProteinEntry } from "$lib/backend";
 	import ProteinVis from "$lib/ProteinVis.svelte";
-	import { Button, Card, Spinner } from "flowbite-svelte";
+	import {
+		Button,
+		Card,
+		Dropdown,
+		DropdownItem,
+		Spinner,
+	} from "flowbite-svelte";
 	import Markdown from "$lib/Markdown.svelte";
 	import { Heading, P, Span } from "flowbite-svelte";
 	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
+	import References from "$lib/References.svelte";
+	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
@@ -42,21 +50,7 @@
 					decorationClass="decoration-8 decoration-primary-400 dark:decoration-primary-600"
 					>{humanReadableProteinName(entry.name)}</Span
 				>
-				<Button
-					outline
-					on:click={async () => {
-						await Backend.deleteProteinEntry(data.proteinName);
-						goto("/");
-					}}>Delete Protein</Button
-				>
-				<Button
-					outline
-					on:click={async () => {
-						goto(`/edit/${entry?.name}`);
-					}}>Edit Protein</Button
-				>
 			</Heading>
-			<P class="mt-4 text-lg">description of the protein here (optional)</P>
 
 			<Card title="Info" class="max-w-full mt-5">
 				<Heading tag="h4">Information</Heading>
@@ -88,17 +82,34 @@
 			</Card>
 
 			<!-- Article / Wiki entry -->
-			<Card title="Info" class="max-w-full mt-5">
-				<Heading tag="h4">Article</Heading>
-				{#if entry.content !== null}
+			{#if entry.content}
+				<Card title="Info" class="max-w-full mt-5">
+					<Heading tag="h4">Article</Heading>
 					<Markdown text={entry.content} />
-				{:else}
-					No article added
-				{/if}
-			</Card>
+				</Card>
+			{/if}
+
+			<!-- References -->
+			{#if entry.refs}
+				<Card title="References" class="max-w-full mt-5 overflow-wrap">
+					<Heading tag="h4">References</Heading>
+					<References bibtex={entry.refs} />
+				</Card>
+			{/if}
 		</div>
 		<div id="right-side">
-			<Button href={pdbFileURL(entry.name)}>Download .pdb file</Button>
+			<div class="flex gap-2">
+				<Button>Download <ChevronDownSolid size="xs" class="ml-2" /></Button>
+				<Dropdown>
+					<DropdownItem href={pdbFileURL(entry.name)}>PDB</DropdownItem>
+				</Dropdown>
+				<Button
+					on:click={async () => {
+						goto(`/edit/${entry?.name}`);
+					}}><PenOutline class="mr-2" size="sm" />Edit Entry</Button
+				>
+			</div>
+
 			<div class="mt-2">
 				<ProteinVis format="pdb" url={pdbFileURL(entry.name)} width={750} />
 			</div>
@@ -115,7 +126,7 @@
 
 <style>
 	#left-side {
-		min-width: 100ch;
+		width: 825px;
 	}
 	#right-side {
 	}

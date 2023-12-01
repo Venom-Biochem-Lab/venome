@@ -1,33 +1,16 @@
 <script lang="ts">
 	import { Backend, UploadError } from "$lib/backend";
-	import {
-		Fileupload,
-		Button,
-		Input,
-		Label,
-		Helper,
-		Textarea,
-	} from "flowbite-svelte";
+	import { Fileupload, Button, Input, Label, Helper } from "flowbite-svelte";
 	import { goto } from "$app/navigation";
-	import { formatProteinName } from "$lib/format";
+	import { formatProteinName, fileToString } from "$lib/format";
+	import ArticleEditor from "$lib/ArticleEditor.svelte";
 
 	let name: string = "";
 	let content: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
 	let uploadError: UploadError | undefined;
+	let refs = "";
 	$: file = files ? files[0] : undefined; // we're just concerned with one file
-	$: console.log(content);
-
-	function fileToBase64(f: File): Promise<string> {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.readAsDataURL(f);
-			reader.onload = () => {
-				resolve(reader.result as string);
-			};
-			reader.onerror = reject;
-		});
-	}
 </script>
 
 <section>
@@ -51,15 +34,11 @@
 				>
 			{/if}
 		</div>
+
 		<div>
-			<Label for="content" class="block mb-2">Protein Article</Label>
-			<Textarea
-				id="content"
-				placeholder="Enter markdown..."
-				rows={10}
-				bind:value={content}
-			/>
+			<ArticleEditor bind:content bind:refs />
 		</div>
+
 		<div>
 			<Fileupload class="w-100" bind:files />
 		</div>
@@ -68,12 +47,13 @@
 				on:click={async () => {
 					if (file === undefined || name === "") return; // no file selected
 
-					const base64Encoding = await fileToBase64(file);
+					const pdbFileStr = await fileToString(file);
 					try {
 						const err = await Backend.uploadProteinEntry({
 							name,
-							pdbFileBase64: base64Encoding,
+							pdbFileStr,
 							content,
+							refs,
 						});
 						if (err) {
 							uploadError = err;
