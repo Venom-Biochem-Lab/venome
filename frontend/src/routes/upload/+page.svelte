@@ -7,12 +7,9 @@
 		Label,
 		Helper,
 		Textarea,
-		Dropdown, 
-		DropdownItem,
 	} from "flowbite-svelte";
 	import { goto } from "$app/navigation";
 	import { formatProteinName } from "$lib/format";
-  	import { ChevronDownSolid } from 'flowbite-svelte-icons';
 
 	let name: string = "";
 	let content: string = "";
@@ -53,17 +50,6 @@
 					>This name already exists, please create a unique name and resubmit</Helper
 				>
 			{/if}
-		</div>
-
-		<div>
-			<Label for="organism-name" class="blcok mb-2">Organism</Label>
-			<Button>Species...</Button>
-			<Dropdown>
-				<DropdownItem>Ganaspis hookeri</DropdownItem>
-				<DropdownItem>Leptopilina boulardi</DropdownItem>
-				<DropdownItem>Leptopilina heterotoma</DropdownItem>
-				<DropdownItem>Other</DropdownItem>
-			</Dropdown>
 		</div>
 
 		<div>
