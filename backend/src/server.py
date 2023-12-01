@@ -44,9 +44,9 @@ def search_entries(query: str):
         try:
             entries_sql = db.execute_return(
                 """SELECT name, length, mass FROM proteins
-                WHERE name ILIKE \'%{}%\'""".format(query)
+                WHERE name ILIKE %s""",
+                [f"%{query}%"],
             )
-            log.warn("log test")
             log.warn(entries_sql)
 
             # if we got a result back
