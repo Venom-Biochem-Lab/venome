@@ -113,8 +113,6 @@ def delete_protein_entry(protein_name: str):
 # None return means success
 @app.post("/protein-upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody):
-    body.name = body.name.replace(" ", "_")
-
     # check that the name is not already taken in the DB
     if protein_name_taken(body.name):
         return UploadError.NAME_NOT_UNIQUE
@@ -150,9 +148,6 @@ def upload_protein_entry(body: UploadBody):
 # TODO: add more edits, now only does name and content edits
 @app.put("/protein-edit", response_model=UploadError | None)
 def edit_protein_entry(body: EditBody):
-    body.new_name = body.new_name.replace(" ", "_")
-    body.old_name = body.old_name.replace(" ", "_")
-
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
 

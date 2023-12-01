@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import type { ProteinEntry } from "$lib/backend";
-	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
+	import { numberWithCommas } from "$lib/format";
 	import {
 		Table,
 		TableBody,
@@ -34,8 +34,7 @@
 							}}
 						>
 							<TableBodyCell
-								><span class="text-primary-700"
-									>{humanReadableProteinName(entry.name)}</span
+								><span class="text-primary-700">{entry.name}</span
 								></TableBodyCell
 							>
 							<TableBodyCell>{entry.length}</TableBodyCell>
@@ -56,7 +55,7 @@
 						on:click={() => goto(`/protein/${entry.name}`)}
 					>
 						<div class="name text-primary-700">
-							{humanReadableProteinName(entry.name)}
+							{entry.name}
 						</div>
 						<div class="description">
 							Length: {entry.length}, Mass (Da): {numberWithCommas(entry.mass)}

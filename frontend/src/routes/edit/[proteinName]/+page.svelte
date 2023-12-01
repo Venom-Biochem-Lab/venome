@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { Backend, UploadError, type ProteinEntry } from "$lib/backend";
-	import { Button, Input, Label, Helper, Textarea } from "flowbite-svelte";
+	import { Button, Input, Label, Helper } from "flowbite-svelte";
 	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
-	import { formatProteinName, humanReadableProteinName } from "$lib/format";
 	import ArticleEditor from "$lib/ArticleEditor.svelte";
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
@@ -32,7 +31,7 @@
 		if (entry == null) {
 			error = true;
 		} else {
-			name = humanReadableProteinName(entry.name);
+			name = entry.name;
 
 			content = entry.content ?? "";
 			ogContent = content; // log original content
@@ -73,7 +72,7 @@
 					on:click={async () => {
 						if (entry) {
 							if (
-								name === humanReadableProteinName(entry.name) &&
+								name === entry.name &&
 								content === ogContent &&
 								refs === ogRefs
 							)
@@ -91,23 +90,20 @@
 									console.log(uploadError);
 								} else {
 									// success, so we can go back!
-									goto(`/protein/${formatProteinName(name)}`);
+									goto(`/protein/${name}`);
 								}
 							} catch (e) {
 								console.log(e);
 							}
 						}
 					}}
-					disabled={(name === humanReadableProteinName(entry.name) &&
+					disabled={(name === entry.name &&
 						content === ogContent &&
 						refs === ogRefs) ||
 						name.length === 0}>Edit Protein</Button
 				>
 
-				<Button
-					outline
-					on:click={() => goto(`/protein/${formatProteinName(name)}`)}
-					>Cancel</Button
+				<Button outline on:click={() => goto(`/protein/${name}`)}>Cancel</Button
 				>
 			</div>
 			<div>

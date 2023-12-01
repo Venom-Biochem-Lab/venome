@@ -10,8 +10,8 @@
 		Spinner,
 	} from "flowbite-svelte";
 	import Markdown from "$lib/Markdown.svelte";
-	import { Heading, P, Span } from "flowbite-svelte";
-	import { humanReadableProteinName, numberWithCommas } from "$lib/format";
+	import { Heading, Span } from "flowbite-svelte";
+	import { numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
 	import References from "$lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
@@ -48,7 +48,7 @@
 				<Span
 					underline
 					decorationClass="decoration-8 decoration-primary-400 dark:decoration-primary-600"
-					>{humanReadableProteinName(entry.name)}</Span
+					>{entry.name}</Span
 				>
 			</Heading>
 

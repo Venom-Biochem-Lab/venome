@@ -6,14 +6,6 @@ export function numberWithCommas(x: number, round = 0) {
 	return formatter.format(+x.toFixed(round));
 }
 
-export function formatProteinName(name: string) {
-	return name.replaceAll(" ", "_");
-}
-
-export function humanReadableProteinName(name: string) {
-	return name.replaceAll("_", " ");
-}
-
 export function fileToString(f: File): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();

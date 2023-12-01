@@ -11,7 +11,7 @@
 	} from "flowbite-svelte";
 	import { ChevronDownSolid } from "flowbite-svelte-icons";
 	import { goto } from "$app/navigation";
-	import { formatProteinName, fileToString } from "$lib/format";
+	import { fileToString } from "$lib/format";
 	import ArticleEditor from "$lib/ArticleEditor.svelte";
 
 	type Organism = {
@@ -97,7 +97,7 @@
 							console.log(uploadError);
 						} else {
 							// success, so we can go back!
-							goto(`/protein/${formatProteinName(name)}`);
+							goto(`/protein/${name}`);
 						}
 					} catch (e) {
 						console.log(e);
