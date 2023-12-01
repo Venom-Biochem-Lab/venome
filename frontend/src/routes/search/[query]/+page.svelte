@@ -18,13 +18,13 @@
 
 	export let data;
 	// at some point, this should be change to request from the backend
-	let allEntries: ProteinEntry[] | null = null;
+	let searchedEntries: ProteinEntry[] | null = null;
 	onMount(async () => {
 		console.log("Requesting", data.query, "info from backend");
 		// calls get_all_entries() from backend
 		// to generate this Backend object run `./run.sh gen_api` for newly created server functions
-		allEntries = await Backend.searchEntries(data.query);
-		console.log(allEntries);
+		searchedEntries = await Backend.searchEntries(data.query);
+		console.log(searchedEntries);
 	});
 </script>
 
@@ -43,8 +43,8 @@
 					<TableHeadCell>Mass (Da)</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
-					{#if allEntries}
-						{#each allEntries as entry}
+					{#if searchedEntries}
+						{#each searchedEntries as entry}
 							<TableBodyRow
 								class="cursor-pointer hover:bg-gray-100"
 								on:click={() => {
@@ -66,8 +66,8 @@
 		</TabItem>
 		<TabItem title="Gallery">
 			<div class="entries">
-				{#if allEntries}
-					{#each allEntries as entry}
+				{#if searchedEntries}
+					{#each searchedEntries as entry}
 						<Card
 							class="hover:shadow-lg cursor-pointer"
 							title="Click to see {entry.name}"
