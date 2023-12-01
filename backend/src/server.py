@@ -35,6 +35,30 @@ def get_all_entries():
             log.error(e)
 
 
+@app.get("/search-entries/{query:str}", response_model=list[ProteinEntry] | None)
+def search_entries(query: str):
+    """Gets a list of protein entries by a search string
+    Returns: list[ProteinEntry] if found | None if not found
+    """
+    with Database() as db:
+        try:
+            entries_sql = db.execute_return(
+                """SELECT name, length, mass FROM proteins
+                WHERE name ILIKE \'%{}%\'""".format(query)
+            )
+            log.warn("log test")
+            log.warn(entries_sql)
+
+            # if we got a result back
+            if entries_sql is not None:
+                return [
+                    ProteinEntry(name=name, length=length, mass=mass)
+                    for name, length, mass in entries_sql
+                ]
+        except Exception as e:
+            log.error(e)
+
+
 @app.get("/protein-entry/{protein_name:str}", response_model=ProteinEntry | None)
 def get_protein_entry(protein_name: str):
     """Get a single protein entry by its id
@@ -43,7 +67,7 @@ def get_protein_entry(protein_name: str):
     with Database() as db:
         try:
             entry_sql = db.execute_return(
-                """SELECT name, length, mass, content FROM proteins
+                """SELECT name, length, mass, content, refs FROM proteins
                     WHERE name = %s""",
                 [protein_name],
             )
@@ -53,13 +77,16 @@ def get_protein_entry(protein_name: str):
             if entry_sql is not None and len(entry_sql) != 0:
                 # return the only entry
                 only_returned_entry = entry_sql[0]
-                name, length, mass, content = only_returned_entry
-                # if bytes are present, decode them into a string
+                name, length, mass, content, refs = only_returned_entry
+
+                # if byte arrays are present, decode them into a string
                 if content is not None:
                     content = bytea_to_str(content)
+                if refs is not None:
+                    refs = bytea_to_str(refs)
 
                 return ProteinEntry(
-                    name=name, length=length, mass=mass, content=content
+                    name=name, length=length, mass=mass, content=content, refs=refs
                 )
 
         except Exception as e:
@@ -95,7 +122,7 @@ def upload_protein_entry(body: UploadBody):
     # if name is unique, save the pdb file and add the entry to the database
     try:
         # TODO: consider somehow sending the file as a stream instead of a b64 string or send as regular string
-        pdb = parse_protein_pdb(body.name, body.pdb_file_base64, encoding="b64")
+        pdb = parse_protein_pdb(body.name, body.pdb_file_str)
     except Exception:
         return UploadError.PARSE_ERROR
 
@@ -107,12 +134,13 @@ def upload_protein_entry(body: UploadBody):
         # save to db
         with Database() as db:
             db.execute(
-                """INSERT INTO proteins (name, length, mass, content) VALUES (%s, %s, %s, %s);""",
+                """INSERT INTO proteins (name, length, mass, content, refs) VALUES (%s, %s, %s, %s, %s);""",
                 [
                     pdb.name,
                     pdb.num_amino_acids,
                     pdb.mass_daltons,
                     str_to_bytea(body.content),
+                    str_to_bytea(body.refs),
                 ],
             )
     except Exception:
@@ -133,21 +161,33 @@ def edit_protein_entry(body: EditBody):
             os.rename(pdb_file_name(body.old_name), pdb_file_name(body.new_name))
 
         with Database() as db:
-            # if we have content/markdown, then update it, otherwise just update the name
-            if body.new_content is not None:
+            if body.new_name != body.old_name:
                 db.execute(
-                    """UPDATE proteins SET name = %s, content = %s WHERE name = %s""",
+                    """UPDATE proteins SET name = %s WHERE name = %s""",
                     [
                         body.new_name,
+                        body.old_name,
+                    ],
+                )
+
+            if body.new_content is not None:
+                db.execute(
+                    """UPDATE proteins SET content = %s WHERE name = %s""",
+                    [
                         str_to_bytea(body.new_content),
                         body.old_name,
                     ],
                 )
-            else:
+
+            if body.new_refs is not None:
                 db.execute(
-                    """UPDATE proteins SET name = %s WHERE name = %s""",
-                    [body.new_name, body.old_name],
+                    """UPDATE proteins SET refs = %s WHERE name = %s""",
+                    [
+                        str_to_bytea(body.new_refs),
+                        body.old_name,
+                    ],
                 )
+
     except Exception:
         return UploadError.WRITE_ERROR
 

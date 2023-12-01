@@ -10,3 +10,14 @@ export function formatProteinName(name: string) {
 export function humanReadableProteinName(name: string) {
 	return name.replaceAll("_", " ");
 }
+
+export function fileToString(f: File): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsText(f);
+		reader.onload = () => {
+			resolve(reader.result as string);
+		};
+		reader.onerror = reject;
+	});
+}

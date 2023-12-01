@@ -28,6 +28,7 @@ class ProteinEntry(CamelModel):
     length: int
     mass: float
     content: str | None = None
+    refs: str | None = None
 
 
 class AllEntries(CamelModel):
@@ -37,7 +38,8 @@ class AllEntries(CamelModel):
 class UploadBody(CamelModel):
     name: str
     content: str  # markdown content from user
-    pdb_file_base64: str
+    refs: str  # references used in content (bibtex form)
+    pdb_file_str: str
 
 
 class UploadError(str, enum.Enum):
@@ -55,3 +57,4 @@ class EditBody(CamelModel):
     old_name: str  # so we can identify the exact row we need to change
     new_name: str
     new_content: str | None = None
+    new_refs: str | None = None

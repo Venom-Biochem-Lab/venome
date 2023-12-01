@@ -6,6 +6,6 @@
 export type UploadBody = {
     name: string;
     content: string;
-    pdbFileBase64: string;
+    refs: string;
+    pdbFileStr: string;
 };
-
