@@ -1,10 +1,31 @@
 <script lang="ts">
 	import { Backend, UploadError } from "$lib/backend";
-	import { Fileupload, Button, Input, Label, Helper } from "flowbite-svelte";
+	import {
+		Fileupload,
+		Button,
+		Input,
+		Label,
+		Helper,
+		Dropdown,
+		DropdownItem,
+	} from "flowbite-svelte";
+	import { ChevronDownSolid } from "flowbite-svelte-icons";
 	import { goto } from "$app/navigation";
 	import { formatProteinName, fileToString } from "$lib/format";
 	import ArticleEditor from "$lib/ArticleEditor.svelte";
 
+	type Organism = {
+		genus: string;
+		species: string;
+	};
+
+	const organisms: Organism[] = [
+		{ genus: "Ganaspis", species: "hookeri" },
+		{ genus: "Leptopilina", species: "boulardi" },
+		{ genus: "Leptopilina", species: "heterotoma" },
+	];
+
+	let organism: Organism;
 	let name: string = "";
 	let content: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
@@ -33,6 +54,22 @@
 					>This name already exists, please create a unique name and resubmit</Helper
 				>
 			{/if}
+		</div>
+
+		<!-- Species dropdown (hardcoded, not hooked up to backend for now) -->
+		<div>
+			<Label for="organism-name" class="blcok mb-2">Organism</Label>
+			<Button>Select Organism<ChevronDownSolid size="xs" class="ml-2" /></Button
+			>
+			<Dropdown>
+				{#each organisms as dropdownOrganism}
+					<DropdownItem
+						on:click={() => {
+							organism = dropdownOrganism;
+						}}>{dropdownOrganism.genus} {dropdownOrganism.species}</DropdownItem
+					>
+				{/each}
+			</Dropdown>
 		</div>
 
 		<div>
