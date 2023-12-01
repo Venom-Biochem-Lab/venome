@@ -54,6 +54,18 @@
 				>
 			{/if}
 		</div>
+
+		<div>
+			<Label for="organism-name" class="blcok mb-2">Organism</Label>
+			<Button>Species...</Button>
+			<Dropdown>
+				<DropdownItem>Ganaspis hookeri</DropdownItem>
+				<DropdownItem>Leptopilina boulardi</DropdownItem>
+				<DropdownItem>Leptopilina heterotoma</DropdownItem>
+				<DropdownItem>Other</DropdownItem>
+			</Dropdown>
+		</div>
+
 		<div>
 			<Label for="content" class="block mb-2">Protein Article</Label>
 			<Textarea
