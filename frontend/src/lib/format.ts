@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { writable } from "svelte/store";
+import { writable, type Writable } from "svelte/store";
 
 export function numberWithCommas(x: number, round = 0) {
 	const formatter = new Intl.NumberFormat("en-US");
