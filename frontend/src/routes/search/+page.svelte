@@ -5,15 +5,15 @@
 	import ListProteins from "$lib/ListProteins.svelte";
 	import { Search, Button } from "flowbite-svelte";
 	import { page } from "$app/stores";
+	import { writableUrlParams } from "$lib/format";
 
-	let searchBy = "";
+	const nameSearch = writableUrlParams($page.url.searchParams, "name");
+	let searchBy = $nameSearch;
 
 	let allEntries: ProteinEntry[] | null = null;
 	onMount(async () => {
 		// if user provided a name like /search?name=abc, parse it
-		const name = $page.url.searchParams.get("name");
-		if (name) {
-			searchBy = name;
+		if (searchBy) {
 			allEntries = await Backend.searchEntries(searchBy);
 		} else {
 			allEntries = await Backend.getAllEntries();
@@ -32,10 +32,10 @@
 		on:submit={async () => {
 			if (searchBy) {
 				allEntries = await Backend.searchEntries(searchBy);
+				$nameSearch = searchBy; // update url param
 			} else {
 				allEntries = await Backend.getAllEntries();
 			}
-			$page.url.searchParams.set("name", searchBy); // update url
 		}}
 	>
 		<Search
