@@ -43,20 +43,22 @@ def decode_base64(b64_header_and_data: str):
     return b64decode(b64_data_only).decode("utf-8")
 
 
-def pdb_file_name(name: str):
-    return f"{os.path.join('src/data/pdbAlphaFold', name)}.pdb"
+def pdb_file_name(protein_name: str):
+    return os.path.join("src/data/pdbAlphaFold", protein_name) + ".pdb"
 
 
-def parse_protein_pdb(name: str, file_contents: str, encoding="str"):
+def parse_protein_pdb(name: str, file_contents: str = "", encoding="str"):
     if encoding == "str":
         return PDB(file_contents, name)
     elif encoding == "b64":
         return PDB(decode_base64(file_contents), name)
+    elif encoding == "file":
+        return PDB(open(pdb_file_name(name), "r").read(), name)
     else:
         raise ValueError(f"Invalid encoding: {encoding}")
 
 
-def protein_name_taken(name: str):
+def protein_name_found(name: str):
     """Checks if a protein name already exists in the database
     Returns: True if exists | False if not exists
     """
@@ -96,3 +98,7 @@ def save_protein(pdb: PDB):
             )
         except Exception as e:
             raise e
+
+
+def pdb_to_fasta(pdb: PDB):
+    return ">{}\n{}".format(pdb.name, "".join(pdb.amino_acids()))

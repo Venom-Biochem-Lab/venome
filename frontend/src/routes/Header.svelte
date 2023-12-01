@@ -11,7 +11,7 @@
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/">Search</a>
+			<a href="/search">Search</a>
 			<a href="/upload">Upload</a>
 		</div>
 	</div>
