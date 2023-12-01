@@ -7,9 +7,12 @@
 		Label,
 		Helper,
 		Textarea,
+		Dropdown, 
+		DropdownItem,
 	} from "flowbite-svelte";
 	import { goto } from "$app/navigation";
 	import { formatProteinName } from "$lib/format";
+  	import { ChevronDownSolid } from 'flowbite-svelte-icons';
 
 	let name: string = "";
 	let content: string = "";
