@@ -4,11 +4,9 @@
 	import type { ProteinEntry } from "$lib/backend";
 	import ListProteins from "$lib/ListProteins.svelte";
 
-	export let data; // get url param
-
-	let searchedEntries: ProteinEntry[] | null = null;
+	let allEntries: ProteinEntry[] | null = null;
 	onMount(async () => {
-		searchedEntries = await Backend.searchEntries(data.query);
+		allEntries = await Backend.getAllEntries();
 	});
 </script>
 
@@ -17,5 +15,5 @@
 </svelte:head>
 
 <section>
-	<ListProteins allEntries={searchedEntries} />
+	<ListProteins {allEntries} />
 </section>
