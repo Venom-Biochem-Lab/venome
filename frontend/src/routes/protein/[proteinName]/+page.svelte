@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, type ProteinEntry } from "$lib/backend";
+	import { Backend, BACKEND_URL, type ProteinEntry } from "$lib/backend";
 	import ProteinVis from "$lib/ProteinVis.svelte";
 	import {
 		Button,
@@ -15,6 +15,8 @@
 	import { goto } from "$app/navigation";
 	import References from "$lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
+
+	const fileDownloadDropdown = ["pdb", "fasta"];
 
 	export let data; // linked to +page.ts return (aka the id)
 	let entry: ProteinEntry | null = null;
@@ -31,13 +33,6 @@
 
 		console.log("Received", entry);
 	});
-
-	/**
-	 * @todo there should be a better way to do this since we might change host and port when deployed
-	 */
-	function pdbFileURL(name: string) {
-		return `http://localhost:8000/data/pdbAlphaFold/${name}.pdb`;
-	}
 </script>
 
 <section class="flex flex-wrap gap-10">
@@ -101,7 +96,11 @@
 			<div class="flex gap-2">
 				<Button>Download <ChevronDownSolid size="xs" class="ml-2" /></Button>
 				<Dropdown>
-					<DropdownItem href={pdbFileURL(entry.name)}>PDB</DropdownItem>
+					{#each fileDownloadDropdown as fileType}
+						<DropdownItem href="{BACKEND_URL}/{fileType}/{entry.name}"
+							>{fileType.toUpperCase()}</DropdownItem
+						>
+					{/each}
 				</Dropdown>
 				<Button
 					on:click={async () => {
@@ -111,7 +110,11 @@
 			</div>
 
 			<div class="mt-2">
-				<ProteinVis format="pdb" url={pdbFileURL(entry.name)} width={750} />
+				<ProteinVis
+					format="pdb"
+					url="http://localhost:8000/pdb/{entry.name}"
+					width={750}
+				/>
 			</div>
 		</div>
 	{:else if !error}
