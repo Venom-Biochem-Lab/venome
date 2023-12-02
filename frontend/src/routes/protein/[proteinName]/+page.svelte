@@ -56,12 +56,8 @@
 						{entry.speciesName}
 					</div>
 
-					<div>Structure</div>
-					<div>
-						<a href="https://deepmind.google/technologies/alphafold/"
-							>AlphaFold</a
-						>
-					</div>
+					<div>Method</div>
+					<div>AlphaFold 2</div>
 
 					<div>Length</div>
 					<div><code>{entry.length}</code></div>
