@@ -49,7 +49,6 @@
 			{/if}
 		</div>
 
-		<!-- Species dropdown (hardcoded, not hooked up to backend for now) -->
 		<div class="flex gap-5 mb-2">
 			<div>
 				<Label for="species-select" class="mb-2">Select a Species</Label>

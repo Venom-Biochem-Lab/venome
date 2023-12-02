@@ -27,7 +27,7 @@ class ProteinEntry(CamelModel):
     name: str
     length: int
     mass: float
-    species_name: str | None = None
+    species_name: str
     content: str | None = None
     refs: str | None = None
 
@@ -58,5 +58,7 @@ class UploadStatus(CamelModel):
 class EditBody(CamelModel):
     old_name: str  # so we can identify the exact row we need to change
     new_name: str
+    old_species_name: str  # so we can identify the exact row we need to change
+    new_species_name: str
     new_content: str | None = None
     new_refs: str | None = None

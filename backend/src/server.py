@@ -213,8 +213,8 @@ def edit_protein_entry(body: EditBody):
         if body.new_name != body.old_name:
             os.rename(pdb_file_name(body.old_name), pdb_file_name(body.new_name))
 
-        name_changed = False
         with Database() as db:
+            name_changed = False
             if body.new_name != body.old_name:
                 db.execute(
                     """UPDATE proteins SET name = %s WHERE name = %s""",
@@ -224,6 +224,15 @@ def edit_protein_entry(body: EditBody):
                     ],
                 )
                 name_changed = True
+
+            if body.new_species_name != body.old_species_name:
+                db.execute(
+                    """UPDATE species_proteins SET species_id = (SELECT id FROM species WHERE name = %s) WHERE protein_id = (SELECT id FROM proteins WHERE name = %s)""",
+                    [
+                        body.new_species_name,
+                        body.old_name if not name_changed else body.new_name,
+                    ],
+                )
 
             if body.new_content is not None:
                 db.execute(
