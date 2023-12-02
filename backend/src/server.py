@@ -140,17 +140,6 @@ def delete_protein_entry(protein_name: str):
         except Exception as e:
             log.error(e)
 
-        # remove species if it has no more proteins
-        # note that it automatically removes the species from the join table
-        # don't do this quite yet, since we want to keep our three hard coded species
-        # try:
-        #     db.execute(
-        #         """DELETE FROM species
-        #             WHERE id NOT IN (SELECT species_id FROM species_proteins)"""
-        #     )
-        # except Exception as e:
-        #     log.error(e)
-
 
 # None return means success
 @app.post("/protein-upload", response_model=UploadError | None)
