@@ -21,6 +21,7 @@
 		<Table>
 			<TableHead>
 				<TableHeadCell>Protein name</TableHeadCell>
+				<TableHeadCell>Organism</TableHeadCell>
 				<TableHeadCell>Length</TableHeadCell>
 				<TableHeadCell>Mass (Da)</TableHeadCell>
 			</TableHead>
@@ -37,6 +38,7 @@
 								><span class="text-primary-700">{entry.name}</span
 								></TableBodyCell
 							>
+							<TableBodyCell>{entry.speciesName}</TableBodyCell>
 							<TableBodyCell>{entry.length}</TableBodyCell>
 							<TableBodyCell>{numberWithCommas(entry.mass)}</TableBodyCell>
 						</TableBodyRow>

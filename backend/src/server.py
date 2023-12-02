@@ -40,16 +40,19 @@ def get_all_entries():
     """
     with Database() as db:
         try:
-            entries_sql = db.execute_return(
-                """SELECT name, length, mass FROM proteins"""
-            )
+            query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM species_proteins 
+                       JOIN proteins ON species_proteins.protein_id = proteins.id
+                       JOIN species ON species_proteins.species_id = species.id;"""
+            entries_sql = db.execute_return(query)
             log.warn(entries_sql)
 
             # if we got a result back
             if entries_sql is not None:
                 return [
-                    ProteinEntry(name=name, length=length, mass=mass)
-                    for name, length, mass in entries_sql
+                    ProteinEntry(
+                        name=name, length=length, mass=mass, species_name=species_name
+                    )
+                    for name, length, mass, species_name in entries_sql
                 ]
         except Exception as e:
             log.error(e)
@@ -205,6 +208,11 @@ def edit_protein_entry(body: EditBody):
 
     except Exception:
         return UploadError.WRITE_ERROR
+
+
+@app.get("/all-species/{protein_name:str}")
+def get_all_species(protein_name: str):
+    return
 
 
 def export_app_for_docker():

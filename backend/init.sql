@@ -15,7 +15,7 @@
  * Proteins Table
  */
 CREATE TABLE proteins (
-    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id serial PRIMARY KEY,
     name text NOT NULL UNIQUE, -- user specified name of the protein (TODO: consider having a string limit)
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
@@ -27,7 +27,7 @@ CREATE TABLE proteins (
  * Species Table
  */
 CREATE TABLE species (
-    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id serial PRIMARY KEY,
     name text NOT NULL UNIQUE  -- combined genus and species name, provided for now by the user
     -- -- removed now to reduce complexity for v0
     -- tax_genus text NOT NULL,
@@ -41,8 +41,8 @@ CREATE TABLE species (
  * Description: Join table for N:M connection between Species and Proteins
  */
  CREATE TABLE species_proteins (
-    species_id int references species(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    protein_id int references proteins(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    species_id serial references species(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    protein_id serial references proteins(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (species_id, protein_id)
  );
 
