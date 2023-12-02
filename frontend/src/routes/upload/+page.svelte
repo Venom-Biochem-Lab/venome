@@ -6,26 +6,25 @@
 		Input,
 		Label,
 		Helper,
-		Dropdown,
-		DropdownItem,
+		Select,
 	} from "flowbite-svelte";
-	import { ChevronDownSolid } from "flowbite-svelte-icons";
 	import { goto } from "$app/navigation";
 	import { fileToString } from "$lib/format";
 	import ArticleEditor from "$lib/ArticleEditor.svelte";
 
-	type Organism = {
-		genus: string;
-		species: string;
-	};
-
-	const organisms: Organism[] = [
-		{ genus: "Ganaspis", species: "hookeri" },
-		{ genus: "Leptopilina", species: "boulardi" },
-		{ genus: "Leptopilina", species: "heterotoma" },
+	// format the <Select /> Component Expects
+	const genuses = [
+		{ name: "Ganaspis", value: "Ganaspis" },
+		{ name: "Leptopilina", value: "Leptopilina" },
 	];
+	const species = [
+		{ name: "hookeri", value: "hookeri" },
+		{ name: "bouldari", value: "bouldari" },
+		{ name: "heterotama", value: "heterotama" },
+	];
+	let selectedGenus: string = "Ganaspis";
+	let selectedSpecies: string = "hookeri";
 
-	let organism: Organism;
 	let name: string = "";
 	let content: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
@@ -40,7 +39,7 @@
 			<Label
 				color={uploadError ? "red" : undefined}
 				for="protein-name"
-				class="block mb-2">Protein Name</Label
+				class="block mb-2">Protein Name *</Label
 			>
 			<Input
 				bind:value={name}
@@ -57,19 +56,20 @@
 		</div>
 
 		<!-- Species dropdown (hardcoded, not hooked up to backend for now) -->
-		<div>
-			<Label for="organism-name" class="blcok mb-2">Organism</Label>
-			<Button>Select Organism<ChevronDownSolid size="xs" class="ml-2" /></Button
-			>
-			<Dropdown>
-				{#each organisms as dropdownOrganism}
-					<DropdownItem
-						on:click={() => {
-							organism = dropdownOrganism;
-						}}>{dropdownOrganism.genus} {dropdownOrganism.species}</DropdownItem
-					>
-				{/each}
-			</Dropdown>
+		<div class="flex gap-5 mb-2">
+			<div>
+				<Label for="genus-select" class="mb-2">Select a Genus *</Label>
+				<Select id="genus-select" items={genuses} bind:value={selectedGenus} />
+			</div>
+
+			<div>
+				<Label for="species-select" class="mb-2">Select a Species *</Label>
+				<Select
+					id="species-select"
+					items={species}
+					bind:value={selectedSpecies}
+				/>
+			</div>
 		</div>
 
 		<div>
@@ -77,7 +77,8 @@
 		</div>
 
 		<div>
-			<Fileupload class="w-100" bind:files />
+			<Label for="file-upload" class="mb-2">Upload a PDB File *</Label>
+			<Fileupload id="file-upload" class="w-100" bind:files />
 		</div>
 		<div>
 			<Button
