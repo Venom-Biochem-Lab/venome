@@ -213,6 +213,7 @@ def edit_protein_entry(body: EditBody):
         if body.new_name != body.old_name:
             os.rename(pdb_file_name(body.old_name), pdb_file_name(body.new_name))
 
+        name_changed = False
         with Database() as db:
             if body.new_name != body.old_name:
                 db.execute(
@@ -222,13 +223,14 @@ def edit_protein_entry(body: EditBody):
                         body.old_name,
                     ],
                 )
+                name_changed = True
 
             if body.new_content is not None:
                 db.execute(
                     """UPDATE proteins SET content = %s WHERE name = %s""",
                     [
                         str_to_bytea(body.new_content),
-                        body.old_name,
+                        body.old_name if not name_changed else body.new_name,
                     ],
                 )
 
@@ -237,7 +239,7 @@ def edit_protein_entry(body: EditBody):
                     """UPDATE proteins SET refs = %s WHERE name = %s""",
                     [
                         str_to_bytea(body.new_refs),
-                        body.old_name,
+                        body.old_name if not name_changed else body.new_name,
                     ],
                 )
 
