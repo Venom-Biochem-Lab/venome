@@ -38,6 +38,7 @@ class AllEntries(CamelModel):
 
 class UploadBody(CamelModel):
     name: str
+    species_name: str
     content: str  # markdown content from user
     refs: str  # references used in content (bibtex form)
     pdb_file_str: str

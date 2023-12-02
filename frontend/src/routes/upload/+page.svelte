@@ -13,7 +13,6 @@
 	import ArticleEditor from "$lib/ArticleEditor.svelte";
 	import { onMount } from "svelte";
 
-	// format the <Select /> Component Expects {name, value}[]
 	let species: string[] | null;
 	let selectedSpecies: string = "unknown";
 	onMount(async () => {
@@ -86,6 +85,7 @@
 							pdbFileStr,
 							content,
 							refs,
+							speciesName: selectedSpecies,
 						});
 						if (err) {
 							uploadError = err;

@@ -158,9 +158,24 @@ def upload_protein_entry(body: UploadBody):
         # write to file to data/ folder
         with open(pdb_file_name(pdb.name), "w") as f:
             f.write(pdb.file_contents)
+    except Exception:
+        log.warn("Failed to write to file")
+        return UploadError.WRITE_ERROR
 
-        # save to db
-        with Database() as db:
+    # save to db
+    with Database() as db:
+        try:
+            # first add the species if it doesn't exist
+            db.execute(
+                """INSERT INTO species (name) VALUES (%s) ON CONFLICT DO NOTHING;""",
+                [body.species_name],
+            )
+        except Exception:
+            log.warn("Failed to insert into species table")
+            return UploadError.QUERY_ERROR
+
+        try:
+            # add the protein itself
             db.execute(
                 """INSERT INTO proteins (name, length, mass, content, refs) VALUES (%s, %s, %s, %s, %s);""",
                 [
@@ -171,8 +186,21 @@ def upload_protein_entry(body: UploadBody):
                     str_to_bytea(body.refs),
                 ],
             )
-    except Exception:
-        return UploadError.WRITE_ERROR
+        except Exception:
+            log.warn("Failed to insert into proteins table")
+            return UploadError.QUERY_ERROR
+
+        try:
+            # connect them with the intermediate table
+            db.execute(
+                """INSERT INTO species_proteins (species_id, protein_id)
+                    VALUES ((SELECT id FROM species WHERE name = %s),
+                            (SELECT id FROM proteins WHERE name = %s));""",
+                [body.species_name, body.name],
+            )
+        except Exception:
+            log.warn("Failed to insert into join table")
+            return UploadError.QUERY_ERROR
 
 
 # TODO: add more edits, now only does name and content edits
