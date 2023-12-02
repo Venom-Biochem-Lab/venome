@@ -14,9 +14,51 @@ import { request as __request } from '../core/request';
 export class DefaultService {
 
     /**
+     * Get Pdb File
+     * @param proteinName
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getPdbFile(
+        proteinName: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/pdb/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Fasta File
+     * @param proteinName
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getFastaFile(
+        proteinName: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/fasta/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Get All Entries
      * Gets all protein entries from the database
- * Returns: list[ProteinEntry] if found | None if not found
+     * Returns: list[ProteinEntry] if found | None if not found
      * @returns any Successful Response
      * @throws ApiError
      */
@@ -30,19 +72,19 @@ export class DefaultService {
     /**
      * Search Entries
      * Gets a list of protein entries by a search string
- * Returns: list[ProteinEntry] if found | None if not found
-     * @param query 
+     * Returns: list[ProteinEntry] if found | None if not found
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static searchEntries(
-query: string,
-): CancelablePromise<(Array<ProteinEntry> | null)> {
+        proteinName: string,
+    ): CancelablePromise<(Array<ProteinEntry> | null)> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/search-entries/{query}',
+            url: '/search-entries/{protein_name}',
             path: {
-                'query': query,
+                'protein_name': proteinName,
             },
             errors: {
                 422: `Validation Error`,
@@ -53,14 +95,14 @@ query: string,
     /**
      * Get Protein Entry
      * Get a single protein entry by its id
- * Returns: ProteinEntry if found | None if not found
-     * @param proteinName 
+     * Returns: ProteinEntry if found | None if not found
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static getProteinEntry(
-proteinName: string,
-): CancelablePromise<(ProteinEntry | null)> {
+        proteinName: string,
+    ): CancelablePromise<(ProteinEntry | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/protein-entry/{protein_name}',
@@ -75,13 +117,13 @@ proteinName: string,
 
     /**
      * Delete Protein Entry
-     * @param proteinName 
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static deleteProteinEntry(
-proteinName: string,
-): CancelablePromise<any> {
+        proteinName: string,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/protein-entry/{protein_name}',
@@ -96,13 +138,13 @@ proteinName: string,
 
     /**
      * Upload Protein Entry
-     * @param requestBody 
+     * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
     public static uploadProteinEntry(
-requestBody: UploadBody,
-): CancelablePromise<(UploadError | null)> {
+        requestBody: UploadBody,
+    ): CancelablePromise<(UploadError | null)> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/protein-upload',
@@ -116,13 +158,13 @@ requestBody: UploadBody,
 
     /**
      * Edit Protein Entry
-     * @param requestBody 
+     * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
     public static editProteinEntry(
-requestBody: EditBody,
-): CancelablePromise<(UploadError | null)> {
+        requestBody: EditBody,
+    ): CancelablePromise<(UploadError | null)> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/protein-edit',
@@ -131,6 +173,18 @@ requestBody: EditBody,
             errors: {
                 422: `Validation Error`,
             },
+        });
+    }
+
+    /**
+     * Get All Species
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getAllSpecies(): CancelablePromise<(Array<string> | null)> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/all-species',
         });
     }
 
