@@ -217,9 +217,16 @@ def edit_protein_entry(body: EditBody):
         return UploadError.WRITE_ERROR
 
 
-@app.get("/all-species/{protein_name:str}")
-def get_all_species(protein_name: str):
-    return
+@app.get("/all-species", response_model=list[str] | None)
+def get_all_species():
+    try:
+        with Database() as db:
+            query = """SELECT name as species_name FROM species"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return [d[0] for d in entry_sql]
+    except Exception:
+        return
 
 
 def export_app_for_docker():

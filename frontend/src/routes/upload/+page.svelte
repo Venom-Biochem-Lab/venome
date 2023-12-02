@@ -11,19 +11,14 @@
 	import { goto } from "$app/navigation";
 	import { fileToString } from "$lib/format";
 	import ArticleEditor from "$lib/ArticleEditor.svelte";
+	import { onMount } from "svelte";
 
-	// format the <Select /> Component Expects
-	const genuses = [
-		{ name: "Ganaspis", value: "Ganaspis" },
-		{ name: "Leptopilina", value: "Leptopilina" },
-	];
-	const species = [
-		{ name: "hookeri", value: "hookeri" },
-		{ name: "bouldari", value: "bouldari" },
-		{ name: "heterotama", value: "heterotama" },
-	];
-	let selectedGenus: string = "Ganaspis";
-	let selectedSpecies: string = "hookeri";
+	// format the <Select /> Component Expects {name, value}[]
+	let species: string[] | null;
+	let selectedSpecies: string = "unknown";
+	onMount(async () => {
+		species = await Backend.getAllSpecies();
+	});
 
 	let name: string = "";
 	let content: string = "";
@@ -58,17 +53,16 @@
 		<!-- Species dropdown (hardcoded, not hooked up to backend for now) -->
 		<div class="flex gap-5 mb-2">
 			<div>
-				<Label for="genus-select" class="mb-2">Select a Genus *</Label>
-				<Select id="genus-select" items={genuses} bind:value={selectedGenus} />
-			</div>
-
-			<div>
-				<Label for="species-select" class="mb-2">Select a Species *</Label>
-				<Select
-					id="species-select"
-					items={species}
-					bind:value={selectedSpecies}
-				/>
+				<Label for="species-select" class="mb-2">Select a Species</Label>
+				{#if species}
+					<Select
+						id="species-select"
+						items={species.map((s) => ({ name: s, value: s }))}
+						bind:value={selectedSpecies}
+					/>
+				{:else}
+					<Helper color="red">Error loading species</Helper>
+				{/if}
 			</div>
 		</div>
 
