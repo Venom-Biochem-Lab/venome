@@ -58,25 +58,27 @@ def get_all_entries():
             log.error(e)
 
 
-@app.get("/search-entries/{query:str}", response_model=list[ProteinEntry] | None)
-def search_entries(query: str):
+@app.get("/search-entries/{protein_name:str}", response_model=list[ProteinEntry] | None)
+def search_entries(protein_name: str):
     """Gets a list of protein entries by a search string
     Returns: list[ProteinEntry] if found | None if not found
     """
     with Database() as db:
         try:
-            entries_sql = db.execute_return(
-                """SELECT name, length, mass FROM proteins
-                WHERE name ILIKE %s""",
-                [f"%{query}%"],
-            )
+            query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM species_proteins 
+                       JOIN proteins ON species_proteins.protein_id = proteins.id
+                       JOIN species ON species_proteins.species_id = species.id
+                       WHERE proteins.name ILIKE %s;"""
+            entries_sql = db.execute_return(query, [f"%{protein_name}%"])
             log.warn(entries_sql)
 
             # if we got a result back
             if entries_sql is not None:
                 return [
-                    ProteinEntry(name=name, length=length, mass=mass)
-                    for name, length, mass in entries_sql
+                    ProteinEntry(
+                        name=name, length=length, mass=mass, species_name=species_name
+                    )
+                    for name, length, mass, species_name in entries_sql
                 ]
         except Exception as e:
             log.error(e)
@@ -89,18 +91,18 @@ def get_protein_entry(protein_name: str):
     """
     with Database() as db:
         try:
-            entry_sql = db.execute_return(
-                """SELECT name, length, mass, content, refs FROM proteins
-                    WHERE name = %s""",
-                [protein_name],
-            )
+            query = """SELECT proteins.name, proteins.length, proteins.mass, proteins.content, proteins.refs, species.name as species_name FROM species_proteins 
+                       JOIN proteins ON species_proteins.protein_id = proteins.id
+                       JOIN species ON species_proteins.species_id = species.id
+                       WHERE proteins.name = %s;"""
+            entry_sql = db.execute_return(query, [protein_name])
             log.warn(entry_sql)
 
             # if we got a result back
             if entry_sql is not None and len(entry_sql) != 0:
                 # return the only entry
                 only_returned_entry = entry_sql[0]
-                name, length, mass, content, refs = only_returned_entry
+                name, length, mass, content, refs, species_name = only_returned_entry
 
                 # if byte arrays are present, decode them into a string
                 if content is not None:
@@ -109,7 +111,12 @@ def get_protein_entry(protein_name: str):
                     refs = bytea_to_str(refs)
 
                 return ProteinEntry(
-                    name=name, length=length, mass=mass, content=content, refs=refs
+                    name=name,
+                    length=length,
+                    mass=mass,
+                    content=content,
+                    refs=refs,
+                    species_name=species_name,
                 )
 
         except Exception as e:

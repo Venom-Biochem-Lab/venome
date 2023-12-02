@@ -53,12 +53,7 @@
 				<div class="grid grid-cols-2">
 					<div>Source Organism</div>
 					<div>
-						<a href="/organism/unknown">unknown organism</a>
-					</div>
-
-					<div>Biological Function</div>
-					<div>
-						<a href="/function/unknown">unknown function</a>
+						{entry.speciesName}
 					</div>
 
 					<div>Structure</div>
