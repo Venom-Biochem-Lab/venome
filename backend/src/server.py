@@ -127,17 +127,29 @@ def get_protein_entry(protein_name: str):
 @app.delete("/protein-entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str):
     # Todo, have a meaningful error if the delete fails
-    try:
-        with Database() as db:
+    with Database() as db:
+        # remove protein
+        try:
             db.execute(
                 """DELETE FROM proteins
                     WHERE name = %s""",
                 [protein_name],
             )
-        # delete the file from the data/ folder
-        os.remove(pdb_file_name(protein_name))
-    except Exception as e:
-        log.error(e)
+            # delete the file from the data/ folder
+            os.remove(pdb_file_name(protein_name))
+        except Exception as e:
+            log.error(e)
+
+        # remove species if it has no more proteins
+        # note that it automatically removes the species from the join table
+        # don't do this quite yet, since we want to keep our three hard coded species
+        # try:
+        #     db.execute(
+        #         """DELETE FROM species
+        #             WHERE id NOT IN (SELECT species_id FROM species_proteins)"""
+        #     )
+        # except Exception as e:
+        #     log.error(e)
 
 
 # None return means success
