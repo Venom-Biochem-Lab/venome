@@ -26,11 +26,12 @@ CREATE TABLE proteins (
  * Species Table
  */
 CREATE TABLE species (
-    id text NOT NULL UNIQUE PRIMARY KEY, -- This should be the first letters in the scientific name - e.g. "gh", the prefix to the files, for simplicity.
-    tax_genus text NOT NULL,
-    tax_species text NOT NULL,
-    scientific_name text UNIQUE GENERATED ALWAYS AS (tax_genus || ' ' || tax_species) STORED,
-    content bytea
+    name text NOT NULL UNIQUE PRIMARY KEY,  -- combined genus and species name, provided for now by the user
+    -- -- removed now to reduce complexity for v0
+    -- tax_genus text NOT NULL,
+    -- tax_species text NOT NULL,
+    -- scientific_name text UNIQUE GENERATED ALWAYS AS (tax_genus || ' ' || tax_species) STORED,
+    -- content bytea
 );
 
 /*
@@ -38,7 +39,7 @@ CREATE TABLE species (
  * Description: Join table for N:M connection between Species and Proteins
  */
  CREATE TABLE species_proteins (
-    species_id text references species(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    species_id text references species(name) ON UPDATE CASCADE ON DELETE CASCADE,
     protein_id text references proteins(name) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (species_id, protein_id)
  );
@@ -73,32 +74,19 @@ INSERT INTO proteins (name, length, mass, content, refs) VALUES (
 /*
  * Inserts example species into species table
  */
-INSERT INTO species(id, tax_genus, tax_species, content) VALUES (
-    'Gh',
-    'Ganaspis',
-    'hookeri',
-    null
-);
+INSERT INTO species(name) VALUES ('unknown');
 
-INSERT INTO species(id, tax_genus, tax_species, content) VALUES (
-    'Lb',
-    'Leptopilina',
-    'boulardi',
-    null
-);
+INSERT INTO species(name) VALUES ('ganaspis hookeri');
 
-INSERT INTO species(id, tax_genus, tax_species, content) VALUES (
-    'Lh',
-    'Leptopilina',
-    'heterotoma',
-    null
-);
+INSERT INTO species(name) VALUES ('leptopilina boulardi');
 
- /*
-  * Inserts connections between species and proteins
-  */ 
+INSERT INTO species(name) VALUES ('leptopilina heterotoma');
+
+/*
+ * Inserts connections between species and proteins
+*/ 
 INSERT INTO species_proteins(species_id, protein_id) VALUES (
-    'Gh',
+    'ganaspis hookeri',
     'Gh_comp271_c0_seq1'
  );
 
@@ -106,7 +94,7 @@ INSERT INTO species_proteins(species_id, protein_id) VALUES (
   * Inserts connections between species and proteins
   */ 
 INSERT INTO species_proteins(species_id, protein_id) VALUES (
-    'Lb',
+    'leptopilina boulardi',
     'Lb17_comp535_c2_seq1'
  );
 
@@ -114,7 +102,7 @@ INSERT INTO species_proteins(species_id, protein_id) VALUES (
   * Inserts connections between species and proteins
   */ 
 INSERT INTO species_proteins(species_id, protein_id) VALUES (
-    'Lh',
+    'leptopilina heterotoma',
     'Lh14_comp2336_c0_seq1'
  );
 
