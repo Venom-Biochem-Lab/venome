@@ -6,26 +6,19 @@
 		Input,
 		Label,
 		Helper,
-		Dropdown,
-		DropdownItem,
+		Select,
 	} from "flowbite-svelte";
-	import { ChevronDownSolid } from "flowbite-svelte-icons";
 	import { goto } from "$app/navigation";
 	import { fileToString } from "$lib/format";
 	import ArticleEditor from "$lib/ArticleEditor.svelte";
+	import { onMount } from "svelte";
 
-	type Organism = {
-		genus: string;
-		species: string;
-	};
+	let species: string[] | null;
+	let selectedSpecies: string = "unknown";
+	onMount(async () => {
+		species = await Backend.getAllSpecies();
+	});
 
-	const organisms: Organism[] = [
-		{ genus: "Ganaspis", species: "hookeri" },
-		{ genus: "Leptopilina", species: "boulardi" },
-		{ genus: "Leptopilina", species: "heterotoma" },
-	];
-
-	let organism: Organism;
 	let name: string = "";
 	let content: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
@@ -40,7 +33,7 @@
 			<Label
 				color={uploadError ? "red" : undefined}
 				for="protein-name"
-				class="block mb-2">Protein Name</Label
+				class="block mb-2">Protein Name *</Label
 			>
 			<Input
 				bind:value={name}
@@ -56,20 +49,19 @@
 			{/if}
 		</div>
 
-		<!-- Species dropdown (hardcoded, not hooked up to backend for now) -->
-		<div>
-			<Label for="organism-name" class="blcok mb-2">Organism</Label>
-			<Button>Select Organism<ChevronDownSolid size="xs" class="ml-2" /></Button
-			>
-			<Dropdown>
-				{#each organisms as dropdownOrganism}
-					<DropdownItem
-						on:click={() => {
-							organism = dropdownOrganism;
-						}}>{dropdownOrganism.genus} {dropdownOrganism.species}</DropdownItem
-					>
-				{/each}
-			</Dropdown>
+		<div class="flex gap-5 mb-2">
+			<div>
+				<Label for="species-select" class="mb-2">Select a Species</Label>
+				{#if species}
+					<Select
+						id="species-select"
+						items={species.map((s) => ({ name: s, value: s }))}
+						bind:value={selectedSpecies}
+					/>
+				{:else}
+					<Helper color="red">Error loading species</Helper>
+				{/if}
+			</div>
 		</div>
 
 		<div>
@@ -77,7 +69,8 @@
 		</div>
 
 		<div>
-			<Fileupload class="w-100" bind:files />
+			<Label for="file-upload" class="mb-2">Upload a PDB File *</Label>
+			<Fileupload id="file-upload" class="w-100" bind:files />
 		</div>
 		<div>
 			<Button
@@ -91,6 +84,7 @@
 							pdbFileStr,
 							content,
 							refs,
+							speciesName: selectedSpecies,
 						});
 						if (err) {
 							uploadError = err;

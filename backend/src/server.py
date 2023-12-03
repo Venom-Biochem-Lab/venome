@@ -40,40 +40,45 @@ def get_all_entries():
     """
     with Database() as db:
         try:
-            entries_sql = db.execute_return(
-                """SELECT name, length, mass FROM proteins"""
-            )
+            query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM species_proteins 
+                       JOIN proteins ON species_proteins.protein_id = proteins.id
+                       JOIN species ON species_proteins.species_id = species.id;"""
+            entries_sql = db.execute_return(query)
             log.warn(entries_sql)
 
             # if we got a result back
             if entries_sql is not None:
                 return [
-                    ProteinEntry(name=name, length=length, mass=mass)
-                    for name, length, mass in entries_sql
+                    ProteinEntry(
+                        name=name, length=length, mass=mass, species_name=species_name
+                    )
+                    for name, length, mass, species_name in entries_sql
                 ]
         except Exception as e:
             log.error(e)
 
 
-@app.get("/search-entries/{query:str}", response_model=list[ProteinEntry] | None)
-def search_entries(query: str):
+@app.get("/search-entries/{protein_name:str}", response_model=list[ProteinEntry] | None)
+def search_entries(protein_name: str):
     """Gets a list of protein entries by a search string
     Returns: list[ProteinEntry] if found | None if not found
     """
     with Database() as db:
         try:
-            entries_sql = db.execute_return(
-                """SELECT name, length, mass FROM proteins
-                WHERE name ILIKE %s""",
-                [f"%{query}%"],
-            )
+            query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM species_proteins 
+                       JOIN proteins ON species_proteins.protein_id = proteins.id
+                       JOIN species ON species_proteins.species_id = species.id
+                       WHERE proteins.name ILIKE %s;"""
+            entries_sql = db.execute_return(query, [f"%{protein_name}%"])
             log.warn(entries_sql)
 
             # if we got a result back
             if entries_sql is not None:
                 return [
-                    ProteinEntry(name=name, length=length, mass=mass)
-                    for name, length, mass in entries_sql
+                    ProteinEntry(
+                        name=name, length=length, mass=mass, species_name=species_name
+                    )
+                    for name, length, mass, species_name in entries_sql
                 ]
         except Exception as e:
             log.error(e)
@@ -86,18 +91,18 @@ def get_protein_entry(protein_name: str):
     """
     with Database() as db:
         try:
-            entry_sql = db.execute_return(
-                """SELECT name, length, mass, content, refs FROM proteins
-                    WHERE name = %s""",
-                [protein_name],
-            )
+            query = """SELECT proteins.name, proteins.length, proteins.mass, proteins.content, proteins.refs, species.name as species_name FROM species_proteins 
+                       JOIN proteins ON species_proteins.protein_id = proteins.id
+                       JOIN species ON species_proteins.species_id = species.id
+                       WHERE proteins.name = %s;"""
+            entry_sql = db.execute_return(query, [protein_name])
             log.warn(entry_sql)
 
             # if we got a result back
             if entry_sql is not None and len(entry_sql) != 0:
                 # return the only entry
                 only_returned_entry = entry_sql[0]
-                name, length, mass, content, refs = only_returned_entry
+                name, length, mass, content, refs, species_name = only_returned_entry
 
                 # if byte arrays are present, decode them into a string
                 if content is not None:
@@ -106,7 +111,12 @@ def get_protein_entry(protein_name: str):
                     refs = bytea_to_str(refs)
 
                 return ProteinEntry(
-                    name=name, length=length, mass=mass, content=content, refs=refs
+                    name=name,
+                    length=length,
+                    mass=mass,
+                    content=content,
+                    refs=refs,
+                    species_name=species_name,
                 )
 
         except Exception as e:
@@ -117,17 +127,18 @@ def get_protein_entry(protein_name: str):
 @app.delete("/protein-entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str):
     # Todo, have a meaningful error if the delete fails
-    try:
-        with Database() as db:
+    with Database() as db:
+        # remove protein
+        try:
             db.execute(
                 """DELETE FROM proteins
                     WHERE name = %s""",
                 [protein_name],
             )
-        # delete the file from the data/ folder
-        os.remove(pdb_file_name(protein_name))
-    except Exception as e:
-        log.error(e)
+            # delete the file from the data/ folder
+            os.remove(pdb_file_name(protein_name))
+        except Exception as e:
+            log.error(e)
 
 
 # None return means success
@@ -148,9 +159,24 @@ def upload_protein_entry(body: UploadBody):
         # write to file to data/ folder
         with open(pdb_file_name(pdb.name), "w") as f:
             f.write(pdb.file_contents)
+    except Exception:
+        log.warn("Failed to write to file")
+        return UploadError.WRITE_ERROR
 
-        # save to db
-        with Database() as db:
+    # save to db
+    with Database() as db:
+        try:
+            # first add the species if it doesn't exist
+            db.execute(
+                """INSERT INTO species (name) VALUES (%s) ON CONFLICT DO NOTHING;""",
+                [body.species_name],
+            )
+        except Exception:
+            log.warn("Failed to insert into species table")
+            return UploadError.QUERY_ERROR
+
+        try:
+            # add the protein itself
             db.execute(
                 """INSERT INTO proteins (name, length, mass, content, refs) VALUES (%s, %s, %s, %s, %s);""",
                 [
@@ -161,8 +187,21 @@ def upload_protein_entry(body: UploadBody):
                     str_to_bytea(body.refs),
                 ],
             )
-    except Exception:
-        return UploadError.WRITE_ERROR
+        except Exception:
+            log.warn("Failed to insert into proteins table")
+            return UploadError.QUERY_ERROR
+
+        try:
+            # connect them with the intermediate table
+            db.execute(
+                """INSERT INTO species_proteins (species_id, protein_id)
+                    VALUES ((SELECT id FROM species WHERE name = %s),
+                            (SELECT id FROM proteins WHERE name = %s));""",
+                [body.species_name, body.name],
+            )
+        except Exception:
+            log.warn("Failed to insert into join table")
+            return UploadError.QUERY_ERROR
 
 
 # TODO: add more edits, now only does name and content edits
@@ -176,6 +215,7 @@ def edit_protein_entry(body: EditBody):
             os.rename(pdb_file_name(body.old_name), pdb_file_name(body.new_name))
 
         with Database() as db:
+            name_changed = False
             if body.new_name != body.old_name:
                 db.execute(
                     """UPDATE proteins SET name = %s WHERE name = %s""",
@@ -184,13 +224,23 @@ def edit_protein_entry(body: EditBody):
                         body.old_name,
                     ],
                 )
+                name_changed = True
+
+            if body.new_species_name != body.old_species_name:
+                db.execute(
+                    """UPDATE species_proteins SET species_id = (SELECT id FROM species WHERE name = %s) WHERE protein_id = (SELECT id FROM proteins WHERE name = %s)""",
+                    [
+                        body.new_species_name,
+                        body.old_name if not name_changed else body.new_name,
+                    ],
+                )
 
             if body.new_content is not None:
                 db.execute(
                     """UPDATE proteins SET content = %s WHERE name = %s""",
                     [
                         str_to_bytea(body.new_content),
-                        body.old_name,
+                        body.old_name if not name_changed else body.new_name,
                     ],
                 )
 
@@ -199,12 +249,24 @@ def edit_protein_entry(body: EditBody):
                     """UPDATE proteins SET refs = %s WHERE name = %s""",
                     [
                         str_to_bytea(body.new_refs),
-                        body.old_name,
+                        body.old_name if not name_changed else body.new_name,
                     ],
                 )
 
     except Exception:
         return UploadError.WRITE_ERROR
+
+
+@app.get("/all-species", response_model=list[str] | None)
+def get_all_species():
+    try:
+        with Database() as db:
+            query = """SELECT name as species_name FROM species"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return [d[0] for d in entry_sql]
+    except Exception:
+        return
 
 
 def export_app_for_docker():

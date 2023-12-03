@@ -5,7 +5,9 @@
 
 export type UploadBody = {
     name: string;
+    speciesName: string;
     content: string;
     refs: string;
     pdbFileStr: string;
 };
+

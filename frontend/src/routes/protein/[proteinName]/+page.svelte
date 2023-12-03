@@ -53,20 +53,11 @@
 				<div class="grid grid-cols-2">
 					<div>Source Organism</div>
 					<div>
-						<a href="/organism/unknown">unknown organism</a>
+						{entry.speciesName}
 					</div>
 
-					<div>Biological Function</div>
-					<div>
-						<a href="/function/unknown">unknown function</a>
-					</div>
-
-					<div>Structure</div>
-					<div>
-						<a href="https://deepmind.google/technologies/alphafold/"
-							>AlphaFold</a
-						>
-					</div>
+					<div>Method</div>
+					<div>AlphaFold 2</div>
 
 					<div>Length</div>
 					<div><code>{entry.length}</code></div>
