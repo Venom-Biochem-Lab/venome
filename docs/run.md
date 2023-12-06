@@ -25,6 +25,8 @@ sh run.sh <cmd>
 |  `test` | Runs all unit tests |
 |  `test_backend` | Runs only backend unit tests |
 |  `test_frontend` | Runs only frontend unit tests |
+|  `upload_all` | 👉 Uploads all the pdb files to the system via POST requests |
+|  `delete_all` | Deletes all protein entries and restarts the server from scratch |
 
 There are actually many more functions, so please check out [`run.sh`](../run.sh).
 
