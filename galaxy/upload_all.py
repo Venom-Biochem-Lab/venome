@@ -1,6 +1,8 @@
 import requests
 import os
 
+CONTENT = "From the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) and predicted using [AlphaFold](https://github.com/xinformatics/alphafold)."
+REFS = ""
 DIR = "./master_venom_galaxy"
 
 
@@ -40,7 +42,9 @@ def upload_all():
             full_path = os.path.join(DIR, fn)
             name = fn.split(".")[0].replace("_", " ")
             species_name = available_species[fn[:2]]
-            upload_protein_file(full_path, name, species_name)
+            upload_protein_file(
+                full_path, name, species_name, content=CONTENT, refs=REFS
+            )
             print("uploaded", full_path, name, species_name)
     remove_box()
 
