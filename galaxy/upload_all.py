@@ -1,7 +1,7 @@
 import requests
 import os
 
-CONTENT = "From the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) and predicted using [AlphaFold](https://github.com/xinformatics/alphafold)."
+CONTENT = "From the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) and predicted using [AlphaFold](https://github.com/google-deepmind/alphafold)."
 REFS = ""
 DIR = "./master_venom_galaxy"
 
