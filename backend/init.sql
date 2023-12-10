@@ -47,33 +47,6 @@ CREATE TABLE species (
  );
 
 /*
- * Inserts example proteins into proteins table
- */
-INSERT INTO proteins (name, length, mass, content, refs) VALUES (
-    'Gh_comp271_c0_seq1', 
-    0,
-    0.0,
-    null,
-    null
-);
-
-INSERT INTO proteins (name, length, mass, content, refs) VALUES (
-    'Lb17_comp535_c2_seq1', 
-    0,
-    0.0,
-    null,
-    null
-);
-
-INSERT INTO proteins (name, length, mass, content, refs) VALUES (
-    'Lh14_comp2336_c0_seq1', 
-    0,
-    0.0,
-    null,
-    null
-);
-
-/*
  * Inserts example species into species table
  */
 INSERT INTO species(name) VALUES ('ganaspis hookeri'); 
@@ -81,27 +54,4 @@ INSERT INTO species(name) VALUES ('leptopilina boulardi');
 INSERT INTO species(name) VALUES ('leptopilina heterotoma'); 
 INSERT INTO species(name) VALUES ('unknown');
 
-/*
-  * Inserts connections between species and proteins
-*/ 
-INSERT INTO species_proteins(species_id, protein_id) VALUES (
-    1, -- 'ganaspis hookeri',
-    1 -- 'Gh_comp271_c0_seq1'
- );
-
-  /*
-  * Inserts connections between species and proteins
-  */ 
-INSERT INTO species_proteins(species_id, protein_id) VALUES (
-    2, -- 'leptopilina boulardi',
-    2 -- 'Lb17_comp535_c2_seq1'
- );
-
- /*
-  * Inserts connections between species and proteins
-  */ 
-INSERT INTO species_proteins(species_id, protein_id) VALUES (
-    3, -- 'leptopilina heterotoma',
-    3 --'Lh14_comp2336_c0_seq1'
- );
 
