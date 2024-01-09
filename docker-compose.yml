@@ -1,19 +1,19 @@
 # https://github.com/zeno-ml/zeno-hub/blob/main/docker-compose.yml
 version: "3"
 services:
-    frontend:
-        container_name: venome-frontend
-        build:
-            context: ./frontend
-            dockerfile: Dockerfile
-        volumes:
-            - ./frontend:/app
-            - docker_node_modules:/app/node_modules/
-        ports:
-            - "5173:5173"
-        environment:
-            PUBLIC_BACKEND_URL: http://localhost:8000
-        command: ["yarn", "dev", "--", "--host", "0.0.0.0"]
+    # frontend:
+    #     container_name: venome-frontend
+    #     build:
+    #         context: ./frontend
+    #         dockerfile: Dockerfile
+    #     volumes:
+    #         - ./frontend:/app
+    #         - docker_node_modules:/app/node_modules/
+    #     ports:
+    #         - "5173:5173"
+    #     environment:
+    #         PUBLIC_BACKEND_URL: http://localhost:8000
+    #     command: ["yarn", "dev", "--", "--host", "0.0.0.0"]
     backend:
         container_name: venome-backend
         build:
@@ -55,5 +55,5 @@ services:
 
 volumes:
     postgres_data:
-    docker_node_modules:
+    # docker_node_modules:
     docker_venv:
