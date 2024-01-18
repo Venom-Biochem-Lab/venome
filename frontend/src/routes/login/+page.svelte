@@ -3,13 +3,26 @@
 
 	let username: string = "";
 	let password: string = "";
+	$: formValid = username.length > 0 && password.length > 0;
+
+	/**
+	 * Gets run on button "Login" or form submit (pressing enter)
+	 * @todo add login logic with tokens and making a request to the backend
+	 */
+	function submitForm() {
+		if (!formValid) return;
+
+		console.log("submitted");
+		console.table({ username, password });
+	}
 </script>
 
-<form on:submit|preventDefault class="flex gap-4 flex-col">
+<form on:submit={submitForm} class="flex gap-5 flex-col">
 	<div>
 		<Label for="username">Username</Label>
 		<Input
 			id="username"
+			style="width: 300px;"
 			bind:value={username}
 			placeholder="Enter your username..."
 		/>
@@ -20,15 +33,13 @@
 		<Input
 			type="password"
 			id="password"
+			style="width: 300px;"
 			bind:value={password}
 			placeholder="Enter your password..."
 		/>
 	</div>
 
-	<Button
-		type="submit"
-		on:click={() => {
-			console.log("hit submit", password, username);
-		}}>Login</Button
-	>
+	<div>
+		<Button size="lg" type="submit" disabled={!formValid}>Login</Button>
+	</div>
 </form>
