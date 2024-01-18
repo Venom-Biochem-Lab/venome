@@ -47,6 +47,17 @@ CREATE TABLE species (
  );
 
 /*
+* Users Table
+*/
+CREATE TABLE users (
+    id serial PRIMARY KEY,
+    username text NOT NULL UNIQUE,
+    email text NOT NULL UNIQUE,
+    pword text NOT NULL,
+    admin boolean NOT NULL
+);
+
+/*
  * Inserts example species into species table
  */
 INSERT INTO species(name) VALUES ('ganaspis hookeri'); 
@@ -54,4 +65,7 @@ INSERT INTO species(name) VALUES ('leptopilina boulardi');
 INSERT INTO species(name) VALUES ('leptopilina heterotoma'); 
 INSERT INTO species(name) VALUES ('unknown');
 
-
+/*
+ * Inserts test user into user table
+ */
+INSERT INTO users(username, email, pword, admin) VALUES ('test', 'garvina@oregonstate.edu', 'password', '1');
