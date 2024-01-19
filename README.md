@@ -12,6 +12,12 @@ A wikipedia 📖 for venom proteins: upload, search, organize, visualize, and do
 > -   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
 > -   [`backend/`](./backend/) contains the backend HTTP server and Database
 
+**`v0.0.0` demo / current progress**
+
+<a href="https://www.youtube.com/watch?v=g6Klv4NIvH4">
+  <img width="363" alt="thumbnail" src="https://github.com/xnought/venome/assets/65095341/63ff81a4-aee8-4389-8fba-ea6c5e37aa2f">
+</a>
+
 ## Quick start
 
 Go to [`DEVELOPMENT.md`](./DEVELOPMENT.md) to get up and running.
