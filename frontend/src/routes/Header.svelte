@@ -13,6 +13,7 @@
 		<div class="nav">
 			<a href="/search">Search</a>
 			<a href="/upload">Upload</a>
+			<a href="/login">Login</a>
 		</div>
 	</div>
 
