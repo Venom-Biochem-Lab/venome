@@ -68,4 +68,4 @@ INSERT INTO species(name) VALUES ('unknown');
 /*
  * Inserts test user into user table
  */
-INSERT INTO users(username, email, pword, admin) VALUES ('test', 'garvina@oregonstate.edu', 'password', '1');
+INSERT INTO users(username, email, pword, admin) VALUES ('test', 'garvina@oregonstate.edu', '', '1');

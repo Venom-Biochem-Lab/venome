@@ -1,39 +1,35 @@
 ﻿from fastapi import APIRouter
 import logging as log
-from api_types import  LoginBody, UploadError
-from db import Database, bytea_to_str, str_to_bytea
+from passlib.hash import bcrypt
+from ..api_types import  LoginBody, UploadError, ResponseToken
+from ..db import Database, bytea_to_str, str_to_bytea
+from ..auth import authenticateToken, generateAuthToken
 
 router = APIRouter()
 
-def validateUser(email, password):
-    #TODO: Implement validate user
-    pass
-
-@router.get("/users/login", response_model=UploadError)
+#TODO: Change response model?     
+@router.post("/users/login", response_model=UploadError)
 def login(body: LoginBody):
     with Database() as db:
         try:
-            authenticated = validateUser(
-                body.email,
-                body.password
-            )
-            if authenticated:
-                query = """SELECT users.admin WHERE users.email = %s"""
-                entry_sql = db.execute_return(query, [body.email])
-                log.warn(entry_sql)
+            email = body.email
+            password = body.password
 
-                # Proceed only if we got a result back
-                if entry_sql is not None and len(entry_sql) != 0:
-                    #return the only entry
-                    only_returned_entry = entry_sql[0]
-                    admin = only_returned_entry
+            query = """SELECT users.password, users.admin WHERE users.email = %s;"""
+            entry_sql = db.execute_return(query, [email])
 
-                # TODO: Generate an authentication token
-                token = 1
+            password_hash, admin = entry_sql
+
+            # If the password is not correct, return something else.
+            if not bcrypt.verify(password, hash):
+                # TODO: Return something better than query error
+                return UploadError.QUERY_ERROR
+            
+            # Generates the token and returns
+            token = generateAuthToken(email, password)
+            return ResponseToken(token=token)
                 
-                user = 0
-                # Grab user from DB
-                admin = 0 if 
-
         except Exception as e:
             log.error(e)
+            # TODO: Return something better than query error
+            return UploadError.QUERY_ERROR
