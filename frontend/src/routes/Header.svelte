@@ -1,6 +1,7 @@
 <script lang="ts">
 	import logo from "$lib/images/logo.svg";
 	import { HomeOutline, UploadOutline } from "flowbite-svelte-icons";
+	import { Search, Button } from "flowbite-svelte";
 </script>
 
 <header>
@@ -12,12 +13,21 @@
 		</div>
 		<div class="nav">
 			<a href="/" class="flex items-center gap-1"
-				><HomeOutline size="sm" /> Home</a
+				><HomeOutline size="sm" />Home</a
 			>
 			<a href="/upload" class="flex items-center gap-1">
 				<UploadOutline size="sm" />Upload</a
 			>
 		</div>
+		<form id="search-bar">
+			<Search
+				size="md"
+				type="text"
+				class="flex gap-2 items-center"
+				placeholder="Enter search..."
+			/>
+			<Button type="submit" size="xs">Search</Button>
+		</form>
 	</div>
 </header>
 
@@ -32,9 +42,14 @@
 
 	#logo {
 		/* TODO remove these hard coded constraints and do it right */
-		margin-top: 10px;
 		height: 45px;
 		width: 100px;
+	}
+
+	#search-bar {
+		display: flex;
+		width: 400px;
+		gap: 5px;
 	}
 
 	.nav-container {
@@ -42,11 +57,11 @@
 		height: 60px;
 		gap: 20px;
 		margin-left: 20px;
+		align-items: center;
 	}
 
 	.nav {
 		display: flex;
-		align-items: center;
 		gap: 20px;
 		font-size: 18px;
 		font-weight: 300;
