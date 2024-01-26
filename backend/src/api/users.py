@@ -2,8 +2,8 @@
 import logging as log
 from passlib.hash import bcrypt
 from ..api_types import  LoginBody, LoginError, ResponseToken
-from ..db import Database, bytea_to_str, str_to_bytea
-from ..auth import authenticateToken, generateAuthToken
+from ..db import Database
+from ..auth import generateAuthToken
 
 router = APIRouter()
 
