@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter
+from fastapi import APIRouter
 import logging as log
 from passlib.hash import bcrypt
 from ..api_types import LoginBody, LoginError, ResponseToken

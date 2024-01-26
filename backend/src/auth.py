@@ -1,4 +1,4 @@
-﻿import jwt
+import jwt
 from datetime import datetime, timezone, timedelta
 
 # TODO: This method of secret key generation is, obviously, extremely unsafe.
