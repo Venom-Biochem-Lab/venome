@@ -12,3 +12,13 @@ def generateAuthToken(userId, admin):
         "exp": datetime.now(tz=timezone.utc) + timedelta(hours=24)
     }
     return jwt.encode(payload, secret_key, algorithm="HS256")
+
+def authenticateToken(token):
+    # Return the decoded token if it's valid.
+    try:
+        decoded = jwt.decode(token, secret_key, algorithms="HS256")
+        return decoded
+    
+    # If the token is invalid, return None.
+    except Exception:
+        return None
