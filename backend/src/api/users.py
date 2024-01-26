@@ -7,7 +7,6 @@ from ..auth import authenticateToken, generateAuthToken
 
 router = APIRouter()
 
-#TODO: Change response model?     
 @router.post("/users/login", response_model=ResponseToken | LoginError)
 def login(body: LoginBody):
     with Database() as db:
@@ -18,17 +17,16 @@ def login(body: LoginBody):
             query = """SELECT users.pword, users.admin FROM users WHERE users.email = %s;"""
             entry_sql = db.execute_return(query, [email])
 
-            
+            # Returns "incorrect email/password" message if there is no such account.
             if entry_sql is None or len(entry_sql) == 0:
-                # TODO: Once we're done testing this, change this from DEBUG_ACCOUNT to INCORRECT
-                return LoginError.DEBUG_ACCOUNT
+                return LoginError.INCORRECT
             
+            # Grabs the stored hash and admin.
             password_hash, admin = entry_sql[0]
 
-            # If the password is not correct, return something else.
+            # Returns "incorrect email/password" message if password is incorrect.
             if not bcrypt.verify(password, password_hash):
-                # TODO: Once we're done testing this, change this from DEBUG_PASSWORD to INCORRECT
-                return LoginError.DEBUG_PASSWORD
+                return LoginError.INCORRECT
             
             # Generates the token and returns
             token = generateAuthToken(email, admin)
