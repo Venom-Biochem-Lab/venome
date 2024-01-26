@@ -13,6 +13,7 @@ def generateAuthToken(userId, admin):
     }
     return jwt.encode(payload, secret_key, algorithm="HS256")
 
+#TODO: Find out how FastAPI handles middleware functions, and turn this into one.
 def authenticateToken(token):
     # Return the decoded token if it's valid.
     try:
