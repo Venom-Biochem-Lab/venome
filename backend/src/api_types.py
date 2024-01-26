@@ -62,3 +62,10 @@ class EditBody(CamelModel):
     new_species_name: str
     new_content: str | None = None
     new_refs: str | None = None
+
+class LoginBody(CamelModel):
+    email: str
+    password: str
+
+class ResponseToken(CamelModel):
+    token: str

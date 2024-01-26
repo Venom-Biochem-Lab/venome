@@ -6,10 +6,14 @@ from .api_types import ProteinEntry, UploadBody, UploadError, EditBody
 from .db import Database, bytea_to_str, str_to_bytea
 from .protein import parse_protein_pdb, pdb_file_name, protein_name_found, pdb_to_fasta
 from .setup import disable_cors, init_fastapi_app
+from fastapi import APIRouter
 
 
 app = init_fastapi_app()
 disable_cors(app, origins=[os.environ["PUBLIC_FRONTEND_URL"]])
+
+# Allow routing
+
 
 
 @app.get("/pdb/{protein_name:str}")
@@ -267,7 +271,7 @@ def get_all_species():
                 return [d[0] for d in entry_sql]
     except Exception:
         return
-
+    
 
 def export_app_for_docker():
     """Needed for the [docker-compose.yml](../../docker-compose.yml)
