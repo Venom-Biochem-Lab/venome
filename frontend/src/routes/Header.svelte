@@ -1,5 +1,6 @@
 <script lang="ts">
 	import logo from "$lib/images/logo.svg";
+	import { HomeOutline, UploadOutline } from "flowbite-svelte-icons";
 </script>
 
 <header>
@@ -10,8 +11,12 @@
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/">Home</a>
-			<a href="/upload">Upload</a>
+			<a href="/" class="flex items-center gap-1"
+				><HomeOutline size="sm" /> Home</a
+			>
+			<a href="/upload" class="flex items-center gap-1">
+				<UploadOutline size="sm" />Upload</a
+			>
 		</div>
 	</div>
 </header>
@@ -42,9 +47,10 @@
 	.nav {
 		display: flex;
 		align-items: center;
-		gap: 15px;
+		gap: 20px;
 		font-size: 18px;
 		font-weight: 300;
+		margin-left: 10px;
 	}
 
 	a {
