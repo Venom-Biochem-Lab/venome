@@ -1,10 +1,15 @@
 <script lang="ts">
 	import logo from "$lib/images/logo.svg";
-	import { HomeOutline, UploadOutline } from "flowbite-svelte-icons";
+	import {
+		HomeOutline,
+		UploadOutline,
+		UserOutline,
+	} from "flowbite-svelte-icons";
 	import { Search, Button } from "flowbite-svelte";
+	import { searchBy } from "$lib/customStores";
 </script>
 
-<header>
+<header class="flex justify-between">
 	<div class="nav-container">
 		<div id="logo">
 			<a href="/">
@@ -19,16 +24,26 @@
 				<UploadOutline size="sm" />Upload</a
 			>
 		</div>
-		<form id="search-bar">
+		<form
+			id="search-bar"
+			on:submit={() => {
+				window.location.href = `/search?name=${$searchBy}`;
+			}}
+		>
 			<Search
-				size="md"
+				size="lg"
 				type="text"
 				class="flex gap-2 items-center"
 				placeholder="Enter search..."
+				bind:value={$searchBy}
 			/>
-			<Button type="submit" size="xs">Search</Button>
+			<Button type="submit" size="sm">Search</Button>
 		</form>
 	</div>
+
+	<a href="/login" class="flex items-center gap-1 mr-5">
+		<UserOutline size="sm" />Login</a
+	>
 </header>
 
 <style>
@@ -48,8 +63,9 @@
 
 	#search-bar {
 		display: flex;
-		width: 400px;
+		min-width: 500px;
 		gap: 5px;
+		margin-left: 20px;
 	}
 
 	.nav-container {
