@@ -27,7 +27,11 @@
 		<form
 			id="search-bar"
 			on:submit={() => {
-				window.location.href = `/search?name=${$searchBy}`;
+				if ($searchBy) {
+					window.location.href = `/search?name=${$searchBy}`;
+				} else {
+					window.location.href = `/search`;
+				}
 			}}
 		>
 			<Search

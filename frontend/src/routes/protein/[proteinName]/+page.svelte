@@ -35,7 +35,7 @@
 	});
 </script>
 
-<section class="flex flex-wrap gap-10">
+<section class="flex gap-10">
 	{#if entry}
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
@@ -48,32 +48,12 @@
 				Description Description Description Description
 			</div>
 
-			<EntryCard title="Provided Info">
-				<div class="grid grid-cols-2">
-					<div>Organism</div>
-					<div>
-						{entry.speciesName}
-					</div>
-
-					<div>Method</div>
-					<div>AlphaFold 2</div>
-				</div>
-			</EntryCard>
-
 			<EntryCard title="Computed Insights">
 				<div class="grid grid-cols-2">
-					<div>Organism</div>
-					<div>
-						{entry.speciesName}
-					</div>
-
-					<div>Method</div>
-					<div>AlphaFold 2</div>
-
-					<div>Length</div>
+					<b>Length</b>
 					<div><code>{entry.length}</code></div>
 
-					<div>Mass (Da)</div>
+					<b>Mass (Da)</b>
 					<div><code>{numberWithCommas(entry.mass)}</code></div>
 				</div>
 			</EntryCard>
@@ -92,7 +72,7 @@
 				</EntryCard>
 			{/if}
 		</div>
-		<div id="right-side">
+		<div id="right-side" class="flex flex-col">
 			<div class="flex gap-2">
 				<Button>Download <ChevronDownSolid size="xs" class="ml-2" /></Button>
 				<Dropdown>
@@ -109,13 +89,24 @@
 				>
 			</div>
 
-			<div class="mt-2">
+			<EntryCard title="Provided Information">
 				<ProteinVis
 					format="pdb"
 					url="http://localhost:8000/pdb/{entry.name}"
-					width={750}
+					width={400}
+					height={350}
 				/>
-			</div>
+				<div id="info-grid" class="grid grid-cols-2 mt-5">
+					<b>Organism</b>
+					<div>
+						{entry.speciesName}
+					</div>
+					<b>Method</b>
+					<div>AlphaFold 2</div>
+					<b>Date Published</b>
+					<div><code>11/11/1111</code></div>
+				</div>
+			</EntryCard>
 		</div>
 	{:else if !error}
 		<!-- Otherwise, tell user we tell the user we are loading -->
@@ -129,16 +120,14 @@
 
 <style>
 	#left-side {
-		width: 825px;
+		/* width: 1200px; */
 	}
 	#right-side {
+		width: 450px;
 	}
 	#title {
 		font-size: 2.45rem;
 		font-weight: 500;
-		color: var(--darkblue);
-	}
-	h2 {
 		color: var(--darkblue);
 	}
 </style>
