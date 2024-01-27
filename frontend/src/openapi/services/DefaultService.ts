@@ -3,7 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { EditBody } from '../models/EditBody';
+import type { LoginBody } from '../models/LoginBody';
+import type { LoginError } from '../models/LoginError';
 import type { ProteinEntry } from '../models/ProteinEntry';
+import type { ResponseToken } from '../models/ResponseToken';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 
@@ -12,6 +15,26 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
 export class DefaultService {
+
+    /**
+     * Login
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static login(
+        requestBody: LoginBody,
+    ): CancelablePromise<(ResponseToken | LoginError)> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/users/login',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
 
     /**
      * Get Pdb File
