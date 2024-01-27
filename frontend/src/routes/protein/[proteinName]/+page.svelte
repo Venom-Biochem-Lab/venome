@@ -43,6 +43,11 @@
 				{entry.name}
 			</h1>
 
+			<div id="description">
+				DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription
+				Description Description Description Description
+			</div>
+
 			<Card title="Info" class="max-w-full mt-5">
 				<Heading tag="h4">Information</Heading>
 

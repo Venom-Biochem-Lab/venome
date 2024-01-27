@@ -21,6 +21,6 @@
 	}
 </script>
 
-<div class="text-stone-700">
+<div style="color: var(--color-text);">
 	{@html mdToHTML}
 </div>
