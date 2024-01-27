@@ -6,10 +6,13 @@ from .api_types import ProteinEntry, UploadBody, UploadError, EditBody
 from .db import Database, bytea_to_str, str_to_bytea
 from .protein import parse_protein_pdb, pdb_file_name, protein_name_found, pdb_to_fasta
 from .setup import disable_cors, init_fastapi_app
+from .api import users
 
 
 app = init_fastapi_app()
 disable_cors(app, origins=[os.environ["PUBLIC_FRONTEND_URL"]])
+
+app.include_router(users.router)
 
 
 @app.get("/pdb/{protein_name:str}")

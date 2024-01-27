@@ -62,3 +62,19 @@ class EditBody(CamelModel):
     new_species_name: str
     new_content: str | None = None
     new_refs: str | None = None
+
+
+class LoginBody(CamelModel):
+    email: str
+    password: str
+
+
+class LoginError(str, enum.Enum):
+    DEBUG_ACCOUNT = "Debug: Account Not Found"
+    DEBUG_PASSWORD = "Debug: Incorrect password"
+    INCORRECT = "Invalid Email or Password"
+    QUERY_ERROR = "QUERY_ERROR"
+
+
+class ResponseToken(CamelModel):
+    token: str
