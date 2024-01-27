@@ -39,13 +39,9 @@
 	{#if entry}
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
-			<Heading tag="h1">
-				<Span
-					underline
-					decorationClass="decoration-8 decoration-primary-400 dark:decoration-primary-600"
-					>{entry.name}</Span
-				>
-			</Heading>
+			<h1 id="title">
+				{entry.name}
+			</h1>
 
 			<Card title="Info" class="max-w-full mt-5">
 				<Heading tag="h4">Information</Heading>
@@ -123,5 +119,10 @@
 		width: 825px;
 	}
 	#right-side {
+	}
+	#title {
+		font-size: 2.45rem;
+		font-weight: 500;
+		color: var(--darkblue);
 	}
 </style>
