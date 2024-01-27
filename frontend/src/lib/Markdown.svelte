@@ -21,4 +21,6 @@
 	}
 </script>
 
-{@html mdToHTML}
+<div class="text-stone-950">
+	{@html mdToHTML}
+</div>
