@@ -10,11 +10,11 @@
 		Spinner,
 	} from "flowbite-svelte";
 	import Markdown from "$lib/Markdown.svelte";
-	import { Heading, Span } from "flowbite-svelte";
 	import { numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
 	import References from "$lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
+	import EntryCard from "$lib/EntryCard.svelte";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -48,11 +48,21 @@
 				Description Description Description Description
 			</div>
 
-			<Card title="Info" class="max-w-full mt-5">
-				<Heading tag="h4">Information</Heading>
-
+			<EntryCard title="Provided Info">
 				<div class="grid grid-cols-2">
-					<div>Source Organism</div>
+					<div>Organism</div>
+					<div>
+						{entry.speciesName}
+					</div>
+
+					<div>Method</div>
+					<div>AlphaFold 2</div>
+				</div>
+			</EntryCard>
+
+			<EntryCard title="Computed Insights">
+				<div class="grid grid-cols-2">
+					<div>Organism</div>
 					<div>
 						{entry.speciesName}
 					</div>
@@ -66,22 +76,20 @@
 					<div>Mass (Da)</div>
 					<div><code>{numberWithCommas(entry.mass)}</code></div>
 				</div>
-			</Card>
+			</EntryCard>
 
 			<!-- Article / Wiki entry -->
 			{#if entry.content}
-				<Card title="Info" class="max-w-full mt-5">
-					<Heading tag="h4">Article</Heading>
+				<EntryCard title="Article">
 					<Markdown text={entry.content} />
-				</Card>
+				</EntryCard>
 			{/if}
 
 			<!-- References -->
 			{#if entry.refs}
-				<Card title="References" class="max-w-full mt-5 overflow-wrap">
-					<Heading tag="h4">References</Heading>
+				<EntryCard title="References">
 					<References bibtex={entry.refs} />
-				</Card>
+				</EntryCard>
 			{/if}
 		</div>
 		<div id="right-side">
@@ -128,6 +136,9 @@
 	#title {
 		font-size: 2.45rem;
 		font-weight: 500;
+		color: var(--darkblue);
+	}
+	h2 {
 		color: var(--darkblue);
 	}
 </style>
