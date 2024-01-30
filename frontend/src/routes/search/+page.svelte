@@ -24,5 +24,23 @@
 </svelte:head>
 
 <section>
-	<ListProteins {allEntries} />
+	<div id="sidebar">Filter By</div>
+	<div id="view">
+		<ListProteins {allEntries} />
+	</div>
 </section>
+
+<style>
+	section {
+		display: flex;
+	}
+	#sidebar {
+		width: 25%;
+		border-right: 1px solid #00000010;
+		background: #00000005;
+	}
+	#view {
+		width: 75%;
+		padding: 5px;
+	}
+</style>

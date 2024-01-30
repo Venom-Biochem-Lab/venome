@@ -18,14 +18,11 @@
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/" class="flex items-center gap-1"
-				><HomeOutline size="sm" />Home</a
+			<a href="/search" class="flex items-center gap-1"
+				><TableRowOutline size="sm" />View</a
 			>
 			<a href="/upload" class="flex items-center gap-1">
 				<UploadOutline size="sm" />Upload</a
-			>
-			<a href="/search" class="flex items-center gap-1"
-				><TableRowOutline size="sm" />Proteins</a
 			>
 		</div>
 		<form

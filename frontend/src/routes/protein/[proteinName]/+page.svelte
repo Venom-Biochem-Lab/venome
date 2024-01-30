@@ -35,7 +35,7 @@
 	});
 </script>
 
-<section class="flex gap-10">
+<section class="flex gap-10 p-5">
 	{#if entry}
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->

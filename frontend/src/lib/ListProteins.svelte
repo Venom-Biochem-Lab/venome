@@ -10,44 +10,39 @@
 		"scriptionDescriptionDescription DescriptionDescription Description Description";
 </script>
 
-<Tabs style="full" contentClass="bg-none p-5">
-	<TabItem open title="Proteins">
-		<div class="prot-grid">
-			{#if allEntries}
-				{#each allEntries as entry}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<div
-						class="prot-container"
-						on:click={() => goto(`/protein/${entry.name}`)}
-						title={`Name:${entry.name}\nDescription:${dummyDesc}`}
-					>
-						<div class="prot-thumb mr-2">
-							<img class="prot-thumb" src={dummy} alt="dummy" />
-						</div>
-						<div class="prot-info">
-							<div class="prot-name">
-								{entry.name}
-							</div>
-							<div class="prot-desc">
-								{dummyDesc}
-							</div>
-							<div>
-								<div><b>Organism</b>: {entry.speciesName}</div>
-								<div><b>Method</b>: AlphaFold2</div>
-								<div><b>Length:</b> <code>{entry.length}</code></div>
-								<div>
-									<b>Mass</b>: <code>{numberWithCommas(entry.mass)}</code>
-								</div>
-							</div>
+<div class="prot-grid">
+	{#if allEntries}
+		{#each allEntries as entry}
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div
+				class="prot-container"
+				on:click={() => goto(`/protein/${entry.name}`)}
+				title={`Name:${entry.name}\nDescription:${dummyDesc}`}
+			>
+				<div class="prot-thumb mr-2">
+					<img class="prot-thumb" src={dummy} alt="dummy" />
+				</div>
+				<div class="prot-info">
+					<div class="prot-name">
+						{entry.name}
+					</div>
+					<div class="prot-desc">
+						{dummyDesc}
+					</div>
+					<div>
+						<div><b>Organism</b>: {entry.speciesName}</div>
+						<div><b>Method</b>: AlphaFold2</div>
+						<div><b>Length:</b> <code>{entry.length}</code></div>
+						<div>
+							<b>Mass</b>: <code>{numberWithCommas(entry.mass)}</code>
 						</div>
 					</div>
-				{/each}
-			{/if}
-		</div>
-	</TabItem>
-	<TabItem title="Scatter Plot">not yet implemented</TabItem>
-</Tabs>
+				</div>
+			</div>
+		{/each}
+	{/if}
+</div>
 
 <style>
 	.prot-container {
@@ -90,6 +85,10 @@
 		display: flex;
 		gap: 20px;
 		flex-wrap: wrap;
+		overflow-y: scroll;
+		padding: 10px;
+		margin-left: 10px;
+		height: calc(100vh - 100px);
 	}
 	.prot-info {
 		width: 300px;
