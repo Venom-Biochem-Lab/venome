@@ -4,6 +4,7 @@
 		HomeOutline,
 		UploadOutline,
 		UserOutline,
+		TableRowOutline,
 	} from "flowbite-svelte-icons";
 	import { Search, Button } from "flowbite-svelte";
 	import { searchBy } from "$lib/customStores";
@@ -22,6 +23,9 @@
 			>
 			<a href="/upload" class="flex items-center gap-1">
 				<UploadOutline size="sm" />Upload</a
+			>
+			<a href="/search" class="flex items-center gap-1"
+				><TableRowOutline size="sm" />Proteins</a
 			>
 		</div>
 		<form
