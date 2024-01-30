@@ -12,38 +12,39 @@
 
 <Tabs style="full" contentClass="bg-none p-5">
 	<TabItem open title="Proteins">
-		{#if allEntries}
-			{#each allEntries as entry}
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<div
-					class="prot-container"
-					on:click={() => goto(`/protein/${entry.name}`)}
-				>
-					<div class="prot-thumb">
-						<img class="prot-thumb" src={dummy} alt="dummy" />
-					</div>
-					<div>
-						<div class="prot-name">
-							{entry.name}
+		<div class="prot-grid">
+			{#if allEntries}
+				{#each allEntries as entry}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<div
+						class="prot-container"
+						on:click={() => goto(`/protein/${entry.name}`)}
+						title={`Name:${entry.name}\nDescription:${dummyDesc}`}
+					>
+						<div class="prot-thumb mr-2">
+							<img class="prot-thumb" src={dummy} alt="dummy" />
 						</div>
-						<div class="prot-desc">
-							{dummyDesc}
-						</div>
-						<div class="mt-2">
-							<div>
-								<b>Organism</b>: {entry.speciesName},
-								<b>Method</b>: AlphaFold2
+						<div class="prot-info">
+							<div class="prot-name">
+								{entry.name}
+							</div>
+							<div class="prot-desc">
+								{dummyDesc}
 							</div>
 							<div>
-								<b>Length</b>: <code>{entry.length}</code>,
-								<b>Mass</b>: <code>{numberWithCommas(entry.mass)}</code>
+								<div><b>Organism</b>: {entry.speciesName}</div>
+								<div><b>Method</b>: AlphaFold2</div>
+								<div><b>Length:</b> <code>{entry.length}</code></div>
+								<div>
+									<b>Mass</b>: <code>{numberWithCommas(entry.mass)}</code>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			{/each}
-		{/if}
+				{/each}
+			{/if}
+		</div>
 	</TabItem>
 	<TabItem title="Scatter Plot">not yet implemented</TabItem>
 </Tabs>
@@ -57,6 +58,7 @@
 		padding-left: 15px;
 		padding-bottom: 15px;
 		padding-top: 15px;
+		box-sizing: border-box;
 	}
 	.prot-container:hover {
 		transform: scale(1.02);
@@ -71,13 +73,25 @@
 	.prot-name {
 		font-size: 1.5em;
 		color: var(--darkblue);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.prot-desc {
-		overflow-wrap: break-word;
-		width: 300px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 		font-weight: 300;
 	}
 	b {
 		font-weight: 500;
+	}
+	.prot-grid {
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+	.prot-info {
+		width: 300px;
 	}
 </style>
