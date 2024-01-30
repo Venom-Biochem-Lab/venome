@@ -4,7 +4,8 @@
 @tailwind utilities;
 
 :root {
-	--darkblue: hsla(205, 57%, 23%, 1);
+	--darkblue-hsl: 205, 57%, 23%;
+	--darkblue: hsla(var(--darkblue-hsl), 1);
 	--lightblue: hsla(198, 41%, 54%, 1);
 	--darkorange: hsla(27, 77%, 55%, 1);
 	--lightorange: hsla(38, 83%, 60%, 1);
