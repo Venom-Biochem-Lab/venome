@@ -46,19 +46,21 @@
 
 <style>
 	.prot-container {
+		--border-opacity: 0.3;
 		display: flex;
-		outline: hsla(var(--darkblue-hsl), 0.3) 1px solid;
+		outline: hsla(var(--darkblue-hsl), var(--border-opacity)) 1px solid;
 		border-radius: 5px;
 		width: 500px;
 		padding-left: 15px;
 		padding-bottom: 15px;
 		padding-top: 15px;
 		box-sizing: border-box;
+		transition: all 0.2s ease-in-out;
 	}
 	.prot-container:hover {
 		transform: scale(1.02);
-		transition: all 0.2s ease-in-out;
-		outline: var(--darkblue) 1px dashed;
+		--border-opacity: 0.5;
+		box-shadow: 0 1px 2px 2px #00000010;
 		cursor: pointer;
 	}
 	.prot-thumb {
