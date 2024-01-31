@@ -11,4 +11,3 @@ export type EditBody = {
     newContent?: (string | null);
     newRefs?: (string | null);
 };
-

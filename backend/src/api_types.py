@@ -69,12 +69,6 @@ class LoginBody(CamelModel):
     password: str
 
 
-class LoginError(str, enum.Enum):
-    DEBUG_ACCOUNT = "Debug: Account Not Found"
-    DEBUG_PASSWORD = "Debug: Incorrect password"
-    INCORRECT = "Invalid Email or Password"
-    QUERY_ERROR = "QUERY_ERROR"
-
-
-class ResponseToken(CamelModel):
+class LoginResponse(CamelModel):
     token: str
+    error: str
