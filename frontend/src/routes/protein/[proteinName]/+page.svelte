@@ -15,6 +15,7 @@
 	import References from "$lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
 	import EntryCard from "$lib/EntryCard.svelte";
+	import SimilarProteins from "$lib/SimilarProteins.svelte";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -55,6 +56,10 @@
 
 					<b>Mass (Da)</b>
 					<div><code>{numberWithCommas(entry.mass)}</code></div>
+				</div>
+				<div>
+					<b>Structurally Similar Proteins</b>
+					<SimilarProteins queryProteinName={entry.name} />
 				</div>
 			</EntryCard>
 
