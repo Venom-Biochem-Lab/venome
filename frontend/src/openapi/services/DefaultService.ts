@@ -7,6 +7,7 @@ import type { LoginBody } from '../models/LoginBody';
 import type { LoginError } from '../models/LoginError';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { ResponseToken } from '../models/ResponseToken';
+import type { SimilarProtein } from '../models/SimilarProtein';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 
@@ -30,6 +31,48 @@ export class DefaultService {
             url: '/users/login',
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Similar Pdb
+     * @param proteinName
+     * @returns SimilarProtein Successful Response
+     * @throws ApiError
+     */
+    public static getSimilarPdb(
+        proteinName: string,
+    ): CancelablePromise<Array<SimilarProtein>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/similar-pdb/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Similar Venome
+     * @param proteinName
+     * @returns SimilarProtein Successful Response
+     * @throws ApiError
+     */
+    public static getSimilarVenome(
+        proteinName: string,
+    ): CancelablePromise<Array<SimilarProtein>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/similar-venome/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
             errors: {
                 422: `Validation Error`,
             },

@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get("/similar-pdb/{protein_name:str}", response_model=list[SimilarProtein])
-def get_pdb_proteins(protein_name: str):
+def get_similar_pdb(protein_name: str):
     query_name = pdb_file_name(protein_name)
     PDB = create_db("PDB", "pdb")
     similar = easy_search(query_name, PDB, out_format=["target", "prob"])
@@ -18,7 +18,7 @@ def get_pdb_proteins(protein_name: str):
 
 
 @router.get("/similar-venome/{protein_name:str}", response_model=list[SimilarProtein])
-def get_venome_proteins(protein_name: str):
+def get_similar_venome(protein_name: str):
     query_name = pdb_file_name(protein_name)
     target_folder = "src/data/pdbAlphaFold/"
     similar = easy_search(query_name, target_folder, out_format=["target", "prob"])
