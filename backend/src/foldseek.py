@@ -23,7 +23,7 @@ class GenerateDirName:
     def __enter__(self):
         global active_caches
         active_caches += 1
-        self.temp_dir = ".foldseek_cache_" + str(active_caches)
+        self.temp_dir = "foldseek/temp_dir_" + str(active_caches)
         return self.temp_dir
 
     def __exit__(self, *args):
@@ -91,6 +91,30 @@ def easy_search(
 
         parsed_output = parse_output(out_file)
         return to_columnar_array(parsed_output) if columnar else parsed_output
+
+
+def external_db(
+    external_db_name: str,
+    db_name: str,
+    foldseek_executable="foldseek/bin/foldseek",
+    print_stdout=False,
+):
+    if external_db_name not in EXTERNAL_DATABASES:
+        raise Exception(f"Directory {external_db_name} not found")
+
+    with GenerateDirName() as temp_dir:
+        try:
+            bash_cmd(f"ls {db_name}")
+        except Exception:
+            if dir not in EXTERNAL_DATABASES:
+                cmd = f"{foldseek_executable} createdb {external_db_name} {db_name}"
+            else:
+                cmd = f"{foldseek_executable} databases {external_db_name} {db_name} {temp_dir}"
+            stdout = bash_cmd(cmd)
+            if print_stdout:
+                print(stdout)
+
+    return db_name
 
 
 def create_db(
