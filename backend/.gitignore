@@ -4,3 +4,4 @@ __pycache__/
 foldseek/bin/foldseek
 foldseek/README.md
 foldseek-linux-sse2.tar.gz
+pdb*

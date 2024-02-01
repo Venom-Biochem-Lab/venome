@@ -80,14 +80,10 @@ def easy_search(
 def create_db(
     dir: str,
     db_name: str,
-    foldseek_executable="foldseek",
+    foldseek_executable="foldseek/bin/foldseek",
     print_stdout=False,
     temp_dir=".foldseek_cache",
 ):
-    # don't continue unless they actually have foldseek installed
-    if bash_cmd(f"which {foldseek_executable}") == "":
-        raise Exception("foldseek not found in PATH")
-
     # check that our dir exists
     try:
         bash_cmd(f"ls {dir}")
