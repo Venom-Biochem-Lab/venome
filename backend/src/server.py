@@ -12,7 +12,7 @@ from .api import users
 app = init_fastapi_app()
 disable_cors(app, origins=[os.environ["PUBLIC_FRONTEND_URL"]])
 
-app.include_router(users.router)
+app.include_router(router=users.router)
 
 
 @app.get("/pdb/{protein_name:str}")
