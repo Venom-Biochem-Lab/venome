@@ -2,32 +2,23 @@ import logging as log
 import os
 from io import BytesIO
 from fastapi.responses import FileResponse, StreamingResponse
-from .api_types import ProteinEntry, UploadBody, UploadError, EditBody, SimilarProtein
+from .api_types import ProteinEntry, UploadBody, UploadError, EditBody
 from .db import Database, bytea_to_str, str_to_bytea
 from .protein import (
     parse_protein_pdb,
     pdb_file_name,
     protein_name_found,
     pdb_to_fasta,
-    revert_pdb_filename,
 )
 from .setup import disable_cors, init_fastapi_app
-from .foldseek import easy_search
-from .api import users
+from .api import users, similar
 
 
 app = init_fastapi_app()
 disable_cors(app, origins=[os.environ["PUBLIC_FRONTEND_URL"]])
 
 app.include_router(users.router)
-
-
-@app.get("/similar-venome/{protein_name:str}", response_model=list[SimilarProtein])
-def get_venome_proteins(protein_name: str):
-    query_name = pdb_file_name(protein_name)
-    target_folder = "src/data/pdbAlphaFold/"
-    similar = easy_search(query_name, target_folder, out_format=["target", "prob"])
-    return [SimilarProtein(name=revert_pdb_filename(s[0]), prob=s[1]) for s in similar]
+app.include_router(similar.router)
 
 
 @app.get("/pdb/{protein_name:str}")
