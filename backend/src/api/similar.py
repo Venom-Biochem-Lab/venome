@@ -24,5 +24,6 @@ def get_similar_pdb(protein_name: str):
 def get_similar_venome(protein_name: str):
     query_name = pdb_file_name(protein_name)
     target_folder = "src/data/pdbAlphaFold/"
-    similar = easy_search(query_name, target_folder, out_format="target,prob")
+    # the first will always be the query itself so we skip it
+    similar = easy_search(query_name, target_folder, out_format="target,prob")[1:]
     return [SimilarProtein(name=revert_pdb_filename(s[0]), prob=s[1]) for s in similar]
