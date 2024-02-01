@@ -1,2 +1,6 @@
 __pycache__/
 .venv
+.foldseek_cache/
+foldseek/bin/foldseek
+foldseek/README.md
+foldseek-linux-sse2.tar.gz
