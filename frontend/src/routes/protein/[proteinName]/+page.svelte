@@ -16,6 +16,7 @@
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
 	import EntryCard from "$lib/EntryCard.svelte";
 	import SimilarProteins from "$lib/SimilarProteins.svelte";
+	import SimilarProteinsPdb from "$lib/SimilarProteinsPDB.svelte";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -58,8 +59,16 @@
 					<div><code>{numberWithCommas(entry.mass)}</code></div>
 				</div>
 				<div>
-					<b>Structurally Similar Proteins</b>
+					<b>Structurally Similar Venome Proteins</b>
 					<SimilarProteins queryProteinName={entry.name} />
+				</div>
+				<div>
+					<b
+						>Structurally Similar <a href="https://www.rcsb.org/"
+							>Protein Data Bank</a
+						> Proteins</b
+					>
+					<SimilarProteinsPdb queryProteinName={entry.name} />
 				</div>
 			</EntryCard>
 

@@ -8,33 +8,34 @@
 	export let queryProteinName: string;
 	let showing = 5;
 
-	let similar: SimilarProtein[];
+	let similarPdb: SimilarProtein[];
 	onMount(async () => {
-		similar = await Backend.getSimilarVenome(queryProteinName);
+		similarPdb = await Backend.getSimilarPdb(queryProteinName);
 	});
 </script>
 
-{#if similar}
-	{#if similar.length > 0}
+{#if similarPdb}
+	{#if similarPdb.length > 0}
 		<table>
 			<tr>
 				<th> Source </th>
 				<th> Desc. </th>
 				<th> Prob. </th>
 			</tr>
-			{#each { length: Math.min(showing, similar.length) } as _, i}
-				{@const protein = similar[i]}
+			{#each { length: Math.min(showing, similarPdb.length) } as _, i}
+				{@const protein = similarPdb[i]}
+				{@const pdbId = protein.name.toUpperCase()}
 				<tr class="pdb-row">
 					<td>
-						<a href="/protein/{protein.name}" target="_blank"
-							><LinkOutline size="sm" />VENOME:{protein.name}</a
+						<a href="https://www.rcsb.org/structure/{pdbId}" target="_blank"
+							><LinkOutline size="sm" />PDB:{pdbId}</a
 						>
 					</td>
 					<td class="pdb-desc">DEscDEscDEscDEsc DEscDEsc DEsc DEsc </td>
 					<td>{protein.prob}</td>
 				</tr>
 			{/each}
-			{#if similar.length > showing}
+			{#if similarPdb.length > showing}
 				<div
 					class="text-gray-400 cursor-pointer"
 					on:click={() => (showing += 5)}
@@ -44,12 +45,10 @@
 			{/if}
 		</table>
 	{:else}
-		<div>None Found</div>
+		<div>None found</div>
 	{/if}
 {:else}
-	<div>
-		Computing Similar Venome proteins w/ Foldseek <Spinner />
-	</div>
+	<div>Computing Similar PDB proteins w/ Foldseek <Spinner /></div>
 {/if}
 
 <style>
@@ -64,7 +63,7 @@
 		text-align: left;
 	}
 	.pdb-row {
-		background-color: hsl(var(--darkblue-hsl), 0.11);
+		background-color: hsl(var(--lightorange-hsl), 0.11);
 	}
 	.pdb-desc {
 		min-width: 70px;
@@ -74,7 +73,7 @@
 		overflow: hidden;
 	}
 	a {
-		color: var(--darkblue);
+		color: var(--lightorange);
 		display: flex;
 		gap: 1px;
 		align-items: center;
