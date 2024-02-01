@@ -13,10 +13,13 @@ from .protein import (
 )
 from .setup import disable_cors, init_fastapi_app
 from .foldseek import easy_search
+from .api import users
 
 
 app = init_fastapi_app()
 disable_cors(app, origins=[os.environ["PUBLIC_FRONTEND_URL"]])
+
+app.include_router(users.router)
 
 
 @app.get("/similar-venome/{protein_name:str}", response_model=list[SimilarProtein])
