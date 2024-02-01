@@ -13,7 +13,7 @@ router = APIRouter()
 def get_similar_pdb(protein_name: str):
     query_name = pdb_file_name(protein_name)
     PDB = create_db("PDB", "pdb")
-    similar = easy_search(query_name, PDB, out_format=["target", "prob"])
+    similar = easy_search(query_name, PDB, out_format="target,prob")
     return [SimilarProtein(name=s[0].split(".")[0], prob=s[1]) for s in similar]
 
 
@@ -21,5 +21,5 @@ def get_similar_pdb(protein_name: str):
 def get_similar_venome(protein_name: str):
     query_name = pdb_file_name(protein_name)
     target_folder = "src/data/pdbAlphaFold/"
-    similar = easy_search(query_name, target_folder, out_format=["target", "prob"])
+    similar = easy_search(query_name, target_folder, out_format="target,prob")
     return [SimilarProtein(name=revert_pdb_filename(s[0]), prob=s[1]) for s in similar]

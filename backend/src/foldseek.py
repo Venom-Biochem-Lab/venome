@@ -1,5 +1,6 @@
 import subprocess
 import logging as log
+from functools import lru_cache
 
 EXTERNAL_DATABASES = [
     "Alphafold/UniProt",
@@ -13,6 +14,22 @@ EXTERNAL_DATABASES = [
 
 def bash_cmd(cmd: str | list[str]) -> str:
     return subprocess.check_output(cmd, shell=True).decode()
+
+
+active_caches = 0
+
+
+class GenerateDirName:
+    def __enter__(self):
+        global active_caches
+        active_caches += 1
+        self.temp_dir = ".foldseek_cache_" + str(active_caches)
+        return self.temp_dir
+
+    def __exit__(self, *args):
+        global active_caches
+        active_caches -= 1
+        bash_cmd("rm -rf " + self.temp_dir)
 
 
 def to_columnar_array(arr: list[list]) -> list[list]:
@@ -42,12 +59,11 @@ def parse_output(filepath: str) -> list[list]:
     return parsed_lines
 
 
+@lru_cache(maxsize=32)
 def easy_search(
     query: str,
     target: str,
-    out_format: list[str] = ["query", "target", "prob"],
-    out_file=".foldseek_cache/output",
-    temp_dir=".foldseek_cache",
+    out_format: str = "query, target, prob",
     print_stdout=False,
     foldseek_executable="./foldseek/bin/foldseek",
     columnar=False,
@@ -58,23 +74,23 @@ def easy_search(
     Returns:
         list[list]: a list of the matches from the search
     """
+    with GenerateDirName() as temp_dir:
+        out_file = temp_dir + "/output"
 
-    # Then call the easy-search
-    flags = f"--format-output {','.join(out_format)}" if len(out_format) > 0 else ""
-    cmd = f"{foldseek_executable} easy-search {query} {target} {out_file} {temp_dir} {flags}"
-    try:
-        stdout = bash_cmd(cmd)
-    except Exception as e:
-        log.warn(e)
-        return []
+        # Then call the easy-search
+        flags = f"--format-output {out_format}" if out_format else ""
+        cmd = f"{foldseek_executable} easy-search {query} {target} {out_file} {temp_dir} {flags}"
+        try:
+            stdout = bash_cmd(cmd)
+        except Exception as e:
+            log.warn(e)
+            return []
 
-    if print_stdout:
-        log.warn(stdout)
+        if print_stdout:
+            log.warn(stdout)
 
-    if columnar:
-        return to_columnar_array(parse_output(out_file))
-    else:
-        return parse_output(out_file)
+        parsed_output = parse_output(out_file)
+        return to_columnar_array(parsed_output) if columnar else parsed_output
 
 
 def create_db(
@@ -112,6 +128,5 @@ if __name__ == "__main__":
     output = easy_search(
         query=test_targets,
         target=test_targets,
-        out_format=["query", "target", "prob"],
     )
     print(output)
