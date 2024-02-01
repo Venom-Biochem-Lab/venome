@@ -49,6 +49,10 @@ def pdb_file_name(protein_name: str):
     )
 
 
+def revert_pdb_filename(file_name: str):
+    return file_name.replace(".pdb", "").replace("_", " ")
+
+
 def parse_protein_pdb(name: str, file_contents: str = "", encoding="str"):
     if encoding == "str":
         return PDB(file_contents, name)

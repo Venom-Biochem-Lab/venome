@@ -62,3 +62,8 @@ class EditBody(CamelModel):
     new_species_name: str
     new_content: str | None = None
     new_refs: str | None = None
+
+
+class SimilarProtein(CamelModel):
+    name: str
+    prob: float
