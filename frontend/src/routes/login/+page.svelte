@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Backend, type LoginResponse } from "$lib/backend";
 	import { Button, Label, Input } from "flowbite-svelte";
+	import Cookies from "js-cookie";
 
 	let email: string = "";
 	let password: string = "";
@@ -37,6 +38,7 @@
 				// User entered the correct username / password and got a result.
 				// @todo Store this in a cookie.
 				console.log("Response received. Token: " + result['token'])
+				Cookies.set('auth', result['token'])
 
 			} else {
 				// User got a result, but both fields are null. This should never happen.
