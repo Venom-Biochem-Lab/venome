@@ -28,7 +28,7 @@
 			alphafoldView: true,
 			reactive: true,
 			sequencePanel: true,
-			hideControls: false,
+			hideControls: true,
 			hideCanvasControls: ["animation"],
 		};
 

@@ -1,70 +1,98 @@
 <script lang="ts">
 	import logo from "$lib/images/logo.svg";
-	import github from "$lib/images/github.svg";
+	import {
+		HomeOutline,
+		UploadOutline,
+		UserOutline,
+		TableRowOutline,
+	} from "flowbite-svelte-icons";
+	import { Search, Button } from "flowbite-svelte";
+	import { searchBy } from "$lib/customStores";
 </script>
 
-<header>
+<header class="flex justify-between">
 	<div class="nav-container">
-		<div class="corner">
+		<div id="logo">
 			<a href="/">
 				<img src={logo} alt="Venome Logo" />
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/search">Search</a>
-			<a href="/upload">Upload</a>
-			<a href="/login">Login</a>
+			<a href="/search" class="flex items-center gap-1"
+				><TableRowOutline size="sm" />View</a
+			>
+			<a href="/upload" class="flex items-center gap-1">
+				<UploadOutline size="sm" />Upload</a
+			>
 		</div>
+		<form
+			id="search-bar"
+			on:submit={() => {
+				if ($searchBy) {
+					window.location.href = `/search?name=${$searchBy}`;
+				} else {
+					window.location.href = `/search`;
+				}
+			}}
+		>
+			<Search
+				size="lg"
+				type="text"
+				class="flex gap-2 items-center"
+				placeholder="Enter search..."
+				bind:value={$searchBy}
+			/>
+			<Button type="submit" size="sm">Search</Button>
+		</form>
 	</div>
 
-	<div class="corner">
-		<a href="https://github.com/xnought/venome">
-			<img src={github} alt="GitHub" />
-		</a>
-	</div>
+	<a href="/login" class="flex items-center gap-1 mr-5">
+		<UserOutline size="sm" />Login</a
+	>
 </header>
 
 <style>
 	header {
 		display: flex;
 		justify-content: space-between;
-		background-color: hsla(15, 98%, 51%, 0.06);
-		box-shadow: 0px 0px 3px 2px hsla(0, 0%, 0%, 0.208);
+		background-color: #08163803;
+		box-shadow: 0px 0px 2px 2px hsla(0, 0%, 0%, 0.1);
 		height: 60px;
+	}
+
+	#logo {
+		/* TODO remove these hard coded constraints and do it right */
+		height: 45px;
+		width: 100px;
+	}
+
+	#search-bar {
+		display: flex;
+		min-width: 500px;
+		gap: 5px;
+		margin-left: 20px;
 	}
 
 	.nav-container {
 		display: flex;
 		height: 60px;
-		gap: 10px;
+		gap: 20px;
+		margin-left: 20px;
+		align-items: center;
 	}
 
 	.nav {
 		display: flex;
-		align-items: center;
-		gap: 10px;
+		gap: 20px;
+		font-size: 18px;
+		font-weight: 300;
+		margin-left: 10px;
 	}
 
-	.corner {
-		width: 60px;
-		height: 60px;
+	a {
+		color: var(--darkblue);
 	}
-
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
-	}
-
 	a:hover {
-		color: var(--color-theme-1);
+		color: var(--darkblue);
 	}
 </style>

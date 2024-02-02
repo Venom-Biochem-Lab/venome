@@ -21,4 +21,6 @@
 	}
 </script>
 
-{@html mdToHTML}
+<div style="color: var(--color-text);">
+	{@html mdToHTML}
+</div>

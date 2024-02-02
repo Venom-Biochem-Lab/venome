@@ -10,11 +10,12 @@
 		Spinner,
 	} from "flowbite-svelte";
 	import Markdown from "$lib/Markdown.svelte";
-	import { Heading, Span } from "flowbite-svelte";
 	import { numberWithCommas } from "$lib/format";
 	import { goto } from "$app/navigation";
 	import References from "$lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
+	import EntryCard from "$lib/EntryCard.svelte";
+	import SimilarProteins from "$lib/SimilarProteins.svelte";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -35,55 +36,48 @@
 	});
 </script>
 
-<section class="flex flex-wrap gap-10">
+<section class="flex gap-10 p-5">
 	{#if entry}
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
-			<Heading tag="h1">
-				<Span
-					underline
-					decorationClass="decoration-8 decoration-primary-400 dark:decoration-primary-600"
-					>{entry.name}</Span
-				>
-			</Heading>
+			<h1 id="title">
+				{entry.name}
+			</h1>
 
-			<Card title="Info" class="max-w-full mt-5">
-				<Heading tag="h4">Information</Heading>
+			<div id="description">
+				DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription
+				Description Description Description Description
+			</div>
 
+			<EntryCard title="Computed Insights">
 				<div class="grid grid-cols-2">
-					<div>Source Organism</div>
-					<div>
-						{entry.speciesName}
-					</div>
-
-					<div>Method</div>
-					<div>AlphaFold 2</div>
-
-					<div>Length</div>
+					<b>Length</b>
 					<div><code>{entry.length}</code></div>
 
-					<div>Mass (Da)</div>
+					<b>Mass (Da)</b>
 					<div><code>{numberWithCommas(entry.mass)}</code></div>
 				</div>
-			</Card>
+				<div>
+					<b>Structurally Similar Proteins</b>
+					<SimilarProteins queryProteinName={entry.name} />
+				</div>
+			</EntryCard>
 
 			<!-- Article / Wiki entry -->
 			{#if entry.content}
-				<Card title="Info" class="max-w-full mt-5">
-					<Heading tag="h4">Article</Heading>
+				<EntryCard title="Article">
 					<Markdown text={entry.content} />
-				</Card>
+				</EntryCard>
 			{/if}
 
 			<!-- References -->
 			{#if entry.refs}
-				<Card title="References" class="max-w-full mt-5 overflow-wrap">
-					<Heading tag="h4">References</Heading>
+				<EntryCard title="References">
 					<References bibtex={entry.refs} />
-				</Card>
+				</EntryCard>
 			{/if}
 		</div>
-		<div id="right-side">
+		<div id="right-side" class="flex flex-col">
 			<div class="flex gap-2">
 				<Button>Download <ChevronDownSolid size="xs" class="ml-2" /></Button>
 				<Dropdown>
@@ -100,13 +94,24 @@
 				>
 			</div>
 
-			<div class="mt-2">
+			<EntryCard title="Provided Information">
 				<ProteinVis
 					format="pdb"
 					url="http://localhost:8000/pdb/{entry.name}"
-					width={750}
+					width={400}
+					height={350}
 				/>
-			</div>
+				<div id="info-grid" class="grid grid-cols-2 mt-5">
+					<b>Organism</b>
+					<div>
+						{entry.speciesName}
+					</div>
+					<b>Method</b>
+					<div>AlphaFold 2</div>
+					<b>Date Published</b>
+					<div><code>11/11/1111</code></div>
+				</div>
+			</EntryCard>
 		</div>
 	{:else if !error}
 		<!-- Otherwise, tell user we tell the user we are loading -->
@@ -120,8 +125,14 @@
 
 <style>
 	#left-side {
-		width: 825px;
+		/* width: 1200px; */
 	}
 	#right-side {
+		width: 450px;
+	}
+	#title {
+		font-size: 2.45rem;
+		font-weight: 500;
+		color: var(--darkblue);
 	}
 </style>
