@@ -10,4 +10,3 @@ export type UploadBody = {
     refs: string;
     pdbFileStr: string;
 };
-

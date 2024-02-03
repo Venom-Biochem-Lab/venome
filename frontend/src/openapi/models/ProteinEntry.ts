@@ -11,4 +11,3 @@ export type ProteinEntry = {
     content?: (string | null);
     refs?: (string | null);
 };
-

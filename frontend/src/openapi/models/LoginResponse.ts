@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ResponseToken = {
+export type LoginResponse = {
     token: string;
+    error: string;
 };
-
