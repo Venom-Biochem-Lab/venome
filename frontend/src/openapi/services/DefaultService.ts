@@ -68,7 +68,7 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/pdb/{protein_name}',
+            url: '/protein/pdb/{protein_name}',
             path: {
                 'protein_name': proteinName,
             },
@@ -89,44 +89,7 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/fasta/{protein_name}',
-            path: {
-                'protein_name': proteinName,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-
-    /**
-     * Get All Entries
-     * Gets all protein entries from the database
-     * Returns: list[ProteinEntry] if found | None if not found
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static getAllEntries(): CancelablePromise<(Array<ProteinEntry> | null)> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/all-entries',
-        });
-    }
-
-    /**
-     * Search Entries
-     * Gets a list of protein entries by a search string
-     * Returns: list[ProteinEntry] if found | None if not found
-     * @param proteinName
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static searchEntries(
-        proteinName: string,
-    ): CancelablePromise<(Array<ProteinEntry> | null)> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/search-entries/{protein_name}',
+            url: '/protein/fasta/{protein_name}',
             path: {
                 'protein_name': proteinName,
             },
@@ -149,7 +112,7 @@ export class DefaultService {
     ): CancelablePromise<(ProteinEntry | null)> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/protein-entry/{protein_name}',
+            url: '/protein/entry/{protein_name}',
             path: {
                 'protein_name': proteinName,
             },
@@ -170,7 +133,7 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/protein-entry/{protein_name}',
+            url: '/protein/entry/{protein_name}',
             path: {
                 'protein_name': proteinName,
             },
@@ -191,7 +154,7 @@ export class DefaultService {
     ): CancelablePromise<(UploadError | null)> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/protein-upload',
+            url: '/protein/upload',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -211,7 +174,7 @@ export class DefaultService {
     ): CancelablePromise<(UploadError | null)> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/protein-edit',
+            url: '/protein/edit',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -221,14 +184,14 @@ export class DefaultService {
     }
 
     /**
-     * Get All Species
+     * Search Species
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static getAllSpecies(): CancelablePromise<(Array<string> | null)> {
+    public static searchSpecies(): CancelablePromise<(Array<string> | null)> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/all-species',
+            url: '/species/search',
         });
     }
 

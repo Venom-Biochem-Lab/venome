@@ -47,3 +47,15 @@ def search_proteins(body: SearchProteinsBody):
                 raise HTTPException(status_code=500)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/search/species", response_model=list[str] | None)
+def search_species():
+    try:
+        with Database() as db:
+            query = """SELECT name as species_name FROM species"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return [d[0] for d in entry_sql]
+    except Exception:
+        return

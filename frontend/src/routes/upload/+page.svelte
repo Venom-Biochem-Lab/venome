@@ -16,7 +16,7 @@
 	let species: string[] | null;
 	let selectedSpecies: string = "unknown";
 	onMount(async () => {
-		species = await Backend.getAllSpecies();
+		species = await Backend.searchSpecies();
 	});
 
 	let name: string = "";

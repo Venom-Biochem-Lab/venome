@@ -1,11 +1,11 @@
 import os
 from .setup import disable_cors, init_fastapi_app, serve_endpoints
-from .api import users, search, protein, species
+from .api import users, search, protein
 
 
 app = init_fastapi_app()
 disable_cors(app, origins=[os.environ["PUBLIC_FRONTEND_URL"]])
-serve_endpoints(app, modules=[users, search, protein, species])
+serve_endpoints(app, modules=[users, search, protein])
 
 
 def export_app_for_docker():

@@ -88,13 +88,13 @@ def pdb_to_fasta(pdb: PDB):
     return ">{}\n{}".format(pdb.name, "".join(pdb.amino_acids()))
 
 
-@router.get("/pdb/{protein_name:str}")
+@router.get("/protein/pdb/{protein_name:str}")
 def get_pdb_file(protein_name: str):
     if protein_name_found(protein_name):
         return FileResponse(pdb_file_name(protein_name), filename=protein_name + ".pdb")
 
 
-@router.get("/fasta/{protein_name:str}")
+@router.get("/protein/fasta/{protein_name:str}")
 def get_fasta_file(protein_name: str):
     if protein_name_found(protein_name):
         pdb = parse_protein_pdb(protein_name, encoding="file")
@@ -108,7 +108,7 @@ def get_fasta_file(protein_name: str):
         )
 
 
-@router.get("/protein-entry/{protein_name:str}", response_model=ProteinEntry | None)
+@router.get("/protein/entry/{protein_name:str}", response_model=ProteinEntry | None)
 def get_protein_entry(protein_name: str):
     """Get a single protein entry by its id
     Returns: ProteinEntry if found | None if not found
@@ -147,7 +147,7 @@ def get_protein_entry(protein_name: str):
 
 
 # TODO: add permissions so only the creator can delete not just anyone
-@router.delete("/protein-entry/{protein_name:str}", response_model=None)
+@router.delete("/protein/entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str):
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
@@ -165,7 +165,7 @@ def delete_protein_entry(protein_name: str):
 
 
 # None return means success
-@router.post("/protein-upload", response_model=UploadError | None)
+@router.post("/protein/upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody):
     # check that the name is not already taken in the DB
     if protein_name_found(body.name):
@@ -219,7 +219,7 @@ def upload_protein_entry(body: UploadBody):
 
 
 # TODO: add more edits, now only does name and content edits
-@router.put("/protein-edit", response_model=UploadError | None)
+@router.put("/protein/edit", response_model=UploadError | None)
 def edit_protein_entry(body: EditBody):
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
