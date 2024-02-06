@@ -25,28 +25,28 @@
 <section>
 	<div id="sidebar">Filter By</div>
 	<div id="view">
+		<form
+			id="search-bar"
+			on:submit={async () => {
+				if (textSearch) {
+					proteins = await Backend.searchEntries(textSearch);
+				} else {
+					proteins = await Backend.getAllEntries();
+				}
+			}}
+		>
+			<Search
+				size="lg"
+				type="text"
+				class="flex gap-2 items-center"
+				placeholder="Enter search..."
+				bind:value={textSearch}
+			/>
+			<Button type="submit" size="sm">Search</Button>
+		</form>
 		{#if proteins === null || proteins.length === 0}
 			No proteins Found
 		{:else}
-			<form
-				id="search-bar"
-				on:submit={async () => {
-					if (textSearch) {
-						proteins = await Backend.searchEntries(textSearch);
-					} else {
-						proteins = await Backend.getAllEntries();
-					}
-				}}
-			>
-				<Search
-					size="lg"
-					type="text"
-					class="flex gap-2 items-center"
-					placeholder="Enter search..."
-					bind:value={textSearch}
-				/>
-				<Button type="submit" size="sm">Search</Button>
-			</form>
 			<ListProteins allEntries={proteins} />
 		{/if}
 	</div>
