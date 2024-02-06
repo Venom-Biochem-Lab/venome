@@ -58,6 +58,18 @@ export class DefaultService {
     }
 
     /**
+     * Search Species
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static searchSpecies(): CancelablePromise<(Array<string> | null)> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/species',
+        });
+    }
+
+    /**
      * Get Pdb File
      * @param proteinName
      * @returns any Successful Response
@@ -180,18 +192,6 @@ export class DefaultService {
             errors: {
                 422: `Validation Error`,
             },
-        });
-    }
-
-    /**
-     * Search Species
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static searchSpecies(): CancelablePromise<(Array<string> | null)> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/species/search',
         });
     }
 
