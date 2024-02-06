@@ -1,13 +1,10 @@
 <script lang="ts">
 	import logo from "$lib/images/logo.svg";
 	import {
-		HomeOutline,
 		UploadOutline,
 		UserOutline,
 		TableRowOutline,
 	} from "flowbite-svelte-icons";
-	import { Search, Button } from "flowbite-svelte";
-	import { searchBy } from "$lib/customStores";
 </script>
 
 <header class="flex justify-between">
@@ -25,31 +22,13 @@
 				<UploadOutline size="sm" />Upload</a
 			>
 		</div>
-		<form
-			id="search-bar"
-			on:submit={() => {
-				if ($searchBy) {
-					window.location.href = `/search?name=${$searchBy}`;
-				} else {
-					window.location.href = `/search`;
-				}
-			}}
-		>
-			<Search
-				size="lg"
-				type="text"
-				class="flex gap-2 items-center"
-				placeholder="Enter search..."
-				bind:value={$searchBy}
-			/>
-			<Button type="submit" size="sm">Search</Button>
-		</form>
 	</div>
 
 	<a href="/login" class="flex items-center gap-1 mr-5">
 		<UserOutline size="sm" />Login</a
 	>
 </header>
+<div style="height: 60px;" />
 
 <style>
 	header {
@@ -58,19 +37,17 @@
 		background-color: #08163803;
 		box-shadow: 0px 0px 2px 2px hsla(0, 0%, 0%, 0.1);
 		height: 60px;
+		position: fixed;
+		top: 0;
+		width: 100%;
+		z-index: 999;
+		backdrop-filter: blur(10px);
 	}
 
 	#logo {
 		/* TODO remove these hard coded constraints and do it right */
 		height: 45px;
 		width: 100px;
-	}
-
-	#search-bar {
-		display: flex;
-		min-width: 500px;
-		gap: 5px;
-		margin-left: 20px;
 	}
 
 	.nav-container {

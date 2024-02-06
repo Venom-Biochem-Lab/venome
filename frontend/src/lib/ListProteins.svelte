@@ -87,7 +87,6 @@
 		display: flex;
 		gap: 20px;
 		flex-wrap: wrap;
-		overflow-y: scroll;
 		padding: 10px;
 		margin-left: 10px;
 		height: calc(100vh - 100px);

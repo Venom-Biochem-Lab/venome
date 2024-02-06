@@ -3,18 +3,17 @@
 	import { Backend } from "$lib/backend";
 	import type { ProteinEntry } from "$lib/backend";
 	import ListProteins from "$lib/ListProteins.svelte";
-	import { page } from "$app/stores";
-	import { searchBy } from "$lib/customStores";
+	import { Search, Button } from "flowbite-svelte";
 
-	$searchBy = $page.url.searchParams.get("name") ?? "";
+	let textSearch = "";
 
-	let allEntries: ProteinEntry[] | null = null;
+	let proteins: ProteinEntry[] | null = null;
 	onMount(async () => {
 		// if user provided a name like /search?name=abc, parse it
-		if ($searchBy) {
-			allEntries = await Backend.searchEntries($searchBy);
+		if (textSearch) {
+			proteins = await Backend.searchEntries(textSearch);
 		} else {
-			allEntries = await Backend.getAllEntries();
+			proteins = await Backend.getAllEntries();
 		}
 	});
 </script>
@@ -26,7 +25,30 @@
 <section>
 	<div id="sidebar">Filter By</div>
 	<div id="view">
-		<ListProteins {allEntries} />
+		{#if proteins === null || proteins.length === 0}
+			No proteins Found
+		{:else}
+			<form
+				id="search-bar"
+				on:submit={async () => {
+					if (textSearch) {
+						proteins = await Backend.searchEntries(textSearch);
+					} else {
+						proteins = await Backend.getAllEntries();
+					}
+				}}
+			>
+				<Search
+					size="lg"
+					type="text"
+					class="flex gap-2 items-center"
+					placeholder="Enter search..."
+					bind:value={textSearch}
+				/>
+				<Button type="submit" size="sm">Search</Button>
+			</form>
+			<ListProteins allEntries={proteins} />
+		{/if}
 	</div>
 </section>
 
@@ -35,12 +57,22 @@
 		display: flex;
 	}
 	#sidebar {
-		width: 25%;
+		width: 400px;
+		height: calc(100vh - 60px);
 		border-right: 1px solid #00000010;
 		background: #00000005;
+		position: fixed;
+		top: 60px;
 	}
 	#view {
-		width: 75%;
+		margin-left: 400px;
 		padding: 5px;
+	}
+
+	#search-bar {
+		display: flex;
+		width: 500px;
+		gap: 5px;
+		padding: 10px;
 	}
 </style>
