@@ -6,6 +6,8 @@ import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
 import type { ProteinEntry } from '../models/ProteinEntry';
+import type { SearchProteinsBody } from '../models/SearchProteinsBody';
+import type { SearchProteinsResults } from '../models/SearchProteinsResults';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 
@@ -17,13 +19,13 @@ export class DefaultService {
 
     /**
      * Login
-     * @param requestBody 
-     * @returns LoginResponse Successful Response
+     * @param requestBody
+     * @returns any Successful Response
      * @throws ApiError
      */
     public static login(
-requestBody: LoginBody,
-): CancelablePromise<LoginResponse> {
+        requestBody: LoginBody,
+    ): CancelablePromise<(LoginResponse | null)> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/users/login',
@@ -36,14 +38,34 @@ requestBody: LoginBody,
     }
 
     /**
+     * Search Proteins
+     * @param requestBody
+     * @returns SearchProteinsResults Successful Response
+     * @throws ApiError
+     */
+    public static searchProteins(
+        requestBody: SearchProteinsBody,
+    ): CancelablePromise<SearchProteinsResults> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/search/proteins',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Get Pdb File
-     * @param proteinName 
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static getPdbFile(
-proteinName: string,
-): CancelablePromise<any> {
+        proteinName: string,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/pdb/{protein_name}',
@@ -58,13 +80,13 @@ proteinName: string,
 
     /**
      * Get Fasta File
-     * @param proteinName 
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static getFastaFile(
-proteinName: string,
-): CancelablePromise<any> {
+        proteinName: string,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/fasta/{protein_name}',
@@ -80,7 +102,7 @@ proteinName: string,
     /**
      * Get All Entries
      * Gets all protein entries from the database
- * Returns: list[ProteinEntry] if found | None if not found
+     * Returns: list[ProteinEntry] if found | None if not found
      * @returns any Successful Response
      * @throws ApiError
      */
@@ -94,14 +116,14 @@ proteinName: string,
     /**
      * Search Entries
      * Gets a list of protein entries by a search string
- * Returns: list[ProteinEntry] if found | None if not found
-     * @param proteinName 
+     * Returns: list[ProteinEntry] if found | None if not found
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static searchEntries(
-proteinName: string,
-): CancelablePromise<(Array<ProteinEntry> | null)> {
+        proteinName: string,
+    ): CancelablePromise<(Array<ProteinEntry> | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/search-entries/{protein_name}',
@@ -117,14 +139,14 @@ proteinName: string,
     /**
      * Get Protein Entry
      * Get a single protein entry by its id
- * Returns: ProteinEntry if found | None if not found
-     * @param proteinName 
+     * Returns: ProteinEntry if found | None if not found
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static getProteinEntry(
-proteinName: string,
-): CancelablePromise<(ProteinEntry | null)> {
+        proteinName: string,
+    ): CancelablePromise<(ProteinEntry | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/protein-entry/{protein_name}',
@@ -139,13 +161,13 @@ proteinName: string,
 
     /**
      * Delete Protein Entry
-     * @param proteinName 
+     * @param proteinName
      * @returns any Successful Response
      * @throws ApiError
      */
     public static deleteProteinEntry(
-proteinName: string,
-): CancelablePromise<any> {
+        proteinName: string,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/protein-entry/{protein_name}',
@@ -160,13 +182,13 @@ proteinName: string,
 
     /**
      * Upload Protein Entry
-     * @param requestBody 
+     * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
     public static uploadProteinEntry(
-requestBody: UploadBody,
-): CancelablePromise<(UploadError | null)> {
+        requestBody: UploadBody,
+    ): CancelablePromise<(UploadError | null)> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/protein-upload',
@@ -180,13 +202,13 @@ requestBody: UploadBody,
 
     /**
      * Edit Protein Entry
-     * @param requestBody 
+     * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
     public static editProteinEntry(
-requestBody: EditBody,
-): CancelablePromise<(UploadError | null)> {
+        requestBody: EditBody,
+    ): CancelablePromise<(UploadError | null)> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/protein-edit',

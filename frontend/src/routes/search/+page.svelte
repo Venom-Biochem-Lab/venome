@@ -6,15 +6,12 @@
 	import { Search, Button } from "flowbite-svelte";
 
 	let textSearch = "";
-
-	let proteins: ProteinEntry[] | null = null;
+	let proteinEntries: ProteinEntry[];
+	let totalFound = 0;
 	onMount(async () => {
-		// if user provided a name like /search?name=abc, parse it
-		if (textSearch) {
-			proteins = await Backend.searchEntries(textSearch);
-		} else {
-			proteins = await Backend.getAllEntries();
-		}
+		const result = await Backend.searchProteins({ query: textSearch });
+		proteinEntries = result.proteinEntries;
+		totalFound = result.totalFound;
 	});
 </script>
 
@@ -28,11 +25,9 @@
 		<form
 			id="search-bar"
 			on:submit={async () => {
-				if (textSearch) {
-					proteins = await Backend.searchEntries(textSearch);
-				} else {
-					proteins = await Backend.getAllEntries();
-				}
+				const result = await Backend.searchProteins({ query: textSearch });
+				proteinEntries = result.proteinEntries;
+				totalFound = result.totalFound;
 			}}
 		>
 			<Search
@@ -44,10 +39,15 @@
 			/>
 			<Button type="submit" size="sm">Search</Button>
 		</form>
-		{#if proteins === null || proteins.length === 0}
+		{#if totalFound > 0}
+			<div id="found">
+				{totalFound} proteins found
+			</div>
+		{/if}
+		{#if proteinEntries === undefined || proteinEntries.length === 0}
 			No proteins Found
 		{:else}
-			<ListProteins allEntries={proteins} />
+			<ListProteins allEntries={proteinEntries} />
 		{/if}
 	</div>
 </section>
@@ -55,6 +55,7 @@
 <style>
 	section {
 		display: flex;
+		position: relative;
 	}
 	#sidebar {
 		width: 400px;
@@ -74,5 +75,12 @@
 		width: 500px;
 		gap: 5px;
 		padding: 10px;
+	}
+
+	#found {
+		position: absolute;
+		top: 25px;
+		right: 25px;
+		color: var(--darkblue);
 	}
 </style>

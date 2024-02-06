@@ -12,6 +12,8 @@ export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { LoginBody } from './models/LoginBody';
 export type { LoginResponse } from './models/LoginResponse';
 export type { ProteinEntry } from './models/ProteinEntry';
+export type { SearchProteinsBody } from './models/SearchProteinsBody';
+export type { SearchProteinsResults } from './models/SearchProteinsResults';
 export type { UploadBody } from './models/UploadBody';
 export { UploadError } from './models/UploadError';
 export type { ValidationError } from './models/ValidationError';
