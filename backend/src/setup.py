@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.routing import APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 
@@ -12,6 +13,11 @@ def disable_cors(app: FastAPI, origins=["*"]):
         allow_headers=["*"],
     )
     return app
+
+
+def include_routers(app: FastAPI, routers: list[APIRouter]):
+    for r in routers:
+        app.include_router(r)
 
 
 # https://github.com/zeno-ml/zeno/blob/main/zeno/server.py#L52
