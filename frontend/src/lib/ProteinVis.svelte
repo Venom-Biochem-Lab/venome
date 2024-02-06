@@ -50,5 +50,6 @@
 	#myViewer {
 		float: left;
 		position: relative;
+		z-index: 999;
 	}
 </style>
