@@ -26,9 +26,8 @@ def sanitize_query(query: str) -> str:
 def search_proteins(body: SearchProteinsBody):
     with Database() as db:
         try:
-            query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM species_proteins 
-                       JOIN proteins ON species_proteins.protein_id = proteins.id
-                       JOIN species ON species_proteins.species_id = species.id
+            query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM proteins 
+                       JOIN species ON species.id = proteins.species_id 
                        WHERE proteins.name ILIKE %s;"""
             entries_sql = db.execute_return(query, [f"%{sanitize_query(body.query)}%"])
             if entries_sql is not None:

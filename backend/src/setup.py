@@ -15,6 +15,10 @@ def disable_cors(app: FastAPI, origins=["*"]):
     return app
 
 
+def serve_endpoints(app: FastAPI, modules):
+    include_routers(app, [m.router for m in modules])
+
+
 def include_routers(app: FastAPI, routers: list[APIRouter]):
     for r in routers:
         app.include_router(r)
