@@ -7,12 +7,17 @@
 
 	let textSearch = "";
 	let proteinEntries: ProteinEntry[];
+	let limit = 1000;
 	let totalFound = 0;
 	onMount(async () => {
-		const result = await Backend.searchProteins({ query: textSearch });
+		await search();
+	});
+
+	async function search() {
+		const result = await Backend.searchProteins({ query: textSearch, limit });
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
-	});
+	}
 </script>
 
 <svelte:head>
@@ -22,14 +27,7 @@
 <section>
 	<div id="sidebar">Filter By</div>
 	<div id="view">
-		<form
-			id="search-bar"
-			on:submit={async () => {
-				const result = await Backend.searchProteins({ query: textSearch });
-				proteinEntries = result.proteinEntries;
-				totalFound = result.totalFound;
-			}}
-		>
+		<form id="search-bar" on:submit={search}>
 			<Search
 				size="lg"
 				type="text"

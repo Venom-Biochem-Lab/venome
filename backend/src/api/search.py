@@ -5,6 +5,7 @@ from ..db import Database
 from ..api_types import CamelModel, ProteinEntry
 
 router = APIRouter()
+DEFAULT_LIMIT = 1_000
 
 
 class SearchProteinsBody(CamelModel):
@@ -24,13 +25,24 @@ def sanitize_query(query: str) -> str:
 
 @router.post("/search/proteins", response_model=SearchProteinsResults)
 def search_proteins(body: SearchProteinsBody):
+    limit = body.limit if body.limit is not None else DEFAULT_LIMIT
+    limit = min(limit, DEFAULT_LIMIT)
+    title_query = sanitize_query(body.query)
     with Database() as db:
         try:
-            query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM proteins 
+            total_count_query = """SELECT count(*) FROM proteins 
+                             WHERE proteins.name ILIKE %s;"""
+            entries_query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM proteins 
                        JOIN species ON species.id = proteins.species_id 
-                       WHERE proteins.name ILIKE %s;"""
-            entries_sql = db.execute_return(query, [f"%{sanitize_query(body.query)}%"])
-            if entries_sql is not None:
+                       WHERE proteins.name ILIKE %s
+                       LIMIT %s;"""
+            entries_result = db.execute_return(
+                entries_query, [f"%{title_query}%", limit]
+            )
+            total_count_result = db.execute_return(
+                total_count_query, [f"%{title_query}%"]
+            )
+            if entries_result is not None and total_count_result is not None:
                 return SearchProteinsResults(
                     protein_entries=[
                         ProteinEntry(
@@ -39,9 +51,9 @@ def search_proteins(body: SearchProteinsBody):
                             mass=mass,
                             species_name=species_name,
                         )
-                        for name, length, mass, species_name in entries_sql
+                        for name, length, mass, species_name in entries_result
                     ],
-                    total_found=len(entries_sql),
+                    total_found=total_count_result[0][0],
                 )
             else:
                 raise HTTPException(status_code=500)
