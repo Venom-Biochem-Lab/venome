@@ -47,11 +47,11 @@ class Database:
             raise Exception(error) from error
 
     def execute_return(
-        self, query: LiteralString | sql.Composed, params: list[Any] | None = None
+        self, query: LiteralString | sql.Composed | str, params: list[Any] | None = None
     ):
         """Executes an SQL query and returns all of the results"""
         if self.cur is not None:
-            self.execute(query, params)
+            self.execute(query, params)  # type: ignore
             return self.cur.fetchall()
 
     def __enter__(self):

@@ -7,16 +7,25 @@
 
 	let textSearch = "";
 	let proteinEntries: ProteinEntry[];
-	let limit = 1000;
 	let totalFound = 0;
+	let species: string[] | null = [];
+	let selectedSpecie: string | undefined;
 	onMount(async () => {
 		await search();
+		species = await Backend.searchSpecies();
 	});
 
 	async function search() {
-		const result = await Backend.searchProteins({ query: textSearch, limit });
+		const result = await Backend.searchProteins({
+			query: textSearch,
+			speciesFilter: selectedSpecie,
+		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
+	}
+	async function resetFilter() {
+		selectedSpecie = undefined;
+		await search();
 	}
 </script>
 
@@ -25,7 +34,25 @@
 </svelte:head>
 
 <section>
-	<div id="sidebar">Filter By</div>
+	<div id="sidebar">
+		Filter By
+
+		<div>
+			{#if species}
+				{#each species as s}
+					<div
+						on:click={async () => {
+							selectedSpecie = s;
+							await search();
+						}}
+					>
+						{s}
+					</div>
+				{/each}
+			{/if}
+		</div>
+		<div on:click={resetFilter}>Reset</div>
+	</div>
 	<div id="view">
 		<form id="search-bar" on:submit={search}>
 			<Search

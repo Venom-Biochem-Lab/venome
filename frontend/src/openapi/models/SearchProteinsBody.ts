@@ -5,6 +5,6 @@
 
 export type SearchProteinsBody = {
     query: string;
-    limit?: (number | null);
+    speciesFilter?: (string | null);
 };
 
