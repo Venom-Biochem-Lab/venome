@@ -56,6 +56,7 @@
 		padding-top: 15px;
 		box-sizing: border-box;
 		transition: all 0.2s ease-in-out;
+		align-self: start;
 	}
 	.prot-container:hover {
 		transform: scale(1.02);

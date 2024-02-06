@@ -16,7 +16,7 @@
 		</div>
 		<div class="nav">
 			<a href="/search" class="flex items-center gap-1"
-				><TableRowOutline size="sm" />View</a
+				><TableRowOutline size="sm" />Search</a
 			>
 			<a href="/upload" class="flex items-center gap-1">
 				<UploadOutline size="sm" />Upload</a
