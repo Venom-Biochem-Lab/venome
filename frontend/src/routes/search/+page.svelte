@@ -5,27 +5,32 @@
 	import ListProteins from "$lib/ListProteins.svelte";
 	import { Search, Button } from "flowbite-svelte";
 
-	let textSearch = "";
+	let query = "";
 	let proteinEntries: ProteinEntry[];
 	let totalFound = 0;
 	let species: string[] | null = [];
-	let selectedSpecie: string | undefined;
+	let speciesFilter: string | undefined;
+	let lengthFilter: { min: number; max: number } | undefined;
+	let lengthExtent: { min: number; max: number };
 	onMount(async () => {
 		await search();
 		species = await Backend.searchSpecies();
+		lengthExtent = await Backend.searchRangeLength();
+		lengthFilter = lengthExtent;
 	});
 
 	async function search() {
 		const result = await Backend.searchProteins({
-			query: textSearch,
-			speciesFilter: selectedSpecie,
-			lengthFilter: { min: 100, max: 200 },
+			query,
+			speciesFilter,
+			lengthFilter,
 		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
 	}
 	async function resetFilter() {
-		selectedSpecie = undefined;
+		speciesFilter = undefined;
+		lengthFilter = undefined;
 		await search();
 	}
 </script>
@@ -43,13 +48,35 @@
 				{#each species as s}
 					<div
 						on:click={async () => {
-							selectedSpecie = s;
+							speciesFilter = s;
 							await search();
 						}}
 					>
 						{s}
 					</div>
 				{/each}
+			{/if}
+		</div>
+		<div>
+			<div>LENGTH</div>
+			{#if lengthExtent && lengthFilter}
+				MIN
+				<input
+					type="number"
+					min={lengthExtent.min}
+					max={lengthExtent.max}
+					bind:value={lengthFilter.min}
+					on:change={search}
+				/>
+
+				MAX
+				<input
+					type="number"
+					min={lengthExtent.min}
+					max={lengthExtent.max}
+					bind:value={lengthFilter.max}
+					on:change={search}
+				/>
 			{/if}
 		</div>
 		<div on:click={resetFilter}>Reset</div>
@@ -61,7 +88,7 @@
 				type="text"
 				class="flex gap-2 items-center"
 				placeholder="Enter search..."
-				bind:value={textSearch}
+				bind:value={query}
 			/>
 			<Button type="submit" size="sm">Search</Button>
 		</form>
