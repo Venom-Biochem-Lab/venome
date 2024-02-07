@@ -58,6 +58,30 @@ export class DefaultService {
     }
 
     /**
+     * Search Range Length
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static searchRangeLength(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/range/length',
+        });
+    }
+
+    /**
+     * Search Range Mass
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static searchRangeMass(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/range/mass',
+        });
+    }
+
+    /**
      * Search Species
      * @returns any Successful Response
      * @throws ApiError

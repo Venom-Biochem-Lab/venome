@@ -19,6 +19,7 @@
 		const result = await Backend.searchProteins({
 			query: textSearch,
 			speciesFilter: selectedSpecie,
+			lengthFilter: { min: 100, max: 200 },
 		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;

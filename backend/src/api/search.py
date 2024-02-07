@@ -7,9 +7,15 @@ from ..api_types import CamelModel, ProteinEntry
 router = APIRouter()
 
 
+class RangeFilter(CamelModel):
+    min: int | float
+    max: int | float
+
+
 class SearchProteinsBody(CamelModel):
     query: str
     species_filter: str | None = None
+    length_filter: RangeFilter | None = None
 
 
 class SearchProteinsResults(CamelModel):
@@ -22,9 +28,16 @@ def sanitize_query(query: str) -> str:
     return query
 
 
-def gen_sql_filters(species_filter: str | None):
+def gen_sql_filters(
+    species_filter: str | None, length_filter: RangeFilter | None = None
+) -> str:
     filter_query = """"""
-    filter_query += f" AND species.name = '{species_filter}'" if species_filter else " "
+    if species_filter:
+        filter_query += f" AND species.name = '{species_filter}'"
+    if length_filter:
+        filter_query += (
+            f" AND proteins.length BETWEEN {length_filter.min} AND {length_filter.max}"
+        )
     return sanitize_query(filter_query)
 
 
@@ -36,7 +49,7 @@ def search_proteins(body: SearchProteinsBody):
             entries_query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM proteins 
                        JOIN species ON species.id = proteins.species_id 
                        WHERE proteins.name ILIKE %s""" + gen_sql_filters(
-                body.species_filter
+                body.species_filter, body.length_filter
             )
 
             entries_result = db.execute_return(
@@ -62,6 +75,30 @@ def search_proteins(body: SearchProteinsBody):
                 raise HTTPException(status_code=500)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/search/range/length")
+def search_range_length():
+    try:
+        with Database() as db:
+            query = """SELECT min(length), max(length) FROM proteins"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/search/range/mass")
+def search_range_mass():
+    try:
+        with Database() as db:
+            query = """SELECT min(mass), max(mass) FROM proteins"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/search/species", response_model=list[str] | None)
