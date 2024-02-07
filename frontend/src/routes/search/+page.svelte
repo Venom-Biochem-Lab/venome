@@ -30,7 +30,7 @@
 	}
 	async function resetFilter() {
 		speciesFilter = undefined;
-		lengthFilter = undefined;
+		lengthFilter = lengthExtent;
 		await search();
 	}
 </script>
@@ -43,23 +43,24 @@
 	<div id="sidebar">
 		Filter By
 
-		<div>
+		<div class="flex gap-2 flex-wrap">
 			{#if species}
 				{#each species as s}
-					<div
+					<Button
+						outline
 						on:click={async () => {
 							speciesFilter = s;
 							await search();
 						}}
 					>
 						{s}
-					</div>
+					</Button>
 				{/each}
 			{/if}
 		</div>
 		<div>
 			<div>LENGTH</div>
-			{#if lengthExtent && lengthFilter}
+			{#if lengthFilter}
 				MIN
 				<input
 					type="number"
