@@ -13,10 +13,14 @@
 	let speciesFilter: string | undefined;
 	let lengthFilter: { min: number; max: number } | undefined;
 	let lengthExtent: { min: number; max: number };
+	let massFilter: { min: number; max: number } | undefined;
+	let massExtent: { min: number; max: number };
 	onMount(async () => {
 		await search();
 		species = await Backend.searchSpecies();
 		lengthExtent = await Backend.searchRangeLength();
+		massExtent = await Backend.searchRangeMass();
+		massFilter = massExtent;
 		lengthFilter = lengthExtent;
 	});
 
@@ -32,6 +36,7 @@
 	async function resetFilter() {
 		speciesFilter = undefined;
 		lengthFilter = lengthExtent;
+		massFilter = massExtent;
 		await search();
 	}
 </script>
@@ -45,11 +50,11 @@
 		<h2 class="text-darkblue mb-2">Filter By</h2>
 
 		<div>
-			<div>
-				<h3>Species</h3>
-			</div>
-			<div class="flex gap-2 flex-wrap">
-				{#if species}
+			{#if species && species.length > 0}
+				<div>
+					<h3>Species</h3>
+				</div>
+				<div class="flex gap-2 flex-wrap">
 					{#each species as s}
 						<Button
 							outline
@@ -61,17 +66,31 @@
 							{s}
 						</Button>
 					{/each}
-				{/if}
-			</div>
+				</div>
+			{/if}
 		</div>
 		<div>
-			<h3>Amino Acids Length</h3>
 			{#if lengthExtent && lengthFilter}
+				<h3>Amino Acids Length</h3>
 				<RangerFilter
 					min={lengthExtent.min}
 					max={lengthExtent.max}
 					on:change={async ({ detail }) => {
 						lengthFilter = detail;
+						await search();
+					}}
+				/>
+			{/if}
+		</div>
+
+		<div>
+			{#if massExtent && massFilter}
+				<h3>Mass (Da)</h3>
+				<RangerFilter
+					min={massExtent.min}
+					max={massExtent.max}
+					on:change={async ({ detail }) => {
+						massFilter = detail;
 						await search();
 					}}
 				/>
