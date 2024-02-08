@@ -2,7 +2,7 @@
 	import { navigate } from "svelte-routing";
 	import type { ProteinEntry } from "./backend";
 	import { numberWithCommas } from "./format";
-	import dummy from "$lib/images/dummy.png";
+	import dummy from "../images/dummy.png";
 
 	export let allEntries: ProteinEntry[] | null = null;
 	const dummyDesc =
