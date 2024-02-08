@@ -16,6 +16,7 @@ class SearchProteinsBody(CamelModel):
     query: str
     species_filter: str | None = None
     length_filter: RangeFilter | None = None
+    mass_filter: RangeFilter | None = None
 
 
 class SearchProteinsResults(CamelModel):
@@ -28,17 +29,39 @@ def sanitize_query(query: str) -> str:
     return query
 
 
+def range_where_clause(column_name: str, filter: RangeFilter | None = None) -> str:
+    if filter is None:
+        return ""
+    return f"{column_name} BETWEEN {filter.min} AND {filter.max}"
+
+
+def category_where_clause(column_name: str, filter: str | None = None) -> str:
+    if filter is None:
+        return ""
+    return f"{column_name} = '{filter}'"
+
+
+def combine_where_clauses(clauses: list[str]) -> str:
+    result = ""
+    for i, c in enumerate(clauses):
+        if c != "":
+            result += c
+            if i < len(clauses) - 1:
+                result += " AND "
+    return result
+
+
 def gen_sql_filters(
-    species_filter: str | None, length_filter: RangeFilter | None = None
+    species_filter: str | None,
+    length_filter: RangeFilter | None = None,
+    mass_filter: RangeFilter | None = None,
 ) -> str:
-    filter_query = """"""
-    if species_filter:
-        filter_query += f" AND species.name = '{species_filter}'"
-    if length_filter:
-        filter_query += (
-            f" AND proteins.length BETWEEN {length_filter.min} AND {length_filter.max}"
-        )
-    return sanitize_query(filter_query)
+    filters = [
+        category_where_clause("species.name", species_filter),
+        range_where_clause("proteins.length", length_filter),
+        range_where_clause("proteins.mass", mass_filter),
+    ]
+    return " AND " + combine_where_clauses(filters) if any(filters) else ""
 
 
 @router.post("/search/proteins", response_model=SearchProteinsResults)
@@ -46,14 +69,16 @@ def search_proteins(body: SearchProteinsBody):
     title_query = sanitize_query(body.query)
     with Database() as db:
         try:
+            filter_clauses = gen_sql_filters(
+                body.species_filter, body.length_filter, body.mass_filter
+            )
             entries_query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM proteins 
                        JOIN species ON species.id = proteins.species_id 
-                       WHERE proteins.name ILIKE %s""" + gen_sql_filters(
-                body.species_filter, body.length_filter
-            )
+                       WHERE proteins.name ILIKE %s"""
 
+            log.warn(filter_clauses)
             entries_result = db.execute_return(
-                entries_query,
+                sanitize_query(entries_query + filter_clauses),
                 [
                     f"%{title_query}%",
                 ],

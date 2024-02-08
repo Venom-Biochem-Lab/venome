@@ -9,5 +9,6 @@ export type SearchProteinsBody = {
     query: string;
     speciesFilter?: (string | null);
     lengthFilter?: (RangeFilter | null);
+    massFilter?: (RangeFilter | null);
 };
 

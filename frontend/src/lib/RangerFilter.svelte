@@ -19,7 +19,7 @@
 			{max}
 			bind:value={selectedMin}
 			on:change={() => {
-				dispatch("change", { min: selectedMin, max: selectedMax });
+				dispatch("change", { min: +selectedMin, max: +selectedMax });
 			}}
 		/>
 	</div>
@@ -33,7 +33,7 @@
 			{max}
 			bind:value={selectedMax}
 			on:change={() => {
-				dispatch("change", { min: selectedMin, max: selectedMax });
+				dispatch("change", { min: +selectedMin, max: +selectedMax });
 			}}
 		/>
 	</div>

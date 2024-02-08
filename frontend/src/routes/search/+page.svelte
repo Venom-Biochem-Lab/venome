@@ -25,10 +25,12 @@
 	});
 
 	async function search() {
+		console.log(massFilter);
 		const result = await Backend.searchProteins({
 			query,
 			speciesFilter,
 			lengthFilter,
+			massFilter,
 		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
