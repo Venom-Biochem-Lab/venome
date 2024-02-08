@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { PDBeMolstarPlugin } from "../../venome-molstar";
 
 	export let url =
 		"http://localhost:8000/data/pdbAlphaFold/Gh_comp271_c0_seq1.pdb";
@@ -36,6 +37,7 @@
 		var viewerContainer = document.getElementById("myViewer");
 
 		//Call render method to display the 3D view
+		// @ts-ignore
 		viewerInstance.render(viewerContainer, options);
 	});
 </script>

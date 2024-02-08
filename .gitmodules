@@ -1,0 +1,3 @@
+[submodule "frontend/venome-molstar"]
+	path = frontend/venome-molstar
+	url = git@github.com:xnought/venome-molstar.git
