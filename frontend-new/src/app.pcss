@@ -2,8 +2,6 @@
 @import "@fontsource-variable/inter";
 
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
 	--darkblue-hsl: 205, 57%, 23%;
@@ -17,7 +15,9 @@
 
 	--lightorange-hsl: 38, 83%, 60%;
 	--lightorange: hsla(var(--lightorange-hsl), 1);
+}
 
+:root {
 	--font-body: "Inter Variable", sans-serif;
 	--font-mono: "Fira Mono", monospace;
 	--color-bg-0: rgb(202, 216, 228);
@@ -119,3 +119,6 @@ button:focus:not(:focus-visible) {
 	width: 1px;
 	white-space: nowrap;
 }
+
+@tailwind components;
+@tailwind utilities;
