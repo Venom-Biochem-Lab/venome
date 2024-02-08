@@ -12,6 +12,14 @@
 -- https://www.postgresql.org/docs/current/ddl-generated-columns.html
 
 /*
+ * Species Table
+ */
+CREATE TABLE species (
+    id serial PRIMARY KEY,
+    name text NOT NULL UNIQUE  -- combined genus and species name, provided for now by the user
+);
+
+/*
  * Proteins Table
  */
 CREATE TABLE proteins (
@@ -20,31 +28,10 @@ CREATE TABLE proteins (
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
     content bytea, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
-    refs bytea -- bibtex references mentioned in the content/article
+    refs bytea, -- bibtex references mentioned in the content/article
+    species_id integer NOT NULL,
+    FOREIGN KEY (species_id) REFERENCES species(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-
-/*
- * Species Table
- */
-CREATE TABLE species (
-    id serial PRIMARY KEY,
-    name text NOT NULL UNIQUE  -- combined genus and species name, provided for now by the user
-    -- -- removed now to reduce complexity for v0
-    -- tax_genus text NOT NULL,
-    -- tax_species text NOT NULL,
-    -- scientific_name text UNIQUE GENERATED ALWAYS AS (tax_genus || ' ' || tax_species) STORED,
-    -- content bytea
-);
-
-/*
- * Table: species_proteins
- * Description: Join table for N:M connection between Species and Proteins
- */
- CREATE TABLE species_proteins (
-    species_id serial references species(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    protein_id serial references proteins(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY (species_id, protein_id)
- );
 
 /*
 * Users Table

@@ -25,7 +25,7 @@ def upload_protein_file(path, name, species_name, content="", refs=""):
             "refs": refs,
             "pdb_file_str": pdb_file_str,
         }
-        out = requests.post("http://localhost:8000/protein-upload", json=payload)
+        out = requests.post("http://localhost:8000/protein/upload", json=payload)
         return out
 
 

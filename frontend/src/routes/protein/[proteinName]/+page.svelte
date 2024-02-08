@@ -16,6 +16,7 @@
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
 	import EntryCard from "$lib/EntryCard.svelte";
 	import SimilarProteins from "$lib/SimilarProteins.svelte";
+	import DelayedSpinner from "$lib/DelayedSpinner.svelte";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -97,7 +98,7 @@
 			<EntryCard title="Provided Information">
 				<ProteinVis
 					format="pdb"
-					url="http://localhost:8000/pdb/{entry.name}"
+					url="http://localhost:8000/protein/pdb/{entry.name}"
 					width={400}
 					height={350}
 				/>
@@ -115,7 +116,7 @@
 		</div>
 	{:else if !error}
 		<!-- Otherwise, tell user we tell the user we are loading -->
-		<h1>Loading Protein Entry <Spinner /></h1>
+		<h1><DelayedSpinner text="Loading Protein Entry" /></h1>
 	{:else if error}
 		<!-- if we error out, tell the user the id is shiza -->
 		<h1>Error</h1>

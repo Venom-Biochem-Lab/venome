@@ -47,7 +47,7 @@
 			ogSpecies = species;
 		}
 
-		allSpecies = await Backend.getAllSpecies();
+		allSpecies = await Backend.searchSpecies();
 	});
 	$: changed =
 		name !== ogName ||
