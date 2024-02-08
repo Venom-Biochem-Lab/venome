@@ -4,6 +4,7 @@
 	import type { ProteinEntry } from "$lib/backend";
 	import ListProteins from "$lib/ListProteins.svelte";
 	import { Search, Button } from "flowbite-svelte";
+	import RangerFilter from "$lib/RangerFilter.svelte";
 
 	let query = "";
 	let proteinEntries: ProteinEntry[];
@@ -41,46 +42,45 @@
 
 <section>
 	<div id="sidebar">
-		Filter By
+		<h2 class="text-darkblue mb-2">Filter By</h2>
 
-		<div class="flex gap-2 flex-wrap">
-			{#if species}
-				{#each species as s}
-					<Button
-						outline
-						on:click={async () => {
-							speciesFilter = s;
-							await search();
-						}}
-					>
-						{s}
-					</Button>
-				{/each}
-			{/if}
+		<div>
+			<div>
+				<h3>Species</h3>
+			</div>
+			<div class="flex gap-2 flex-wrap">
+				{#if species}
+					{#each species as s}
+						<Button
+							outline
+							on:click={async () => {
+								speciesFilter = s;
+								await search();
+							}}
+						>
+							{s}
+						</Button>
+					{/each}
+				{/if}
+			</div>
 		</div>
 		<div>
-			<div>LENGTH</div>
-			{#if lengthFilter}
-				MIN
-				<input
-					type="number"
+			<h3>Amino Acids Length</h3>
+			{#if lengthExtent && lengthFilter}
+				<RangerFilter
 					min={lengthExtent.min}
 					max={lengthExtent.max}
-					bind:value={lengthFilter.min}
-					on:change={search}
-				/>
-
-				MAX
-				<input
-					type="number"
-					min={lengthExtent.min}
-					max={lengthExtent.max}
-					bind:value={lengthFilter.max}
-					on:change={search}
+					on:change={async ({ detail }) => {
+						lengthFilter = detail;
+						await search();
+					}}
 				/>
 			{/if}
 		</div>
-		<div on:click={resetFilter}>Reset</div>
+
+		<div class="mt-5">
+			<Button on:click={resetFilter}>Reset All Filters</Button>
+		</div>
 	</div>
 	<div id="view">
 		<form id="search-bar" on:submit={search}>
@@ -112,6 +112,8 @@
 		position: relative;
 	}
 	#sidebar {
+		padding-top: 15px;
+		padding-left: 15px;
 		width: 400px;
 		height: calc(100vh - 60px);
 		border-right: 1px solid #00000010;
@@ -136,5 +138,9 @@
 		top: 25px;
 		right: 25px;
 		color: var(--darkblue);
+	}
+	h3 {
+		margin-bottom: 3px;
+		margin-top: 10px;
 	}
 </style>
