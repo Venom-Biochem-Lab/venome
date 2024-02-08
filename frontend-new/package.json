@@ -10,6 +10,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
+    "@fontsource-variable/inter": "^5.0.16",
+    "@fontsource/fira-mono": "^5.0.8",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "@tsconfig/svelte": "^5.0.2",
     "autoprefixer": "^10.4.16",
