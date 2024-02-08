@@ -7,6 +7,7 @@
 	import Login from "./routes/Login.svelte";
 	import Protein from "./routes/Protein.svelte";
 	import Error from "./routes/Error.svelte";
+	import Edit from "./routes/Edit.svelte";
 </script>
 
 <Router>
@@ -21,6 +22,7 @@
 		<Route path="/protein/:id" let:params
 			><Protein urlId={params.id} /></Route
 		>
+		<Route path="/edit/:id" let:params><Edit urlId={params.id} /></Route>
 		<Route path="/*"><Error /></Route>
 	</main>
 </Router>
