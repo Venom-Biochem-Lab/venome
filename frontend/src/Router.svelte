@@ -18,7 +18,9 @@
 		<Route path="/search"><Search /></Route>
 		<Route path="/upload"><Upload /></Route>
 		<Route path="/login"><Login /></Route>
-		<Route path="/protein/:id" let:params><Protein id={params.id} /></Route>
+		<Route path="/protein/:id" let:params
+			><Protein urlId={params.id} /></Route
+		>
 		<Route path="/*"><Error /></Route>
 	</main>
 </Router>
