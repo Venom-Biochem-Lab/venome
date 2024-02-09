@@ -1,5 +1,6 @@
 <script lang="ts">
 	import logo from "../images/logo.svg";
+	import { links } from "svelte-routing";
 	import {
 		UploadOutline,
 		UserOutline,
@@ -7,7 +8,7 @@
 	} from "flowbite-svelte-icons";
 </script>
 
-<header class="flex justify-between">
+<header class="flex justify-between" use:links>
 	<div class="nav-container">
 		<div id="logo">
 			<a href="/">
