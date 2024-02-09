@@ -5,6 +5,7 @@
 		UploadOutline,
 		UserOutline,
 		TableRowOutline,
+		BookOutline,
 	} from "flowbite-svelte-icons";
 </script>
 
@@ -21,6 +22,9 @@
 			>
 			<a href="/upload" class="flex items-center gap-1">
 				<UploadOutline size="lg" />Upload</a
+			>
+			<a href="/tutorials" class="flex items-center gap-1">
+				<BookOutline size="lg" />Tutorials</a
 			>
 		</div>
 	</div>
