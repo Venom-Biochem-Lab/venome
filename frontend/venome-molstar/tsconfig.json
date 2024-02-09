@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"declaration": true,
+		"target": "ESNext",
+		"alwaysStrict": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"sourceMap": false,
+		"noUnusedLocals": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"module": "ESNext",
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"importHelpers": true,
+		"noEmitHelpers": true,
+		"allowSyntheticDefaultImports": true,
+		"jsx": "react-jsx",
+		"lib": ["ESNext", "es6", "dom", "esnext.asynciterable", "es2016"],
+		"rootDir": "src/app",
+		"outDir": "lib",
+		"composite": true, // required if we want to set "tsBuildInfoFile"
+		"tsBuildInfoFile": "tsconfig.tsbuildinfo", // default setting would place this file out of the repo directory
+		"baseUrl": "./"
+	},
+	"include": ["src/app"]
+}
