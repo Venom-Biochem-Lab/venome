@@ -31,6 +31,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Venome Protein {entry ? entry.name : ""}</title>
+</svelte:head>
+
 <section class="flex gap-10 p-5">
 	{#if entry}
 		<div id="left-side">

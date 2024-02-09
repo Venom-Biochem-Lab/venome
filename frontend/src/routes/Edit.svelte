@@ -56,6 +56,10 @@
 		species !== ogSpecies;
 </script>
 
+<svelte:head>
+	<title>Venome Edit {entry ? entry.name : ""}</title>
+</svelte:head>
+
 <section class="p-5">
 	{#if entry}
 		<div class="w-500 flex flex-col gap-5">

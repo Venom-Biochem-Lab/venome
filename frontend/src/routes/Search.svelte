@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>Search</title>
+	<title>Venome Search</title>
 </svelte:head>
 
 <section>

@@ -27,6 +27,10 @@
 	$: file = files ? files[0] : undefined; // we're just concerned with one file
 </script>
 
+<svelte:head>
+	<title>Venome Upload</title>
+</svelte:head>
+
 <section class="p-5">
 	<div class="w-500 flex flex-col gap-5">
 		<div>
