@@ -25,7 +25,6 @@
 	});
 
 	async function search() {
-		console.log(massFilter);
 		const result = await Backend.searchProteins({
 			query,
 			speciesFilter,
@@ -39,6 +38,7 @@
 		speciesFilter = undefined;
 		lengthFilter = lengthExtent;
 		massFilter = massExtent;
+		query = "";
 		await search();
 	}
 </script>
@@ -104,7 +104,7 @@
 		</div>
 	</div>
 	<div id="view">
-		<form id="search-bar" on:submit={search}>
+		<form id="search-bar" on:submit|preventDefault={search}>
 			<Search
 				size="lg"
 				type="text"
