@@ -1,5 +1,5 @@
 {
-	"name": "frontend-new",
+	"name": "frontend",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
@@ -7,7 +7,6 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"openapi": "npx openapi-typescript-codegen --input http://localhost:8000/openapi.json --output ./src/lib/openapi --client fetch"
 	},
 	"devDependencies": {
