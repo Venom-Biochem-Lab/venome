@@ -1,7 +1,4 @@
 from fastapi import APIRouter
-from fastapi.exceptions import HTTPException
-import logging as log
-from ..db import Database
 from ..api_types import CamelModel
 
 router = APIRouter()
