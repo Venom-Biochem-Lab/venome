@@ -8,6 +8,7 @@ import type { LoginResponse } from '../models/LoginResponse';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
+import type { Tutorial } from '../models/Tutorial';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -203,6 +204,17 @@ export class DefaultService {
             errors: {
                 422: `Validation Error`,
             },
+        });
+    }
+    /**
+     * Get All Tutorials
+     * @returns Tutorial Successful Response
+     * @throws ApiError
+     */
+    public static getAllTutorials(): CancelablePromise<Array<Tutorial>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/tutorials',
         });
     }
 }
