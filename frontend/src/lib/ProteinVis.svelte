@@ -35,10 +35,8 @@
 	/**
 	 * @todo: don't upload the protein thumbnail everytime, just do once!
 	 */
-	let mounted = false;
 	onMount(async () => {
 		await m.render(divEl, options);
-		mounted = true;
 		screenshot().then((d) =>
 			Backend.uploadProteinPng({
 				proteinName,

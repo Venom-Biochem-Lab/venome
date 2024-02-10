@@ -9,6 +9,7 @@
 	import Error from "./routes/Error.svelte";
 	import Edit from "./routes/Edit.svelte";
 	import Tutorials from "./routes/Tutorials.svelte";
+	import PngsAll from "./routes/PngsAll.svelte";
 </script>
 
 <Router>
@@ -25,6 +26,7 @@
 			><Protein urlId={params.id} /></Route
 		>
 		<Route path="/edit/:id" let:params><Edit urlId={params.id} /></Route>
+		<Route path="/pngs-all"><PngsAll /></Route>
 		<Route path="/*"><Error /></Route>
 	</main>
 </Router>
