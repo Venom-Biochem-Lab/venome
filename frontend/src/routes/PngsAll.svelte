@@ -20,21 +20,10 @@
 	});
 
 	$: if (mounted) {
-		uploadPngsForAllProteins(proteinsNeedingPng);
-	}
-
-	async function uploadPngsForAllProteins(proteins: ProteinEntry[]) {
-		const b64s = await getImageDataForAllProteins(proteins);
-		proteins.forEach((protein, i) =>
-			Backend.uploadProteinPng({
-				base64Encoding: b64s[i],
-				proteinName: protein.name,
-			})
-		);
+		getImageDataForAllProteins(proteinsNeedingPng);
 	}
 
 	async function getImageDataForAllProteins(proteins: ProteinEntry[]) {
-		let d = [];
 		for (let i = 0; i < proteins.length; i++) {
 			const protein = proteins[i];
 			const b64 = await screenshot({
@@ -62,9 +51,18 @@
 					"controlInfo",
 				],
 			});
-			d.push(b64);
+			await Backend.uploadProteinPng({
+				base64Encoding: b64,
+				proteinName: protein.name,
+			});
+
+			await m.clear();
+
+			if (i === 25) {
+				// reload the browser
+				location.reload();
+			}
 		}
-		return d;
 	}
 
 	async function screenshot(options: Partial<InitParams>) {
@@ -78,5 +76,5 @@
 
 <div
 	bind:this={divEl}
-	style="width: 150px; height: 150px; float: left; position: relative;"
+	style="width: 400px; height: 350px; float: left; position: relative;"
 ></div>
