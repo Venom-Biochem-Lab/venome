@@ -6,7 +6,7 @@ from Bio.PDB import PDBParser
 from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 
-from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody
+from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
 from io import BytesIO
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
@@ -88,6 +88,16 @@ def pdb_to_fasta(pdb: PDB):
     return ">{}\n{}".format(pdb.name, "".join(pdb.amino_acids()))
 
 
+"""
+    ENDPOINTS TODO: add the other protein types here instead of in api_types.py
+"""
+
+
+class UploadPNGBody(CamelModel):
+    protein_name: str
+    base64_encoding: str
+
+
 @router.get("/protein/pdb/{protein_name:str}")
 def get_pdb_file(protein_name: str):
     if protein_name_found(protein_name):
@@ -160,6 +170,16 @@ def delete_protein_entry(protein_name: str):
             )
             # delete the file from the data/ folder
             os.remove(pdb_file_name(protein_name))
+        except Exception as e:
+            log.error(e)
+
+
+@router.post("/protein/upload/png", response_model=None)
+def upload_protein_png(body: UploadPNGBody):
+    with Database() as db:
+        try:
+            query = """UPDATE proteins SET thumbnail = %s WHERE name = %s"""
+            db.execute(query, [str_to_bytea(body.base64_encoding), body.protein_name])
         except Exception as e:
             log.error(e)
 
