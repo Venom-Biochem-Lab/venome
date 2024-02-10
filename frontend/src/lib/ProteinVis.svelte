@@ -1,48 +1,65 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { PDBeMolstarPlugin } from "../../venome-molstar";
+	import type { InitParams } from "../../venome-molstar/lib/spec";
+	import { Backend } from "./backend";
 
-	export let url =
-		"http://localhost:8000/data/pdbAlphaFold/Gh_comp271_c0_seq1.pdb";
+	export let proteinName = "Gh_comp271_c0_seq1";
 	export let format = "pdb";
 	export let width = 500;
 	export let height = 500;
 
+	const url = `http://localhost:8000/protein/pdb/${proteinName}`;
+	const m = new PDBeMolstarPlugin(); // loaded through app.html
+	let divEl: HTMLDivElement;
+	const options: Partial<InitParams> = {
+		customData: {
+			url,
+			format,
+			binary: false,
+		},
+		subscribeEvents: false,
+		bgColor: {
+			r: 255,
+			g: 255,
+			b: 255,
+		},
+		selectInteraction: true,
+		alphafoldView: true,
+		reactive: true,
+		sequencePanel: true,
+		hideControls: true,
+		hideCanvasControls: ["animation"],
+	};
+
+	/**
+	 * @todo: don't upload the protein thumbnail everytime, just do once!
+	 */
+	let mounted = false;
 	onMount(async () => {
-		//Create plugin instance
-		// @ts-ignore
-		var viewerInstance = new PDBeMolstarPlugin(); // loaded through app.html
-
-		//Set options (Checkout available options list in the documentation)
-		var options = {
-			customData: {
-				url,
-				format,
-			},
-			subscribeEvents: false,
-			bgColor: {
-				r: 255,
-				g: 255,
-				b: 255,
-			},
-			selectInteraction: true,
-			alphafoldView: true,
-			reactive: true,
-			sequencePanel: true,
-			hideControls: true,
-			hideCanvasControls: ["animation"],
-		};
-
-		//Get element from HTML/Template to place the viewer
-		var viewerContainer = document.getElementById("myViewer");
-
-		//Call render method to display the 3D view
-		// @ts-ignore
-		viewerInstance.render(viewerContainer, options);
+		await m.render(divEl, options);
+		mounted = true;
+		screenshot().then((d) =>
+			Backend.uploadProteinPng({
+				proteinName,
+				base64Encoding: d,
+			})
+		);
 	});
+
+	async function screenshot() {
+		const p = new Promise((resolve, reject) => {
+			m.events.loadComplete.subscribe(() => resolve(m.screenshotData()));
+		});
+		return (await p) as Promise<string>;
+	}
 </script>
 
-<div id="myViewer" style="width: {width}px; height: {height}px;" />
+<div
+	bind:this={divEl}
+	id="myViewer"
+	style="width: {width}px; height: {height}px;"
+/>
 
 <style>
 	/* https://embed.plnkr.co/plunk/WlRx73uuGA9EJbpn */

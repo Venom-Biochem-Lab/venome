@@ -102,7 +102,7 @@
 			<EntryCard title="Provided Information">
 				<ProteinVis
 					format="pdb"
-					url="http://localhost:8000/protein/pdb/{entry.name}"
+					proteinName={entry.name}
 					width={400}
 					height={350}
 				/>

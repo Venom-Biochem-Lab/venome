@@ -20,7 +20,11 @@
 				title={`Name:${entry.name}\nDescription:${dummyDesc}`}
 			>
 				<div class="prot-thumb mr-2">
-					<img class="prot-thumb" src={dummy} alt="dummy" />
+					<img
+						class="prot-thumb"
+						src={entry.thumbnail ?? dummy}
+						alt="dummy"
+					/>
 				</div>
 				<div class="prot-info">
 					<div class="prot-name">
