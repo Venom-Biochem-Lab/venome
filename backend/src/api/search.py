@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 import logging as log
-from ..db import Database
+from ..db import Database, bytea_to_str
 from ..api_types import CamelModel, ProteinEntry
 
 router = APIRouter()
@@ -72,7 +72,7 @@ def search_proteins(body: SearchProteinsBody):
             filter_clauses = gen_sql_filters(
                 body.species_filter, body.length_filter, body.mass_filter
             )
-            entries_query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM proteins 
+            entries_query = """SELECT proteins.name, proteins.length, proteins.mass, proteins.thumbnail, species.name FROM proteins 
                        JOIN species ON species.id = proteins.species_id 
                        WHERE proteins.name ILIKE %s"""
 
@@ -91,8 +91,11 @@ def search_proteins(body: SearchProteinsBody):
                             length=length,
                             mass=mass,
                             species_name=species_name,
+                            thumbnail=bytea_to_str(thumbnail_bytes)
+                            if thumbnail_bytes is not None
+                            else None,
                         )
-                        for name, length, mass, species_name in entries_result
+                        for name, length, mass, thumbnail_bytes, species_name in entries_result
                     ],
                     total_found=len(entries_result),
                 )
