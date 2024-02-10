@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-	import type { ProteinEntry } from "$lib/backend";
-	import { numberWithCommas } from "$lib/format";
-	import { Tabs, TabItem } from "flowbite-svelte";
-	import dummy from "$lib/images/dummy.png";
+	import { navigate } from "svelte-routing";
+	import type { ProteinEntry } from "./backend";
+	import { numberWithCommas } from "./format";
+	import dummy from "../images/dummy.png";
 
 	export let allEntries: ProteinEntry[] | null = null;
 	const dummyDesc =
@@ -17,7 +16,7 @@
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
 				class="prot-container"
-				on:click={() => goto(`/protein/${entry.name}`)}
+				on:click={() => navigate(`/protein/${entry.name}`)}
 				title={`Name:${entry.name}\nDescription:${dummyDesc}`}
 			>
 				<div class="prot-thumb mr-2">
@@ -35,7 +34,8 @@
 						<div><b>Method</b>: AlphaFold2</div>
 						<div><b>Length:</b> <code>{entry.length}</code></div>
 						<div>
-							<b>Mass</b>: <code>{numberWithCommas(entry.mass)}</code>
+							<b>Mass</b>:
+							<code>{numberWithCommas(entry.mass)}</code>
 						</div>
 					</div>
 				</div>

@@ -14,7 +14,7 @@ Check out Flowbite to use those ready-made svelte components (like buttons, drop
 
 ```bash
 cd frontend
-yarn add js_package_name
+yarn add -W js_package_name
 ```
 
 which adds the package locally (so your intellisense can detect it).

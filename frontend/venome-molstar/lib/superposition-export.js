@@ -1,0 +1,130 @@
+import { utf8ByteCount, utf8Write } from "molstar/lib/mol-io/common/utf8";
+import { to_mmCIF, Unit } from "molstar/lib/mol-model/structure";
+import { Task } from "molstar/lib/mol-task";
+import { getFormattedTime } from "molstar/lib/mol-util/date";
+import { download } from "molstar/lib/mol-util/download";
+import { zip } from "molstar/lib/mol-util/zip/zip";
+import { PluginCommands } from "molstar/lib/mol-plugin/commands";
+import { PluginCustomState } from "./plugin-custom-state";
+export async function superpositionExportHierarchy(plugin, options) {
+    try {
+        await plugin.runTask(_superpositionExportHierarchy(plugin, options), {
+            useOverlay: true,
+        });
+    }
+    catch (e) {
+        console.error(e);
+        plugin.log.error(`Model export failed. See console for details.`);
+    }
+}
+function _superpositionExportHierarchy(plugin, options) {
+    return Task.create("Export", async (ctx) => {
+        await ctx.update({
+            message: "Exporting...",
+            isIndeterminate: true,
+            canAbort: false,
+        });
+        const format = options?.format ?? "cif";
+        //  const { structures } = plugin.managers.structure.hierarchy.current;
+        const customState = PluginCustomState(plugin);
+        if (!customState.initParams)
+            throw new Error("customState.initParams has not been initialized");
+        if (!customState.superpositionState)
+            throw new Error("customState.superpositionState has not been initialized");
+        const superpositionState = customState.superpositionState;
+        const segmentIndex = superpositionState.activeSegment - 1;
+        const files = [];
+        const entryMap = new Map();
+        const structures = superpositionState.loadedStructs[segmentIndex].slice();
+        if (!customState.initParams.moleculeId)
+            throw new Error("initParams.moleculeId is not defined");
+        if (superpositionState.alphafold.ref)
+            structures.push(`AF-${customState.initParams.moleculeId}`);
+        for (const molId of structures) {
+            const modelRef = superpositionState.models[molId];
+            if (!modelRef)
+                continue;
+            let isStrHidden = false;
+            const _s = plugin.managers.structure.hierarchy.current.refs.get(modelRef);
+            if (_s.cell.state.isHidden)
+                isStrHidden = true;
+            for (const strComp of _s.components) {
+                if (strComp.cell.state.isHidden)
+                    isStrHidden = true;
+            }
+            if (isStrHidden)
+                continue;
+            const s = _s.transform?.cell.obj?.data ?? _s.cell.obj?.data;
+            if (!s)
+                continue;
+            if (s.models.length > 1) {
+                plugin.log.warn(`[Export] Skipping ${_s.cell.obj?.label}: Multimodel exports not supported.`);
+                continue;
+            }
+            if (s.units.some((u) => !Unit.isAtomic(u))) {
+                plugin.log.warn(`[Export] Skipping ${_s.cell.obj?.label}: Non-atomic model exports not supported.`);
+                continue;
+            }
+            const name = entryMap.has(s.model.entryId)
+                ? `${s.model.entryId}_${entryMap.get(s.model.entryId) + 1}.${format}`
+                : `${s.model.entryId}.${format}`;
+            entryMap.set(s.model.entryId, (entryMap.get(s.model.entryId) ?? 0) + 1);
+            await ctx.update({
+                message: `Exporting ${s.model.entryId}...`,
+                isIndeterminate: true,
+                canAbort: false,
+            });
+            if (s.elementCount > 100000) {
+                // Give UI chance to update, only needed for larger structures.
+                await new Promise((res) => setTimeout(res, 50));
+            }
+            try {
+                files.push([
+                    name,
+                    to_mmCIF(s.model.entryId, s, format === "bcif", {
+                        copyAllCategories: true,
+                    }),
+                ]);
+            }
+            catch (e) {
+                if (format === "cif" && s.elementCount > 2000000) {
+                    plugin.log.warn(`[Export] The structure might be too big to be exported as Text CIF, consider using the BinaryCIF format instead.`);
+                }
+                throw e;
+            }
+        }
+        if (files.length === 0) {
+            PluginCommands.Toast.Show(plugin, {
+                title: "Export Models",
+                message: "No visible structure in the 3D view to export!",
+                key: "superposition-toast-1",
+                timeoutMs: 7000,
+            });
+            return;
+        }
+        if (files.length === 1) {
+            download(new Blob([files[0][1]]), files[0][0]);
+        }
+        else if (files.length > 1) {
+            const zipData = {};
+            for (const [fn, data] of files) {
+                if (data instanceof Uint8Array) {
+                    zipData[fn] = data;
+                }
+                else {
+                    const bytes = new Uint8Array(utf8ByteCount(data));
+                    utf8Write(bytes, 0, data);
+                    zipData[fn] = bytes;
+                }
+            }
+            await ctx.update({
+                message: `Compressing Data...`,
+                isIndeterminate: true,
+                canAbort: false,
+            });
+            const buffer = await zip(ctx, zipData);
+            download(new Blob([new Uint8Array(buffer, 0, buffer.byteLength)]), `structures_${getFormattedTime()}.zip`);
+        }
+        plugin.log.info(`[Export] Done.`);
+    });
+}

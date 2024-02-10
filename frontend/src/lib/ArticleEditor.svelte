@@ -7,8 +7,9 @@
 		Label,
 		Textarea,
 	} from "flowbite-svelte";
-	import Markdown from "$lib/Markdown.svelte";
-	import References from "$lib/References.svelte";
+	import Markdown from "./Markdown.svelte";
+	import References from "./References.svelte";
+	import EntryCard from "./EntryCard.svelte";
 	export let refs = "";
 	export let content = "";
 </script>
@@ -43,15 +44,12 @@
 		</TabItem>
 		<TabItem title="preview">
 			{#if content.length > 0 || refs.length > 0}
-				<Card class="max-w-full">
-					<Heading tag="h4">Article</Heading>
+				<EntryCard title="Article">
 					<Markdown text={content} />
-				</Card>
-
-				<Card class="max-w-full mt-5">
-					<Heading tag="h4">References</Heading>
+				</EntryCard>
+				<EntryCard title="References">
 					<References bibtex={String.raw`${refs}`} />
-				</Card>
+				</EntryCard>
 			{:else}
 				No content to render/preview
 			{/if}
