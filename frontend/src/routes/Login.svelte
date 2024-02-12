@@ -53,7 +53,7 @@
 	<title>Login</title>
 </svelte:head>
 
-<form on:submit={submitForm} class="flex gap-5 flex-col p-5">
+<form on:submit|preventDefault={submitForm} class="flex gap-5 flex-col p-5">
 	<div>
 		<Label for="email">Email</Label>
 		<Input
