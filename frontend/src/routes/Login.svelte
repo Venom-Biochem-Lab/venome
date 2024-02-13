@@ -4,6 +4,7 @@
 	import Cookies from "js-cookie";
 	import { onMount } from "svelte";
 	import { navigate } from "svelte-routing";
+	import { user } from "../lib/stores/user"
 
 	/*
 	 * Deletes the cookie upon entering the login page.
@@ -11,6 +12,9 @@
 	 */
 	 onMount(async () => {
 		Cookies.remove("auth")
+		$user.loggedIn = 0
+		$user.username = ""
+		$user.admin = 0
 	});
 
 	let email: string = "";
@@ -48,6 +52,7 @@
 				// @todo Store this in a cookie.
 				console.log("Response received. Token: " + result["token"]);
 				Cookies.set("auth", result["token"]);
+				$user.loggedIn = 1
 				navigate(`/search`);
 			} else {
 				// User got a result, but both fields are null. This should never happen.
