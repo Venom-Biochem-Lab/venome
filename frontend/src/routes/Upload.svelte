@@ -12,10 +12,17 @@
 	import { fileToString } from "../lib/format";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
 	import { onMount } from "svelte";
+	import Cookies from "js-cookie";
 
 	let species: string[] | null;
 	let selectedSpecies: string = "unknown";
+
+	const authToken = Cookies.get("auth")
 	onMount(async () => {
+		if (!authToken) {
+			alert("You are not logged in. You are being redirected to home. TODO: Make this better.")
+			navigate("/")
+		}
 		species = await Backend.searchSpecies();
 	});
 
