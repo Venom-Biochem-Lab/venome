@@ -7,6 +7,7 @@
 		TableRowOutline,
 		BookOutline,
 	} from "flowbite-svelte-icons";
+	import {user} from "./stores/user"
 </script>
 
 <header class="flex justify-between" use:links>
@@ -20,9 +21,11 @@
 			<a href="/search" class="flex items-center gap-1"
 				><TableRowOutline size="lg" />Search</a
 			>
+			{#if $user.loggedIn}
 			<a href="/upload" class="flex items-center gap-1">
 				<UploadOutline size="lg" />Upload</a
 			>
+			{/if}
 			<a href="/tutorials" class="flex items-center gap-1">
 				<BookOutline size="lg" />Tutorials</a
 			>
