@@ -33,7 +33,13 @@
 	</div>
 
 	<a href="/login" class="flex items-center gap-1 mr-5">
-		<UserOutline size="lg" />Login</a
+		<UserOutline size="lg" />
+			{#if $user.loggedIn}
+				Logout
+			{:else}
+				Login
+			{/if}
+		</a
 	>
 </header>
 <div style="height: 60px;" />
