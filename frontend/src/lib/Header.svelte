@@ -15,7 +15,7 @@
 	// If they do, set user status for the whole site.
 	onMount(async () => {
 		if (Cookies.get("auth")) {
-			$user.loggedIn=1
+			$user.loggedIn = 1
 		}
 	});
 </script>
