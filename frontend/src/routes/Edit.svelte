@@ -4,6 +4,7 @@
 	import { navigate } from "svelte-routing";
 	import { onMount } from "svelte";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
+	import {user} from "../lib/stores/user"
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
 	// and reuploaded/edited
@@ -26,6 +27,11 @@
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
+		if (!$user.loggedIn) {
+			alert("You are not logged in. You are being redirected to home. TODO: Make this better.")
+			navigate("/")
+		}
+
 		// Request the protein from backend given ID
 		console.log("Requesting", urlId, "info from backend");
 
