@@ -9,6 +9,8 @@
 	import Error from "./routes/Error.svelte";
 	import Edit from "./routes/Edit.svelte";
 	import Tutorials from "./routes/Tutorials.svelte";
+	import {user} from "./lib/stores/user";
+	import Cookies from "js-cookie";
 </script>
 
 <Router>

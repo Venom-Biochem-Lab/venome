@@ -1,6 +1,7 @@
 <script lang="ts">
 	import logo from "../images/logo.svg";
 	import { links } from "svelte-routing";
+	import { onMount } from "svelte";
 	import {
 		UploadOutline,
 		UserOutline,
@@ -8,6 +9,15 @@
 		BookOutline,
 	} from "flowbite-svelte-icons";
 	import {user} from "./stores/user"
+	import Cookies from "js-cookie"
+
+	// Checking if the user has a cookie.
+	// If they do, set user status for the whole site.
+	onMount(async () => {
+		if (Cookies.get("auth")) {
+			$user.loggedIn=1
+		}
+	});
 </script>
 
 <header class="flex justify-between" use:links>
