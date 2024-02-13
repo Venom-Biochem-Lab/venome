@@ -12,9 +12,9 @@
 	 */
 	 onMount(async () => {
 		Cookies.remove("auth")
-		$user.loggedIn = 0
+		$user.loggedIn = false
 		$user.username = ""
-		$user.admin = 0
+		$user.admin = true
 	});
 
 	let email: string = "";
@@ -52,7 +52,7 @@
 				// @todo Store this in a cookie.
 				console.log("Response received. Token: " + result["token"]);
 				Cookies.set("auth", result["token"]);
-				$user.loggedIn = 1
+				$user.loggedIn = true
 				navigate(`/search`);
 			} else {
 				// User got a result, but both fields are null. This should never happen.
