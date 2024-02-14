@@ -14,7 +14,7 @@ def remove_box():
     os.system(f"rm -rf {DIR}")
 
 
-def upload_protein_file(path, name, species_name, content="", refs=""):
+def upload_protein_file(path, name, species_name, content="", refs="", desc=""):
     with open(path, "r") as f:
         pdb_file_str = f.read()
 
@@ -24,6 +24,7 @@ def upload_protein_file(path, name, species_name, content="", refs=""):
             "content": content,
             "refs": refs,
             "pdb_file_str": pdb_file_str,
+            "description": desc,
         }
         out = requests.post("http://localhost:8000/protein/upload", json=payload)
         return out
@@ -43,7 +44,12 @@ def upload_all():
             name = fn.split(".")[0].replace("_", " ")
             species_name = available_species[fn[:2]]
             upload_protein_file(
-                full_path, name, species_name, content=CONTENT, refs=REFS
+                full_path,
+                name,
+                species_name,
+                content=CONTENT,
+                refs=REFS,
+                desc="from the venom lab at osu",
             )
             print("uploaded", full_path, name, species_name)
     remove_box()

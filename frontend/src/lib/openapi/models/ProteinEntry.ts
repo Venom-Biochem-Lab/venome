@@ -9,5 +9,6 @@ export type ProteinEntry = {
     speciesName: string;
     content?: (string | null);
     refs?: (string | null);
+    description?: (string | null);
 };
 
