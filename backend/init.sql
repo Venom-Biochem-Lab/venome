@@ -54,5 +54,7 @@ INSERT INTO species(name) VALUES ('unknown');
 
 /*
  * Inserts test user into user table
+ * Email: test
+ * Password: test
  */
-INSERT INTO users(username, email, pword, admin) VALUES ('test', 'garvina@oregonstate.edu', '$2b$12$2Z74k3vqzchWB..McZbdUOp4BXd6RGsWcS0atZJfVVheGexvH7i0O', '1');
+INSERT INTO users(username, email, pword, admin) VALUES ('test', 'test', '$2b$12$PFoNf7YM0KNIPP8WGsJjveIOhiJjitsMtfwRcCjdcyTuqjdk/q//u', '1');
