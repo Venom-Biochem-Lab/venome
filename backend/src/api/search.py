@@ -72,10 +72,14 @@ def search_proteins(body: SearchProteinsBody):
             filter_clauses = gen_sql_filters(
                 body.species_filter, body.length_filter, body.mass_filter
             )
-            entries_query = """SELECT proteins.name, proteins.length, proteins.mass, species.name as species_name FROM proteins 
-                       JOIN species ON species.id = proteins.species_id 
-                       WHERE proteins.name ILIKE %s"""
-
+            entries_query = """SELECT proteins.name, 
+                                      proteins.description, 
+                                      proteins.length, 
+                                      proteins.mass, 
+                                      species.name 
+                                FROM proteins 
+                                JOIN species ON species.id = proteins.species_id 
+                                WHERE proteins.name ILIKE %s"""
             log.warn(filter_clauses)
             entries_result = db.execute_return(
                 sanitize_query(entries_query + filter_clauses),
@@ -91,8 +95,9 @@ def search_proteins(body: SearchProteinsBody):
                             length=length,
                             mass=mass,
                             species_name=species_name,
+                            description=description,
                         )
-                        for name, length, mass, species_name in entries_result
+                        for name, description, length, mass, species_name in entries_result
                     ],
                     total_found=len(entries_result),
                 )

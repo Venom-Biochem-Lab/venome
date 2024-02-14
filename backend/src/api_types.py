@@ -30,6 +30,7 @@ class ProteinEntry(CamelModel):
     species_name: str
     content: str | None = None
     refs: str | None = None
+    description: str | None = None
 
 
 class AllEntries(CamelModel):
@@ -38,6 +39,7 @@ class AllEntries(CamelModel):
 
 class UploadBody(CamelModel):
     name: str
+    description: str
     species_name: str
     content: str  # markdown content from user
     refs: str  # references used in content (bibtex form)
@@ -62,6 +64,7 @@ class EditBody(CamelModel):
     new_species_name: str
     new_content: str | None = None
     new_refs: str | None = None
+    new_description: str | None = None
 
 
 class LoginBody(CamelModel):

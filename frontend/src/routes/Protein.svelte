@@ -45,8 +45,9 @@
 			</h1>
 
 			<div id="description">
-				DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription
-				Description Description Description Description
+				{#if entry.description}
+					{entry.description}
+				{/if}
 			</div>
 
 			<EntryCard title="Computed Insights">

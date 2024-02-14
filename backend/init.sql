@@ -25,6 +25,7 @@ CREATE TABLE species (
 CREATE TABLE proteins (
     id serial PRIMARY KEY,
     name text NOT NULL UNIQUE, -- user specified name of the protein (TODO: consider having a string limit)
+    description text, 
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
     content bytea, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
