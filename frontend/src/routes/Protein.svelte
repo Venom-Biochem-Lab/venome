@@ -11,7 +11,7 @@
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
-	import {user} from "../lib/stores/user.ts"
+	import { user } from "../lib/stores/user";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -97,7 +97,8 @@
 					<Button
 						on:click={async () => {
 							navigate(`/edit/${entry?.name}`);
-						}}><PenOutline class="mr-2" size="lg" />Edit Entry</Button
+						}}
+						><PenOutline class="mr-2" size="lg" />Edit Entry</Button
 					>
 				{/if}
 			</div>
