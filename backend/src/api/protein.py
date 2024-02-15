@@ -131,7 +131,8 @@ def get_protein_entry(protein_name: str):
                               proteins.mass, 
                               proteins.content, 
                               proteins.refs, 
-                              species.name
+                              species.name,
+                              proteins.thumbnail
                        FROM proteins
                        JOIN species ON species.id = proteins.species_id
                        WHERE proteins.name = %s;"""
@@ -150,6 +151,7 @@ def get_protein_entry(protein_name: str):
                     content,
                     refs,
                     species_name,
+                    thumbnail,
                 ) = only_returned_entry
 
                 # if byte arrays are present, decode them into a string
@@ -157,6 +159,8 @@ def get_protein_entry(protein_name: str):
                     content = bytea_to_str(content)
                 if refs is not None:
                     refs = bytea_to_str(refs)
+                if thumbnail is not None:
+                    thumbnail = bytea_to_str(thumbnail)
 
                 return ProteinEntry(
                     name=name,
@@ -166,6 +170,7 @@ def get_protein_entry(protein_name: str):
                     content=content,
                     refs=refs,
                     species_name=species_name,
+                    thumbnail=thumbnail,
                 )
 
         except Exception as e:

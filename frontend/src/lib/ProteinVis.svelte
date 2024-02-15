@@ -42,20 +42,30 @@
 	 */
 	onMount(async () => {
 		await m.render(divEl, options);
-		await dispatch("mount", { screenshot });
-		// screenshot().then((d) =>
-		// 	Backend.uploadProteinPng({
-		// 		proteinName,
-		// 		base64Encoding: d,
-		// 	})
-		// );
+		dispatch("mount", { screenshot });
 	});
 
-	async function screenshot() {
-		const p = new Promise((resolve, reject) => {
-			m.events.loadComplete.subscribe(() => resolve(m.screenshotData()));
+	async function screenshot(delayMs = 200) {
+		async function onLoad(funcToExec: () => void) {
+			return new Promise((resolve) => {
+				m.events.loadComplete.subscribe(() => {
+					funcToExec();
+					resolve(true);
+				});
+			});
+		}
+		async function delay(ms: number) {
+			return new Promise((resolve) => setTimeout(resolve, ms));
+		}
+		let p = "";
+		await onLoad(() => {
+			console.log("protein loaded");
 		});
-		return (await p) as Promise<string>;
+		await delay(delayMs); // why the fuck do I need this for the next line to work?
+		p = m.plugin.helpers.viewportScreenshot
+			?.getPreview()!
+			.canvas.toDataURL()!;
+		return p;
 	}
 </script>
 
@@ -73,6 +83,6 @@
 	#myViewer {
 		float: left;
 		position: relative;
-		z-index: 999;
+		z-index: 997;
 	}
 </style>
