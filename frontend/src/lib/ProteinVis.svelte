@@ -3,6 +3,11 @@
 	import { PDBeMolstarPlugin } from "../../venome-molstar";
 	import type { InitParams } from "../../venome-molstar/lib/spec";
 	import { Backend } from "./backend";
+	import { createEventDispatcher } from "svelte";
+
+	const dispatch = createEventDispatcher<{
+		mount: { screenshot: typeof screenshot };
+	}>();
 
 	export let proteinName = "Gh_comp271_c0_seq1";
 	export let format = "pdb";
@@ -37,12 +42,13 @@
 	 */
 	onMount(async () => {
 		await m.render(divEl, options);
-		screenshot().then((d) =>
-			Backend.uploadProteinPng({
-				proteinName,
-				base64Encoding: d,
-			})
-		);
+		await dispatch("mount", { screenshot });
+		// screenshot().then((d) =>
+		// 	Backend.uploadProteinPng({
+		// 		proteinName,
+		// 		base64Encoding: d,
+		// 	})
+		// );
 	});
 
 	async function screenshot() {
