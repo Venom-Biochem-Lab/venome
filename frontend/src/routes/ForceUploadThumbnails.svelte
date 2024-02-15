@@ -11,10 +11,10 @@
 	let preview = "";
 	onMount(async () => {
 		const allProteins = await Backend.searchProteins({ query: "" });
-		// proteinsNeedingPng = allProteins.proteinEntries.filter((protein) => {
-		// 	return protein.thumbnail === null;
-		// });
-		proteinsNeedingPng = allProteins.proteinEntries;
+		proteinsNeedingPng = allProteins.proteinEntries.filter((protein) => {
+			return protein.thumbnail === null;
+		});
+		// proteinsNeedingPng = allProteins.proteinEntries;
 		mounted = true;
 	});
 
