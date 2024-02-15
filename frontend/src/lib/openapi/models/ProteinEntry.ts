@@ -3,12 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ProteinEntry = {
-    name: string;
-    length: number;
-    mass: number;
-    speciesName: string;
-    content?: (string | null);
-    refs?: (string | null);
-    description?: (string | null);
+	name: string;
+	length: number;
+	mass: number;
+	speciesName: string;
+	content?: string | null;
+	refs?: string | null;
+	thumbnail?: string | null;
+	description?: string | null;
 };
-

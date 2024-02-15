@@ -18,6 +18,7 @@ export type { SearchProteinsResults } from './models/SearchProteinsResults';
 export type { Tutorial } from './models/Tutorial';
 export type { UploadBody } from './models/UploadBody';
 export { UploadError } from './models/UploadError';
+export type { UploadPNGBody } from './models/UploadPNGBody';
 export type { ValidationError } from './models/ValidationError';
 
 export { DefaultService } from './services/DefaultService';

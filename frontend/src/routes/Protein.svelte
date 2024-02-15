@@ -107,9 +107,19 @@
 			<EntryCard title="Provided Information">
 				<ProteinVis
 					format="pdb"
-					url="http://localhost:8000/protein/pdb/{entry.name}"
+					proteinName={entry.name}
 					width={400}
 					height={350}
+					on:mount={async ({ detail: { screenshot } }) => {
+						// upload the protein thumbnail if it doesn't exist
+						if (entry !== null && entry.thumbnail === null) {
+							const b64 = await screenshot();
+							const res = await Backend.uploadProteinPng({
+								proteinName: entry.name,
+								base64Encoding: b64,
+							});
+						}
+					}}
 				/>
 				<div id="info-grid" class="grid grid-cols-2 mt-5">
 					<b>Organism</b>

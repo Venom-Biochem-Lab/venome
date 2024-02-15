@@ -2,7 +2,6 @@
 	import { navigate } from "svelte-routing";
 	import type { ProteinEntry } from "./backend";
 	import { numberWithCommas } from "./format";
-	import dummy from "../images/dummy.png";
 
 	export let allEntries: ProteinEntry[] | null = null;
 </script>
@@ -18,7 +17,11 @@
 				title={`Name:${entry.name}\nDescription:${entry.description}`}
 			>
 				<div class="prot-thumb mr-2">
-					<img class="prot-thumb" src={dummy} alt="dummy" />
+					<img
+						class="prot-thumb"
+						src={entry.thumbnail ?? ""}
+						alt="thumbnail"
+					/>
 				</div>
 				<div class="prot-info">
 					<div class="prot-name">

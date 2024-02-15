@@ -30,6 +30,7 @@ class ProteinEntry(CamelModel):
     species_name: str
     content: str | None = None
     refs: str | None = None
+    thumbnail: str | None = None
     description: str | None = None
 
 
