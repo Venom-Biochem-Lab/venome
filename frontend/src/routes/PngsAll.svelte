@@ -2,15 +2,12 @@
 	import { onMount } from "svelte";
 	import { Backend, type ProteinEntry } from "../lib/backend";
 	import { PDBeMolstarPlugin } from "../../venome-molstar";
-	import type { InitParams } from "../../venome-molstar/lib/spec";
 
 	let divEl: HTMLDivElement;
-	let b64: string = "";
-
-	const m = new PDBeMolstarPlugin();
-
+	let m: PDBeMolstarPlugin;
 	let mounted = false;
 	let proteinsNeedingPng: ProteinEntry[] = [];
+	let uploaded = 0;
 	onMount(async () => {
 		const allProteins = await Backend.searchProteins({ query: "" });
 		proteinsNeedingPng = allProteins.proteinEntries.filter((protein) => {
@@ -26,7 +23,9 @@
 	async function getImageDataForAllProteins(proteins: ProteinEntry[]) {
 		for (let i = 0; i < proteins.length; i++) {
 			const protein = proteins[i];
-			const b64 = await screenshot({
+			// remove the canvas within the div
+			m = new PDBeMolstarPlugin();
+			await m.render(divEl, {
 				customData: {
 					url: `http://localhost:8000/protein/pdb/${protein.name}`,
 					format: "pdb",
@@ -51,22 +50,17 @@
 					"controlInfo",
 				],
 			});
+			const b64 = await screenshot();
 			await Backend.uploadProteinPng({
 				base64Encoding: b64,
 				proteinName: protein.name,
 			});
-
 			await m.clear();
-
-			if (i === 25) {
-				// reload the browser
-				location.reload();
-			}
+			uploaded++;
 		}
 	}
 
-	async function screenshot(options: Partial<InitParams>) {
-		await m.render(divEl, options);
+	async function screenshot() {
 		const p = new Promise((resolve, reject) => {
 			m.events.loadComplete.subscribe(() => resolve(m.screenshotData()));
 		});
@@ -78,3 +72,7 @@
 	bind:this={divEl}
 	style="width: 400px; height: 350px; float: left; position: relative;"
 ></div>
+
+<div>
+	Uploading {uploaded} of {proteinsNeedingPng.length}
+</div>
