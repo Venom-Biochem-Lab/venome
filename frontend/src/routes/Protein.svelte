@@ -11,6 +11,7 @@
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
+	import { user } from "../lib/stores/user";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -44,8 +45,9 @@
 			</h1>
 
 			<div id="description">
-				DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription
-				Description Description Description Description
+				{#if entry.description}
+					{entry.description}
+				{/if}
 			</div>
 
 			<EntryCard title="Computed Insights">
@@ -92,11 +94,14 @@
 						>
 					{/each}
 				</Dropdown>
-				<Button
-					on:click={async () => {
-						navigate(`/edit/${entry?.name}`);
-					}}><PenOutline class="mr-2" size="lg" />Edit Entry</Button
-				>
+				{#if $user.loggedIn}
+					<Button
+						on:click={async () => {
+							navigate(`/edit/${entry?.name}`);
+						}}
+						><PenOutline class="mr-2" size="lg" />Edit Entry</Button
+					>
+				{/if}
 			</div>
 
 			<EntryCard title="Provided Information">

@@ -5,8 +5,6 @@
 	import dummy from "../images/dummy.png";
 
 	export let allEntries: ProteinEntry[] | null = null;
-	const dummyDesc =
-		"scriptionDescriptionDescription DescriptionDescription Description Description";
 </script>
 
 <div class="prot-grid">
@@ -17,7 +15,7 @@
 			<div
 				class="prot-container"
 				on:click={() => navigate(`/protein/${entry.name}`)}
-				title={`Name:${entry.name}\nDescription:${dummyDesc}`}
+				title={`Name:${entry.name}\nDescription:${entry.description}`}
 			>
 				<div class="prot-thumb mr-2">
 					<img
@@ -31,7 +29,9 @@
 						{entry.name}
 					</div>
 					<div class="prot-desc">
-						{dummyDesc}
+						{#if entry.description}
+							{entry.description}
+						{/if}
 					</div>
 					<div>
 						<div><b>Organism</b>: {entry.speciesName}</div>
@@ -91,6 +91,7 @@
 	.prot-grid {
 		display: flex;
 		gap: 20px;
+		align-content: flex-start;
 		flex-wrap: wrap;
 		padding: 10px;
 		margin-left: 10px;

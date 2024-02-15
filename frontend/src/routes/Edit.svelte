@@ -4,14 +4,18 @@
 	import { navigate } from "svelte-routing";
 	import { onMount } from "svelte";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
+	import { user } from "../lib/stores/user";
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
 	// and reuploaded/edited
 	export let urlId: string;
 
 	// store original too so we can see if the user changed/edited the content
+
 	let name: string;
 	let ogName: string;
+	let description: string;
+	let ogDescription: string;
 	let ogContent: string;
 	let content: string;
 	let ogRefs: string;
@@ -26,6 +30,13 @@
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
+		if (!$user.loggedIn) {
+			alert(
+				"You are not logged in. You are being redirected to home. TODO: Make this better."
+			);
+			navigate("/");
+		}
+
 		// Request the protein from backend given ID
 		console.log("Requesting", urlId, "info from backend");
 
@@ -34,17 +45,21 @@
 		if (entry == null) {
 			error = true;
 		} else {
+			// keep track of db value and the value we change (og denotes original / db)
 			name = entry.name;
 			ogName = name;
 
 			content = entry.content ?? "";
-			ogContent = content; // log original content
+			ogContent = content;
 
 			refs = entry.refs ?? "";
-			ogRefs = refs; // log original refs
+			ogRefs = refs;
 
 			species = entry.speciesName;
 			ogSpecies = species;
+
+			description = entry.description ?? "";
+			ogDescription = description;
 		}
 
 		allSpecies = await Backend.searchSpecies();
@@ -53,7 +68,8 @@
 		name !== ogName ||
 		content !== ogContent ||
 		refs !== ogRefs ||
-		species !== ogSpecies;
+		species !== ogSpecies ||
+		ogDescription !== description;
 </script>
 
 <svelte:head>
@@ -82,6 +98,18 @@
 						and resubmit</Helper
 					>
 				{/if}
+			</div>
+
+			<div>
+				<Label for="protein-desc" class="block mb-2"
+					>Protein Description</Label
+				>
+				<Input
+					bind:value={description}
+					style="width: 600px"
+					id="protein-desc"
+					placeholder="Description"
+				/>
 			</div>
 
 			<div class="flex gap-5 mb-2">
@@ -122,6 +150,10 @@
 											? content
 											: undefined,
 									newRefs: refs !== ogRefs ? refs : undefined,
+									newDescription:
+										description !== ogDescription
+											? description
+											: undefined,
 								});
 								if (err) {
 									uploadError = err;

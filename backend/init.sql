@@ -25,6 +25,7 @@ CREATE TABLE species (
 CREATE TABLE proteins (
     id serial PRIMARY KEY,
     name text NOT NULL UNIQUE, -- user specified name of the protein (TODO: consider having a string limit)
+    description text, 
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
     content bytea, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
@@ -55,5 +56,7 @@ INSERT INTO species(name) VALUES ('unknown');
 
 /*
  * Inserts test user into user table
+ * Email: test
+ * Password: test
  */
-INSERT INTO users(username, email, pword, admin) VALUES ('test', 'garvina@oregonstate.edu', '$2b$12$2Z74k3vqzchWB..McZbdUOp4BXd6RGsWcS0atZJfVVheGexvH7i0O', '1');
+INSERT INTO users(username, email, pword, admin) VALUES ('test', 'test', '$2b$12$PFoNf7YM0KNIPP8WGsJjveIOhiJjitsMtfwRcCjdcyTuqjdk/q//u', '1');

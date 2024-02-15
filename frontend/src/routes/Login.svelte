@@ -2,6 +2,20 @@
 	import { Backend, type LoginResponse } from "../lib/backend";
 	import { Button, Label, Input } from "flowbite-svelte";
 	import Cookies from "js-cookie";
+	import { onMount } from "svelte";
+	import { navigate } from "svelte-routing";
+	import { user } from "../lib/stores/user"
+
+	/*
+	 * Deletes the cookie upon entering the login page.
+	 * We want to do this to avoid bugs, and to let the user log out.
+	 */
+	 onMount(async () => {
+		Cookies.remove("auth")
+		$user.loggedIn = false
+		$user.username = ""
+		$user.admin = true
+	});
 
 	let email: string = "";
 	let password: string = "";
@@ -32,11 +46,14 @@
 				// User entered wrong username or password, or account doesn't exist.
 				// @todo Display this error message to the user.
 				console.log("Response received. Error: " + result["error"]);
+				alert(result["error"])
 			} else if (result["token"] != "") {
 				// User entered the correct username / password and got a result.
 				// @todo Store this in a cookie.
 				console.log("Response received. Token: " + result["token"]);
 				Cookies.set("auth", result["token"]);
+				$user.loggedIn = true
+				navigate(`/search`);
 			} else {
 				// User got a result, but both fields are null. This should never happen.
 				console.log(
@@ -44,6 +61,7 @@
 				);
 			}
 		} catch (e) {
+			alert([e])
 			console.log(e);
 		}
 	}
@@ -53,7 +71,7 @@
 	<title>Login</title>
 </svelte:head>
 
-<form on:submit={submitForm} class="flex gap-5 flex-col p-5">
+<form on:submit|preventDefault={submitForm} class="flex gap-5 flex-col p-5">
 	<div>
 		<Label for="email">Email</Label>
 		<Input

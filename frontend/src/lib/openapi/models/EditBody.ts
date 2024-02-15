@@ -9,5 +9,6 @@ export type EditBody = {
     newSpeciesName: string;
     newContent?: (string | null);
     newRefs?: (string | null);
+    newDescription?: (string | null);
 };
 

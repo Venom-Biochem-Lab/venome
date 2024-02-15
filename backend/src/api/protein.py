@@ -125,7 +125,14 @@ def get_protein_entry(protein_name: str):
     """
     with Database() as db:
         try:
-            query = """SELECT proteins.name, proteins.length, proteins.mass, proteins.content, proteins.refs, species.name as species_name FROM proteins
+            query = """SELECT proteins.name, 
+            				  proteins.description,
+                              proteins.length, 
+                              proteins.mass, 
+                              proteins.content, 
+                              proteins.refs, 
+                              species.name
+                       FROM proteins
                        JOIN species ON species.id = proteins.species_id
                        WHERE proteins.name = %s;"""
             entry_sql = db.execute_return(query, [protein_name])
@@ -135,7 +142,15 @@ def get_protein_entry(protein_name: str):
             if entry_sql is not None and len(entry_sql) != 0:
                 # return the only entry
                 only_returned_entry = entry_sql[0]
-                name, length, mass, content, refs, species_name = only_returned_entry
+                (
+                    name,
+                    description,
+                    length,
+                    mass,
+                    content,
+                    refs,
+                    species_name,
+                ) = only_returned_entry
 
                 # if byte arrays are present, decode them into a string
                 if content is not None:
@@ -145,6 +160,7 @@ def get_protein_entry(protein_name: str):
 
                 return ProteinEntry(
                     name=name,
+                    description=description,
                     length=length,
                     mass=mass,
                     content=content,
@@ -220,12 +236,13 @@ def upload_protein_entry(body: UploadBody):
 
         try:
             # add the protein itself
-            query = """INSERT INTO proteins (name, length, mass, content, refs, species_id) 
-                       VALUES (%s, %s, %s, %s, %s, (SELECT id FROM species WHERE name = %s));"""
+            query = """INSERT INTO proteins (name, description, length, mass, content, refs, species_id) 
+                       VALUES (%s, %s, %s, %s, %s, %s, (SELECT id FROM species WHERE name = %s));"""
             db.execute(
                 query,
                 [
                     pdb.name,
+                    body.description,
                     pdb.num_amino_acids,
                     pdb.mass_daltons,
                     str_to_bytea(body.content),
@@ -283,6 +300,15 @@ def edit_protein_entry(body: EditBody):
                     """UPDATE proteins SET refs = %s WHERE name = %s""",
                     [
                         str_to_bytea(body.new_refs),
+                        body.old_name if not name_changed else body.new_name,
+                    ],
+                )
+
+            if body.new_description is not None:
+                db.execute(
+                    """UPDATE proteins SET description = %s WHERE name = %s""",
+                    [
+                        body.new_description,
                         body.old_name if not name_changed else body.new_name,
                     ],
                 )

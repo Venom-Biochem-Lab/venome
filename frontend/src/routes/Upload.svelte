@@ -12,14 +12,25 @@
 	import { fileToString } from "../lib/format";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
 	import { onMount } from "svelte";
+	import Cookies from "js-cookie";
+	import { user } from "../lib/stores/user";
 
 	let species: string[] | null;
 	let selectedSpecies: string = "unknown";
+
+	const authToken = Cookies.get("auth");
 	onMount(async () => {
+		if (!$user.loggedIn) {
+			alert(
+				"You are not logged in. You are being redirected to home. TODO: Make this better."
+			);
+			navigate("/");
+		}
 		species = await Backend.searchSpecies();
 	});
 
 	let name: string = "";
+	let description: string = "";
 	let content: string = "";
 	let files: FileList | undefined; // bind:files on the Fileupload
 	let uploadError: UploadError | undefined;
@@ -52,6 +63,18 @@
 					resubmit</Helper
 				>
 			{/if}
+		</div>
+
+		<div>
+			<Label for="protein-desc" class="block mb-2"
+				>Protein Description</Label
+			>
+			<Input
+				bind:value={description}
+				style="width: 600px"
+				id="protein-desc"
+				placeholder="Description"
+			/>
 		</div>
 
 		<div class="flex gap-5 mb-2">
@@ -87,6 +110,7 @@
 					try {
 						const err = await Backend.uploadProteinEntry({
 							name,
+							description,
 							pdbFileStr,
 							content,
 							refs,
