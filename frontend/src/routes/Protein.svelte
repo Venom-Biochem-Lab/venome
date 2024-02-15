@@ -30,7 +30,6 @@
 
 		console.log("Received", entry);
 	});
-	let d = "";
 </script>
 
 <svelte:head>
@@ -114,10 +113,10 @@
 					on:mount={async ({ detail: { screenshot } }) => {
 						// upload the protein thumbnail if it doesn't exist
 						if (entry !== null && entry.thumbnail === null) {
-							d = await screenshot();
+							const b64 = await screenshot();
 							const res = await Backend.uploadProteinPng({
 								proteinName: entry.name,
-								base64Encoding: d,
+								base64Encoding: b64,
 							});
 						}
 					}}
@@ -143,7 +142,6 @@
 		<p>Could not find a protein with the id <code>{urlId}</code></p>
 	{/if}
 </section>
-<img src={d} />
 
 <style>
 	#left-side {
