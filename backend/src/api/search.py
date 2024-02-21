@@ -155,17 +155,20 @@ def search_species():
 
 
 @router.get(
-    "/search/venome/similar/{protein_name:str}", response_model=list[SimilarProtein]
+    "/search/venome/similar/{protein_name:str}",
+    response_model=list[SimilarProtein] | None,
 )
 def search_venome_similar(protein_name: str):
     venome_folder = "/app/src/data/pdbAlphaFold/"
     # ignore the first since it's itself as the most similar
-    similar = easy_search(
-        stored_pdb_file_name(protein_name), venome_folder, out_format="target,prob"
-    )[1:]
-    # TODO: replace by returning ids and not names
-    formatted = [
-        SimilarProtein(name=name.replace("_", " ").rstrip(".pdb"), prob=prob)
-        for [name, prob] in similar
-    ]
-    return formatted
+    try:
+        similar = easy_search(
+            stored_pdb_file_name(protein_name), venome_folder, out_format="target,prob"
+        )[1:]
+        formatted = [
+            SimilarProtein(name=name.replace("_", " ").rstrip(".pdb"), prob=prob)
+            for [name, prob] in similar
+        ]
+        return formatted
+    except Exception:
+        raise HTTPException(404, "Foldseek not found on the system")

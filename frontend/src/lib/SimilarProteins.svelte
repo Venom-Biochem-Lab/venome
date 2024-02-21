@@ -8,7 +8,15 @@
 
 	let similarProteins: SimilarProtein[] = [];
 	onMount(async () => {
-		similarProteins = await Backend.searchVenomeSimilar(queryProteinName);
+		try {
+			similarProteins =
+				await Backend.searchVenomeSimilar(queryProteinName);
+		} catch (e) {
+			console.error(e);
+			console.error(
+				"NEED TO DOWNLOAD FOLDSEEK IN THE SERVER. SEE THE SERVER ERROR MESSAGE."
+			);
+		}
 	});
 </script>
 
