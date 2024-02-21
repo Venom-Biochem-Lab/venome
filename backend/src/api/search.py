@@ -4,8 +4,14 @@ import logging as log
 from ..db import Database, bytea_to_str
 from ..api_types import CamelModel, ProteinEntry
 from ..foldseek import easy_search
+from .protein import stored_pdb_file_name
 
 router = APIRouter()
+
+
+class SimilarProtein(CamelModel):
+    name: str
+    prob: float
 
 
 class RangeFilter(CamelModel):
@@ -148,9 +154,18 @@ def search_species():
         return
 
 
-@router.get("/search/venome/similar/{protein_name:str}", response_model=list)
+@router.get(
+    "/search/venome/similar/{protein_name:str}", response_model=list[SimilarProtein]
+)
 def search_venome_similar(protein_name: str):
     venome_folder = "/app/src/data/pdbAlphaFold/"
-    print(protein_name)
-    # similar = easy_search("", venome_folder, out_format="target,prob")
-    return []
+    # ignore the first since it's itself as the most similar
+    similar = easy_search(
+        stored_pdb_file_name(protein_name), venome_folder, out_format="target,prob"
+    )[1:]
+    # TODO: replace by returning ids and not names
+    formatted = [
+        SimilarProtein(name=name.replace("_", " ").rstrip(".pdb"), prob=prob)
+        for [name, prob] in similar
+    ]
+    return formatted
