@@ -3,6 +3,7 @@ from fastapi.exceptions import HTTPException
 import logging as log
 from ..db import Database, bytea_to_str
 from ..api_types import CamelModel, ProteinEntry
+from ..foldseek import easy_search
 
 router = APIRouter()
 
@@ -145,3 +146,11 @@ def search_species():
                 return [d[0] for d in entry_sql]
     except Exception:
         return
+
+
+@router.get("/search/venome/similar/{protein_name:str}", response_model=list)
+def search_venome_similar(protein_name: str):
+    venome_folder = "/app/src/data/pdbAlphaFold/"
+    print(protein_name)
+    # similar = easy_search("", venome_folder, out_format="target,prob")
+    return []
