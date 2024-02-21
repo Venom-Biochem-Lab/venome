@@ -1,61 +1,35 @@
 <script lang="ts">
+	import { link } from "svelte-routing";
 	import { LinkOutline } from "flowbite-svelte-icons";
 	import { onMount } from "svelte";
+	import { Backend, type SimilarProtein } from "../lib/backend";
 
 	export let queryProteinName: string;
 
-	let similarProteins: any[] = [];
+	let similarProteins: SimilarProtein[] = [];
 	onMount(async () => {
-		similarProteins = await similarPDBProteins(queryProteinName);
+		similarProteins = await Backend.searchVenomeSimilar(queryProteinName);
 	});
-
-	async function similarPDBProteins(queryProteinName: string) {
-		// TODO: QUERY TO BACKEND WITH ACTUAL CALL INSTEAD OF MOCK DATA
-		const similarExternalProteins = [
-			{
-				source: "pdb",
-				link: "https://www.rcsb.org/structure/1A0S",
-				name: "1A0S",
-				prob: 0.99,
-			},
-			{
-				source: "pdb",
-				link: "https://www.rcsb.org/structure/1A0S",
-				name: "1A0S",
-				prob: 0.99,
-			},
-			{
-				source: "pdb",
-				link: "https://www.rcsb.org/structure/1A0S",
-				name: "1A0S",
-				prob: 0.99,
-			},
-		];
-
-		return similarExternalProteins;
-	}
 </script>
 
 <table>
 	<tr>
-		<th> Source </th>
-		<th> Name </th>
+		<th> Similar </th>
 		<th> Desc. </th>
 		<th> Prob. </th>
 	</tr>
 	{#each similarProteins as protein}
 		<tr class="pdb-row">
 			<td>
-				<a href={protein.link}
-					><LinkOutline size="sm" /> {protein.source.toUpperCase()}</a
+				<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
+				<a href="/protein/{protein.name}"
+					><LinkOutline size="sm" /> {protein.name}</a
 				>
 			</td>
-			<td>{protein.name}</td>
 			<td class="pdb-desc">DEscDEscDEscDEsc DEscDEsc DEsc DEsc </td>
 			<td>{protein.prob}</td>
 		</tr>
 	{/each}
-	<span class="text-gray-400 cursor-pointer">... click to see more</span>
 </table>
 
 <style>

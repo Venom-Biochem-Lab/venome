@@ -27,8 +27,6 @@
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
 		if (entry == null) error = true;
-
-		console.log("Received", entry);
 	});
 </script>
 
@@ -60,7 +58,9 @@
 				</div>
 				<div>
 					<b>Structurally Similar Proteins</b>
-					<SimilarProteins queryProteinName={entry.name} />
+					{#if entry.name}
+						<SimilarProteins queryProteinName={entry.name} />
+					{/if}
 				</div>
 			</EntryCard>
 

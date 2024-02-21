@@ -8,6 +8,7 @@ import type { LoginResponse } from '../models/LoginResponse';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
+import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
@@ -85,6 +86,26 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/search/species',
+        });
+    }
+    /**
+     * Search Venome Similar
+     * @param proteinName
+     * @returns SimilarProtein Successful Response
+     * @throws ApiError
+     */
+    public static searchVenomeSimilar(
+        proteinName: string,
+    ): CancelablePromise<Array<SimilarProtein>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/venome/similar/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
         });
     }
     /**
