@@ -231,7 +231,7 @@ export class DefaultService {
      * @returns Tutorial Successful Response
      * @throws ApiError
      */
-    public static getAllTutorials(): CancelablePromise<Array<Tutorial>> {
+    public static getAllTutorials(): CancelablePromise<(Array<Tutorial> | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/tutorials',

@@ -2,7 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Link } from './Link';
 export type Tutorial = {
-    title: string;
+    header: string | null;
+    title: string | null;
+    summary: string | null;
+    links: Array<Link> | null;
 };
 
