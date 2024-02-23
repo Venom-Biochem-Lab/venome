@@ -32,12 +32,18 @@ Now navigate to [http://localhost:5173](http://localhost:5173) to see the fronte
 > [!TIP]
 > Check the [`docs/run.md`](./docs/run.md) for documentation on the [`run.sh`](./run.sh) file for more build commands
 
-### Backend 
+## Local Development Environment
 
-> [!IMPORTANT]
-> Before you do anything, make sure you have [Python](https://www.python.org/downloads/) installed.
+We use VSCode for all development and make sure to download a few extensions like
 
-Then install the [Poetry Python Package Manager](https://python-poetry.org/) by doing 
+- Ruff code formatter (for backend)
+- Prettier code formatter (for frontend)
+- Svelte (for frontend)
+- Python (for backend)
+
+for a better experience. Then to get autocomplete with those languages, you'll need to manually install the packages that have already been installed in the docker, but locally. Otherwise your VSCode won't know how to autocomplete. 
+
+First install the [Poetry Python Package Manager](https://python-poetry.org/) by doing 
 
 ```bash
 pip3 install poetry
@@ -50,78 +56,20 @@ poetry config virtualenvs.in-project true # required for the .venv to get create
 poetry install
 ```
 
-**🥳 You're done with the backend installation!**
-
-### Frontend
-
-> [!IMPORTANT]
-> Before you do anything, make sure you first have [Node](https://nodejs.org/en/download) installed.
-
-If you haven't already, also install [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable) globally as the package manager for node by doing 
-
-```bash
-npm install --global yarn
-```
-
-Nice you have Yarn 🧶 now! Now install the frontend packages by doing
+Then install frontend packages
 
 ```bash
 cd frontend
-yarn install
+yarn
 ```
 
-**🥳 You're done with the frontend installation!**
+## Where to look
+
+I'd recommend going to the [`frontend/package.json`](./frontend/package.json) and [`frontend/src/App.svelte`](./frontend/src/App.svelte) if you want to get started in the frontend.
+
+I'd recommend going to the [`backend/src/server.py`](./backend/src/server.py) and [`backend/init.sql`](./backend/init.sql) for the backend/db.
 
 
-## Navigating the codebase
 
-> [!WARNING]
-> Ignore the build script in the video, they are outdated
-> We use docker now through `sh run.sh`
-> Additionally the host has changed from `localhost` to `0.0.0.0`
-
-I'll explain top-down how to understand the structure of this repository. First of all, you want to mainly pay attention to the [`frontend`](./frontend/) then the [`backend`](./backend/) code. I'll explain:
-
-### Frontend
-
-> [!IMPORTANT]
-> 🎥 [Click here](https://drive.google.com/file/d/1KD3Hgbul0_7cIZiCaQZ1U4meCBthcrfS/view?usp=drive_link) to watch the frontend video overview by @xnought.
-
-
-The main code for frontend is in [`frontend/src`](./frontend/src). We use the JavaScript framework called [Svelte](https://svelte.dev/) which makes writing frontends super easy and is the standard for websites with visualizations. To be very specific, we use [SvelteKit](https://kit.svelte.dev/) which is a framework built on the Svelte compiler for websites with multiple routes.
-
-The home page you see when you run the frontend server is defined in [`frontend/src/routes/+page.svelte`](./frontend/src/routes/+page.svelte).
-
-To make another route, for example an `/about` to show an about page in the frontend, we just create a directory with another `+page.svelte`.
-
-
-For example, [`frontend/src/routes/about/+page.svelte`](./frontend/src/routes/about/+page.svelte).
-
-See SvelteKit documentation for more info on how to add more complicated behavior. There are a ton of nice things to loop over data directly in the DOM, insert reactive variables, and maintain reactive global state. Ask @xnought if you want to learn more.
-
-### Backend
-
-> [!IMPORTANT]
-> 🎥 [Click here](https://drive.google.com/file/d/1mmZqsALCY4UhcT592GR0Q1PMtZPogXkq/view?usp=drive_link) to watch the backend video overview by @xnought.
-
-The frontend calls to the backend. The backend is in Python3 and specifically [FastAPI](https://fastapi.tiangolo.com/). FastAPI is a nice HTTP REST server where we can make HTTP requests to the backend from the frontend.
-
-The main server lives in [`backend/src/server.py`](./backend/src/server.py).
-
-Check out the FastAPI docs for more info.
-
-### Frontend and Backend Interaction
-
-> [!IMPORTANT]
-> 🎥 [Click here](https://drive.google.com/file/d/1micYztZj8q5oufOhVctzPvsE9U1NgnyS/view?usp=drive_link) to watch how to interact with the backend from the frontend
-
-Once we created the HTTP endpoints in the backend, we can call 
-```bash
-sh run.sh api
-```
-
-which generates frontend bindings/functions we can use in the frontend. See the [`+page.svelte`](./frontend/src/routes/+page.svelte) for an example usage with the `Backend` object (generated from the command above). You'll see in the network tab that it just makes a `fetch` call to the backend.
-
-### Database
-
-We use PostgreSQL in Docker. For more information go to the docs at [`database.md`](./docs/database.md).
+> [!TIP]
+> If you have more questions, create an issue on this github or look for specific documentation in the [`docs/`](./docs/) directory
