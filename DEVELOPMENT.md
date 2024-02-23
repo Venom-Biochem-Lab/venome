@@ -1,12 +1,14 @@
 # Development
 
+If you want to run the frontend and backend yourself, you can! Keep reading...
+
 By the time you finish this guide, you will be able to run the JS frontend [Svelte](https://kit.svelte.dev/) and the Python backend [FastAPI](https://fastapi.tiangolo.com/). 
 
 Note that we use `docker-compose` as defined in the [`docker-compose.yml`](./docker-compose.yml).
 
 If you want to see more specific docs go to the [ `docs/` ](./docs/README.md) for more info.
 
-## Installation
+## Quick Start
 
 > [!IMPORTANT]
 > You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
@@ -17,18 +19,18 @@ You can run everything by doing
 sh run.sh
 ```
 
-and navigate to [http://0.0.0.0:5173](http://0.0.0.0:5173) webserver (or [http://localhost:5173](http://localhost:5173))
-
-That's it. This will spin up a docker container with the backend, database, and frontend servers running.
-
-To turn it off do
+or directly executing 
 
 ```bash
-sh run.sh stop
+./run.sh
 ```
-Check out the [`run.sh`](./run.sh) for more shortcuts like this.
 
-If you want intellisense/autocomplete in VSCode, continue to the rest of the installation. Otherwise you are done. Totally optional, but I'd do it for autocomplete.
+this will download a docker container running the svelte frontend, the python backend, and the postgres database all in development hot-reload mode. Installation may take a few minutes. 
+
+Now navigate to [http://localhost:5173](http://localhost:5173) to see the frontend. 
+
+> [!TIP]
+> Check the [`docs/run.md`](./docs/run.md) for documentation on the [`run.sh`](./run.sh) file for more build commands
 
 ### Backend 
 
