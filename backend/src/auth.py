@@ -37,11 +37,8 @@ def authenticateToken(token):
 # Use this function with a request if you want.
 def requiresAuthentication(req: Request):
     userInfo = authenticateToken(req.headers["authorization"])
-    if (not userInfo or not userInfo.get("admin")):
+    if not userInfo or not userInfo.get("admin"):
         print("Unauthorized User")
-        raise HTTPException(
-            status_code=403,
-            detail="Unauthorized"
-        )
+        raise HTTPException(status_code=403, detail="Unauthorized")
     else:
         print("User authorized.")
