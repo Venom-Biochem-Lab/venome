@@ -51,7 +51,6 @@ def decode_base64(b64_header_and_data: str):
 
 
 def stored_pdb_file_name(protein_name: str):
-    protein_name = protein_name.replace(" ", "_")
     return os.path.join("src/data/pdbAlphaFold", protein_name) + ".pdb"
 
 
@@ -64,6 +63,11 @@ def parse_protein_pdb(name: str, file_contents: str = "", encoding="str"):
         return PDB(open(stored_pdb_file_name(name), "r").read(), name)
     else:
         raise ValueError(f"Invalid encoding: {encoding}")
+
+
+def format_protein_name(name: str):
+    name = name.replace(" ", "_")
+    return name
 
 
 def protein_name_found(name: str):
@@ -211,6 +215,8 @@ def upload_protein_png(body: UploadPNGBody):
 # None return means success
 @router.post("/protein/upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody):
+    body.name = format_protein_name(body.name)
+
     # check that the name is not already taken in the DB
     if protein_name_found(body.name):
         return UploadError.NAME_NOT_UNIQUE

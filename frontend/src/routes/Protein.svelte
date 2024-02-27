@@ -4,7 +4,7 @@
 	import ProteinVis from "../lib/ProteinVis.svelte";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import Markdown from "../lib/Markdown.svelte";
-	import { numberWithCommas } from "../lib/format";
+	import { numberWithCommas, undoFormatProteinName } from "../lib/format";
 	import { navigate } from "svelte-routing";
 	import References from "../lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
@@ -39,7 +39,7 @@
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
 			<h1 id="title">
-				{entry.name}
+				{undoFormatProteinName(entry.name)}
 			</h1>
 
 			<div id="description">

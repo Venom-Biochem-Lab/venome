@@ -9,7 +9,7 @@
 		Select,
 	} from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
-	import { fileToString } from "../lib/format";
+	import { fileToString, formatProteinName } from "../lib/format";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
 	import { onMount } from "svelte";
 	import Cookies from "js-cookie";
@@ -121,7 +121,8 @@
 							console.log(uploadError);
 						} else {
 							// success, so we can go back!
-							navigate(`/protein/${name}`);
+							// TODO: make the name processing only in the backend and we just send back in the err object above
+							navigate(`/protein/${formatProteinName(name)}`);
 						}
 					} catch (e) {
 						console.log(e);

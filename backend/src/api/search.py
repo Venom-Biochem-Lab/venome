@@ -166,7 +166,7 @@ def search_venome_similar(protein_name: str):
             stored_pdb_file_name(protein_name), venome_folder, out_format="target,prob"
         )[1:]
         formatted = [
-            SimilarProtein(name=name.replace("_", " ").rstrip(".pdb"), prob=prob)
+            SimilarProtein(name=name.rstrip(".pdb"), prob=prob)
             for [name, prob] in similar
         ]
         return formatted
