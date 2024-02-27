@@ -118,7 +118,7 @@ def search_proteins(body: SearchProteinsBody):
             raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/search/range/length")
+@router.get("/search/range/length", response_model=RangeFilter)
 def search_range_length():
     try:
         with Database() as db:
@@ -130,7 +130,7 @@ def search_range_length():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/search/range/mass")
+@router.get("/search/range/mass", response_model=RangeFilter)
 def search_range_mass():
     try:
         with Database() as db:

@@ -91,12 +91,12 @@ export class DefaultService {
     /**
      * Search Venome Similar
      * @param proteinName
-     * @returns SimilarProtein Successful Response
+     * @returns any Successful Response
      * @throws ApiError
      */
     public static searchVenomeSimilar(
         proteinName: string,
-    ): CancelablePromise<Array<SimilarProtein>> {
+    ): CancelablePromise<(Array<SimilarProtein> | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/search/venome/similar/{protein_name}',
