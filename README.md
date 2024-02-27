@@ -1,4 +1,5 @@
-<img width="100%" alt="banner" src="https://github.com/xnought/venome/assets/65095341/9abaef4e-b4ac-488f-b190-86fca1a1c940">
+<img src="./docs/assets/logo-v3.svg" alt="venome title" />
+
 
 ![Github Actions CI tests](https://github.com/xnought/venome/actions/workflows/ci.yml/badge.svg)
 
@@ -7,20 +8,85 @@ A wikipedia 📖 for venom proteins: upload, search, organize, visualize, and do
 🤝 In collaboration with the 🧪[Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
 > [!IMPORTANT]
-> -   [`DEVELOPMENT.md`](./DEVELOPMENT.md) contains the developer getting started docs
-> -   [`docs/`](./docs/) contains code documentation
+> -   [Getting Started](#getting-started) to quickly run the docker container locally
+> -   [`docs/`](./docs/) contains deeper code documentation
 > -   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
 > -   [`backend/`](./backend/) contains the backend HTTP server and Database
 
-**`v0.0.0` demo / current progress**
+## Getting Started
 
-<a href="https://www.youtube.com/watch?v=g6Klv4NIvH4">
-  <img width="363" alt="thumbnail" src="https://github.com/xnought/venome/assets/65095341/63ff81a4-aee8-4389-8fba-ea6c5e37aa2f">
-</a>
+If you want to run the frontend and backend yourself, you can! Keep reading...
 
-## Quick start
+By the time you finish this guide, you will be able to run the JS frontend [Svelte](https://kit.svelte.dev/) and the Python backend [FastAPI](https://fastapi.tiangolo.com/). 
 
-Go to [`DEVELOPMENT.md`](./DEVELOPMENT.md) to get up and running.
+Note that we use `docker-compose` as defined in the [`docker-compose.yml`](./docker-compose.yml).
+
+If you want to see more specific docs go to the [ `docs/` ](./docs/README.md) for more info.
+
+> [!IMPORTANT]
+> You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
+
+You can run everything by doing
+
+```bash
+sh run.sh
+```
+
+or directly executing 
+
+```bash
+./run.sh
+```
+
+this will download a docker container running the svelte frontend, the python backend, and the postgres database all in development hot-reload mode. Installation may take a few minutes. 
+
+Now navigate to [http://localhost:5173](http://localhost:5173) to see the frontend. 
+
+> [!TIP]
+> Check the [`docs/run.md`](./docs/run.md) for documentation on the [`run.sh`](./run.sh) file for more build commands
+
+### Local Development Environment
+
+We use VSCode for all development and make sure to download a few extensions like
+
+- Ruff code formatter (for backend)
+- Prettier code formatter (for frontend)
+- Svelte (for frontend)
+- Python (for backend)
+
+for a better experience. Then to get autocomplete with those languages, you'll need to manually install the packages that have already been installed in the docker, but locally. Otherwise your VSCode won't know how to autocomplete. 
+
+First install the [Poetry Python Package Manager](https://python-poetry.org/) by doing 
+
+```bash
+pip3 install poetry
+```
+
+Then install the packages listed under [`pyproject.toml`](./backend/pyproject.toml) by doing 
+
+```bash
+poetry config virtualenvs.in-project true # required for the .venv to get created
+poetry install
+```
+
+Then install frontend packages
+
+```bash
+cd frontend
+yarn
+```
+
+### Where to look
+
+I'd recommend going to the [`frontend/package.json`](./frontend/package.json) and [`frontend/src/App.svelte`](./frontend/src/App.svelte) if you want to get started in the frontend.
+
+I'd recommend going to the [`backend/src/server.py`](./backend/src/server.py) and [`backend/init.sql`](./backend/init.sql) for the backend/db.
+
+
+
+> [!TIP]
+> If you have more questions, create an issue on this github or look for specific documentation in the [`docs/`](./docs/) directory
+
 
 ## Resources
 
