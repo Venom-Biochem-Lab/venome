@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Backend, type LoginResponse } from "../lib/backend";
+	import { Backend, clearToken, type LoginResponse } from "../lib/backend";
 	import { Button, Label, Input } from "flowbite-svelte";
 	import Cookies from "js-cookie";
 	import { onMount } from "svelte";
@@ -11,6 +11,7 @@
 	 * We want to do this to avoid bugs, and to let the user log out.
 	 */
 	 onMount(async () => {
+		clearToken()
 		Cookies.remove("auth")
 		$user.loggedIn = false
 		$user.username = ""

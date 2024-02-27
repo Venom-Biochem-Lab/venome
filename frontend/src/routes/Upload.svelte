@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Backend, UploadError } from "../lib/backend";
+	import { Backend, UploadError, setToken } from "../lib/backend";
 	import {
 		Fileupload,
 		Button,
@@ -108,6 +108,7 @@
 
 					const pdbFileStr = await fileToString(file);
 					try {
+						setToken()
 						const err = await Backend.uploadProteinEntry({
 							name,
 							description,
