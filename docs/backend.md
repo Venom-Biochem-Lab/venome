@@ -10,7 +10,7 @@ See examples in that folder for how we set up get, post, and other types of HTTP
 
 For a way to visualize what endpoints you have, navigate to http://localhost:8000/docs to see auto generated swagger docs about what each endpoint does and what input they expect.
 
-![Screenshot 2024-02-27 at 3 36 47 PM](https://github.com/xnought/venome/assets/65095341/f74dcb11-bffd-4d3c-a2e5-5c020470dbff)
+![Venome Docs Backend](https://github.com/xnought/venome/assets/65095341/05f198fb-5dc6-4220-bf06-58f601057021)
 
 
 ## Adding packages to the python server
