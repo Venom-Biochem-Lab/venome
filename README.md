@@ -3,9 +3,9 @@
 
 ![Github Actions CI tests](https://github.com/xnought/venome/actions/workflows/ci.yml/badge.svg)
 
-A wikipedia 📖 for venom proteins: upload, search, organize, visualize, and download protein files all open source.
+A wikipedia for venom proteins: upload, search, organize, visualize, and download protein files all open source.
 
-🤝 In collaboration with the 🧪[Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
+In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
 > [!IMPORTANT]
 > -   [Getting Started](#getting-started) to quickly run the docker container locally
