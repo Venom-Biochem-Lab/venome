@@ -182,7 +182,6 @@ def get_protein_entry(protein_name: str):
 # TODO: add permissions so only the creator can delete not just anyone
 @router.delete("/protein/entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str, req: Request):
-    print("DELETING")
     requiresAuthentication(req)
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
