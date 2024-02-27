@@ -1,4 +1,5 @@
-<img width="100%" alt="banner" src="https://github.com/xnought/venome/assets/65095341/9abaef4e-b4ac-488f-b190-86fca1a1c940">
+
+![logo-v3](https://github.com/xnought/venome/assets/65095341/9204b522-8ecf-4684-b560-4c6cd91b8e85)
 
 ![Github Actions CI tests](https://github.com/xnought/venome/actions/workflows/ci.yml/badge.svg)
 
