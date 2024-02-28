@@ -145,7 +145,7 @@
 
 <style>
 	#left-side {
-		/* width: 1200px; */
+		width: 100%;
 	}
 	#right-side {
 		width: 450px;
