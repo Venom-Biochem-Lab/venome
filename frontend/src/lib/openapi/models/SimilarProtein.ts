@@ -5,5 +5,7 @@
 export type SimilarProtein = {
     name: string;
     prob: number;
+    evalue: number;
+    description?: string;
 };
 

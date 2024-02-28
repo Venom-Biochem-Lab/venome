@@ -12,6 +12,8 @@ router = APIRouter()
 class SimilarProtein(CamelModel):
     name: str
     prob: float
+    evalue: float
+    description: str = ""
 
 
 class RangeFilter(CamelModel):
@@ -56,6 +58,19 @@ def combine_where_clauses(clauses: list[str]) -> str:
             if i < len(clauses) - 1:
                 result += " AND "
     return result
+
+
+def get_descriptions(protein_names: list[str]):
+    if len(protein_names) > 0:
+        with Database() as db:
+            list_names = str(protein_names)[
+                1:-1
+            ]  # parse out the [] brackets and keep everything inside
+            query = f"""SELECT description FROM proteins WHERE name in ({list_names})"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return [d[0] for d in entry_sql]
+    return None
 
 
 def gen_sql_filters(
@@ -163,12 +178,24 @@ def search_venome_similar(protein_name: str):
     # ignore the first since it's itself as the most similar
     try:
         similar = easy_search(
-            stored_pdb_file_name(protein_name), venome_folder, out_format="target,prob"
+            stored_pdb_file_name(protein_name),
+            venome_folder,
+            out_format="target,prob,evalue",
         )[1:]
         formatted = [
-            SimilarProtein(name=name.rstrip(".pdb"), prob=prob)
-            for [name, prob] in similar
+            SimilarProtein(name=name.rstrip(".pdb"), prob=prob, evalue=evalue)
+            for [name, prob, evalue] in similar
         ]
-        return formatted
     except Exception:
         raise HTTPException(404, "Foldseek not found on the system")
+
+    try:
+        # populate protein descriptions for the similar proteins
+        descriptions = get_descriptions([s.name for s in formatted])
+        if descriptions is not None:
+            for f, d in zip(formatted, descriptions):
+                f.description = d
+    except Exception:
+        raise HTTPException(500, "Error getting protein descriptions")
+
+    return formatted

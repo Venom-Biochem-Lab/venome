@@ -3,6 +3,7 @@
 	import { LinkOutline } from "flowbite-svelte-icons";
 	import { onMount } from "svelte";
 	import { Backend, type SimilarProtein } from "../lib/backend";
+	import { undoFormatProteinName } from "./format";
 
 	export let queryProteinName: string;
 
@@ -22,20 +23,23 @@
 
 <table>
 	<tr>
-		<th> Similar </th>
-		<th> Desc. </th>
-		<th> Prob. </th>
+		<th> Name </th>
+		<th> Probability Match</th>
+		<th> E-Value </th>
+		<th> Description </th>
 	</tr>
 	{#each similarProteins as protein}
 		<tr class="pdb-row">
 			<td>
 				<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
 				<a href="/protein/{protein.name}"
-					><LinkOutline size="sm" /> {protein.name}</a
+					><LinkOutline size="sm" />
+					{undoFormatProteinName(protein.name)}</a
 				>
 			</td>
-			<td class="pdb-desc">DEscDEscDEscDEsc DEscDEsc DEsc DEsc </td>
 			<td>{protein.prob}</td>
+			<td>{protein.evalue}</td>
+			<td class="pdb-desc">{protein.description}</td>
 		</tr>
 	{/each}
 </table>
@@ -55,8 +59,7 @@
 		background-color: hsl(var(--lightorange-hsl), 0.11);
 	}
 	.pdb-desc {
-		min-width: 70px;
-		max-width: 70px;
+		width: 5px;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
@@ -66,5 +69,9 @@
 		display: flex;
 		gap: 1px;
 		align-items: center;
+	}
+	table {
+		overflow-y: scroll;
+		max-height: 300px;
 	}
 </style>
