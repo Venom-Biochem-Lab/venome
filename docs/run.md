@@ -57,6 +57,8 @@ or
 |  `psql` | Opens up a direct terminal into the database to execute SQL commands live |
 |  `upload_all` |  Uploads all the pdb files to the system via POST requests |
 |  `delete_all` |  Deletes all protein entries and restarts the server from scratch |
+|  `add_foldseek` |  installs foldseek onto the docker container via wget |
+|  `remove_foldseek` |  deletes foldseek from the docker container |
 
 There are actually many more functions, so please check out [`run.sh`](../run.sh).
 
