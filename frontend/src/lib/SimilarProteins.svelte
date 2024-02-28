@@ -21,28 +21,30 @@
 	});
 </script>
 
-<table>
-	<tr>
-		<th> Name </th>
-		<th> Probability Match</th>
-		<th> E-Value </th>
-		<th> Description </th>
-	</tr>
-	{#each similarProteins as protein}
-		<tr class="pdb-row">
-			<td>
-				<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
-				<a href="/protein/{protein.name}"
-					><LinkOutline size="sm" />
-					{undoFormatProteinName(protein.name)}</a
-				>
-			</td>
-			<td>{protein.prob}</td>
-			<td>{protein.evalue}</td>
-			<td class="pdb-desc">{protein.description}</td>
+<div style="max-height: 300px; overflow-y: scroll;">
+	<table>
+		<tr>
+			<th> Name </th>
+			<th> Probability Match</th>
+			<th> E-Value </th>
+			<th> Description </th>
 		</tr>
-	{/each}
-</table>
+		{#each similarProteins as protein}
+			<tr class="pdb-row">
+				<td>
+					<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
+					<a href="/protein/{protein.name}"
+						><LinkOutline size="sm" />
+						{undoFormatProteinName(protein.name)}</a
+					>
+				</td>
+				<td>{protein.prob}</td>
+				<td>{protein.evalue}</td>
+				<td class="pdb-desc">{protein.description}</td>
+			</tr>
+		{/each}
+	</table>
+</div>
 
 <style>
 	table {
@@ -70,8 +72,23 @@
 		gap: 1px;
 		align-items: center;
 	}
-	table {
-		overflow-y: scroll;
-		max-height: 300px;
+	/* width */
+	::-webkit-scrollbar {
+		width: 3px;
+	}
+
+	/* Track */
+	::-webkit-scrollbar-track {
+		background: #f1f1f1;
+	}
+
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+		background: #888;
+	}
+
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+		background: #555;
 	}
 </style>
