@@ -7,9 +7,11 @@ from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 
 from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
+from ..auth import requiresAuthentication
 from io import BytesIO
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.requests import Request
 
 router = APIRouter()
 
@@ -186,7 +188,8 @@ def get_protein_entry(protein_name: str):
 
 # TODO: add permissions so only the creator can delete not just anyone
 @router.delete("/protein/entry/{protein_name:str}", response_model=None)
-def delete_protein_entry(protein_name: str):
+def delete_protein_entry(protein_name: str, req: Request):
+    requiresAuthentication(req)
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
         # remove protein
@@ -214,9 +217,10 @@ def upload_protein_png(body: UploadPNGBody):
 
 # None return means success
 @router.post("/protein/upload", response_model=UploadError | None)
-def upload_protein_entry(body: UploadBody):
-    body.name = format_protein_name(body.name)
+def upload_protein_entry(body: UploadBody, req: Request):
+    requiresAuthentication(req)
 
+    body.name = format_protein_name(body.name)
     # check that the name is not already taken in the DB
     if protein_name_found(body.name):
         return UploadError.NAME_NOT_UNIQUE
@@ -271,10 +275,10 @@ def upload_protein_entry(body: UploadBody):
 
 # TODO: add more edits, now only does name and content edits
 @router.put("/protein/edit", response_model=UploadError | None)
-def edit_protein_entry(body: EditBody):
+def edit_protein_entry(body: EditBody, req: Request):
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
-
+    requiresAuthentication(req)
     try:
         if body.new_name != body.old_name:
             os.rename(

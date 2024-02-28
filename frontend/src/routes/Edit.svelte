@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Backend, UploadError, type ProteinEntry } from "../lib/backend";
+	import { Backend, UploadError, setToken, type ProteinEntry } from "../lib/backend";
 	import { Button, Input, Label, Helper, Select } from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import { onMount } from "svelte";
@@ -140,6 +140,7 @@
 					on:click={async () => {
 						if (entry) {
 							try {
+								setToken()
 								const err = await Backend.editProteinEntry({
 									newName: name,
 									oldName: entry.name,
@@ -179,6 +180,7 @@
 				<Button
 					color="red"
 					on:click={async () => {
+						setToken()
 						await Backend.deleteProteinEntry(urlId);
 						navigate("/");
 					}}>Delete Protein Entry</Button

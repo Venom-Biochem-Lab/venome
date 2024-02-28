@@ -14,10 +14,21 @@ def remove_box():
     os.system(f"rm -rf {DIR}")
 
 
-def upload_protein_file(path, name, species_name, content="", refs="", desc=""):
+def get_login_token():
+    info = {
+        "email": "test",
+        "password": "test"
+    }
+    res = requests.post("http://localhost:8000/users/login", json=info)
+    if res.json()['error']:
+        print("Login error:", res.json()['error'])
+        exit()
+    return res.json()['token']
+
+
+def upload_protein_file(path, name, species_name, content="", refs="", desc="", token=""):
     with open(path, "r") as f:
         pdb_file_str = f.read()
-
         payload = {
             "name": name,
             "species_name": species_name,
@@ -26,11 +37,15 @@ def upload_protein_file(path, name, species_name, content="", refs="", desc=""):
             "pdb_file_str": pdb_file_str,
             "description": desc,
         }
-        out = requests.post("http://localhost:8000/protein/upload", json=payload)
+        out = requests.post("http://localhost:8000/protein/upload", json=payload, headers={
+
+            "authorization":"Bearer {}".format(token)
+        })
         return out
 
 
 def upload_all():
+    token=get_login_token()
     unzip_box()
     available_species = {
         "Gh": "ganaspis hookeri",
@@ -50,6 +65,7 @@ def upload_all():
                 content=CONTENT,
                 refs=REFS,
                 desc="from the venom lab at osu",
+                token=token,
             )
             print("uploaded", full_path, name, species_name)
     remove_box()

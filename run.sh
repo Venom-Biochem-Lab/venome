@@ -60,17 +60,6 @@ function test_backend() {
 	cd ..
 }
 
-function test_frontend() {
-	cd frontend
-	yarn test
-	cd ..
-}
-
-function test() {
-	test_backend
-	test_frontend
-}
-
 function install_frontend() {
 	docker exec -it venome-frontend yarn install
 }
