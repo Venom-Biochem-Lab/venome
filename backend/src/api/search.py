@@ -156,7 +156,7 @@ def search_species():
 
 @router.get(
     "/search/venome/similar/{protein_name:str}",
-    response_model=list[SimilarProtein] | None,
+    response_model=list[SimilarProtein],
 )
 def search_venome_similar(protein_name: str):
     venome_folder = "/app/src/data/pdbAlphaFold/"
