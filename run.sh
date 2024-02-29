@@ -104,6 +104,17 @@ function delete_all() {
 	cd galaxy && python3 delete_all.py && soft_restart
 }
 
+function add_foldseek() {
+	docker exec -it venome-backend wget https://mmseqs.com/foldseek/foldseek-linux-sse2.tar.gz
+	docker exec -it venome-backend tar -xvf foldseek-linux-sse2.tar.gz
+	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz
+}
+
+function remove_foldseek() {
+	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz*
+	docker exec -it venome-backend rm -fr foldseek/
+}
+
 function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))
 }

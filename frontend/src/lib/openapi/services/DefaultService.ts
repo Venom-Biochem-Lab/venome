@@ -6,8 +6,10 @@ import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
 import type { ProteinEntry } from '../models/ProteinEntry';
+import type { RangeFilter } from '../models/RangeFilter';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
+import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
@@ -56,10 +58,10 @@ export class DefaultService {
     }
     /**
      * Search Range Length
-     * @returns any Successful Response
+     * @returns RangeFilter Successful Response
      * @throws ApiError
      */
-    public static searchRangeLength(): CancelablePromise<any> {
+    public static searchRangeLength(): CancelablePromise<RangeFilter> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/search/range/length',
@@ -67,10 +69,10 @@ export class DefaultService {
     }
     /**
      * Search Range Mass
-     * @returns any Successful Response
+     * @returns RangeFilter Successful Response
      * @throws ApiError
      */
-    public static searchRangeMass(): CancelablePromise<any> {
+    public static searchRangeMass(): CancelablePromise<RangeFilter> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/search/range/mass',
@@ -85,6 +87,26 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/search/species',
+        });
+    }
+    /**
+     * Search Venome Similar
+     * @param proteinName
+     * @returns SimilarProtein Successful Response
+     * @throws ApiError
+     */
+    public static searchVenomeSimilar(
+        proteinName: string,
+    ): CancelablePromise<Array<SimilarProtein>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/venome/similar/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
         });
     }
     /**

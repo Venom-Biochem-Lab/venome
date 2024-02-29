@@ -130,3 +130,17 @@ https://github.com/xnought/venome/assets/65095341/c44f1d8c-0d58-407c-9aa2-29c4a9
 
 
 this is where you can see print statements and other debug info / errors.
+
+## Foldseek
+
+For similarity search we use [Foldseek](https://github.com/steineggerlab/foldseek). 
+
+Without foldseek installed nothing will be computed and no errors. No harm at all.
+
+However if you want to add foldseek run
+
+```bash
+./run.sh add_foldseek
+```
+
+to the docker container and then it will compute.
