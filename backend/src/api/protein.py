@@ -7,7 +7,15 @@ from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 
-from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel, CompareBody, CompareResponse
+from ..api_types import (
+    ProteinEntry,
+    UploadBody,
+    UploadError,
+    EditBody,
+    CamelModel,
+    CompareBody,
+    CompareResponse,
+)
 from ..auth import requiresAuthentication
 from ..tmalign import tm_align
 from io import BytesIO
@@ -337,7 +345,7 @@ def edit_protein_entry(body: EditBody, req: Request):
 
     except Exception:
         return UploadError.WRITE_ERROR
-    
+
 
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.
 @router.get("/protein/pdb/{proteinA:str}/{proteinB:str}")
@@ -353,15 +361,13 @@ def search_proteins(proteinA: str, proteinB: str):
                                 FROM proteins 
                                 JOIN species ON species.id = proteins.species_id 
                                 WHERE proteins.name ILIKE %s"""
-            
+
             pdbA = stored_pdb_file_name(proteinA)
             pdbB = stored_pdb_file_name(proteinB)
 
             file = tm_align(proteinA, pdbA, proteinB, pdbB)
 
-            return FileResponse(
-                file, filename=proteinA + "_" + proteinB + ".pdb"
-            )
+            return FileResponse(file, filename=proteinA + "_" + proteinB + ".pdb")
         except Exception as e:
             log.error(e)
             raise HTTPException(status_code=500, detail=str(e))

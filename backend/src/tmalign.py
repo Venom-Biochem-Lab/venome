@@ -1,4 +1,4 @@
-﻿import subprocess
+import subprocess
 import logging as log
 import os
 
@@ -19,15 +19,16 @@ def assert_tmalign_installed():
             "tm align executable not installed. Please install manually - Automatic install TODO."
         )
 
+
 def parse_pdb(filepath: str) -> list[str]:
     with open(filepath, "r") as f:
         lines = f.readlines()
         return lines
 
+
 def tm_align(
-        protein_A: str, pdbA: str,
-        protein_B: str, pdbB: str,
-        type: str = "_all_atm"):
+    protein_A: str, pdbA: str, protein_B: str, pdbB: str, type: str = "_all_atm"
+):
     """
     Description:
         Returns two overlaid, aligned, and colored PDB structures in a single PDB file.
@@ -56,19 +57,19 @@ def tm_align(
     # If the directory already exists, then we've already run TM align for this protein pair. We can just return the file.
     if os.path.exists(full_path):
         log.warn(f"Path {full_path} already exists. Do not need to run TM align.")
-    
+
     # If the directory doesn't exist, then we need to run TM align and generate the files.
     else:
         log.warn(f"Path {full_path} does not exist. Creating directory and returning.")
         cmd = f"{TMALIGN_EXECUTABLE} {pdbA} {pdbB} -o {out_file}"
-        try: 
+        try:
             bash_cmd(f"mkdir {full_path}")
             log.warn(f"Attempting to align now with cmd {cmd}")
             stdout = bash_cmd(cmd)
-            #log.warn(stdout)
-            
+            # log.warn(stdout)
+
         except Exception as e:
             log.warn(e)
             return e
-        
+
     return desired_file
