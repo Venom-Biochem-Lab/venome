@@ -48,34 +48,22 @@
 			<div id="description">
 				{proteinA} and {proteinB}
 			</div>
-		</div>
-		<div id="right-side" class="flex flex-col">
-			<EntryCard title="Provided Information">
-				<ProteinVis
-					format="pdb"
-					proteinName={combined}
-					width={400}
-					height={350}
-					on:mount={async ({ detail: { screenshot } }) => {
-						// upload the protein thumbnail if it doesn't exist
-						if (entry !== null && entry.thumbnail === null) {
-							const b64 = await screenshot();
-							const res = await Backend.uploadProteinPng({
-								proteinName: entry.name,
-								base64Encoding: b64,
-							});
-						}
-					}}
-				/>
-				<div id="info-grid" class="grid grid-cols-2 mt-5">
-					<b>Protein 1</b>
-					<div>
-						{proteinA}
-					</div>
-					<b>Protein 2</b>
-					<div>{proteinB}</div>
-				</div>
-			</EntryCard>
+            <ProteinVis
+                format="pdb"
+                proteinName={combined}
+                width={750}
+                height={500}
+                on:mount={async ({ detail: { screenshot } }) => {
+                    // upload the protein thumbnail if it doesn't exist
+                    if (entry !== null && entry.thumbnail === null) {
+                        const b64 = await screenshot();
+                        const res = await Backend.uploadProteinPng({
+                            proteinName: entry.name,
+                            base64Encoding: b64,
+                        });
+                    }
+                }}
+			/>
 		</div>
 	{:else if !error}
 		<!-- Otherwise, tell user we tell the user we are loading -->
