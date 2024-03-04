@@ -339,7 +339,8 @@ def edit_protein_entry(body: EditBody, req: Request):
         return UploadError.WRITE_ERROR
     
 
-@router.get("/protein/compare/{proteinA:str}/{proteinB:str}")
+# /pdb with two attributes returns both PDBs, superimposed and with different colors.
+@router.get("/protein/pdb/{proteinA:str}/{proteinB:str}")
 def search_proteins(proteinA: str, proteinB: str):
     with Database() as db:
         try:
