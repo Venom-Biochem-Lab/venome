@@ -5,9 +5,11 @@ from io import StringIO
 from Bio.PDB import PDBParser
 from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
+from fastapi.exceptions import HTTPException
 
-from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
+from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel, CompareBody, CompareResponse
 from ..auth import requiresAuthentication
+from ..tmalign import tm_align
 from io import BytesIO
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
@@ -335,3 +337,32 @@ def edit_protein_entry(body: EditBody, req: Request):
 
     except Exception:
         return UploadError.WRITE_ERROR
+    
+
+@router.post("/protein/compare")
+def search_proteins(body: CompareBody):
+    with Database() as db:
+        try:
+            proteinA = body.proteinA
+            proteinB = body.proteinB
+            entry_query = """SELECT proteins.name, 
+                                      proteins.description, 
+                                      proteins.length, 
+                                      proteins.mass, 
+                                      species.name,
+                                      proteins.thumbnail
+                                FROM proteins 
+                                JOIN species ON species.id = proteins.species_id 
+                                WHERE proteins.name ILIKE %s"""
+            
+            pdbA = stored_pdb_file_name(proteinA)
+            pdbB = stored_pdb_file_name(proteinB)
+
+            file = tm_align(proteinA, pdbA, proteinB, pdbB)
+
+            return FileResponse(
+                file, filename=proteinA + "_" + proteinB + ".pdb"
+            )
+        except Exception as e:
+            log.error(e)
+            raise HTTPException(status_code=500, detail=str(e))
