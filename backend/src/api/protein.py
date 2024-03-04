@@ -339,12 +339,10 @@ def edit_protein_entry(body: EditBody, req: Request):
         return UploadError.WRITE_ERROR
     
 
-@router.post("/protein/compare")
-def search_proteins(body: CompareBody):
+@router.get("/protein/compare/{proteinA:str}/{proteinB:str}")
+def search_proteins(proteinA: str, proteinB: str):
     with Database() as db:
         try:
-            proteinA = body.proteinA
-            proteinB = body.proteinB
             entry_query = """SELECT proteins.name, 
                                       proteins.description, 
                                       proteins.length, 
