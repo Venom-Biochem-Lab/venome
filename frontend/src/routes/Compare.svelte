@@ -17,6 +17,7 @@
 
     export let proteinA: string;
     export let proteinB: string;
+    let combined = proteinA + "/" + proteinB
     let urlId="Gh_comp1045_c0_seq1"
 	let entry: ProteinEntry | null = null;
 	let error = false;
@@ -52,7 +53,7 @@
 			<EntryCard title="Provided Information">
 				<ProteinVis
 					format="pdb"
-					proteinName={entry.name}
+					proteinName={combined}
 					width={400}
 					height={350}
 					on:mount={async ({ detail: { screenshot } }) => {
@@ -67,14 +68,12 @@
 					}}
 				/>
 				<div id="info-grid" class="grid grid-cols-2 mt-5">
-					<b>Organism</b>
+					<b>Protein 1</b>
 					<div>
-						{entry.speciesName}
+						{proteinA}
 					</div>
-					<b>Method</b>
-					<div>AlphaFold 2</div>
-					<b>Date Published</b>
-					<div><code>11/11/1111</code></div>
+					<b>Protein 2</b>
+					<div>{proteinB}</div>
 				</div>
 			</EntryCard>
 		</div>
