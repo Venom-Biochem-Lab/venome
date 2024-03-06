@@ -100,27 +100,35 @@ def search_proteins(body: SearchProteinsBody):
                 body.length_filter,
                 body.mass_filter,
             )
-            threshold = 0.05
+            threshold = 0
             score_filter = (
-                f"proteins_scores.name_score >= {threshold} OR proteins_scores.desc_score >= {threshold}"  # show only the scores > 0
+                f"(proteins_scores.name_score >= {threshold} OR proteins_scores.desc_score >= {threshold} OR  proteins_scores.content_score >= {threshold})"  # show only the scores > 0
                 if len(text_query) > 0
                 else "TRUE"  # show all scores
             )
+            # cursed shit, edit this at some point
+            # note that we have a sub query since postgres can't do where clauses on aliased tables
             entries_query = """SELECT proteins_scores.name, 
                                       proteins_scores.description, 
                                       proteins_scores.length, 
                                       proteins_scores.mass, 
                                       species.name,
                                       proteins_scores.thumbnail
-                                FROM (SELECT *, similarity(name, %s) as name_score, similarity(description, %s) as desc_score FROM proteins) as proteins_scores
+                                FROM (SELECT *, 
+                                             similarity(name, %s) as name_score, 
+                                             similarity(description, %s) as desc_score,
+                                             similarity(content, %s) as content_score
+                                     FROM proteins) as proteins_scores
                                 JOIN species ON species.id = proteins_scores.species_id
                                 WHERE {} {}
-                                ORDER BY (proteins_scores.name_score + proteins_scores.desc_score) DESC;
-                                """.format(score_filter, filter_clauses)
+                                ORDER BY (proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC;
+                                """.format(
+                score_filter, filter_clauses
+            )  # numbers in order by correspond to weighting
             log.warn(filter_clauses)
             entries_result = db.execute_return(
                 sanitize_query(entries_query),
-                [text_query, text_query],
+                [text_query, text_query, text_query],
             )
             if entries_result is not None:
                 return SearchProteinsResults(

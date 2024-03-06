@@ -30,8 +30,8 @@ CREATE TABLE proteins (
     description text, 
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
-    content bytea, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
-    refs bytea, -- bibtex references mentioned in the content/article
+    content text, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
+    refs text, -- bibtex references mentioned in the content/article
     species_id integer NOT NULL,
     thumbnail bytea, -- thumbnail image of the protein in base64 format
     FOREIGN KEY (species_id) REFERENCES species(id) ON UPDATE CASCADE ON DELETE CASCADE
