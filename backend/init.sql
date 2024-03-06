@@ -11,6 +11,8 @@
 -- Generated columns:
 -- https://www.postgresql.org/docs/current/ddl-generated-columns.html
 
+CREATE EXTENSION pg_trgm; -- for trigram matching fuzzy search similarity() func
+
 /*
  * Species Table
  */

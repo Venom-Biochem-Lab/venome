@@ -74,14 +74,16 @@ def get_descriptions(protein_names: list[str]):
 
 
 def gen_sql_filters(
+    species_table: str,
+    proteins_table: str,
     species_filter: str | None,
     length_filter: RangeFilter | None = None,
     mass_filter: RangeFilter | None = None,
 ) -> str:
     filters = [
-        category_where_clause("species.name", species_filter),
-        range_where_clause("proteins.length", length_filter),
-        range_where_clause("proteins.mass", mass_filter),
+        category_where_clause(f"{species_table}.name", species_filter),
+        range_where_clause(f"{proteins_table}.length", length_filter),
+        range_where_clause(f"{proteins_table}.mass", mass_filter),
     ]
     return " AND " + combine_where_clauses(filters) if any(filters) else ""
 
@@ -92,22 +94,33 @@ def search_proteins(body: SearchProteinsBody):
     with Database() as db:
         try:
             filter_clauses = gen_sql_filters(
-                body.species_filter, body.length_filter, body.mass_filter
+                "species",
+                "proteins_scores",
+                body.species_filter,
+                body.length_filter,
+                body.mass_filter,
             )
-            entries_query = """SELECT proteins.name, 
-                                      proteins.description, 
-                                      proteins.length, 
-                                      proteins.mass, 
+            score_threshold = (
+                "proteins_scores.name_score > 0"  # show only the scores > 0
+                if len(title_query) > 0
+                else "TRUE"  # show all scores
+            )
+            entries_query = """SELECT proteins_scores.name, 
+                                      proteins_scores.description, 
+                                      proteins_scores.length, 
+                                      proteins_scores.mass, 
                                       species.name,
-                                      proteins.thumbnail
-                                FROM proteins 
-                                JOIN species ON species.id = proteins.species_id 
-                                WHERE proteins.name ILIKE %s"""
+                                      proteins_scores.thumbnail
+                                FROM (SELECT *, similarity(name, %s) as name_score FROM proteins) as proteins_scores
+                                JOIN species ON species.id = proteins_scores.species_id
+                                WHERE {} {}
+                                ORDER BY proteins_scores.name_score DESC;
+                                """.format(score_threshold, filter_clauses)
             log.warn(filter_clauses)
             entries_result = db.execute_return(
-                sanitize_query(entries_query + filter_clauses),
+                sanitize_query(entries_query),
                 [
-                    f"%{title_query}%",
+                    title_query,
                 ],
             )
             if entries_result is not None:
