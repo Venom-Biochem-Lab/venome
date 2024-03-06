@@ -100,8 +100,9 @@ def search_proteins(body: SearchProteinsBody):
                 body.length_filter,
                 body.mass_filter,
             )
-            score_threshold = (
-                "proteins_scores.name_score > 0"  # show only the scores > 0
+            threshold = 0.05
+            score_filter = (
+                f"proteins_scores.name_score >= {threshold}"  # show only the scores > 0
                 if len(title_query) > 0
                 else "TRUE"  # show all scores
             )
@@ -115,7 +116,7 @@ def search_proteins(body: SearchProteinsBody):
                                 JOIN species ON species.id = proteins_scores.species_id
                                 WHERE {} {}
                                 ORDER BY proteins_scores.name_score DESC;
-                                """.format(score_threshold, filter_clauses)
+                                """.format(score_filter, filter_clauses)
             log.warn(filter_clauses)
             entries_result = db.execute_return(
                 sanitize_query(entries_query),
