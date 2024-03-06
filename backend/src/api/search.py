@@ -90,7 +90,7 @@ def gen_sql_filters(
 
 @router.post("/search/proteins", response_model=SearchProteinsResults)
 def search_proteins(body: SearchProteinsBody):
-    title_query = sanitize_query(body.query)
+    text_query = sanitize_query(body.query)
     with Database() as db:
         try:
             filter_clauses = gen_sql_filters(
@@ -102,8 +102,8 @@ def search_proteins(body: SearchProteinsBody):
             )
             threshold = 0.05
             score_filter = (
-                f"proteins_scores.name_score >= {threshold}"  # show only the scores > 0
-                if len(title_query) > 0
+                f"proteins_scores.name_score >= {threshold} OR proteins_scores.desc_score >= {threshold}"  # show only the scores > 0
+                if len(text_query) > 0
                 else "TRUE"  # show all scores
             )
             entries_query = """SELECT proteins_scores.name, 
@@ -112,17 +112,15 @@ def search_proteins(body: SearchProteinsBody):
                                       proteins_scores.mass, 
                                       species.name,
                                       proteins_scores.thumbnail
-                                FROM (SELECT *, similarity(name, %s) as name_score FROM proteins) as proteins_scores
+                                FROM (SELECT *, similarity(name, %s) as name_score, similarity(description, %s) as desc_score FROM proteins) as proteins_scores
                                 JOIN species ON species.id = proteins_scores.species_id
                                 WHERE {} {}
-                                ORDER BY proteins_scores.name_score DESC;
+                                ORDER BY (proteins_scores.name_score + proteins_scores.desc_score) DESC;
                                 """.format(score_filter, filter_clauses)
             log.warn(filter_clauses)
             entries_result = db.execute_return(
                 sanitize_query(entries_query),
-                [
-                    title_query,
-                ],
+                [text_query, text_query],
             )
             if entries_result is not None:
                 return SearchProteinsResults(
