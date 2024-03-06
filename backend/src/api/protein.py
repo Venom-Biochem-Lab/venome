@@ -164,10 +164,6 @@ def get_protein_entry(protein_name: str):
                 ) = only_returned_entry
 
                 # if byte arrays are present, decode them into a string
-                if content is not None:
-                    content = bytea_to_str(content)
-                if refs is not None:
-                    refs = bytea_to_str(refs)
                 if thumbnail is not None:
                     thumbnail = bytea_to_str(thumbnail)
 
@@ -263,8 +259,8 @@ def upload_protein_entry(body: UploadBody, req: Request):
                     body.description,
                     pdb.num_amino_acids,
                     pdb.mass_daltons,
-                    str_to_bytea(body.content),
-                    str_to_bytea(body.refs),
+                    body.content,
+                    body.refs,
                     body.species_name,
                 ],
             )
@@ -310,7 +306,7 @@ def edit_protein_entry(body: EditBody, req: Request):
                 db.execute(
                     """UPDATE proteins SET content = %s WHERE name = %s""",
                     [
-                        str_to_bytea(body.new_content),
+                        body.new_content,
                         body.old_name if not name_changed else body.new_name,
                     ],
                 )
@@ -319,7 +315,7 @@ def edit_protein_entry(body: EditBody, req: Request):
                 db.execute(
                     """UPDATE proteins SET refs = %s WHERE name = %s""",
                     [
-                        str_to_bytea(body.new_refs),
+                        body.new_refs,
                         body.old_name if not name_changed else body.new_name,
                     ],
                 )
