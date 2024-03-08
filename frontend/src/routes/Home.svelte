@@ -26,7 +26,7 @@
 <style>
 	h1 {
 		margin-top: 10px;
-		margin-top: 3px;
+		margin-bottom: 3px;
 		color: rgb(25, 63, 90);
 	}
 
