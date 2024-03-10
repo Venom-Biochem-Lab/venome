@@ -12,9 +12,7 @@ from ..api_types import (
     UploadBody,
     UploadError,
     EditBody,
-    CamelModel,
-    CompareBody,
-    CompareResponse,
+    CamelModel
 )
 from ..auth import requiresAuthentication
 from ..tmalign import tm_align
