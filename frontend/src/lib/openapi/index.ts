@@ -11,6 +11,7 @@ export type { EditBody } from './models/EditBody';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { LoginBody } from './models/LoginBody';
 export type { LoginResponse } from './models/LoginResponse';
+export type { MultipleTutorials } from './models/MultipleTutorials';
 export type { ProteinEntry } from './models/ProteinEntry';
 export type { RangeFilter } from './models/RangeFilter';
 export type { SearchProteinsBody } from './models/SearchProteinsBody';

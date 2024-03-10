@@ -89,6 +89,7 @@ def search_proteins(body: SearchProteinsBody):
                 ],
             )
             if entries_result is not None:
+                print(entries_result)
                 return SearchProteinsResults(
                     protein_entries=[
                         ProteinEntry(

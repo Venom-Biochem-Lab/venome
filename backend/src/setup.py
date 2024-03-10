@@ -30,7 +30,6 @@ def custom_generate_unique_id(route: APIRoute):
 
 
 def init_fastapi_app() -> FastAPI:
-
     app = FastAPI(
         title="Venome Backend", generate_unique_id_function=custom_generate_unique_id
     )

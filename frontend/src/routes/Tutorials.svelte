@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, type Tutorial } from "../lib/backend";
+	import { Backend, type Tutorial, type MultipleTutorials } from "../lib/backend";
 
-	let tutorials: Tutorial[] = [];
+	let tutorials: Tutorial[] | null = [];
 	let error = false;
 
 	onMount(async () => {
-		tutorials = await Backend.getAllTutorials();
+		console.log("Onmount")
+		const result = await Backend.getAllTutorials();
+		tutorials = result.tutorials
+		console.log("Tutorials=", tutorials)
 		if (tutorials == null) error = true;
 
 		console.log("Received", tutorials);

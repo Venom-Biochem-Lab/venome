@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type Link = {
-    url: string;
-    title: string;
+import type { Tutorial } from './Tutorial';
+export type MultipleTutorials = {
+    tutorials?: (Array<Tutorial> | null);
 };
 
