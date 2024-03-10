@@ -3,10 +3,13 @@
 	import { Backend, type Tutorial } from "../lib/backend";
 
 	let tutorials: Tutorial[] = [];
-
+	let error = false;
 
 	onMount(async () => {
 		tutorials = await Backend.getAllTutorials();
+		if (tutorials == null) error = true;
+
+		console.log("Received", tutorials);
 	});
 </script>
 
@@ -18,7 +21,7 @@
 
 
 				<h2 class="title">{tutorial.title}</h2>
-				<p class="summary">{tutorial.summary}</p>
+				<p class="summary">{tutorial.description}</p>
 				<!-- <ul> -->
                     <!-- {#each tutorial.links as link} -->
 					<!-- add the anchor tags back in when problem gets figured out -->
@@ -55,7 +58,7 @@
     }
 
     .summary {
-        font-size: 18px; 
+        font-size: 18px;
 		margin-left: 40px;
 		margin-right: 40px;
     }

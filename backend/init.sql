@@ -25,7 +25,7 @@ CREATE TABLE species (
 CREATE TABLE proteins (
     id serial PRIMARY KEY,
     name text NOT NULL UNIQUE, -- user specified name of the protein (TODO: consider having a string limit)
-    description text, 
+    description text,
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
     content bytea, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
@@ -46,12 +46,24 @@ CREATE TABLE users (
     admin boolean NOT NULL
 );
 
+
+/*
+* Tutorials Table
+*/
+CREATE TABLE tutorials (
+    id serial PRIMARY KEY,
+    header text NOT NULL,
+    title text,
+    description text
+);
+
+
 /*
  * Inserts example species into species table
  */
-INSERT INTO species(name) VALUES ('ganaspis hookeri'); 
-INSERT INTO species(name) VALUES ('leptopilina boulardi'); 
-INSERT INTO species(name) VALUES ('leptopilina heterotoma'); 
+INSERT INTO species(name) VALUES ('ganaspis hookeri');
+INSERT INTO species(name) VALUES ('leptopilina boulardi');
+INSERT INTO species(name) VALUES ('leptopilina heterotoma');
 INSERT INTO species(name) VALUES ('unknown');
 
 /*
@@ -60,3 +72,10 @@ INSERT INTO species(name) VALUES ('unknown');
  * Password: test
  */
 INSERT INTO users(username, email, pword, admin) VALUES ('test', 'test', '$2b$12$PFoNf7YM0KNIPP8WGsJjveIOhiJjitsMtfwRcCjdcyTuqjdk/q//u', '1');
+
+
+INSERT INTO tutorials(header, title, description) VALUES('Tutorial Page', 'General Informtion', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida tristique est, a sollicitudin nulla varius ac. Duis sed lacus arcu. Mauris eget condimentum justo. Vestibulum iaculis cursus accumsan. Mauris eget diam consequat, viverra dui malesuada, maximus nisl. Etiam laoreet venenatis odio ut tempus. Praesent risus est, eleifend id purus non, varius rutrum nisi. Fusce sagittis lorem nec tristique efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam pretium, sapien et volutpat tempus, elit urna congue massa, id consequat leo dolor in ligula. Sed vestibulum tristique eros eu aliquet.');
+INSERT INTO tutorials(header, title, description) VALUES('Tutorial 1', 'General Informtion', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+INSERT INTO tutorials(header, title, description) VALUES('Tutorial 2', 'General Informtion', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+INSERT INTO tutorials(header, title, description) VALUES('Tutorial 3', 'General Informtion', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+

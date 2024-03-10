@@ -6,7 +6,7 @@ import type { Link } from './Link';
 export type Tutorial = {
     header: string | null;
     title: string | null;
-    summary: string | null;
-    links: Array<Link> | null;
+    description: string | null;
+    // links: Array<Link> | null;
 };
 
