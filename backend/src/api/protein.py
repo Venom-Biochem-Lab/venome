@@ -350,24 +350,13 @@ def edit_protein_entry(body: EditBody, req: Request):
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.
 @router.get("/protein/pdb/{proteinA:str}/{proteinB:str}")
 def search_proteins(proteinA: str, proteinB: str):
-    with Database() as db:
-        try:
-            entry_query = """SELECT proteins.name, 
-                                      proteins.description, 
-                                      proteins.length, 
-                                      proteins.mass, 
-                                      species.name,
-                                      proteins.thumbnail
-                                FROM proteins 
-                                JOIN species ON species.id = proteins.species_id 
-                                WHERE proteins.name ILIKE %s"""
+    try:
+        pdbA = stored_pdb_file_name(proteinA)
+        pdbB = stored_pdb_file_name(proteinB)
 
-            pdbA = stored_pdb_file_name(proteinA)
-            pdbB = stored_pdb_file_name(proteinB)
+        file = tm_align(proteinA, pdbA, proteinB, pdbB)
 
-            file = tm_align(proteinA, pdbA, proteinB, pdbB)
-
-            return FileResponse(file, filename=proteinA + "_" + proteinB + ".pdb")
-        except Exception as e:
-            log.error(e)
-            raise HTTPException(status_code=500, detail=str(e))
+        return FileResponse(file, filename=proteinA + "_" + proteinB + ".pdb")
+    except Exception as e:
+        log.error(e)
+        raise HTTPException(status_code=500, detail=str(e))
