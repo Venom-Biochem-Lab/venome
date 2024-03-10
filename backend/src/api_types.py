@@ -76,3 +76,12 @@ class LoginBody(CamelModel):
 class LoginResponse(CamelModel):
     token: str
     error: str
+
+
+class CompareBody(CamelModel):
+    proteinA: str
+    proteinB: str
+
+
+class CompareResponse(CamelModel):
+    file: list[str]

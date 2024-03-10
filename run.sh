@@ -115,6 +115,20 @@ function remove_foldseek() {
 	docker exec -it venome-backend rm -fr foldseek/
 }
 
+function add_tmalign() {
+	docker exec -it venome-backend wget https://seq2fun.dcmb.med.umich.edu//TM-align/TMalign_cpp.gz
+	docker exec -it venome-backend mkdir tmalign
+	docker exec -it venome-backend gzip -d TMalign_cpp.gz
+	docker exec -it venome-backend mv TMalign_cpp tmalign/tmalign
+	docker exec -it venome-backend chmod a+x tmalign/tmalign
+	docker exec -it venome-backend rm -f TMalign_cpp.gz
+}
+
+function remove_tmalign() {
+	docker exec -it venome-backend rm -f TMalign_cpp.gz*
+	docker exec -it venome-backend rm -fr tmalign/
+}
+
 function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))
 }

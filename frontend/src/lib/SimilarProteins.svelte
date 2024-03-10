@@ -28,6 +28,7 @@
 			<th> Probability Match</th>
 			<th> E-Value </th>
 			<th> Description </th>
+			<th> Compare </th>
 		</tr>
 		{#each similarProteins as protein}
 			<tr class="pdb-row">
@@ -41,6 +42,13 @@
 				<td>{protein.prob}</td>
 				<td>{protein.evalue}</td>
 				<td class="pdb-desc">{protein.description}</td>
+				<td>
+					<a
+						use:link
+						href="/compare/{queryProteinName}/{protein.name}"
+						><LinkOutline size="sm" />Compare</a
+					>
+				</td>
 			</tr>
 		{/each}
 	</table>
