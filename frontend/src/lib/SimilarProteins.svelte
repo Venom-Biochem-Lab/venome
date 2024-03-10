@@ -43,7 +43,11 @@
 				<td>{protein.evalue}</td>
 				<td class="pdb-desc">{protein.description}</td>
 				<td>
-					<a href="/compare/{queryProteinName}/{protein.name}"><LinkOutline size="sm" />Compare</a>
+					<a
+						use:link
+						href="/compare/{queryProteinName}/{protein.name}"
+						><LinkOutline size="sm" />Compare</a
+					>
 				</td>
 			</tr>
 		{/each}
