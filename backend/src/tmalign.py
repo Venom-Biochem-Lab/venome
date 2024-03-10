@@ -65,7 +65,7 @@ def tm_align(
         try:
             bash_cmd(f"mkdir {full_path}")
             log.warn(f"Attempting to align now with cmd {cmd}")
-            stdout = bash_cmd(cmd)
+            # stdout = bash_cmd(cmd)
             # log.warn(stdout)
 
         except Exception as e:
