@@ -7,13 +7,7 @@ from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 
-from ..api_types import (
-    ProteinEntry,
-    UploadBody,
-    UploadError,
-    EditBody,
-    CamelModel
-)
+from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
 from ..auth import requiresAuthentication
 from ..tmalign import tm_align
 from io import BytesIO
