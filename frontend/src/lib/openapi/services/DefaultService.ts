@@ -249,6 +249,29 @@ export class DefaultService {
         });
     }
     /**
+     * Align Proteins
+     * @param proteinA
+     * @param proteinB
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static alignProteins(
+        proteinA: string,
+        proteinB: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/pdb/{proteinA}/{proteinB}',
+            path: {
+                'proteinA': proteinA,
+                'proteinB': proteinB,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Get All Tutorials
      * @returns Tutorial Successful Response
      * @throws ApiError

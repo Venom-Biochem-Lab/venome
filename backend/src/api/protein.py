@@ -337,7 +337,7 @@ def edit_protein_entry(body: EditBody, req: Request):
 
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.
 @router.get("/protein/pdb/{proteinA:str}/{proteinB:str}")
-def search_proteins(proteinA: str, proteinB: str):
+def align_proteins(proteinA: str, proteinB: str):
     try:
         pdbA = stored_pdb_file_name(proteinA)
         pdbB = stored_pdb_file_name(proteinB)
