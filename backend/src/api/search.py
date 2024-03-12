@@ -131,6 +131,7 @@ def search_proteins(body: SearchProteinsBody):
                 [text_query, text_query, text_query],
             )
             if entries_result is not None:
+                print(entries_result)
                 return SearchProteinsResults(
                     protein_entries=[
                         ProteinEntry(

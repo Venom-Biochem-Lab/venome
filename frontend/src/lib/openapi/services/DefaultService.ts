@@ -5,6 +5,7 @@
 import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
+import type { MultipleTutorials } from '../models/MultipleTutorials';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { RangeFilter } from '../models/RangeFilter';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
@@ -273,10 +274,10 @@ export class DefaultService {
     }
     /**
      * Get All Tutorials
-     * @returns Tutorial Successful Response
+     * @returns any Successful Response
      * @throws ApiError
      */
-    public static getAllTutorials(): CancelablePromise<Array<Tutorial>> {
+    public static getAllTutorials(): CancelablePromise<(MultipleTutorials | null)> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/tutorials',
