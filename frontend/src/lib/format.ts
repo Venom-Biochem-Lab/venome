@@ -13,3 +13,10 @@ export function fileToString(f: File): Promise<string> {
 		reader.onerror = reject;
 	});
 }
+
+export function formatProteinName(name: string) {
+	return name.replaceAll(" ", "_");
+}
+export function undoFormatProteinName(name: string) {
+	return name.replaceAll("_", " ");
+}

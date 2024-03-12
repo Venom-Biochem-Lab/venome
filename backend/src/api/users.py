@@ -33,6 +33,7 @@ def login(body: LoginBody):
 
             # Generates the token and returns
             token = generateAuthToken(email, admin)
+            log.warn("Giving token:", token)
             return LoginResponse(token=token, error="")
 
         except Exception as e:

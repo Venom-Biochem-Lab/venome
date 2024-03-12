@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { navigate } from "svelte-routing";
 	import type { ProteinEntry } from "./backend";
-	import { numberWithCommas } from "./format";
+	import {
+		formatProteinName,
+		numberWithCommas,
+		undoFormatProteinName,
+	} from "./format";
 
 	export let allEntries: ProteinEntry[] | null = null;
 </script>
@@ -25,7 +29,7 @@
 				</div>
 				<div class="prot-info">
 					<div class="prot-name">
-						{entry.name}
+						{undoFormatProteinName(entry.name)}
 					</div>
 					<div class="prot-desc">
 						{#if entry.description}

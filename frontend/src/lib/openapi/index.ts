@@ -16,6 +16,7 @@ export type { ProteinEntry } from './models/ProteinEntry';
 export type { RangeFilter } from './models/RangeFilter';
 export type { SearchProteinsBody } from './models/SearchProteinsBody';
 export type { SearchProteinsResults } from './models/SearchProteinsResults';
+export type { SimilarProtein } from './models/SimilarProtein';
 export type { Tutorial } from './models/Tutorial';
 export type { UploadBody } from './models/UploadBody';
 export { UploadError } from './models/UploadError';

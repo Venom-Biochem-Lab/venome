@@ -7,9 +7,11 @@ from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 
 from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
+from ..auth import requiresAuthentication
 from io import BytesIO
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.requests import Request
 
 router = APIRouter()
 
@@ -50,7 +52,7 @@ def decode_base64(b64_header_and_data: str):
     return b64decode(b64_data_only).decode("utf-8")
 
 
-def pdb_file_name(protein_name: str):
+def stored_pdb_file_name(protein_name: str):
     return os.path.join("src/data/pdbAlphaFold", protein_name) + ".pdb"
 
 
@@ -60,9 +62,14 @@ def parse_protein_pdb(name: str, file_contents: str = "", encoding="str"):
     elif encoding == "b64":
         return PDB(decode_base64(file_contents), name)
     elif encoding == "file":
-        return PDB(open(pdb_file_name(name), "r").read(), name)
+        return PDB(open(stored_pdb_file_name(name), "r").read(), name)
     else:
         raise ValueError(f"Invalid encoding: {encoding}")
+
+
+def format_protein_name(name: str):
+    name = name.replace(" ", "_")
+    return name
 
 
 def protein_name_found(name: str):
@@ -101,7 +108,9 @@ class UploadPNGBody(CamelModel):
 @router.get("/protein/pdb/{protein_name:str}")
 def get_pdb_file(protein_name: str):
     if protein_name_found(protein_name):
-        return FileResponse(pdb_file_name(protein_name), filename=protein_name + ".pdb")
+        return FileResponse(
+            stored_pdb_file_name(protein_name), filename=protein_name + ".pdb"
+        )
 
 
 @router.get("/protein/fasta/{protein_name:str}")
@@ -179,7 +188,8 @@ def get_protein_entry(protein_name: str):
 
 # TODO: add permissions so only the creator can delete not just anyone
 @router.delete("/protein/entry/{protein_name:str}", response_model=None)
-def delete_protein_entry(protein_name: str):
+def delete_protein_entry(protein_name: str, req: Request):
+    requiresAuthentication(req)
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
         # remove protein
@@ -190,7 +200,7 @@ def delete_protein_entry(protein_name: str):
                 [protein_name],
             )
             # delete the file from the data/ folder
-            os.remove(pdb_file_name(protein_name))
+            os.remove(stored_pdb_file_name(protein_name))
         except Exception as e:
             log.error(e)
 
@@ -207,7 +217,10 @@ def upload_protein_png(body: UploadPNGBody):
 
 # None return means success
 @router.post("/protein/upload", response_model=UploadError | None)
-def upload_protein_entry(body: UploadBody):
+def upload_protein_entry(body: UploadBody, req: Request):
+    requiresAuthentication(req)
+
+    body.name = format_protein_name(body.name)
     # check that the name is not already taken in the DB
     if protein_name_found(body.name):
         return UploadError.NAME_NOT_UNIQUE
@@ -221,7 +234,7 @@ def upload_protein_entry(body: UploadBody):
 
     try:
         # write to file to data/ folder
-        with open(pdb_file_name(pdb.name), "w") as f:
+        with open(stored_pdb_file_name(pdb.name), "w") as f:
             f.write(pdb.file_contents)
     except Exception:
         log.warn("Failed to write to file")
@@ -262,13 +275,15 @@ def upload_protein_entry(body: UploadBody):
 
 # TODO: add more edits, now only does name and content edits
 @router.put("/protein/edit", response_model=UploadError | None)
-def edit_protein_entry(body: EditBody):
+def edit_protein_entry(body: EditBody, req: Request):
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
-
+    requiresAuthentication(req)
     try:
         if body.new_name != body.old_name:
-            os.rename(pdb_file_name(body.old_name), pdb_file_name(body.new_name))
+            os.rename(
+                stored_pdb_file_name(body.old_name), stored_pdb_file_name(body.new_name)
+            )
 
         with Database() as db:
             name_changed = False

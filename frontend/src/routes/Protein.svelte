@@ -4,7 +4,7 @@
 	import ProteinVis from "../lib/ProteinVis.svelte";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import Markdown from "../lib/Markdown.svelte";
-	import { numberWithCommas } from "../lib/format";
+	import { numberWithCommas, undoFormatProteinName } from "../lib/format";
 	import { navigate } from "svelte-routing";
 	import References from "../lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
@@ -27,8 +27,6 @@
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
 		if (entry == null) error = true;
-
-		console.log("Received", entry);
 	});
 </script>
 
@@ -41,7 +39,7 @@
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
 			<h1 id="title">
-				{entry.name}
+				{undoFormatProteinName(entry.name)}
 			</h1>
 
 			<div id="description">
@@ -60,7 +58,9 @@
 				</div>
 				<div>
 					<b>Structurally Similar Proteins</b>
-					<SimilarProteins queryProteinName={entry.name} />
+					{#if entry.name}
+						<SimilarProteins queryProteinName={entry.name} />
+					{/if}
 				</div>
 			</EntryCard>
 
@@ -145,7 +145,7 @@
 
 <style>
 	#left-side {
-		/* width: 1200px; */
+		width: 100%;
 	}
 	#right-side {
 		width: 450px;

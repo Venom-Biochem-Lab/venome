@@ -60,17 +60,6 @@ function test_backend() {
 	cd ..
 }
 
-function test_frontend() {
-	cd frontend
-	yarn test
-	cd ..
-}
-
-function test() {
-	test_backend
-	test_frontend
-}
-
 function install_frontend() {
 	docker exec -it venome-frontend yarn install
 }
@@ -113,6 +102,17 @@ function upload_all() {
 
 function delete_all() {
 	cd galaxy && python3 delete_all.py && soft_restart
+}
+
+function add_foldseek() {
+	docker exec -it venome-backend wget https://mmseqs.com/foldseek/foldseek-linux-sse2.tar.gz
+	docker exec -it venome-backend tar -xvf foldseek-linux-sse2.tar.gz
+	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz
+}
+
+function remove_foldseek() {
+	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz*
+	docker exec -it venome-backend rm -fr foldseek/
 }
 
 function scrape_func_names() {

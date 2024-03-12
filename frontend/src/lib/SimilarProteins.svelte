@@ -1,62 +1,50 @@
 <script lang="ts">
+	import { link } from "svelte-routing";
 	import { LinkOutline } from "flowbite-svelte-icons";
 	import { onMount } from "svelte";
+	import { Backend, type SimilarProtein } from "../lib/backend";
+	import { undoFormatProteinName } from "./format";
 
 	export let queryProteinName: string;
 
-	let similarProteins: any[] = [];
+	let similarProteins: SimilarProtein[] = [];
 	onMount(async () => {
-		similarProteins = await similarPDBProteins(queryProteinName);
+		try {
+			similarProteins =
+				await Backend.searchVenomeSimilar(queryProteinName);
+		} catch (e) {
+			console.error(e);
+			console.error(
+				"NEED TO DOWNLOAD FOLDSEEK IN THE SERVER. SEE THE SERVER ERROR MESSAGE."
+			);
+		}
 	});
-
-	async function similarPDBProteins(queryProteinName: string) {
-		// TODO: QUERY TO BACKEND WITH ACTUAL CALL INSTEAD OF MOCK DATA
-		const similarExternalProteins = [
-			{
-				source: "pdb",
-				link: "https://www.rcsb.org/structure/1A0S",
-				name: "1A0S",
-				prob: 0.99,
-			},
-			{
-				source: "pdb",
-				link: "https://www.rcsb.org/structure/1A0S",
-				name: "1A0S",
-				prob: 0.99,
-			},
-			{
-				source: "pdb",
-				link: "https://www.rcsb.org/structure/1A0S",
-				name: "1A0S",
-				prob: 0.99,
-			},
-		];
-
-		return similarExternalProteins;
-	}
 </script>
 
-<table>
-	<tr>
-		<th> Source </th>
-		<th> Name </th>
-		<th> Desc. </th>
-		<th> Prob. </th>
-	</tr>
-	{#each similarProteins as protein}
-		<tr class="pdb-row">
-			<td>
-				<a href={protein.link}
-					><LinkOutline size="sm" /> {protein.source.toUpperCase()}</a
-				>
-			</td>
-			<td>{protein.name}</td>
-			<td class="pdb-desc">DEscDEscDEscDEsc DEscDEsc DEsc DEsc </td>
-			<td>{protein.prob}</td>
+<div style="max-height: 300px; overflow-y: scroll;">
+	<table>
+		<tr>
+			<th> Name </th>
+			<th> Probability Match</th>
+			<th> E-Value </th>
+			<th> Description </th>
 		</tr>
-	{/each}
-	<span class="text-gray-400 cursor-pointer">... click to see more</span>
-</table>
+		{#each similarProteins as protein}
+			<tr class="pdb-row">
+				<td>
+					<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
+					<a href="/protein/{protein.name}"
+						><LinkOutline size="sm" />
+						{undoFormatProteinName(protein.name)}</a
+					>
+				</td>
+				<td>{protein.prob}</td>
+				<td>{protein.evalue}</td>
+				<td class="pdb-desc">{protein.description}</td>
+			</tr>
+		{/each}
+	</table>
+</div>
 
 <style>
 	table {
@@ -73,8 +61,7 @@
 		background-color: hsl(var(--lightorange-hsl), 0.11);
 	}
 	.pdb-desc {
-		min-width: 70px;
-		max-width: 70px;
+		width: 5px;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
@@ -84,5 +71,24 @@
 		display: flex;
 		gap: 1px;
 		align-items: center;
+	}
+	/* width */
+	::-webkit-scrollbar {
+		width: 3px;
+	}
+
+	/* Track */
+	::-webkit-scrollbar-track {
+		background: #f1f1f1;
+	}
+
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+		background: #888;
+	}
+
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+		background: #555;
 	}
 </style>
