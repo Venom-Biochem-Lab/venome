@@ -1,15 +1,11 @@
 <script lang="ts">
-	import {
-		Backend,
-		UploadError,
-		setToken,
-		type ProteinEntry,
-	} from "../lib/backend";
+	import { Backend, setToken, type ProteinEntry } from "../lib/backend";
 	import { Button, Input, Label, Helper, Select } from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import { onMount } from "svelte";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
 	import { user } from "../lib/stores/user";
+	import { undoFormatProteinName } from "../lib/format";
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
 	// and reuploaded/edited
@@ -51,7 +47,7 @@
 			error = true;
 		} else {
 			// keep track of db value and the value we change (og denotes original / db)
-			name = entry.name;
+			name = undoFormatProteinName(entry.name); // replaces _ with " "
 			ogName = name;
 
 			content = entry.content ?? "";
