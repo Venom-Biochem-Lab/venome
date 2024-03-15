@@ -271,13 +271,25 @@ def upload_protein_entry(body: UploadBody, req: Request):
             return UploadError.QUERY_ERROR
 
 
-# TODO: add more edits, now only does name and content edits
-@router.put("/protein/edit", response_model=UploadError | None)
+class ProteinEditSuccess(CamelModel):
+    edited_name: str
+
+
+@router.put("/protein/edit", response_model=ProteinEditSuccess)
 def edit_protein_entry(body: EditBody, req: Request):
+    """edit_protein_entry
+    Returns: On successful edit, will return an object with editedName
+    If not successful will through an HTTP status 500
+    """
+
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
     requiresAuthentication(req)
     try:
+        # replace spaces in the name with underscores
+        body.old_name = format_protein_name(body.old_name)
+        body.new_name = format_protein_name(body.new_name)
+
         if body.new_name != body.old_name:
             os.rename(
                 stored_pdb_file_name(body.old_name), stored_pdb_file_name(body.new_name)
@@ -330,9 +342,9 @@ def edit_protein_entry(body: EditBody, req: Request):
                         body.old_name if not name_changed else body.new_name,
                     ],
                 )
-
+            return ProteinEditSuccess(edited_name=body.new_name)
     except Exception:
-        return UploadError.WRITE_ERROR
+        raise HTTPException(500, "Edit failed, git gud")
 
 
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.

@@ -6,12 +6,12 @@ import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
 import type { MultipleTutorials } from '../models/MultipleTutorials';
+import type { ProteinEditSuccess } from '../models/ProteinEditSuccess';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { RangeFilter } from '../models/RangeFilter';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
 import type { SimilarProtein } from '../models/SimilarProtein';
-import type { Tutorial } from '../models/Tutorial';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { UploadPNGBody } from '../models/UploadPNGBody';
@@ -232,13 +232,16 @@ export class DefaultService {
     }
     /**
      * Edit Protein Entry
+     * edit_protein_entry
+     * Returns: On successful edit, will return an object with editedName
+     * If not successful will through an HTTP status 500
      * @param requestBody
-     * @returns any Successful Response
+     * @returns ProteinEditSuccess Successful Response
      * @throws ApiError
      */
     public static editProteinEntry(
         requestBody: EditBody,
-    ): CancelablePromise<(UploadError | null)> {
+    ): CancelablePromise<ProteinEditSuccess> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/protein/edit',
