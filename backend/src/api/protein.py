@@ -143,12 +143,12 @@ def get_protein_entry(protein_name: str):
                               proteins.content, 
                               proteins.refs, 
                               species.name,
-                              proteins.thumbnail
+                              proteins.thumbnail,
+                              proteins.date_created
                        FROM proteins
                        JOIN species ON species.id = proteins.species_id
                        WHERE proteins.name = %s;"""
             entry_sql = db.execute_return(query, [protein_name])
-            log.warn(entry_sql)
 
             # if we got a result back
             if entry_sql is not None and len(entry_sql) != 0:
@@ -163,11 +163,16 @@ def get_protein_entry(protein_name: str):
                     refs,
                     species_name,
                     thumbnail,
+                    date_created,
                 ) = only_returned_entry
 
-                # if byte arrays are present, decode them into a string
                 if thumbnail is not None:
+                    # if byte arrays are present, decode them into a string
                     thumbnail = bytea_to_str(thumbnail)
+
+                if date_created is not None:
+                    # forces the datetime object into a linux utc string
+                    date_created = str(date_created)
 
                 return ProteinEntry(
                     name=name,
@@ -178,6 +183,7 @@ def get_protein_entry(protein_name: str):
                     refs=refs,
                     species_name=species_name,
                     thumbnail=thumbnail,
+                    date_created=date_created,
                 )
 
         except Exception as e:

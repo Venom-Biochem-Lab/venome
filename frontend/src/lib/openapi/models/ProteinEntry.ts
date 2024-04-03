@@ -11,5 +11,6 @@ export type ProteinEntry = {
     refs?: (string | null);
     thumbnail?: (string | null);
     description?: (string | null);
+    dateCreated?: (string | null);
 };
 
