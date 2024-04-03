@@ -12,23 +12,22 @@ const config = {
 		extend: {
 			colors: {
 				primary: {
-					50: "#f2f8fd",
-					100: "#e4f0fa",
-					200: "#c4e1f3",
-					300: "#8fc8ea",
-					400: "#54abdc",
-					500: "#2d91ca",
-					600: "#1e74ab",
-					700: "#194f73", // flowbite uses this one for 'primary' variants
-					800: "#194f73",
-					900: "#19405c", // same as darkblue below
-					950: "#112b40",
+					50: "var(--primary-50)",
+					100: "var(--primary-100)",
+					200: "var(--primary-200)",
+					300: "var(--primary-300)",
+					400: "var(--primary-400)",
+					500: "var(--primary-500)",
+					600: "var(--primary-600)",
+					700: "var(--primary-700)", // flowbite uses this one for 'primary' variants
+					800: "var(--primary-800)",
+					900: "var(--primary-900)",
+					950: "var(--primary-950)",
 				},
-				// then match the css global variables defined in .postcss file so these can be used in tailwind
-				darkblue: "hsla(205, 57%, 23%, 1)",
-				lightblue: "hsla(198, 41%, 54%, 1)",
-				darkorange: "hsla(27, 77%, 55%, 1)",
-				lightorange: "hsla(38, 83%, 60%, 1)",
+				darkblue: "var(--darkblue)",
+				lightblue: "var(--lightblue)",
+				darkorange: "var(--darkorange)",
+				lightorange: "var(--lightorange)",
 			},
 		},
 	},

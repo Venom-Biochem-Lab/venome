@@ -4,15 +4,26 @@
 @tailwind base;
 
 :root {
+	/* color range  which defines flowbite and tailwind primary colors (see tailwind.config.cjs) */
+	--primary-50: #f2f8fd;
+	--primary-100: #e4f0fa;
+	--primary-200: #c4e1f3;
+	--primary-300: #8fc8ea;
+	--primary-400: #54abdc;
+	--primary-500: #2d91ca;
+	--primary-600: #1e74ab;
+	--primary-700: #194f73; /* flowbite uses this one for 'primary' variants on components */
+	--primary-800: #194f73;
+	--primary-900: #19405c; /* same as var(--darkblue) */
+	--primary-950: #112b40;
+
+	/* other nice colors to use + their HSL representation */
 	--darkblue-hsl: 205, 57%, 23%;
 	--darkblue: hsla(var(--darkblue-hsl), 1);
-
 	--lightblue-hsl: 198, 41%, 54%;
 	--lightblue: hsla(var(--lightblue-hsl), 1);
-
 	--darkorange-hsl: 27, 77%, 55%;
 	--darkorange: hsla(var(--darkorange-hsl), 1);
-
 	--lightorange-hsl: 38, 83%, 60%;
 	--lightorange: hsla(var(--lightorange-hsl), 1);
 }

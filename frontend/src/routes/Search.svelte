@@ -49,7 +49,7 @@
 
 <section>
 	<div id="sidebar">
-		<h2 class="text-darkblue mb-2">Filter By</h2>
+		<h2 class="text-primary-900 mb-2">Filter By</h2>
 
 		<div>
 			{#if species && species.length > 0}
