@@ -34,6 +34,7 @@ CREATE TABLE proteins (
     refs text, -- bibtex references mentioned in the content/article
     species_id integer NOT NULL,
     thumbnail bytea, -- thumbnail image of the protein in base64 format
+    date_created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (species_id) REFERENCES species(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
