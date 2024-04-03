@@ -32,7 +32,7 @@ class ProteinEntry(CamelModel):
     refs: str | None = None
     thumbnail: str | None = None
     description: str | None = None
-    date_created: str | None = None
+    date_published: str | None = None
 
 
 class AllEntries(CamelModel):

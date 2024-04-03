@@ -135,8 +135,8 @@
 					<b>Date Published</b>
 					<div>
 						<code
-							>{entry.dateCreated
-								? dbDateToMonthDayYear(entry.dateCreated)
+							>{entry.datePublished
+								? dbDateToMonthDayYear(entry.datePublished)
 								: "n/a"}</code
 						>
 					</div>
