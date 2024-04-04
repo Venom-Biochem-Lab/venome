@@ -4,7 +4,11 @@
 	import ProteinVis from "../lib/ProteinVis.svelte";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import Markdown from "../lib/Markdown.svelte";
-	import { numberWithCommas, undoFormatProteinName } from "../lib/format";
+	import {
+		numberWithCommas,
+		undoFormatProteinName,
+		dbDateToMonthDayYear,
+	} from "../lib/format";
 	import { navigate } from "svelte-routing";
 	import References from "../lib/References.svelte";
 	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
@@ -129,7 +133,13 @@
 					<b>Method</b>
 					<div>AlphaFold 2</div>
 					<b>Date Published</b>
-					<div><code>11/11/1111</code></div>
+					<div>
+						<code
+							>{entry.datePublished
+								? dbDateToMonthDayYear(entry.datePublished)
+								: "n/a"}</code
+						>
+					</div>
 				</div>
 			</EntryCard>
 		</div>
