@@ -9,7 +9,7 @@ from fastapi.exceptions import HTTPException
 
 from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
 from ..auth import requiresAuthentication
-from ..tmalign import tm_align
+from ..tmalign import tm_align_return
 from io import BytesIO
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
@@ -97,6 +97,14 @@ def pdb_to_fasta(pdb: PDB):
     return ">{}\n{}".format(pdb.name, "".join(pdb.amino_acids()))
 
 
+def str_as_file_stream(input_str: str, filename_as: str) -> StreamingResponse:
+    return StreamingResponse(
+        BytesIO(input_str.encode()),
+        media_type="text/plain",
+        headers={"Content-Disposition": f"attachment; filename={filename_as}"},
+    )
+
+
 """
     ENDPOINTS TODO: add the other protein types here instead of in api_types.py
 """
@@ -137,7 +145,7 @@ def get_protein_entry(protein_name: str):
     with Database() as db:
         try:
             query = """SELECT proteins.name, 
-            				  proteins.description,
+                              proteins.description,
                               proteins.length, 
                               proteins.mass, 
                               proteins.content, 
@@ -356,13 +364,16 @@ def edit_protein_entry(body: EditBody, req: Request):
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.
 @router.get("/protein/pdb/{proteinA:str}/{proteinB:str}")
 def align_proteins(proteinA: str, proteinB: str):
+    if not protein_name_found(proteinA) or not protein_name_found(proteinB):
+        raise HTTPException(
+            status_code=404, detail="One of the proteins provided is not found in DB"
+        )
+
     try:
-        pdbA = stored_pdb_file_name(proteinA)
-        pdbB = stored_pdb_file_name(proteinB)
-
-        file = tm_align(proteinA, pdbA, proteinB, pdbB)
-
-        return FileResponse(file, filename=proteinA + "_" + proteinB + ".pdb")
+        filepath_pdbA = stored_pdb_file_name(proteinA)
+        filepath_pdbB = stored_pdb_file_name(proteinB)
+        superimposed_pdb = tm_align_return(filepath_pdbA, filepath_pdbB)
+        return str_as_file_stream(superimposed_pdb, f"{proteinA}_{proteinB}.pdb")
     except Exception as e:
         log.error(e)
         raise HTTPException(status_code=500, detail=str(e))
