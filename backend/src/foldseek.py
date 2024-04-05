@@ -69,7 +69,7 @@ def parse_easy_search_output(filepath: str) -> list[list]:
 def easy_search(
     query: str,
     target: str,
-    out_format: str = "query, target, prob",
+    out_format: str = "query,target,prob",
     print_loading_info=False,
 ) -> list[list]:
     """easy_search just calls foldseek easy-search under the hood
