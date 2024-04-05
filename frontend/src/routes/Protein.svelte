@@ -63,7 +63,10 @@
 				<div>
 					<b>Structurally Similar Proteins</b>
 					{#if entry.name}
-						<SimilarProteins queryProteinName={entry.name} />
+						<SimilarProteins
+							queryProteinName={entry.name}
+							length={entry.length}
+						/>
 					{/if}
 				</div>
 			</EntryCard>

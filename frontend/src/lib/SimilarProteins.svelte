@@ -4,14 +4,17 @@
 	import { onMount } from "svelte";
 	import { Backend, type SimilarProtein } from "../lib/backend";
 	import { undoFormatProteinName } from "./format";
+	import AlignBlock from "./AlignBlock.svelte";
 
 	export let queryProteinName: string;
+	export let length: number;
 
 	let similarProteins: SimilarProtein[] = [];
 	onMount(async () => {
 		try {
 			similarProteins =
 				await Backend.searchVenomeSimilar(queryProteinName);
+			console.log(similarProteins);
 		} catch (e) {
 			console.error(e);
 			console.error(
@@ -27,21 +30,29 @@
 			<th> Name </th>
 			<th> Probability Match</th>
 			<th> E-Value </th>
-			<th> Alignment </th>
-			<th> 3D Superimpose TMAlign</th>
+			<th> Alignment Coverage </th>
+			<th> TMAlign</th>
 		</tr>
-		{#each similarProteins as protein}
+		{#each similarProteins as protein, i}
 			<tr class="pdb-row">
-				<td style="align-text: end;">
+				<td>
 					<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
 					<a href="/protein/{protein.name}">
 						{undoFormatProteinName(protein.name)}
 						<ArrowUpRightFromSquareOutline size="sm" />
 					</a>
 				</td>
-				<td>{protein.prob}</td>
-				<td>{protein.evalue.toExponential()}</td>
-				<td>blah blah</td>
+				<td><code>{protein.prob}</code></td>
+				<td><code>{protein.evalue.toExponential()}</code></td>
+				<td
+					><AlignBlock
+						width={200}
+						height={20}
+						ogLength={length}
+						qstart={protein.qstart}
+						qend={protein.qend}
+					/>
+				</td>
 				<td>
 					<a
 						use:link
