@@ -5,16 +5,20 @@
 	import { Backend, type SimilarProtein } from "../lib/backend";
 	import { undoFormatProteinName } from "./format";
 	import AlignBlock from "./AlignBlock.svelte";
+	import Dot from "./Dot.svelte";
 
 	export let queryProteinName: string;
 	export let length: number;
 
 	let similarProteins: SimilarProtein[] = [];
+	let maxEvalue: number;
 	onMount(async () => {
 		try {
 			similarProteins =
 				await Backend.searchVenomeSimilar(queryProteinName);
-			console.log(similarProteins);
+			maxEvalue = similarProteins
+				? Math.max(...similarProteins.map((p) => p.evalue))
+				: 0;
 		} catch (e) {
 			console.error(e);
 			console.error(
@@ -28,37 +32,63 @@
 	<table>
 		<tr>
 			<th> Name </th>
-			<th> Probability Match</th>
 			<th> E-Value </th>
-			<th> Alignment Coverage </th>
-			<th> TMAlign</th>
+			<th> Prob. Match</th>
+			<th> Alignment Region </th>
+			<th> TMAlign Superimpose 3D</th>
 		</tr>
 		{#each similarProteins as protein, i}
 			<tr class="pdb-row">
 				<td>
-					<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
-					<a href="/protein/{protein.name}">
-						{undoFormatProteinName(protein.name)}
-						<ArrowUpRightFromSquareOutline size="sm" />
-					</a>
-				</td>
-				<td><code>{protein.prob}</code></td>
-				<td><code>{protein.evalue.toExponential()}</code></td>
-				<td
-					><AlignBlock
-						width={200}
-						height={20}
-						ogLength={length}
-						qstart={protein.qstart}
-						qend={protein.qend}
-					/>
+					<div class="name-cell">
+						<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
+						<a href="/protein/{protein.name}">
+							{undoFormatProteinName(protein.name)}
+							<ArrowUpRightFromSquareOutline size="sm" />
+						</a>
+					</div>
 				</td>
 				<td>
-					<a
-						use:link
-						href="/compare/{queryProteinName}/{protein.name}"
-						>Compare <ArrowUpRightFromSquareOutline size="sm" /></a
-					>
+					<div class="evalue-cell flex gap-2 items-center">
+						<Dot
+							diameter={10}
+							maxColor="var(--primary-700)"
+							normalizedValue={protein.evalue / maxEvalue}
+						/>
+						<code>{protein.evalue.toExponential()}</code>
+					</div>
+				</td>
+				<td
+					><div class="prob-cell flex gap-2 items-center">
+						<Dot
+							diameter={10}
+							maxColor="var(--primary-700)"
+							normalizedValue={protein.prob}
+						/>
+						<code>{protein.prob}</code>
+					</div></td
+				>
+				<td>
+					<div class="align-cell">
+						<AlignBlock
+							width={200}
+							height={20}
+							ogLength={length}
+							qstart={protein.qstart}
+							qend={protein.qend}
+						/>
+					</div>
+				</td>
+				<td>
+					<div class="compare-cell">
+						<a
+							use:link
+							href="/compare/{queryProteinName}/{protein.name}"
+							>Compare <ArrowUpRightFromSquareOutline
+								size="sm"
+							/></a
+						>
+					</div>
 				</td>
 			</tr>
 		{/each}
