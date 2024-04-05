@@ -35,9 +35,10 @@
 	<DelayedSpinner
 		text="Computing Foldseek on the entire Venome Database..."
 		textRight
+		msDelay={0}
 	/>
 {:else if similarProteins !== undefined}
-	<div style="max-height: 300px; overflow-y: scroll;">
+	<div style="max-height: 300px; overflow-y: scroll; overflow-x: hidden;">
 		<table>
 			<tr>
 				<th class="name-cell"> Name </th>
