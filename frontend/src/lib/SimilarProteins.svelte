@@ -31,11 +31,11 @@
 <div style="max-height: 300px; overflow-y: scroll;">
 	<table>
 		<tr>
-			<th> Name </th>
-			<th> E-Value </th>
-			<th> Prob. Match</th>
-			<th> Alignment Region </th>
-			<th> TMAlign Superimpose 3D</th>
+			<th class="name-cell"> Name </th>
+			<th class="evalue-cell"> E-Value </th>
+			<th class="prob-cell"> Prob. Match</th>
+			<th class="align-cell"> Alignment Region </th>
+			<th class="compare-cell">TMAlign</th>
 		</tr>
 		{#each similarProteins as protein, i}
 			<tr class="pdb-row">
@@ -71,7 +71,7 @@
 				<td>
 					<div class="align-cell">
 						<AlignBlock
-							width={200}
+							width={260}
 							height={20}
 							ogLength={length}
 							qstart={protein.qstart}
@@ -105,6 +105,10 @@
 	th {
 		font-weight: 500;
 		text-align: left;
+		position: sticky;
+		top: 0;
+		background-color: white;
+		color: var(--primary-700);
 	}
 	.pdb-row {
 		background-color: hsl(var(--darkblue-hsl), 0.04);
@@ -138,5 +142,23 @@
 	/* Handle on hover */
 	::-webkit-scrollbar-thumb:hover {
 		background: #555;
+	}
+
+	.name-cell {
+		width: 250px;
+	}
+	.evalue-cell {
+		width: 150px;
+	}
+	.prob-cell {
+		width: 120px;
+	}
+	.align-cell {
+		width: 320px;
+		padding-left: 10px;
+		padding-right: 50px;
+	}
+	.compare-cell {
+		width: 100px;
 	}
 </style>
