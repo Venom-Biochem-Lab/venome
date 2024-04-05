@@ -16,6 +16,7 @@
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
+	import { AccordionItem, Accordion } from "flowbite-svelte";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -60,14 +61,18 @@
 					<b>Mass (Da)</b>
 					<div><code>{numberWithCommas(entry.mass)}</code></div>
 				</div>
-				<div>
-					<b>Structurally Similar Proteins</b>
-					{#if entry.name}
-						<SimilarProteins
-							queryProteinName={entry.name}
-							length={entry.length}
-						/>
-					{/if}
+				<div class="mt-3">
+					<Accordion>
+						<AccordionItem open>
+							<span slot="header" style="font-size: 18px;"
+								>Foldseek Similar Venome Proteins</span
+							>
+							<SimilarProteins
+								queryProteinName={entry.name}
+								length={entry.length}
+							/>
+						</AccordionItem>
+					</Accordion>
 				</div>
 			</EntryCard>
 

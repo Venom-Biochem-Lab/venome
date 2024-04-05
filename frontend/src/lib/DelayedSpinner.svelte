@@ -4,6 +4,7 @@
 	export let msDelay = 500;
 	export let spinnerProps = {};
 	export let text = "";
+	export let textRight = false;
 
 	let showSpinner = false;
 
@@ -15,5 +16,9 @@
 </script>
 
 {#if showSpinner}
-	{text} <Spinner {...spinnerProps} />
+	{#if textRight}
+		<Spinner {...spinnerProps} /> {text}
+	{:else}
+		{text} <Spinner {...spinnerProps} />
+	{/if}
 {/if}

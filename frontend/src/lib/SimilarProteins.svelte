@@ -6,11 +6,13 @@
 	import { undoFormatProteinName } from "./format";
 	import AlignBlock from "./AlignBlock.svelte";
 	import Dot from "./Dot.svelte";
+	import DelayedSpinner from "./DelayedSpinner.svelte";
 
 	export let queryProteinName: string;
 	export let length: number;
 
-	let similarProteins: SimilarProtein[] = [];
+	let similarProteins: SimilarProtein[];
+	let errorEncountered = false;
 	let maxEvalue: number;
 	onMount(async () => {
 		try {
@@ -24,76 +26,86 @@
 			console.error(
 				"NEED TO DOWNLOAD FOLDSEEK IN THE SERVER. SEE THE SERVER ERROR MESSAGE."
 			);
+			errorEncountered = true;
 		}
 	});
 </script>
 
-<div style="max-height: 300px; overflow-y: scroll;">
-	<table>
-		<tr>
-			<th class="name-cell"> Name </th>
-			<th class="evalue-cell"> E-Value </th>
-			<th class="prob-cell"> Prob. Match</th>
-			<th class="align-cell"> Alignment Region </th>
-			<th class="compare-cell">TMAlign</th>
-		</tr>
-		{#each similarProteins as protein, i}
-			<tr class="pdb-row">
-				<td>
-					<div class="name-cell">
-						<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
-						<a href="/protein/{protein.name}">
-							{undoFormatProteinName(protein.name)}
-							<ArrowUpRightFromSquareOutline size="sm" />
-						</a>
-					</div>
-				</td>
-				<td>
-					<div class="evalue-cell flex gap-2 items-center">
-						<Dot
-							diameter={10}
-							maxColor="var(--primary-700)"
-							normalizedValue={protein.evalue / maxEvalue}
-						/>
-						<code>{protein.evalue.toExponential()}</code>
-					</div>
-				</td>
-				<td
-					><div class="prob-cell flex gap-2 items-center">
-						<Dot
-							diameter={10}
-							maxColor="var(--primary-700)"
-							normalizedValue={protein.prob}
-						/>
-						<code>{protein.prob}</code>
-					</div></td
-				>
-				<td>
-					<div class="align-cell">
-						<AlignBlock
-							width={260}
-							height={20}
-							ogLength={length}
-							qstart={protein.qstart}
-							qend={protein.qend}
-						/>
-					</div>
-				</td>
-				<td>
-					<div class="compare-cell">
-						<a
-							use:link
-							href="/compare/{queryProteinName}/{protein.name}"
-							>Compare <ArrowUpRightFromSquareOutline
-								size="sm"
-							/></a
-						>
-					</div>
-				</td>
+{#if similarProteins === undefined && !errorEncountered}
+	<DelayedSpinner
+		text="Computing Foldseek on the entire Venome Database..."
+		textRight
+	/>
+{:else if similarProteins !== undefined}
+	<div style="max-height: 300px; overflow-y: scroll;">
+		<table>
+			<tr>
+				<th class="name-cell"> Name </th>
+				<th class="evalue-cell"> E-Value </th>
+				<th class="prob-cell"> Prob. Match</th>
+				<th class="align-cell"> Alignment Region </th>
+				<th class="compare-cell">TMAlign</th>
 			</tr>
-		{/each}
-	</table>
-</div>
+			{#each similarProteins as protein, i}
+				<tr class="pdb-row">
+					<td>
+						<div class="name-cell">
+							<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
+							<a href="/protein/{protein.name}">
+								{undoFormatProteinName(protein.name)}
+								<ArrowUpRightFromSquareOutline size="sm" />
+							</a>
+						</div>
+					</td>
+					<td>
+						<div class="evalue-cell flex gap-2 items-center">
+							<Dot
+								diameter={10}
+								maxColor="var(--primary-700)"
+								normalizedValue={protein.evalue / maxEvalue}
+							/>
+							<code>{protein.evalue.toExponential()}</code>
+						</div>
+					</td>
+					<td
+						><div class="prob-cell flex gap-2 items-center">
+							<Dot
+								diameter={10}
+								maxColor="var(--primary-700)"
+								normalizedValue={protein.prob}
+							/>
+							<code>{protein.prob}</code>
+						</div></td
+					>
+					<td>
+						<div class="align-cell">
+							<AlignBlock
+								width={260}
+								height={20}
+								ogLength={length}
+								qstart={protein.qstart}
+								qend={protein.qend}
+							/>
+						</div>
+					</td>
+					<td>
+						<div class="compare-cell">
+							<a
+								use:link
+								href="/compare/{queryProteinName}/{protein.name}"
+								>Compare <ArrowUpRightFromSquareOutline
+									size="sm"
+								/></a
+							>
+						</div>
+					</td>
+				</tr>
+			{/each}
+		</table>
+	</div>
+{:else}
+	Error in the in the backend. Please contact admins.
+{/if}
 
 <style>
 	table {
