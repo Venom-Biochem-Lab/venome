@@ -7,5 +7,8 @@ export type SimilarProtein = {
     prob: number;
     evalue: number;
     description?: string;
+    qstart: number;
+    qend: number;
+    alntmscore: number;
 };
 

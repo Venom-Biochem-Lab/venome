@@ -1,31 +1,26 @@
 ﻿<script lang="ts">
 	import { onMount } from "svelte";
 	import { Backend, BACKEND_URL, type ProteinEntry } from "../lib/backend";
-	import ProteinVis from "../lib/ProteinVis.svelte";
-	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-	import Markdown from "../lib/Markdown.svelte";
-	import { numberWithCommas, undoFormatProteinName } from "../lib/format";
-	import { navigate } from "svelte-routing";
-	import References from "../lib/References.svelte";
-	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
-	import EntryCard from "../lib/EntryCard.svelte";
-	import SimilarProteins from "../lib/SimilarProteins.svelte";
+	import Molstar from "../lib/Molstar.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
-	import { user } from "../lib/stores/user";
 
-	const fileDownloadDropdown = ["pdb", "fasta"];
-
-    export let proteinA: string;
-    export let proteinB: string;
-    let combined = proteinA + "/" + proteinB
-    let urlId="Gh_comp1045_c0_seq1"
+	export let proteinA: string;
+	export let proteinB: string;
+	let combined = proteinA + "/" + proteinB;
+	let urlId = "Gh_comp1045_c0_seq1";
 	let entry: ProteinEntry | null = null;
 	let error = false;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
-		console.log("Requesting", proteinA, "and", proteinB, "info from backend");
+		console.log(
+			"Requesting",
+			proteinA,
+			"and",
+			proteinB,
+			"info from backend"
+		);
 
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
@@ -41,28 +36,16 @@
 	{#if entry}
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
-			<h1 id="title">
-				Comparing Proteins
-			</h1>
+			<h1 id="title">Comparing Proteins</h1>
 
 			<div id="description">
 				{proteinA} and {proteinB}
 			</div>
-            <ProteinVis
-                format="pdb"
-                proteinName={combined}
-                width={750}
-                height={500}
-                on:mount={async ({ detail: { screenshot } }) => {
-                    // upload the protein thumbnail if it doesn't exist
-                    if (entry !== null && entry.thumbnail === null) {
-                        const b64 = await screenshot();
-                        const res = await Backend.uploadProteinPng({
-                            proteinName: entry.name,
-                            base64Encoding: b64,
-                        });
-                    }
-                }}
+			<Molstar
+				format="pdb"
+				url="{BACKEND_URL}/protein/pdb/{combined}"
+				width={750}
+				height={500}
 			/>
 		</div>
 	{:else if !error}

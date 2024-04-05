@@ -14,6 +14,9 @@ class SimilarProtein(CamelModel):
     prob: float
     evalue: float
     description: str = ""
+    qstart: int
+    qend: int
+    alntmscore: int
 
 
 class RangeFilter(CamelModel):
@@ -131,7 +134,6 @@ def search_proteins(body: SearchProteinsBody):
                 [text_query, text_query, text_query],
             )
             if entries_result is not None:
-                print(entries_result)
                 return SearchProteinsResults(
                     protein_entries=[
                         ProteinEntry(
@@ -201,14 +203,21 @@ def search_venome_similar(protein_name: str):
         similar = easy_search(
             stored_pdb_file_name(protein_name),
             venome_folder,
-            out_format="target,prob,evalue",
-        )[1:]
+            out_format="target,prob,evalue,qstart,qend",
+        )  # qend,qstart refer to alignment
         formatted = [
-            SimilarProtein(name=name.rstrip(".pdb"), prob=prob, evalue=evalue)
-            for [name, prob, evalue] in similar
+            SimilarProtein(
+                name=name.rstrip(".pdb"),
+                prob=prob,
+                evalue=evalue,
+                qstart=qstart,
+                qend=qend,
+                alntmscore=0,
+            )
+            for [name, prob, evalue, qstart, qend] in similar
         ]
     except Exception:
-        raise HTTPException(404, "Foldseek not found on the system")
+        raise HTTPException(404, "Error in 'foldseek easy-search' command")
 
     try:
         # populate protein descriptions for the similar proteins
