@@ -362,7 +362,7 @@ def edit_protein_entry(body: EditBody, req: Request):
 
 
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.
-@router.get("/protein/pdb/{proteinA:str}/{proteinB:str}")
+@router.get("/protein/pdb/{proteinA:str}/{proteinB:str}", response_model=str)
 def align_proteins(proteinA: str, proteinB: str):
     if not protein_name_found(proteinA) or not protein_name_found(proteinB):
         raise HTTPException(
