@@ -44,7 +44,7 @@
 				<th class="name-cell"> Name </th>
 				<th class="evalue-cell"> E-Value </th>
 				<th class="prob-cell"> Prob. Match</th>
-				<th class="align-cell"> Alignment Region </th>
+				<th class="align-cell"> Region of Similarity </th>
 				<th class="compare-cell">TMAlign</th>
 			</tr>
 			{#each similarProteins as protein, i}
@@ -167,9 +167,9 @@
 		width: 120px;
 	}
 	.align-cell {
-		width: 320px;
+		width: 290px;
 		padding-left: 10px;
-		padding-right: 50px;
+		padding-right: 30px;
 	}
 	.compare-cell {
 		width: 100px;

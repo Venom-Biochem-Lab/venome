@@ -67,7 +67,7 @@
 							<span slot="header" style="font-size: 18px;"
 								>3D Similar Proteins <span
 									style="font-weight: 300; font-size: 15px;"
-									>(click to compute)</span
+									>(click to compute with Foldseek)</span
 								></span
 							>
 							<SimilarProteins
