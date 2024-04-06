@@ -1,4 +1,8 @@
 <script lang="ts">
+	import {
+		screenshotMolstar,
+		defaultInitParams,
+	} from "../lib/venomeMolstarUtils";
 	import { Backend, UploadError, setToken } from "../lib/backend";
 	import {
 		Fileupload,
@@ -108,7 +112,7 @@
 
 					const pdbFileStr = await fileToString(file);
 					try {
-						setToken()
+						setToken();
 						const err = await Backend.uploadProteinEntry({
 							name,
 							description,
@@ -121,9 +125,18 @@
 							uploadError = err;
 							console.log(uploadError);
 						} else {
-							// success, so we can go back!
-							// TODO: make the name processing only in the backend and we just send back in the err object above
-							navigate(`/protein/${formatProteinName(name)}`);
+							// success, we can also upload the png thumbnail
+							const dbProteinNameFormat = formatProteinName(name);
+							const b64 = await screenshotMolstar(
+								defaultInitParams(dbProteinNameFormat)
+							);
+							await Backend.uploadProteinPng({
+								base64Encoding: b64,
+								proteinName: dbProteinNameFormat,
+							});
+
+							// then go to its new protein page
+							navigate(`/protein/${dbProteinNameFormat}`);
 						}
 					} catch (e) {
 						console.log(e);

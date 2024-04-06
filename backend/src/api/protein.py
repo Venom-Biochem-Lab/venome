@@ -8,8 +8,8 @@ from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 
 from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
-from ..auth import requiresAuthentication
 from ..tmalign import tm_align_return
+from ..auth import requires_authentication
 from io import BytesIO
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
@@ -201,7 +201,7 @@ def get_protein_entry(protein_name: str):
 # TODO: add permissions so only the creator can delete not just anyone
 @router.delete("/protein/entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str, req: Request):
-    requiresAuthentication(req)
+    requires_authentication(req)
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
         # remove protein
@@ -218,7 +218,8 @@ def delete_protein_entry(protein_name: str, req: Request):
 
 
 @router.post("/protein/upload/png", response_model=None)
-def upload_protein_png(body: UploadPNGBody):
+def upload_protein_png(body: UploadPNGBody, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             query = """UPDATE proteins SET thumbnail = %s WHERE name = %s"""
@@ -230,7 +231,7 @@ def upload_protein_png(body: UploadPNGBody):
 # None return means success
 @router.post("/protein/upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody, req: Request):
-    requiresAuthentication(req)
+    requires_authentication(req)
 
     body.name = format_protein_name(body.name)
     # check that the name is not already taken in the DB
@@ -298,7 +299,7 @@ def edit_protein_entry(body: EditBody, req: Request):
 
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
-    requiresAuthentication(req)
+    requires_authentication(req)
     try:
         # replace spaces in the name with underscores
         body.old_name = format_protein_name(body.old_name)

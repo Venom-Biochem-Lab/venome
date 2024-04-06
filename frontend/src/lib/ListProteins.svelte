@@ -22,6 +22,7 @@
 			>
 				<div class="prot-thumb mr-2">
 					<img
+						loading="lazy"
 						class="prot-thumb"
 						src={entry.thumbnail ?? ""}
 						alt="thumbnail"
