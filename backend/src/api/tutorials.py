@@ -7,8 +7,9 @@ router = APIRouter()
 
 
 class Tutorial(CamelModel):
-    title: str | None = None
+    title: str
     description: str | None = None
+    content: str | None = None
 
 
 @router.get("/tutorials", response_model=list[Tutorial])
@@ -30,10 +31,12 @@ def get_all_tutorials():
 def get_tutorial(title: str):
     with Database() as db:
         try:
-            query = """SELECT title, description FROM tutorials WHERE title=%s"""
+            query = (
+                """SELECT title, description, content FROM tutorials WHERE title=%s"""
+            )
             tutorial = db.execute_return(query, [title])
             if tutorial:
-                [title, description] = tutorial[0]
-                return Tutorial(title=title, description=description)
+                [title, description, content] = tutorial[0]
+                return Tutorial(title=title, description=description, content=content)
         except Exception as e:
             log.error(e)

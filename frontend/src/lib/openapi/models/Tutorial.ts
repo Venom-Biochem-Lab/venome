@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Tutorial = {
-    title?: (string | null);
+    title: string;
     description?: (string | null);
+    content?: (string | null);
 };
 
