@@ -16,9 +16,13 @@
 </script>
 
 {#if showSpinner}
-	{#if textRight}
-		<Spinner {...spinnerProps} /> {text}
-	{:else}
-		{text} <Spinner {...spinnerProps} />
-	{/if}
+	<div class="flex gap-2 items-center">
+		{#if textRight}
+			<Spinner {...spinnerProps} />
+			<p>{text}</p>
+		{:else}
+			<p>{text}</p>
+			<Spinner {...spinnerProps} />
+		{/if}
+	</div>
 {/if}
