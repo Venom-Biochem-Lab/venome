@@ -25,6 +25,9 @@
 		{entry.description}
 	</div>
 	<div class="light">
+		<b>Organism</b>: {entry.speciesName}
+	</div>
+	<div class="light">
 		<b>Length</b>: <code>{entry.length}</code> residues
 	</div>
 	<div class="light">
