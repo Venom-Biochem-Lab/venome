@@ -37,6 +37,11 @@ def authenticate_token(token):
 
 # Use this function with a request if you want.
 def requires_authentication(req: Request):
+    # no header at all
+    if "authorization" not in req.headers:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
+    # verify token is good if provided
     userInfo = authenticate_token(req.headers["authorization"])
     if not userInfo or not userInfo.get("admin"):
         log.error("Unauthorized User")
