@@ -11,6 +11,7 @@
 	import Tutorials from "./routes/Tutorials.svelte";
 	import ForceUploadThumbnails from "./routes/ForceUploadThumbnails.svelte";
 	import Compare from "./routes/Compare.svelte";
+	import Tutorial from "./routes/Tutorial.svelte";
 </script>
 
 <Router>
@@ -23,12 +24,17 @@
 		<Route path="/upload"><Upload /></Route>
 		<Route path="/login"><Login /></Route>
 		<Route path="/tutorials"><Tutorials /></Route>
+		<Route path="/tutorial/:id" let:params
+			><Tutorial tutorialTitle={params.id} /></Route
+		>
 		<Route path="/protein/:id" let:params
 			><Protein urlId={params.id} /></Route
 		>
 		<Route path="/edit/:id" let:params><Edit urlId={params.id} /></Route>
 		<Route path="/force-upload-thumbnails"><ForceUploadThumbnails /></Route>
-		<Route path="/compare/:a/:b" let:params><Compare proteinA={params.a} proteinB={params.b}/></Route>
+		<Route path="/compare/:a/:b" let:params
+			><Compare proteinA={params.a} proteinB={params.b} /></Route
+		>
 		<Route path="/*"><Error /></Route>
 	</main>
 </Router>
