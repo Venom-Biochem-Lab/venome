@@ -9,9 +9,9 @@ import logging as log
 secret_key = "SuperSecret"
 
 
-def generate_auth_token(userId, admin):
+def generate_auth_token(user_id, admin):
     payload = {
-        "email": userId,
+        "email": user_id,
         "admin": admin,
         "exp": datetime.now(tz=timezone.utc) + timedelta(hours=24),
     }
@@ -42,8 +42,8 @@ def requires_authentication(req: Request):
         raise HTTPException(status_code=403, detail="Unauthorized")
 
     # verify token is good if provided
-    userInfo = authenticate_token(req.headers["authorization"])
-    if not userInfo or not userInfo.get("admin"):
+    user_info = authenticate_token(req.headers["authorization"])
+    if not user_info or not user_info.get("admin"):
         log.error("Unauthorized User")
         raise HTTPException(status_code=403, detail="Unauthorized")
     else:
