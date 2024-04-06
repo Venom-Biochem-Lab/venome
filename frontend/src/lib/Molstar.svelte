@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { onDestroy } from "svelte";
 	import { PDBeMolstarPlugin } from "../../venome-molstar/lib";
+	import { loseWebGLContext } from "./venomeMolstarUtils";
 
 	export let url = "";
 	export let format = "pdb";
@@ -7,11 +9,11 @@
 	export let binary = false;
 	export let width = 500;
 	export let height = 500;
+	let m: PDBeMolstarPlugin;
 
 	let divEl: HTMLDivElement;
 	async function render() {
-		// @ts-ignore
-		const m = new PDBeMolstarPlugin(); // loaded through app.html
+		m = new PDBeMolstarPlugin();
 		// some bs for the whole thing to rerender. TODO: fix this.
 		divEl.innerHTML = "";
 		const div = document.createElement("div");
@@ -32,6 +34,11 @@
 			hideCanvasControls: ["animation"],
 		});
 	}
+
+	onDestroy(() => {
+		loseWebGLContext(divEl.querySelector("canvas")!);
+		m.plugin.dispose();
+	});
 
 	$: {
 		if (url && divEl) {
