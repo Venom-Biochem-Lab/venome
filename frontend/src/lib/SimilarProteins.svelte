@@ -44,8 +44,8 @@
 				<th class="name-cell"> Name </th>
 				<th class="evalue-cell"> E-Value </th>
 				<th class="prob-cell"> Prob. Match</th>
-				<th class="align-cell"> Region of Similarity </th>
-				<th class="compare-cell">TMAlign</th>
+				<th class="region-cell"> Region of Similarity </th>
+				<th class="align-cell">TMAlign</th>
 			</tr>
 			{#each similarProteins as protein, i}
 				<tr class="pdb-row">
@@ -79,7 +79,7 @@
 						</div></td
 					>
 					<td>
-						<div class="align-cell">
+						<div class="region-cell">
 							<AlignBlock
 								width={260}
 								height={20}
@@ -90,11 +90,11 @@
 						</div>
 					</td>
 					<td>
-						<div class="compare-cell">
+						<div class="align-cell">
 							<a
 								use:link
-								href="/compare/{queryProteinName}/{protein.name}"
-								>Compare <ArrowUpRightFromSquareOutline
+								href="/align/{queryProteinName}/{protein.name}"
+								>Align <ArrowUpRightFromSquareOutline
 									size="sm"
 								/></a
 							>
@@ -135,7 +135,7 @@
 	a {
 		display: flex;
 		gap: 1px;
-		align-items: center;
+		region-items: center;
 	}
 	/* width */
 	::-webkit-scrollbar {
@@ -166,12 +166,12 @@
 	.prob-cell {
 		width: 120px;
 	}
-	.align-cell {
+	.region-cell {
 		width: 290px;
 		padding-left: 10px;
 		padding-right: 30px;
 	}
-	.compare-cell {
+	.align-cell {
 		width: 100px;
 	}
 </style>
