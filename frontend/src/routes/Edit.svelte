@@ -184,7 +184,7 @@
 					on:click={async () => {
 						setToken();
 						await Backend.deleteProteinEntry(urlId);
-						navigate("/");
+						navigate("/search");
 					}}>Delete Protein Entry</Button
 				>
 			</div>
