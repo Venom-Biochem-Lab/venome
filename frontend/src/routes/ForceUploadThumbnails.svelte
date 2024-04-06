@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, type ProteinEntry } from "../lib/backend";
+	import { Backend, type ProteinEntry, setToken } from "../lib/backend";
 	import {
 		screenshotMolstar,
 		defaultInitParams,
@@ -19,6 +19,7 @@
 				defaultInitParams(protein.name)
 			);
 			preview = b64;
+			setToken();
 			await Backend.uploadProteinPng({
 				base64Encoding: b64,
 				proteinName: protein.name,
