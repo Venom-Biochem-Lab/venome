@@ -3,6 +3,8 @@ from ..api_types import CamelModel
 from ..db import Database
 import logging as log
 from fastapi.exceptions import HTTPException
+from ..auth import requires_authentication
+from fastapi.requests import Request
 
 router = APIRouter()
 
@@ -52,7 +54,8 @@ class TutorialUpload(CamelModel):
 
 
 @router.post("/tutorial/upload")
-def upload_tutorial(body: TutorialUpload):
+def upload_tutorial(body: TutorialUpload, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             query = """INSERT INTO tutorials(title, description, content, refs) VALUES(%s, %s, %s, %s);"""

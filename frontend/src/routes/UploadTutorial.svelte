@@ -72,6 +72,7 @@
 						setToken();
 						await Backend.uploadTutorial({
 							title,
+							description,
 							content,
 							refs,
 						});
