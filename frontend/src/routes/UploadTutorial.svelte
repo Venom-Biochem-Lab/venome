@@ -19,7 +19,7 @@
 	let refs: string = "";
 	let description: string = "";
 	let content: string = "";
-	let uploadError: UploadError | undefined;
+	let uploadError: boolean = false;
 </script>
 
 <svelte:head>
@@ -43,7 +43,7 @@
 				id="tutorial-title"
 				placeholder="Enter a unique title..."
 			/>
-			{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
+			{#if uploadError}
 				<Helper class="mt-2" color="red"
 					>This name already exists, please create a unique name and
 					resubmit</Helper
@@ -76,8 +76,9 @@
 							content,
 							refs,
 						});
+						navigate(`/tutorial/${title}`);
 					} catch (e) {
-						console.log(e);
+						uploadError = true;
 					}
 				}}
 				disabled={title === ""}>Upload and Publish Tutorial</Button
