@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from ..api_types import CamelModel
 from ..db import Database
-import logging as log
 from fastapi.exceptions import HTTPException
 from ..auth import requires_authentication
 from fastapi.requests import Request
