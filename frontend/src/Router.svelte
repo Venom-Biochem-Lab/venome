@@ -12,6 +12,7 @@
 	import ForceUploadThumbnails from "./routes/ForceUploadThumbnails.svelte";
 	import Compare from "./routes/Compare.svelte";
 	import Tutorial from "./routes/Tutorial.svelte";
+	import UploadTutorial from "./routes/UploadTutorial.svelte";
 </script>
 
 <Router>
@@ -22,6 +23,7 @@
 		<Route path="/"><Home /></Route>
 		<Route path="/search"><Search /></Route>
 		<Route path="/upload"><Upload /></Route>
+		<Route path="/upload/tutorial"><UploadTutorial /></Route>
 		<Route path="/login"><Login /></Route>
 		<Route path="/tutorials"><Tutorials /></Route>
 		<Route path="/tutorial/:id" let:params

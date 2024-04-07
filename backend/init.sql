@@ -57,7 +57,8 @@ CREATE TABLE tutorials (
     id serial PRIMARY KEY,
     title text NOT NULL UNIQUE,
     description text,
-    content text -- stored markdown for the article 
+    content text, -- stored markdown for the article 
+    refs text -- bibtex references mentioned in the content/article
 );
 
 

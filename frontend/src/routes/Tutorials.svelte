@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { Backend, type Tutorial } from "../lib/backend";
-	import { link, navigate } from "svelte-routing";
+	import { navigate } from "svelte-routing";
+	import { Button } from "flowbite-svelte";
 
 	let tutorials: Tutorial[] = [];
 	let error = false;
@@ -17,6 +18,11 @@
 </script>
 
 <div class="p-5">
+	<div class="mb-5">
+		<Button on:click={() => navigate(`/upload/tutorial`)}
+			>Upload Tutorial</Button
+		>
+	</div>
 	<div class="tutorials-container">
 		{#each tutorials as tutorial}
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -28,7 +34,7 @@
 				}}
 			>
 				<div class="tutorial-title">{tutorial.title}</div>
-				<div class="tutorial-desc">{tutorial.description}</div>
+				<div class="tutorial-desc">{tutorial.description ?? ""}</div>
 			</div>
 		{/each}
 	</div>

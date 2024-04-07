@@ -12,6 +12,7 @@ import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
 import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
+import type { TutorialUpload } from '../models/TutorialUpload';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { UploadPNGBody } from '../models/UploadPNGBody';
@@ -301,6 +302,25 @@ export class DefaultService {
             query: {
                 'title': title,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Tutorial
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadTutorial(
+        requestBody: TutorialUpload,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/tutorial/upload',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },
