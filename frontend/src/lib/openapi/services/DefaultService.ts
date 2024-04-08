@@ -257,13 +257,13 @@ export class DefaultService {
      * Align Proteins
      * @param proteinA
      * @param proteinB
-     * @returns any Successful Response
+     * @returns string Successful Response
      * @throws ApiError
      */
     public static alignProteins(
         proteinA: string,
         proteinB: string,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/protein/pdb/{proteinA}/{proteinB}',

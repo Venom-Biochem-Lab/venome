@@ -9,6 +9,7 @@
 	export let binary = false;
 	export let width = 500;
 	export let height = 500;
+	export let hideControls = true;
 	let m: PDBeMolstarPlugin;
 
 	let divEl: HTMLDivElement;
@@ -30,7 +31,7 @@
 			alphafoldView: true,
 			reactive: true,
 			sequencePanel: true,
-			hideControls: true,
+			hideControls,
 			hideCanvasControls: ["animation"],
 		});
 	}
