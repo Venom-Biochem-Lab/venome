@@ -20,10 +20,36 @@ def assert_tmalign_installed():
         )
 
 
-def parse_pdb(filepath: str) -> list[str]:
-    with open(filepath, "r") as f:
-        lines = f.readlines()
-        return lines
+temp_dirs_active = 0
+
+
+class UniqueTempDir:
+    """
+    on opening scope will create directory of the given name
+    on closing scope will delete directory of the given name
+    uses the global `active_caches` above to create a unique dir name
+    """
+
+    def __init__(self, base_path):
+        self.base_path = base_path
+
+    def __enter__(self):
+        global temp_dirs_active
+        temp_dirs_active += 1
+        self.temp_dir = os.path.join(self.base_path, f"temp_dir_{temp_dirs_active}")
+
+        # create the directory (and override existing one if exists)
+        bash_cmd("rm -rf " + self.temp_dir)
+        bash_cmd(f"mkdir {self.temp_dir}")
+
+        return self.temp_dir
+
+    def __exit__(self, *args):
+        global temp_dirs_active
+
+        # get rid of the temp directory
+        temp_dirs_active -= 1
+        bash_cmd("rm -rf " + self.temp_dir)
 
 
 def tm_align(
@@ -73,3 +99,37 @@ def tm_align(
             raise e
 
     return desired_file
+
+
+def tm_align_return(pdbA: str, pdbB: str) -> str:
+    """
+    Description:
+        Returns two overlaid, aligned, and colored PDB structures in a single PDB file.
+        The ones without extensions appear to be PDB files.
+
+    Params:
+        pdbA:
+            The filepath of the first protein.
+        pdbB:
+            The filepath of the second protein.
+
+    Returns: the str contents of the pdbA superimposed on pdbB with TMAlgin
+    """
+
+    assert_tmalign_installed()
+
+    with UniqueTempDir(base_path=TMALIGN_LOCATION) as temp_dir_path:
+        try:
+            output_location = os.path.join(temp_dir_path, "output")
+            cmd = f"{TMALIGN_EXECUTABLE} {pdbA} {pdbB} -o {output_location}"
+            bash_cmd(cmd)
+
+            tmalign_pdb_path = f"{output_location}_all_atm"
+
+            with open(tmalign_pdb_path, "r") as tmalign_pdb_file:
+                tmalign_pdb_file_str = tmalign_pdb_file.read()
+                return tmalign_pdb_file_str
+
+        except Exception as e:
+            log.warn(e)
+            raise e
