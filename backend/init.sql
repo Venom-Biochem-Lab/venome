@@ -55,9 +55,10 @@ CREATE TABLE users (
 */
 CREATE TABLE tutorials (
     id serial PRIMARY KEY,
-    header text NOT NULL,
-    title text,
-    description text
+    title text NOT NULL UNIQUE,
+    description text,
+    content text, -- stored markdown for the article 
+    refs text -- bibtex references mentioned in the content/article
 );
 
 
@@ -77,8 +78,7 @@ INSERT INTO species(name) VALUES ('unknown');
 INSERT INTO users(username, email, pword, admin) VALUES ('test', 'test', '$2b$12$PFoNf7YM0KNIPP8WGsJjveIOhiJjitsMtfwRcCjdcyTuqjdk/q//u', '1');
 
 
-INSERT INTO tutorials(header, title, description) VALUES('Tutorial Page', 'General Information', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida tristique est, a sollicitudin nulla varius ac. Duis sed lacus arcu. Mauris eget condimentum justo. Vestibulum iaculis cursus accumsan. Mauris eget diam consequat, viverra dui malesuada, maximus nisl. Etiam laoreet venenatis odio ut tempus. Praesent risus est, eleifend id purus non, varius rutrum nisi. Fusce sagittis lorem nec tristique efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam pretium, sapien et volutpat tempus, elit urna congue massa, id consequat leo dolor in ligula. Sed vestibulum tristique eros eu aliquet.');
-INSERT INTO tutorials(header, title, description) VALUES('Tutorial 1', 'Biology', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
-INSERT INTO tutorials(header, title, description) VALUES('Tutorial 2', 'How to Use the Site', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
-INSERT INTO tutorials(header, title, description) VALUES('Tutorial 3', 'Other Reading', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+INSERT INTO tutorials(title, description, content) VALUES('General Information', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida tristique est, a sollicit', '## section 1\nhello!');
+INSERT INTO tutorials(title, description, content) VALUES('Biology', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'test');
+INSERT INTO tutorials(title, description, content) VALUES('How to Use the Site', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'epic');
 

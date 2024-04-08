@@ -5,13 +5,14 @@
 import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
-import type { MultipleTutorials } from '../models/MultipleTutorials';
 import type { ProteinEditSuccess } from '../models/ProteinEditSuccess';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { RangeFilter } from '../models/RangeFilter';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
 import type { SimilarProtein } from '../models/SimilarProtein';
+import type { Tutorial } from '../models/Tutorial';
+import type { TutorialUpload } from '../models/TutorialUpload';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { UploadPNGBody } from '../models/UploadPNGBody';
@@ -277,13 +278,52 @@ export class DefaultService {
     }
     /**
      * Get All Tutorials
-     * @returns any Successful Response
+     * @returns Tutorial Successful Response
      * @throws ApiError
      */
-    public static getAllTutorials(): CancelablePromise<(MultipleTutorials | null)> {
+    public static getAllTutorials(): CancelablePromise<Array<Tutorial>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/tutorials',
+        });
+    }
+    /**
+     * Get Tutorial
+     * @param title
+     * @returns Tutorial Successful Response
+     * @throws ApiError
+     */
+    public static getTutorial(
+        title: string,
+    ): CancelablePromise<Tutorial> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/tutorial/{title: str}',
+            query: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Tutorial
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadTutorial(
+        requestBody: TutorialUpload,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/tutorial/upload',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
         });
     }
 }
