@@ -67,7 +67,7 @@
 					>
 				</div>
 			</div>
-			<div>
+			<div class="z-999">
 				<Molstar
 					format="pdb"
 					url="{BACKEND_URL}/protein/pdb/{combined}"

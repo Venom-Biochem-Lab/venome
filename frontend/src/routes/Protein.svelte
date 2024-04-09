@@ -119,7 +119,7 @@
 				{/if}
 			</div>
 
-			<div style="position: sticky; top: 55px; right: 0;">
+			<div style="position: sticky; top: 55px; right: 0; z-index:999;">
 				<EntryCard title="Provided Information">
 					<Molstar
 						format="pdb"

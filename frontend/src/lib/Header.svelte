@@ -8,14 +8,14 @@
 		TableRowOutline,
 		BookOutline,
 	} from "flowbite-svelte-icons";
-	import {user} from "./stores/user"
-	import Cookies from "js-cookie"
+	import { user } from "./stores/user";
+	import Cookies from "js-cookie";
 
 	// Checking if the user has a cookie.
 	// If they do, set user status for the whole site.
 	onMount(async () => {
 		if (Cookies.get("auth")) {
-			$user.loggedIn = true
+			$user.loggedIn = true;
 		}
 	});
 </script>
@@ -32,9 +32,9 @@
 				><TableRowOutline size="lg" />Search</a
 			>
 			{#if $user.loggedIn}
-			<a href="/upload" class="flex items-center gap-1">
-				<UploadOutline size="lg" />Upload</a
-			>
+				<a href="/upload" class="flex items-center gap-1">
+					<UploadOutline size="lg" />Upload</a
+				>
 			{/if}
 			<a href="/tutorials" class="flex items-center gap-1">
 				<BookOutline size="lg" />Tutorials</a
@@ -44,13 +44,12 @@
 
 	<a href="/login" class="flex items-center gap-1 mr-5">
 		<UserOutline size="lg" />
-			{#if $user.loggedIn}
-				Logout
-			{:else}
-				Login
-			{/if}
-		</a
-	>
+		{#if $user.loggedIn}
+			Logout
+		{:else}
+			Login
+		{/if}
+	</a>
 </header>
 <div style="height: 60px;" />
 
