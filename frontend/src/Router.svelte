@@ -13,6 +13,7 @@
 	import Align from "./routes/Align.svelte";
 	import Tutorial from "./routes/Tutorial.svelte";
 	import UploadTutorial from "./routes/UploadTutorial.svelte";
+	import EditTutorial from "./routes/EditTutorial.svelte";
 </script>
 
 <Router>
@@ -32,7 +33,12 @@
 		<Route path="/protein/:id" let:params
 			><Protein urlId={params.id} /></Route
 		>
-		<Route path="/edit/:id" let:params><Edit urlId={params.id} /></Route>
+		<Route path="/protein/edit/:id" let:params
+			><Edit urlId={params.id} /></Route
+		>
+		<Route path="/tutorial/edit/:id" let:params
+			><EditTutorial tutorialTitle={params.id} /></Route
+		>
 		<Route path="/force-upload-thumbnails"><ForceUploadThumbnails /></Route>
 		<Route path="/align/:a/:b" let:params
 			><Align proteinA={params.a} proteinB={params.b} /></Route

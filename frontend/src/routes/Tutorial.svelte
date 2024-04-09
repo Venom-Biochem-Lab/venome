@@ -4,6 +4,10 @@
 	import EntryCard from "../lib/EntryCard.svelte";
 	import References from "../lib/References.svelte";
 	import Markdown from "../lib/Markdown.svelte";
+	import { Button } from "flowbite-svelte";
+	import { navigate } from "svelte-routing";
+	import { PenOutline } from "flowbite-svelte-icons";
+	import { user } from "../lib/stores/user";
 
 	export let tutorialTitle: string;
 
@@ -17,6 +21,15 @@
 	{#if tutorial}
 		<h1 id="title">
 			{tutorial.title}
+
+			{#if $user.loggedIn}
+				<Button
+					outline
+					size="xs"
+					on:click={() => navigate(`/tutorial/edit/${tutorialTitle}`)}
+					><PenOutline class="mr-2" size="sm" />Edit Tutorial
+				</Button>
+			{/if}
 		</h1>
 		<div id="description">
 			{#if tutorial.description}

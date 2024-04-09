@@ -45,6 +45,16 @@
 			<!-- TITLE AND DESCRIPTION -->
 			<h1 id="title">
 				{undoFormatProteinName(entry.name)}
+				{#if $user.loggedIn}
+					<Button
+						outline
+						size="xs"
+						on:click={async () => {
+							navigate(`/protein/edit/${entry?.name}`);
+						}}
+						><PenOutline class="mr-2" size="sm" />Edit Protein Entry</Button
+					>
+				{/if}
 			</h1>
 
 			<div id="description">
@@ -95,7 +105,7 @@
 		</div>
 		<div id="right-side" class="flex flex-col">
 			<div class="flex gap-2">
-				<Button
+				<Button outline
 					>Download <ChevronDownSolid
 						size="md"
 						class="ml-2"
@@ -109,14 +119,6 @@
 						>
 					{/each}
 				</Dropdown>
-				{#if $user.loggedIn}
-					<Button
-						on:click={async () => {
-							navigate(`/edit/${entry?.name}`);
-						}}
-						><PenOutline class="mr-2" size="lg" />Edit Entry</Button
-					>
-				{/if}
 			</div>
 
 			<EntryCard title="Provided Information">
