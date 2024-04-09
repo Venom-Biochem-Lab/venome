@@ -18,6 +18,7 @@ export type { SearchProteinsBody } from './models/SearchProteinsBody';
 export type { SearchProteinsResults } from './models/SearchProteinsResults';
 export type { SimilarProtein } from './models/SimilarProtein';
 export type { Tutorial } from './models/Tutorial';
+export type { TutorialEdit } from './models/TutorialEdit';
 export type { TutorialUpload } from './models/TutorialUpload';
 export type { UploadBody } from './models/UploadBody';
 export { UploadError } from './models/UploadError';
