@@ -84,7 +84,6 @@ def edit_tutorial(body: TutorialEdit, req: Request):
                 )
                 # then for the remaining queries, use the new title
                 body.title = body.new_title
-                print("hit")
 
             if body.new_description is not None:
                 db.execute(
