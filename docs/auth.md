@@ -17,9 +17,8 @@ How-To:
 2. Call *requires_authentication()* at the top of the API call you want to list.
 
 Example:
-See *@router.post("/tutorial/upload")* in /backend/src/api/tutorials.py
+* See *@router.post("/tutorial/upload")* in /backend/src/api/tutorials.py
 
-Info:
 In /backend/src/auth.py, *requires_authentication()* takes in a Request as a parameter, checks if it has an authorization header, and validates the contained JWT against the database to determine if the user  is an admin. If they aren't an admin, it raises an HTTP Exception; Otherwise, the API call proceeds as normal.
 
 ### Accessing a locked API call from the frontend
