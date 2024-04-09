@@ -17,7 +17,7 @@ There are a few functions we use to make it easy to lock endpoints behind authen
 
 In /backend/src/auth.py, *requires_authentication()* takes in a Request as a parameter, checks if it has an authorization header, and validates the contained JWT against the database to determine if the user  is an admin. If they aren't an admin, it raises an HTTP Exception; Otherwise, the API call proceeds as normal.
 
-For an example, ee *@router.post("/tutorial/upload")* in /backend/src/api/tutorials.py
+For an example, see *@router.post("/tutorial/upload")* in /backend/src/api/tutorials.py
 
 ### Accessing a locked API call from the frontend
 1. import *setToken()* /lib/backend.ts
