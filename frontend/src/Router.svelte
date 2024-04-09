@@ -40,3 +40,9 @@
 		<Route path="/*"><Error /></Route>
 	</main>
 </Router>
+
+<style>
+	#layout {
+		position: relative;
+	}
+</style>

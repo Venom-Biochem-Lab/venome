@@ -119,30 +119,32 @@
 				{/if}
 			</div>
 
-			<EntryCard title="Provided Information">
-				<Molstar
-					format="pdb"
-					url="http://localhost:8000/protein/pdb/{entry.name}"
-					width={400}
-					height={350}
-				/>
-				<div id="info-grid" class="grid grid-cols-2 mt-5">
-					<b>Organism</b>
-					<div>
-						{entry.speciesName}
+			<div style="position: sticky; top: 55px; right: 0;">
+				<EntryCard title="Provided Information">
+					<Molstar
+						format="pdb"
+						url="http://localhost:8000/protein/pdb/{entry.name}"
+						width={400}
+						height={350}
+					/>
+					<div id="info-grid" class="grid grid-cols-2 mt-5">
+						<b>Organism</b>
+						<div>
+							{entry.speciesName}
+						</div>
+						<b>Method</b>
+						<div>AlphaFold 2</div>
+						<b>Date Published</b>
+						<div>
+							<code
+								>{entry.datePublished
+									? dbDateToMonthDayYear(entry.datePublished)
+									: "n/a"}</code
+							>
+						</div>
 					</div>
-					<b>Method</b>
-					<div>AlphaFold 2</div>
-					<b>Date Published</b>
-					<div>
-						<code
-							>{entry.datePublished
-								? dbDateToMonthDayYear(entry.datePublished)
-								: "n/a"}</code
-						>
-					</div>
-				</div>
-			</EntryCard>
+				</EntryCard>
+			</div>
 		</div>
 	{:else if !error}
 		<!-- Otherwise, tell user we tell the user we are loading -->
