@@ -1,5 +1,5 @@
 <script lang="ts">
-	/* Put stuff here */
+	import RandomProtein from "../lib/RandomProtein.svelte";
 </script>
 
 <svelte:head>
@@ -8,6 +8,7 @@
 
 <div>home</div>
 
+<RandomProtein />
+
 <style>
-	/*  put stuff here */
 </style>

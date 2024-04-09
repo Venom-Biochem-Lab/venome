@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { onDestroy } from "svelte";
+	import { onDestroy, createEventDispatcher } from "svelte";
 	import { PDBeMolstarPlugin } from "../../venome-molstar/lib";
 	import { loseWebGLContext } from "./venomeMolstarUtils";
+
+	const dispatch = createEventDispatcher<{ render: PDBeMolstarPlugin }>();
 
 	export let url = "";
 	export let format = "pdb";
@@ -10,6 +12,15 @@
 	export let width = 500;
 	export let height = 500;
 	export let hideControls = true;
+	export let hideCanvasControls:
+		| (
+				| "animation"
+				| "selection"
+				| "expand"
+				| "controlToggle"
+				| "controlInfo"
+		  )[]
+		| undefined = ["animation"];
 	let m: PDBeMolstarPlugin;
 
 	let divEl: HTMLDivElement;
@@ -32,8 +43,9 @@
 			reactive: true,
 			sequencePanel: true,
 			hideControls,
-			hideCanvasControls: ["animation"],
+			hideCanvasControls,
 		});
+		dispatch("render", m);
 	}
 
 	onDestroy(() => {
