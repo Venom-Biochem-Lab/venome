@@ -277,6 +277,17 @@ export class DefaultService {
         });
     }
     /**
+     * Get Random Protein
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getRandomProtein(): CancelablePromise<ProteinEntry> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/random',
+        });
+    }
+    /**
      * Get All Tutorials
      * @returns Tutorial Successful Response
      * @throws ApiError
