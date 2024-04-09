@@ -93,6 +93,7 @@
 						<div class="align-cell">
 							<a
 								use:link
+								class="flex gap-2 items-center"
 								href="/align/{queryProteinName}/{protein.name}"
 								>Align <ArrowUpRightFromSquareOutline
 									size="sm"
