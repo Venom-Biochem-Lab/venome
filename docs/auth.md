@@ -12,14 +12,12 @@ Right now, the Venome website uses first-party authentication.
 There are a few functions we use to make it easy to lock endpoints behind authentication.
 
 ### Locking an API call behind authentication in the backend
-How-To:
 1. Import *requires_authentication()* from auth.py
 2. Call *requires_authentication()* at the top of the API call you want to list.
 
-Example:
-* See *@router.post("/tutorial/upload")* in /backend/src/api/tutorials.py
-
 In /backend/src/auth.py, *requires_authentication()* takes in a Request as a parameter, checks if it has an authorization header, and validates the contained JWT against the database to determine if the user  is an admin. If they aren't an admin, it raises an HTTP Exception; Otherwise, the API call proceeds as normal.
+
+See *@router.post("/tutorial/upload")* in /backend/src/api/tutorials.py
 
 ### Accessing a locked API call from the frontend
 In /frontend/src/lib/backend.ts, *setToken()* reads the authentication JWT stored in the user's browser cookie, and sets the TOKEN header for outgoing HTTP requests to that token.
