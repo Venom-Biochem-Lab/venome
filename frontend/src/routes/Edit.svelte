@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { Backend, setToken, type ProteinEntry } from "../lib/backend";
-	import { Button, Input, Label, Helper, Select } from "flowbite-svelte";
+	import {
+		Button,
+		Input,
+		Label,
+		Helper,
+		Select,
+		Popover,
+	} from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import { onMount } from "svelte";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
@@ -179,14 +186,35 @@
 				>
 			</div>
 			<div>
-				<Button
-					color="red"
-					on:click={async () => {
-						setToken();
-						await Backend.deleteProteinEntry(urlId);
-						navigate("/search");
-					}}>Delete Protein Entry</Button
+				<Button id="del-prot" color="red">Delete Protein Entry</Button>
+				<Popover
+					arrow={false}
+					placement="right-end"
+					trigger="click"
+					triggeredBy="#del-prot"
+					title="Confirm"
 				>
+					<div>
+						Are you sure you want to delete this protein?
+						<br />
+						The protein will be deleted forever.
+					</div>
+					<div class="mt-2">
+						<Button
+							color="red"
+							size="sm"
+							on:click={async () => {
+								try {
+									setToken();
+									await Backend.deleteProteinEntry(urlId);
+									navigate("/search");
+								} catch (e) {
+									console.error(e);
+								}
+							}}>Confirm Delete</Button
+						>
+					</div>
+				</Popover>
 			</div>
 		</div>
 	{/if}
