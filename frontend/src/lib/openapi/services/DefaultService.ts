@@ -309,19 +309,20 @@ export class DefaultService {
         });
     }
     /**
-     * Upload Tutorial
-     * @param requestBody
+     * Delete Tutorial
+     * @param title
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static uploadTutorial(
-        requestBody: TutorialUpload,
+    public static deleteTutorial(
+        title: string,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
-            method: 'POST',
-            url: '/tutorial/upload',
-            body: requestBody,
-            mediaType: 'application/json',
+            method: 'DELETE',
+            url: '/tutorial/{title: str}',
+            query: {
+                'title': title,
+            },
             errors: {
                 422: `Validation Error`,
             },
@@ -338,7 +339,26 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/tutorial/edit',
+            url: '/tutorial',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Tutorial
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadTutorial(
+        requestBody: TutorialUpload,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/tutorial',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

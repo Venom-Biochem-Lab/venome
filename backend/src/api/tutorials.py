@@ -52,7 +52,7 @@ class TutorialUpload(CamelModel):
     refs: str | None = None
 
 
-@router.post("/tutorial/upload")
+@router.post("/tutorial")
 def upload_tutorial(body: TutorialUpload, req: Request):
     requires_authentication(req)
     with Database() as db:
@@ -72,7 +72,7 @@ class TutorialEdit(CamelModel):
     new_refs: str | None = None
 
 
-@router.put("/tutorial/edit", response_model=None)
+@router.put("/tutorial", response_model=None)
 def edit_tutorial(body: TutorialEdit, req: Request):
     requires_authentication(req)
     with Database() as db:
@@ -103,5 +103,15 @@ def edit_tutorial(body: TutorialEdit, req: Request):
                     [body.new_refs, body.title],
                 )
 
+        except Exception as e:
+            raise HTTPException(404, detail=str(e))
+
+
+@router.delete("/tutorial/{title: str}", response_model=None)
+def delete_tutorial(title: str, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            db.execute("""DELETE FROM tutorials WHERE title=%s""", [title])
         except Exception as e:
             raise HTTPException(404, detail=str(e))

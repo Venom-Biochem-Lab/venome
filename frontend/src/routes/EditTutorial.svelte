@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Backend, UploadError, setToken } from "../lib/backend";
-	import { Button, Input, Label, Helper } from "flowbite-svelte";
+	import { Backend, setToken } from "../lib/backend";
+	import { Button, Input, Label, Helper, Popover } from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
 	import { onMount } from "svelte";
@@ -145,5 +145,36 @@
 				>Cancel</Button
 			>
 		</div>
+		<div>
+			<Button id="del-tut" color="red">Delete Tutorial</Button>
+		</div>
+		<Popover
+			arrow={false}
+			placement="right-end"
+			trigger="click"
+			triggeredBy="#del-tut"
+			title="Confirm"
+		>
+			<div>
+				Are you sure you want to delete this tutorial?
+				<br />
+				The tutorial will be deleted forever.
+			</div>
+			<div class="mt-2">
+				<Button
+					color="red"
+					size="sm"
+					on:click={async () => {
+						try {
+							setToken();
+							await Backend.deleteTutorial(titleOriginal);
+							navigate("/tutorials");
+						} catch (e) {
+							console.log(e);
+						}
+					}}>Confirm Delete</Button
+				>
+			</div>
+		</Popover>
 	</div>
 </section>
