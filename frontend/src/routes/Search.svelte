@@ -166,7 +166,7 @@
 		position: absolute;
 		top: 25px;
 		right: 25px;
-		color: var(--darkblue);
+		color: var(--primary-500);
 	}
 	h3 {
 		margin-bottom: 3px;

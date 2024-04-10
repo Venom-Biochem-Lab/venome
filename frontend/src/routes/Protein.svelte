@@ -168,6 +168,6 @@
 	#title {
 		font-size: 2.45rem;
 		font-weight: 500;
-		color: var(--darkblue);
+		color: var(--primary-700);
 	}
 </style>

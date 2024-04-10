@@ -90,9 +90,9 @@
 	}
 
 	a {
-		color: var(--darkblue);
+		color: var(--primary-700);
 	}
 	a:hover {
-		color: var(--darkblue);
+		color: var(--primary-800);
 	}
 </style>

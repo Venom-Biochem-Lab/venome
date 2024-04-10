@@ -48,10 +48,10 @@
 		gap: 10px;
 	}
 	.tutorial {
-		--border-opacity: 0.3;
+		--border-opacity: 0.2;
 		display: flex;
 		flex-direction: column;
-		outline: hsla(var(--darkblue-hsl), var(--border-opacity)) 1px solid;
+		outline: hsla(0, 0%, 0%, var(--border-opacity)) 1px solid;
 		border-radius: 5px;
 		width: 300px;
 		padding-left: 15px;
@@ -63,14 +63,14 @@
 	}
 	.tutorial:hover {
 		transform: scale(1.02);
-		--border-opacity: 0.5;
+		--border-opacity: 0.3;
 		box-shadow: 0 1px 2px 2px #00000010;
 		cursor: pointer;
 	}
 
 	.tutorial-title {
 		font-size: 1.2em;
-		color: var(--darkblue);
+		color: var(--primary-700);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
