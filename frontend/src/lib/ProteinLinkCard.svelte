@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Card } from "flowbite-svelte";
-	import { numberWithCommas, undoFormatProteinName } from "../lib/format";
-	import type { ProteinEntry } from "../lib/backend";
+	import { numberWithCommas, undoFormatProteinName } from "./format";
+	import type { ProteinEntry } from "./backend";
 	import { ArrowUpRightFromSquareOutline } from "flowbite-svelte-icons";
 
 	export let entry: ProteinEntry;

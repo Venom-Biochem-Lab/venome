@@ -10,6 +10,8 @@
 	export let width = 500;
 	export let height = 500;
 	export let hideControls = true;
+	export let zIndex = 999;
+
 	let m: PDBeMolstarPlugin;
 
 	let divEl: HTMLDivElement;
@@ -32,7 +34,12 @@
 			reactive: true,
 			sequencePanel: true,
 			hideControls,
-			hideCanvasControls: ["animation"],
+			hideCanvasControls: [
+				"animation",
+				"expand",
+				"controlInfo",
+				"selection",
+			],
 		});
 	}
 
@@ -51,7 +58,7 @@
 <div
 	bind:this={divEl}
 	id="myViewer"
-	style="width: {width}px; height: {height}px;"
+	style="width: {width}px; height: {height}px; z-index: {zIndex};"
 />
 
 <style>
@@ -62,6 +69,5 @@
 	#myViewer {
 		float: left;
 		position: relative;
-		z-index: 999;
 	}
 </style>

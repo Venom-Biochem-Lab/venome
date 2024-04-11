@@ -14,6 +14,7 @@
 	import Tutorial from "./routes/Tutorial.svelte";
 	import UploadTutorial from "./routes/UploadTutorial.svelte";
 	import EditTutorial from "./routes/EditTutorial.svelte";
+	import ArticleTest from "./routes/ArticleTest.svelte";
 </script>
 
 <Router>
@@ -21,6 +22,7 @@
 		<Header />
 	</nav>
 	<main id="layout">
+		<Route path="/article-test"><ArticleTest /></Route>
 		<Route path="/"><Home /></Route>
 		<Route path="/search"><Search /></Route>
 		<Route path="/upload"><Upload /></Route>
