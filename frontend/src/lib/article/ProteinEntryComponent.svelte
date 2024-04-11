@@ -9,6 +9,7 @@
 		width?: number;
 		height?: number;
 		hideControls?: boolean;
+		spin?: boolean;
 	};
 	import * as d3 from "d3";
 
@@ -42,6 +43,7 @@
 			height={data.height ?? 350}
 			zIndex={1}
 			hideControls={data.hideControls ?? true}
+			spin={data.spin ?? false}
 		/>
 	</div>
 </div>

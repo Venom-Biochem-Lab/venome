@@ -11,6 +11,7 @@
 	export let height = 500;
 	export let hideControls = true;
 	export let zIndex = 999;
+	export let spin = false;
 
 	let m: PDBeMolstarPlugin;
 
@@ -41,6 +42,9 @@
 				"selection",
 			],
 		});
+		if (spin) {
+			m.visual.toggleSpin();
+		}
 	}
 
 	onDestroy(() => {

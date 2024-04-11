@@ -71,7 +71,8 @@
 				alignName: "Gh_comp2027_c0_seq6",
 				hideControls: false,
 				width: 1000,
-				height: 800,
+				height: 600,
+				spin: true,
 			},
 		},
 		{
