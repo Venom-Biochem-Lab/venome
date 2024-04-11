@@ -7,10 +7,10 @@
 	import { user } from "../lib/stores/user"
 
 	 onMount(async () => {
-        /*
-        * Deletes the cookie and clears user store attributes upon entering the login page.
-        * Done here, because the log out button redirects to this page.
-        */
+        /**
+         * Deletes the cookie and clears user store attributes upon entering the login page.
+         * Done here, because the log out button redirects to this page.
+         */
 		clearToken()
 		Cookies.remove("auth")
 		$user.loggedIn = false

@@ -20,7 +20,7 @@ There are a few functions we created to make it easy to lock elements and endpoi
 
 In /backend/src/auth.py, *requires_authentication()* takes in a Request object as a parameter, checks if it has an authorization header, and validates the contained JWT against the database to determine if the user  is an admin. If they aren't an admin, it raises an HTTP Exception; Otherwise, the API call proceeds as normal.
 
-For an example, see the tutorial upload API endpoint in [`tutorials.py`](../backend/src/api/tutorials.py).
+For an example, see the *upload_tutorial()*  in [`tutorials.py`](../backend/src/api/tutorials.py).
 
 ### Frontend: Accessing a locked API call
 1. import *setToken()* /lib/backend.ts
@@ -38,7 +38,7 @@ To track whether a user is logged in for the purposes of hiding elements, we use
 
 Svelte provides an easy shorthand to interface with a svelte store; You can simply type in "$user.*attribute*" to look at the contents of any store attribute. The other user store attributes (*username*, *admin*, etc.) could be used in a similar way in the future, but we are not using them at this time.
 
-You can see some examples of use-cases in [`Header.svelte`](../frontend/src/lib/Header.svelte) and [`Upload.svelte`](../frontend/src/routes/Upload.svelte).
+You can see some examples of use-cases in [`Header.svelte`](../frontend/src/lib/Header.svelte) and [`Upload.svelte`](../frontend/src/routes/Upload.svelte); Just search for *$user*.
 
 ## Concerns and To-Dos
 * Originally, we had a choice between using first-party or third-party authentication. We settled on using first-party authentication because it was quicker and easier to implement, but third-party authentication through something like Google would be a more secure choice. The Oauth 2 protocol (which services like Google use for third-party authentication) uses JWT-based authentication similar to what we did here, so some of the code we've already written could be adapted for use in third-party authentication.
