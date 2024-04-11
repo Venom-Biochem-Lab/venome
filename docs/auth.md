@@ -10,12 +10,13 @@
 ## Overview
 Venome uses a first-party authentication scheme.
 
-### Flow Summary
-1. User goes to login page and provides username and password
-2. Client sends POST request to backend's */users/login* API endpoint. The request contains JSON with the username and password 
-3. Backend verifies provided information against database's username and hashed/salted password
-4. If verified, backend returns a JSON Web Token (JWT) to the frontend.
-5. Frontend stores the JWT into the browser as a cookie and sets *user* Svelte store attributes
+### Summary Flow
+1. User goes to login page and provides username and password and presses "Log In". Client sends POST request to backend's */users/login* API endpoint. The request contains JSON with the username and password (see [`Login.svelte`](../frontend/src/routes/Login.svelte)).
+2. Backend verifies provided information against database's username and hashed/salted password If verified, returns a JSON Web Token (JWT) to the frontend, and if not verified, sends an error. See: [`users.py`](../backend/src/api/users.py):
+3. Frontend, if the user is verified:
+    * Stores the JWT into the browser as a cookie (see *Cookies.set()* [`Login.svelte`](../frontend/src/routes/Login.svelte)).
+    * Frontend sets *user* svelte store **loggedIn** attributes to true (see *$user.loggedIn = true* [`Login.svelte`](../frontend/src/routes/Login.svelte))
+4. If the user reloads the website, the Frontend checks to see if they're logged in by looking at the browser cookie and sets the *user* store accordingly (see *onMount()* in [`Header.svelte`](../frontend/src/routes/Login.svelte)).
 
 
 ## Implementation Tips
@@ -23,9 +24,9 @@ There are a few functions we created to make it easy to lock elements and endpoi
 
 ### Backend: Locking an API call behind authentication
 1. Import *requires_authentication()* from auth.py
-2. Call *requires_authentication()* at the top of the API call you want to list.
+2. Call *requires_authentication()* at the top of the API call you want to restrict.
 
-In /backend/src/auth.py, *requires_authentication()* takes in a Request as a parameter, checks if it has an authorization header, and validates the contained JWT against the database to determine if the user  is an admin. If they aren't an admin, it raises an HTTP Exception; Otherwise, the API call proceeds as normal.
+In /backend/src/auth.py, *requires_authentication()* takes in a Request object as a parameter, checks if it has an authorization header, and validates the contained JWT against the database to determine if the user  is an admin. If they aren't an admin, it raises an HTTP Exception; Otherwise, the API call proceeds as normal.
 
 For an example, see the tutorial upload API endpoint in [`tutorials.py`](../backend/src/api/tutorials.py).
 
@@ -41,9 +42,9 @@ For an example, look at [`Edit.svelte`](../frontend/src/routes/Edit.svelte) and 
 1. Check if *$user.loggedIn* is true or false.
 2. Hide the element or redirect as needed.
 
-To track whether a user is logged in, we use a Svelte store called "user" (defined in [`user.ts`](../frontend/stores/user.ts)). This store has an attribute called **loggedIn.** The **loggedIn** attribute is set to *true* either when the user has just logged in, or if they open the website while they have an authentication cookie stored. The attribute is set to *false* when the user logs out and defaults to *false* if the site is reloaded.
+To track whether a user is logged in for the purposes of hiding elements, we use a Svelte store called "user" (defined in [`user.ts`](../frontend/stores/user.ts)). This store has an attribute called **loggedIn.** The **loggedIn** attribute is set to *true* either when the user has just logged in, or if they open the website while they have an authentication cookie stored. The attribute is set to *false* when the user logs out and defaults to *false* if the site is reloaded.
 
-Svelte provides an easy shorthand to interface with a svelte store; You can simply type in "$user.*attribute*" to look at any of the store's attributes. There are other attributes in the user store which are not currently used (username and admin) but these can be accessed in the same wa
+Svelte provides an easy shorthand to interface with a svelte store; You can simply type in "$user.*attribute*" to look at the contents of any store attribute. The other user store attributes (*username*, *admin*, etc.) could be used in a similar way in the future, but we are not using them at this time.
 
 You can see some examples of use-cases in [`Header.svelte`](../frontend/src/lib/Header.svelte) and [`Upload.svelte`](../frontend/src/routes/Upload.svelte).
 
