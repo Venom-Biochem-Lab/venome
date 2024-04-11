@@ -7,7 +7,7 @@ Venome uses a first-party authentication scheme.
 3. Frontend, if the user is verified:
     * Stores the JWT into the browser as a cookie (*Cookies.set()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)).
     * Sets *user* svelte store **loggedIn** attributes to true (*$user.loggedIn = true* in [`Login.svelte`](../frontend/src/routes/Login.svelte))
-    * The JWT cookie and user store are used to access restricted functionality in the website and API.. See [`Impelentation Tips`](#implementation-tips).
+    * The JWT cookie and user store are used to access restricted functionality in the website and API. See [`Impelentation Tips`](#implementation-tips).
 4. When the user reloads the website, the Frontend checks to see if they're logged in by looking at the browser cookie and sets the *user* store accordingly (*onMount()* in [`Header.svelte`](../frontend/src/routes/Login.svelte)).
 5. When the user presses "log out", it sends them back to the login page. This clears the auth cookie from the browser and unsets the *user* store attributes. (*onMount()* in [`Login.svelte`](../frontend/src/routes/Login.svelte))
 
