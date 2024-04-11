@@ -12,7 +12,7 @@ Venome uses a first-party authentication scheme.
 
 ### Summary Flow
 1. User goes to login page and provides username and password and presses "Log In". Client sends POST request to backend's */users/login* API endpoint. The request contains JSON with the username and password (*submitForm()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)).
-2. Backend verifies provided information against database's username and hashed/salted password If verified, returns a JSON Web Token (JWT) to the frontend, and if not verified, sends an error (see[`users.py`](../backend/src/api/users.py)
+2. Backend verifies provided information against database's username and hashed/salted password If verified, returns a JSON Web Token (JWT) to the frontend, and if not verified, sends an error (*login()* in [`users.py`](../backend/src/api/users.py))
 3. Frontend, if the user is verified:
     * Stores the JWT into the browser as a cookie (*Cookies.set()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)).
     * Frontend sets *user* svelte store **loggedIn** attributes to true (*$user.loggedIn = true* in [`Login.svelte`](../frontend/src/routes/Login.svelte))
