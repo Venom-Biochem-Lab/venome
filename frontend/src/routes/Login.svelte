@@ -49,7 +49,7 @@
 				alert(result["error"])
 
 			} else if (result["token"] != "") {
-				// User entered the correct username and password. Store token in cookie and set svelte store loggedin status to true.
+				// User entered the correct username and password.
 				console.log("Response received. Token: " + result["token"]);
 				Cookies.set("auth", result["token"]);
 				$user.loggedIn = true

@@ -44,7 +44,7 @@ You can see some examples of use-cases in [`Header.svelte`](../frontend/src/lib/
 * Originally, we had a choice between using first-party or third-party authentication. We settled on using first-party authentication because it was quicker and easier to implement, but third-party authentication through something like Google would be a more secure choice. The Oauth 2 protocol (which services like Google use for third-party authentication) uses JWT-based authentication similar to what we did here, so some of the code we've already written could be adapted for use in third-party authentication.
 * Our frontend and backend currently communicate over HTTP instead of HTTPS. This is mostly a concern where we send usernames and passwords (e.g. the /users/login API endpoint), but this should probably be changed even if switching to third-party authentication.
 * The authentication token has an "exp" which lists a 24 hour expiration date (see generate_auth_token() in auth.py), but we don't use this anywhere. This can either be used in the future, or *probably* safely removed.
-* Right now, we're only using the **loggedIn** attribute of the user store. While we do have attributes like **admin** and **username**, we don't set them properly on login.
+* Right now, we're only using the **loggedIn** attribute of the user store. While we do have attributes like **admin** and **username**, they are untested and probably have bugs.
 * We implemented this authentication scheme with limited security experience. As such, there may be more flaws than listed here which we did not consider.
 
 ## Library References
