@@ -8,6 +8,13 @@ Right now, the Venome website uses first-party authentication.
 4. If verified, backend returns a JSON Web Token (JWT) to the frontend.
 5. Frontend client stores JWT into as a cookie.
 
+## Used Libraries
+### Backend
+* [`PyJWT`](https://github.com/jpadilla/pyjwt) for TWT generation
+
+### Frontend
+* [`js-cookie`](https://github.com/js-cookie/js-cookie) for securely storing JWTs in browser cookies.
+
 ## Implementation Tips
 There are a few functions we use to make it easy to lock endpoints behind authentication.
 
@@ -17,7 +24,7 @@ There are a few functions we use to make it easy to lock endpoints behind authen
 
 In /backend/src/auth.py, *requires_authentication()* takes in a Request as a parameter, checks if it has an authorization header, and validates the contained JWT against the database to determine if the user  is an admin. If they aren't an admin, it raises an HTTP Exception; Otherwise, the API call proceeds as normal.
 
-For an example, see *@router.post("/tutorial/upload")* in /backend/src/api/tutorials.py
+For an example, see the tutorial upload API endpoint in [`tutorials.py`](../backend/src/api/tutorials.py).
 
 ### Accessing a locked API call from the frontend
 1. import *setToken()* /lib/backend.ts
@@ -25,7 +32,7 @@ For an example, see *@router.post("/tutorial/upload")* in /backend/src/api/tutor
 
 In /frontend/src/lib/backend.ts, *setToken()* reads the authentication JWT stored in the user's browser cookie, and sets the TOKEN header for outgoing HTTP requests to that token.
 
-For an example, look at /frontend/src/routes/Edit.svelte and search for setToken.
+For an example, look at [`Edit.svelte`](../frontend/src/routes/Edit.svelte) and search for setToken.
 
 ### Hiding pages or elements if the user isn't logged in
 1. Check if *$user.loggedIn* is true or false.
@@ -33,7 +40,7 @@ For an example, look at /frontend/src/routes/Edit.svelte and search for setToken
 
 To track whether a user is logged in, we use a Svelte store called "user" (defined in /frontend/stores/user.ts). In the user store, the **loggedIn** attribute is set to *true* either when the user has just logged in, or if they open the website while they have an authentication cookie stored. The **loggedIn** attribute is set to *false* when the user logs out and defaults to *false* if the site is reloaded.  Svelte provides an easy shorthand to interface with a svelte store; You can simply type in "$user.*attribute*" to look at any of the store's attributes. There are other attributes in the user store which are not currently used (username and admin) but these can be accessed in the same wa
 
-You can see some examples of use-cases in /frontend/src/lib/Header.svelte and /frontend/src/routes/Upload.svelte.
+You can see some examples of use-cases in [`Header.svelte`](../frontend/src/lib/Header.svelte) and [`Upload.svelte`](../frontend/src/routes/Upload.svelte).
 
 ## Concerns and To-Dos
 We implemented this authentication scheme with limited security experience. As such, there may be more flaws than listed here which we did not consider.
