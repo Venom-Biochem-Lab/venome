@@ -104,24 +104,26 @@
 			{/if}
 		</div>
 		<div id="right-side" class="flex flex-col">
-			<div class="flex gap-2">
-				<Button outline
-					>Download <ChevronDownSolid
-						size="md"
-						class="ml-2"
-					/></Button
-				>
-				<Dropdown>
-					{#each fileDownloadDropdown as fileType}
-						<DropdownItem
-							href="{BACKEND_URL}/{fileType}/{entry.name}"
-							>{fileType.toUpperCase()}</DropdownItem
-						>
-					{/each}
-				</Dropdown>
+			<div>
+				<div>
+					<Button outline id="download"
+						>Download <ChevronDownSolid
+							size="md"
+							class="ml-2"
+						/></Button
+					>
+					<Dropdown triggeredBy="#download" trigger="click">
+						{#each fileDownloadDropdown as fileType}
+							<DropdownItem
+								href="{BACKEND_URL}/protein/{fileType}/{entry.name}"
+								>{fileType.toUpperCase()}</DropdownItem
+							>
+						{/each}
+					</Dropdown>
+				</div>
 			</div>
 
-			<div style="position: sticky; top: 55px; right: 0; z-index:999;">
+			<div style="position: sticky; top: 55px; right: 0; ">
 				<EntryCard title="Provided Information">
 					<Molstar
 						format="pdb"
