@@ -1,13 +1,4 @@
 ﻿# Authentication
-Right now, the Venome website uses first-party authentication.
-
-## Flow Summary
-### Login
-1. User goes to login page and provides username and password
-2. Client sends POST API request with JSON containing username and password to backend's */users/login*
-3. Backend verifies provided information against database's username and hashed/salted password
-4. If verified, backend returns a JSON Web Token (JWT) to the frontend.
-5. Frontend client stores JWT into as a cookie.
 
 ## Libraries
 ### Backend
@@ -15,6 +6,17 @@ Right now, the Venome website uses first-party authentication.
 
 ### Frontend
 * [`js-cookie`](https://github.com/js-cookie/js-cookie) for securely storing JWTs in browser cookies.
+
+## Overview
+Venome uses a first-party authentication scheme.
+
+### Flow Summary
+1. User goes to login page and provides username and password
+2. Client sends POST request to backend's */users/login* API endpoint. The request contains JSON with the username and password 
+3. Backend verifies provided information against database's username and hashed/salted password
+4. If verified, backend returns a JSON Web Token (JWT) to the frontend.
+5. Frontend stores the JWT into the browser as a cookie and sets *user* Svelte store attributes
+
 
 ## Implementation Tips
 There are a few functions we created to make it easy to lock elements and endpoints behind authentication.
@@ -39,7 +41,7 @@ For an example, look at [`Edit.svelte`](../frontend/src/routes/Edit.svelte) and 
 1. Check if *$user.loggedIn* is true or false.
 2. Hide the element or redirect as needed.
 
-To track whether a user is logged in, we use a Svelte store called "user" (defined in /frontend/stores/user.ts). This store has an attribute called **loggedIn.** The **loggedIn** attribute is set to *true* either when the user has just logged in, or if they open the website while they have an authentication cookie stored. The attribute is set to *false* when the user logs out and defaults to *false* if the site is reloaded.
+To track whether a user is logged in, we use a Svelte store called "user" (defined in [`user.ts`](../frontend/stores/user.ts)). This store has an attribute called **loggedIn.** The **loggedIn** attribute is set to *true* either when the user has just logged in, or if they open the website while they have an authentication cookie stored. The attribute is set to *false* when the user logs out and defaults to *false* if the site is reloaded.
 
 Svelte provides an easy shorthand to interface with a svelte store; You can simply type in "$user.*attribute*" to look at any of the store's attributes. There are other attributes in the user store which are not currently used (username and admin) but these can be accessed in the same wa
 
