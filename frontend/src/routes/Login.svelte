@@ -6,11 +6,11 @@
 	import { navigate } from "svelte-routing";
 	import { user } from "../lib/stores/user"
 
-	/*
-	 * Deletes the cookie upon entering the login page.
-	 * We want to do this to avoid bugs, and to let the user log out.
-	 */
 	 onMount(async () => {
+        /*
+        * Deletes the cookie and clears user store attributes upon entering the login page.
+        * Done here, because the log out button redirects to this page.
+        */
 		clearToken()
 		Cookies.remove("auth")
 		$user.loggedIn = false
