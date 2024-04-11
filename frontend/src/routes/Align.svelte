@@ -67,7 +67,7 @@
 					>
 				</div>
 			</div>
-			<div>
+			<div class="z-999">
 				<Molstar
 					format="pdb"
 					url="{BACKEND_URL}/protein/pdb/{combined}"
@@ -95,7 +95,7 @@
 	#title {
 		font-size: 2.45rem;
 		font-weight: 500;
-		color: var(--darkblue);
+		color: var(--primary-700);
 	}
 	.hide-ellipses {
 		white-space: nowrap;

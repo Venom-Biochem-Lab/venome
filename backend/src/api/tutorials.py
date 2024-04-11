@@ -52,12 +52,66 @@ class TutorialUpload(CamelModel):
     refs: str | None = None
 
 
-@router.post("/tutorial/upload")
+@router.post("/tutorial")
 def upload_tutorial(body: TutorialUpload, req: Request):
     requires_authentication(req)
     with Database() as db:
         try:
             query = """INSERT INTO tutorials(title, description, content, refs) VALUES(%s, %s, %s, %s);"""
             db.execute(query, [body.title, body.description, body.content, body.refs])
+        except Exception as e:
+            raise HTTPException(404, detail=str(e))
+
+
+class TutorialEdit(CamelModel):
+    title: str  # used to id the tutorial
+    # potential changes
+    new_title: str | None = None
+    new_description: str | None = None
+    new_content: str | None = None
+    new_refs: str | None = None
+
+
+@router.put("/tutorial", response_model=None)
+def edit_tutorial(body: TutorialEdit, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            if body.new_title is not None:
+                db.execute(
+                    """UPDATE tutorials SET title = %s WHERE title = %s""",
+                    [body.new_title, body.title],
+                )
+                # then for the remaining queries, use the new title
+                body.title = body.new_title
+
+            if body.new_description is not None:
+                db.execute(
+                    """UPDATE tutorials SET description = %s WHERE title = %s""",
+                    [body.new_description, body.title],
+                )
+
+            if body.new_content is not None:
+                db.execute(
+                    """UPDATE tutorials SET content = %s WHERE title = %s""",
+                    [body.new_content, body.title],
+                )
+
+            if body.new_refs is not None:
+                db.execute(
+                    """UPDATE tutorials SET refs = %s WHERE title = %s""",
+                    [body.new_refs, body.title],
+                )
+
+        except Exception as e:
+            raise HTTPException(404, detail=str(e))
+
+
+@router.delete("/tutorial/{title: str}", response_model=None)
+def delete_tutorial(title: str, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            db.execute("""DELETE FROM tutorials WHERE title=%s""", [title])
         except Exception as e:
             raise HTTPException(404, detail=str(e))

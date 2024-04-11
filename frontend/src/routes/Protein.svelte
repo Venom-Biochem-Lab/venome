@@ -45,6 +45,16 @@
 			<!-- TITLE AND DESCRIPTION -->
 			<h1 id="title">
 				{undoFormatProteinName(entry.name)}
+				{#if $user.loggedIn}
+					<Button
+						outline
+						size="xs"
+						on:click={async () => {
+							navigate(`/protein/edit/${entry?.name}`);
+						}}
+						><PenOutline class="mr-2" size="sm" />Edit Protein Entry</Button
+					>
+				{/if}
 			</h1>
 
 			<div id="description">
@@ -95,7 +105,7 @@
 		</div>
 		<div id="right-side" class="flex flex-col">
 			<div class="flex gap-2">
-				<Button
+				<Button outline
 					>Download <ChevronDownSolid
 						size="md"
 						class="ml-2"
@@ -109,40 +119,34 @@
 						>
 					{/each}
 				</Dropdown>
-				{#if $user.loggedIn}
-					<Button
-						on:click={async () => {
-							navigate(`/edit/${entry?.name}`);
-						}}
-						><PenOutline class="mr-2" size="lg" />Edit Entry</Button
-					>
-				{/if}
 			</div>
 
-			<EntryCard title="Provided Information">
-				<Molstar
-					format="pdb"
-					url="http://localhost:8000/protein/pdb/{entry.name}"
-					width={400}
-					height={350}
-				/>
-				<div id="info-grid" class="grid grid-cols-2 mt-5">
-					<b>Organism</b>
-					<div>
-						{entry.speciesName}
+			<div style="position: sticky; top: 55px; right: 0; z-index:999;">
+				<EntryCard title="Provided Information">
+					<Molstar
+						format="pdb"
+						url="http://localhost:8000/protein/pdb/{entry.name}"
+						width={400}
+						height={350}
+					/>
+					<div id="info-grid" class="grid grid-cols-2 mt-5">
+						<b>Organism</b>
+						<div>
+							{entry.speciesName}
+						</div>
+						<b>Method</b>
+						<div>AlphaFold 2</div>
+						<b>Date Published</b>
+						<div>
+							<code
+								>{entry.datePublished
+									? dbDateToMonthDayYear(entry.datePublished)
+									: "n/a"}</code
+							>
+						</div>
 					</div>
-					<b>Method</b>
-					<div>AlphaFold 2</div>
-					<b>Date Published</b>
-					<div>
-						<code
-							>{entry.datePublished
-								? dbDateToMonthDayYear(entry.datePublished)
-								: "n/a"}</code
-						>
-					</div>
-				</div>
-			</EntryCard>
+				</EntryCard>
+			</div>
 		</div>
 	{:else if !error}
 		<!-- Otherwise, tell user we tell the user we are loading -->
@@ -164,6 +168,6 @@
 	#title {
 		font-size: 2.45rem;
 		font-weight: 500;
-		color: var(--darkblue);
+		color: var(--primary-700);
 	}
 </style>

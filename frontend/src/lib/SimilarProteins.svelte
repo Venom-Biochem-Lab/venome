@@ -52,7 +52,10 @@
 					<td>
 						<div class="name-cell">
 							<!-- TODO: figure out how to make this a simple route instead of reloading the entire page -->
-							<a href="/protein/{protein.name}">
+							<a
+								href="/protein/{protein.name}"
+								class="flex gap-1 items-center"
+							>
 								{undoFormatProteinName(protein.name)}
 								<ArrowUpRightFromSquareOutline size="sm" />
 							</a>
@@ -93,6 +96,7 @@
 						<div class="align-cell">
 							<a
 								use:link
+								class="flex gap-2 items-center"
 								href="/align/{queryProteinName}/{protein.name}"
 								>Align <ArrowUpRightFromSquareOutline
 									size="sm"
@@ -124,7 +128,7 @@
 		color: var(--primary-700);
 	}
 	.pdb-row {
-		background-color: hsl(var(--darkblue-hsl), 0.04);
+		background-color: hsl(0, 0%, 0%, 0.02);
 	}
 	.pdb-desc {
 		width: 5px;

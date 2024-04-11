@@ -12,6 +12,7 @@ import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
 import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
+import type { TutorialEdit } from '../models/TutorialEdit';
 import type { TutorialUpload } from '../models/TutorialUpload';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
@@ -308,6 +309,45 @@ export class DefaultService {
         });
     }
     /**
+     * Delete Tutorial
+     * @param title
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteTutorial(
+        title: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/tutorial/{title: str}',
+            query: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Tutorial
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editTutorial(
+        requestBody: TutorialEdit,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/tutorial',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Upload Tutorial
      * @param requestBody
      * @returns any Successful Response
@@ -318,7 +358,7 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/tutorial/upload',
+            url: '/tutorial',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
