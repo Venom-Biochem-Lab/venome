@@ -40,7 +40,7 @@
 			if (result == null) {
 				// If result is null, log to console. Don't expect this would happen.
 				console.log("Response is null");
-                alert(result["NULL response. This is probably our fault."])
+                alert("NULL response. This is probably our fault.")
 
 			} else if (result["error"] != "") {
 				// API returned an error. This either means the account doesn't exist, or user entered wrong username / password.
@@ -60,9 +60,9 @@
 			} else {
 				// User got a result, but both the error and token field are empty. This indicates a bug on our end.
 				console.log("Unexpected edge cage regarding user authentication.");
-                alert(result["Unexpected edge cage regarding user authentication. This is probably our fault."])
+                alert("Unexpected edge cage regarding user authentication. This is probably our fault.")
 			}
-            
+
 		} catch (e) {
 			alert([e])
 			console.log(e);
