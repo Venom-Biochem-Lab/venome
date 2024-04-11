@@ -23,15 +23,15 @@
 	$: formValid = email.length > 0 && password.length > 0;
 
 	/**
-	 * Gets run on button "Login" or form submit (pressing enter)
-	 * @todo add login logic with tokens and making a request to the backend
+	 * Gets run on pressing "Login" button or form submit (pressing enter)
 	 */
 	let result: LoginResponse | null = null;
 	async function submitForm() {
 		if (!formValid) return;
 		console.log("submitted");
 		try {
-			// Attempting to get a valid authentication token from the API
+			
+            // Makes call to /users/login API endpoint, sending username and password in JSON format.
 			result = await Backend.login({
 				email,
 				password,
@@ -40,23 +40,23 @@
 			if (result == null) {
 				// If result is null, log to console. Don't expect this would happen.
 				console.log("Response is null");
+
 			} else if (result["error"] != "") {
-				// User entered wrong username or password, or account doesn't exist.
-				// @todo Display this error message to the user.
+				// API returned an error. This either means the account doesn't exist, or user entered wrong username / password.
+                // @todo Display this in a better way than an alert popup.
 				console.log("Response received. Error: " + result["error"]);
 				alert(result["error"])
+
 			} else if (result["token"] != "") {
-				// User entered the correct username / password and got a result.
-				// @todo Store this in a cookie.
+				// User entered the correct username and password. Store token in cookie and set svelte store loggedin status to true.
 				console.log("Response received. Token: " + result["token"]);
 				Cookies.set("auth", result["token"]);
 				$user.loggedIn = true
 				navigate(`/search`);
+
 			} else {
-				// User got a result, but both fields are null. This should never happen.
-				console.log(
-					"Unexpected edge cage regarding user authentication."
-				);
+				// User got a result, but both the error and token field are empty. This indicates a bug on our end.
+				console.log("Unexpected edge cage regarding user authentication.");
 			}
 		} catch (e) {
 			alert([e])
