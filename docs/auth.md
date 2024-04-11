@@ -2,14 +2,14 @@
 Venome uses a first-party authentication scheme.
 
 ## Login Flow
-1. User goes to login page and provides username and password and presses "Log In". Client sends POST request to backend's */users/login* API endpoint. The request contains JSON with the username and password (*submitForm()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)).
-2. Backend verifies provided information against database's username and hashed/salted password If verified, returns a JSON Web Token (JWT) to the frontend, and if not verified, sends an error (*login()* in [`users.py`](../backend/src/api/users.py))
+1. User goes to login page and provides username and password and presses "Log In". Client sends POST request to backend's */users/login* API endpoint. The request contains JSON with the username and password. See *submitForm()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)
+2. Backend verifies provided information against database's username and hashed/salted password If verified, returns a JSON Web Token (JWT) to the frontend, and if not verified, sends an error. See *login()* in [`users.py`](../backend/src/api/users.py)
 3. Frontend, if the user is verified:
-    * Stores the JWT into the browser as a cookie (*Cookies.set()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)).
-    * Sets *user* svelte store **loggedIn** attributes to true (*$user.loggedIn = true* in [`Login.svelte`](../frontend/src/routes/Login.svelte))
+    * Stores the JWT into the browser as a cookie. See *Cookies.set()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)
+    * Sets *user* svelte store **loggedIn** attributes to true. See *$user.loggedIn = true* in [`Login.svelte`](../frontend/src/routes/Login.svelte)
     * The JWT cookie and user store are used to access restricted functionality in the website and API. See [`Impelentation Tips`](#implementation-tips).
-4. When the user reloads the website, the Frontend checks to see if they're logged in by looking at the browser cookie and sets the *user* store accordingly (*onMount()* in [`Header.svelte`](../frontend/src/routes/Login.svelte)).
-5. When the user presses "log out", it sends them back to the login page. This clears the auth cookie from the browser and unsets the *user* store attributes. (*onMount()* in [`Login.svelte`](../frontend/src/routes/Login.svelte))
+4. When the user reloads the website, the Frontend checks to see if they're logged in by looking at the browser cookie and sets the *user* store accordingly. See *onMount()* in [`Header.svelte`](../frontend/src/routes/Login.svelte)
+5. When the user presses "log out", it sends them back to the login page. This clears the auth cookie from the browser and unsets the *user* store attributes. See *onMount()* in [`Login.svelte`](../frontend/src/routes/Login.svelte)
 
 ## Implementation Tips
 There are a few functions we created to make it easy to lock elements and endpoints behind authentication.
