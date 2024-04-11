@@ -22,9 +22,6 @@
 	let password: string = "";
 	$: formValid = email.length > 0 && password.length > 0;
 
-	let error = false;
-
-	let token = "";
 	/**
 	 * Gets run on button "Login" or form submit (pressing enter)
 	 * @todo add login logic with tokens and making a request to the backend
