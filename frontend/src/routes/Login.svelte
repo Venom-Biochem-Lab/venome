@@ -15,7 +15,7 @@
 		Cookies.remove("auth")
 		$user.loggedIn = false
 		$user.username = ""
-		$user.admin = true
+		$user.admin = false
 	});
 
 	let email: string = "";
@@ -52,6 +52,8 @@
 				console.log("Response received. Token: " + result["token"]);
 				Cookies.set("auth", result["token"]);
 				$user.loggedIn = true
+                $user.username = email
+                $user.admin = true
 				navigate(`/search`);
 
 			} else {
