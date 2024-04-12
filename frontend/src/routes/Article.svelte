@@ -31,7 +31,7 @@
 					<TextComponent
 						{articleTitle}
 						markdown={a.markdown}
-						componentOrder={a.componentOrder}
+						id={a.id}
 						on:change={async () => {
 							await refreshArticles();
 						}}

@@ -24,6 +24,7 @@ def upload_article(body: ArticleUpload, req: Request):
 
 
 class ArticleTextComponent(CamelModel):
+    id: int
     component_order: int
     markdown: str
 
@@ -38,15 +39,15 @@ def get_article(title: str):
     print("hit")
     with Database() as db:
         try:
-            query = """SELECT component_order, markdown FROM article_text_components
+            query = """SELECT id, component_order, markdown FROM article_text_components
                        WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
             res = db.execute_return(query, [title])
             if res is not None:
                 return Article(
                     title=title,
                     text_components=[
-                        ArticleTextComponent(component_order=c, markdown=m)
-                        for [c, m] in res
+                        ArticleTextComponent(id=i, component_order=c, markdown=m)
+                        for [i, c, m] in res
                     ],
                 )
         except Exception as e:
@@ -63,8 +64,7 @@ class UploadArticleTextComponent(CamelModel):
 def upload_article_text_component(body: UploadArticleTextComponent):
     with Database() as db:
         try:
-            query = """INSERT INTO article_text_components (article_id, component_order, markdown)
-                                                    VALUES ((SELECT id FROM articles WHERE title=%s), %s, %s);"""
+            query = """INSERT INTO article_text_components (article_id, component_order, markdown) VALUES ((SELECT id FROM articles WHERE title=%s), %s, %s);"""
             db.execute(
                 query, [body.for_article_title, body.component_order, body.markdown]
             )
@@ -72,17 +72,35 @@ def upload_article_text_component(body: UploadArticleTextComponent):
             raise HTTPException(500, detail=str(e))
 
 
-@router.delete("/article/component/text/{article_title:str}/{component_order:int}")
-def delete_article_text_component(article_title: str, component_order: int):
+@router.delete("/article/component/text/{component_id:int}")
+def delete_article_text_component(component_id: int):
     with Database() as db:
         try:
-            query = """DELETE FROM article_text_components 
-                       WHERE 
-                            article_id=(SELECT id FROM articles WHERE title=%s) 
-                            AND component_order=%s;"""
-            db.execute(query, [article_title, component_order])
+            query = """DELETE FROM article_text_components WHERE id=%s;"""
+            db.execute(query, [component_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
+
+
+class EditArticleTextComponent(CamelModel):
+    article_title: str
+    component_order: str
+    new_markdown: str
+
+
+# @router.put("/article/component/text")
+# def edit_article_text_component():
+#     with Database() as db:
+#         try:
+#             # """UPDATE proteins SET name = %s WHERE name = %s""",
+#             query = """UPDATE article_text_components SET
+#                        WHERE
+#                             article_id=(SELECT id FROM articles WHERE title=%s)
+#                             AND component_order=%s;"""
+#             db.execute(query, [article_title, component_order])
+#         except Exception as e:
+#             raise HTTPException(500, detail=str(e))
+#     pass
 
 
 @router.get("/articles", response_model=list[str])

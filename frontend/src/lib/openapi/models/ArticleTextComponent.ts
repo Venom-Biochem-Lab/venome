@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ArticleTextComponent = {
+    id: number;
     componentOrder: number;
     markdown: string;
 };

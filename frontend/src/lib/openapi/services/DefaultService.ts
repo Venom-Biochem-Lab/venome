@@ -429,21 +429,18 @@ export class DefaultService {
     }
     /**
      * Delete Article Text Component
-     * @param articleTitle
-     * @param componentOrder
+     * @param componentId
      * @returns any Successful Response
      * @throws ApiError
      */
     public static deleteArticleTextComponent(
-        articleTitle: string,
-        componentOrder: number,
+        componentId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/article/component/text/{article_title}/{component_order}',
+            url: '/article/component/text/{component_id}',
             path: {
-                'article_title': articleTitle,
-                'component_order': componentOrder,
+                'component_id': componentId,
             },
             errors: {
                 422: `Validation Error`,

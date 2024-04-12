@@ -6,13 +6,14 @@
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
 	export let articleTitle: string;
-	export let componentOrder: number;
+	export let id: number;
 	export let markdown: string;
 	let editedMarkdown = markdown;
 	let editMode = false;
 	let revealEdit = false;
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
 	on:mouseenter={() => (revealEdit = true)}
 	on:mouseleave={() => (revealEdit = false)}
@@ -22,17 +23,20 @@
 		<Button
 			on:click={async () => {
 				try {
-					await Backend.deleteArticleTextComponent(
-						articleTitle,
-						componentOrder
-					);
+					await Backend.deleteArticleTextComponent(id);
 				} catch (e) {
 					console.error(e);
 				}
 				dispatch("change");
 			}}>Delete</Button
 		>
-		<Button on:click={() => (editMode = false)}>Save</Button>
+		<Button
+			disabled={editedMarkdown === markdown}
+			on:click={async () => {
+				console.log("saved edit");
+				// make a call where I put the new markdown
+			}}>Save</Button
+		>
 		<Button on:click={() => (editMode = false)}>Cancel</Button>
 	{:else}
 		<Markdown text={String.raw`${markdown}`} />
