@@ -229,3 +229,42 @@ def search_venome_similar(protein_name: str):
         raise HTTPException(500, "Error getting protein descriptions")
 
     return formatted
+
+
+@router.get(
+    "/search/venome/similar/{protein_name:str}/{protein_compare:str}",
+    response_model=SimilarProtein,
+)
+def search_venome_similar_compare(protein_name: str, protein_compare: str):
+    target = stored_pdb_file_name(protein_compare)
+    # ignore the first since it's itself as the most similar
+    try:
+        similar = easy_search(
+            stored_pdb_file_name(protein_name),
+            target,
+            out_format="target,prob,evalue,qstart,qend",
+        )  # qend,qstart refer to alignment
+        formatted = [
+            SimilarProtein(
+                name=name.rstrip(".pdb"),
+                prob=prob,
+                evalue=evalue,
+                qstart=qstart,
+                qend=qend,
+                alntmscore=0,
+            )
+            for [name, prob, evalue, qstart, qend] in similar
+        ]
+    except Exception:
+        raise HTTPException(404, "Error in 'foldseek easy-search' command")
+
+    try:
+        # populate protein descriptions for the similar proteins
+        descriptions = get_descriptions([s.name for s in formatted])
+        if descriptions is not None:
+            for f, d in zip(formatted, descriptions):
+                f.description = d
+    except Exception:
+        raise HTTPException(500, "Error getting protein descriptions")
+
+    return formatted[0]
