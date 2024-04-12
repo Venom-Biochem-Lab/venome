@@ -101,7 +101,9 @@
 			</div>
 
 			<div class="mt-5">
-				<Button on:click={resetFilter}>Reset All Filters</Button>
+				<Button on:click={resetFilter} outline size="xs" color="light"
+					>Reset All Filters</Button
+				>
 			</div>
 		{:else}
 			<DelayedSpinner text="Fetching Properties to Filter By" textRight />

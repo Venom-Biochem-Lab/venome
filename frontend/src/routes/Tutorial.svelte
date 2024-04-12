@@ -6,7 +6,7 @@
 	import Markdown from "../lib/Markdown.svelte";
 	import { Button } from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
-	import { PenOutline } from "flowbite-svelte-icons";
+	import { EditOutline, PenOutline } from "flowbite-svelte-icons";
 	import { user } from "../lib/stores/user";
 
 	export let tutorialTitle: string;
@@ -24,10 +24,11 @@
 
 			{#if $user.loggedIn}
 				<Button
+					color="light"
 					outline
 					size="xs"
 					on:click={() => navigate(`/tutorial/edit/${tutorialTitle}`)}
-					><PenOutline class="mr-2" size="sm" />Edit Tutorial
+					><EditOutline class="mr-1" size="sm" />Edit Tutorial
 				</Button>
 			{/if}
 		</h1>

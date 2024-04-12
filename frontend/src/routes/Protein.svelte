@@ -11,7 +11,11 @@
 	} from "../lib/format";
 	import { navigate } from "svelte-routing";
 	import References from "../lib/References.svelte";
-	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
+	import {
+		ChevronDownSolid,
+		EditOutline,
+		PenOutline,
+	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
@@ -47,12 +51,14 @@
 				{undoFormatProteinName(entry.name)}
 				{#if $user.loggedIn}
 					<Button
+						color="light"
 						outline
 						size="xs"
 						on:click={async () => {
 							navigate(`/protein/edit/${entry?.name}`);
 						}}
-						><PenOutline class="mr-2" size="sm" />Edit Protein Entry</Button
+						><EditOutline class="mr-1" size="sm" />Edit Protein
+						Entry</Button
 					>
 				{/if}
 			</h1>
@@ -106,10 +112,10 @@
 		<div id="right-side" class="flex flex-col">
 			<div>
 				<div>
-					<Button outline id="download"
-						>Download <ChevronDownSolid
-							size="md"
-							class="ml-2"
+					<Button outline id="download" size="xs" color="light"
+						>Download Structure <ChevronDownSolid
+							size="sm"
+							class="ml-1"
 						/></Button
 					>
 					<Dropdown triggeredBy="#download" trigger="click">

@@ -2,6 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Article } from '../models/Article';
+import type { ArticleUpload } from '../models/ArticleUpload';
 import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
@@ -14,6 +16,7 @@ import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
 import type { TutorialEdit } from '../models/TutorialEdit';
 import type { TutorialUpload } from '../models/TutorialUpload';
+import type { UploadArticleTextComponent } from '../models/UploadArticleTextComponent';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { UploadPNGBody } from '../models/UploadPNGBody';
@@ -309,26 +312,6 @@ export class DefaultService {
         });
     }
     /**
-     * Delete Tutorial
-     * @param title
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static deleteTutorial(
-        title: string,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/tutorial/{title: str}',
-            query: {
-                'title': title,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
      * Edit Tutorial
      * @param requestBody
      * @returns any Successful Response
@@ -364,6 +347,95 @@ export class DefaultService {
             errors: {
                 422: `Validation Error`,
             },
+        });
+    }
+    /**
+     * Delete Tutorial
+     * @param title
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteTutorial(
+        title: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/tutorial/{title}',
+            path: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Article
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticle(
+        requestBody: ArticleUpload,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/upload',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Article
+     * @param title
+     * @returns Article Successful Response
+     * @throws ApiError
+     */
+    public static getArticle(
+        title: string,
+    ): CancelablePromise<Article> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/article/{title}',
+            path: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Article Text Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticleTextComponent(
+        requestBody: UploadArticleTextComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/component/text',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get All Articles
+     * @returns string Successful Response
+     * @throws ApiError
+     */
+    public static getAllArticles(): CancelablePromise<Array<string>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/articles',
         });
     }
 }

@@ -7,6 +7,9 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { Article } from './models/Article';
+export type { ArticleTextComponent } from './models/ArticleTextComponent';
+export type { ArticleUpload } from './models/ArticleUpload';
 export type { EditBody } from './models/EditBody';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { LoginBody } from './models/LoginBody';
@@ -20,6 +23,7 @@ export type { SimilarProtein } from './models/SimilarProtein';
 export type { Tutorial } from './models/Tutorial';
 export type { TutorialEdit } from './models/TutorialEdit';
 export type { TutorialUpload } from './models/TutorialUpload';
+export type { UploadArticleTextComponent } from './models/UploadArticleTextComponent';
 export type { UploadBody } from './models/UploadBody';
 export { UploadError } from './models/UploadError';
 export type { UploadPNGBody } from './models/UploadPNGBody';
