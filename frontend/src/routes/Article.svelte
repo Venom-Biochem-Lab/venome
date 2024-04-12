@@ -41,12 +41,12 @@
 						/>
 					</div>
 				{/each}
-				<div class="mt-5" style="order: 999999;">
+				<div class="mt-5" style="order: 999999; width: {textWidth};">
 					<Button
 						outline
 						color="light"
 						on:click={() => (dropdownOpen = true)}
-						>+ Add Component</Button
+						>+ Add New Component</Button
 					>
 					<Dropdown open={dropdownOpen}>
 						<DropdownItem
@@ -56,7 +56,8 @@
 										forArticleTitle: articleTitle,
 										componentOrder:
 											article.textComponents.length + 1,
-										markdown: "## header",
+										markdown:
+											"## Placeholder Text\nHover over this section and click **Edit** to edit.",
 									});
 									await refreshArticles();
 								} catch (e) {
