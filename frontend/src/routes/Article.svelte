@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, type Article } from "../lib/backend";
+	import {
+		Backend,
+		type Article,
+		type ArticleTextComponent,
+	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 
@@ -13,6 +17,13 @@
 		await refreshArticle();
 	});
 
+	function combineAndOrderComponents(
+		article: Article
+	): ArticleTextComponent[] {
+		return [...article.textComponents].toSorted(
+			(a, b) => a.componentOrder - b.componentOrder
+		);
+	}
 	async function refreshArticle() {
 		try {
 			article = await Backend.getArticle(articleTitle);
@@ -29,13 +40,13 @@
 				<div id="title" style="width: {textWidth};">
 					{article.title}
 				</div>
-				{#each article.textComponents.toSorted((a, b) => a.componentOrder - b.componentOrder) as a}
+				{#each combineAndOrderComponents(article) as c (c.id)}
 					<!-- relying on display: flex; and child's order: to order components sorted -->
-					<div id="text-{a.id}" style="width: {textWidth};">
+					<div id="text-{c.id}" style="width: {textWidth};">
 						<TextComponent
 							{articleTitle}
-							markdown={a.markdown}
-							id={a.id}
+							markdown={c.markdown}
+							id={c.id}
 							on:change={async () => {
 								await refreshArticle();
 							}}
