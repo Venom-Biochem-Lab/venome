@@ -72,6 +72,19 @@ def upload_article_text_component(body: UploadArticleTextComponent):
             raise HTTPException(500, detail=str(e))
 
 
+@router.delete("/article/component/text/{article_title:str}/{component_order:int}")
+def delete_article_text_component(article_title: str, component_order: int):
+    with Database() as db:
+        try:
+            query = """DELETE FROM article_text_components 
+                       WHERE 
+                            article_id=(SELECT id FROM articles WHERE title=%s) 
+                            AND component_order=%s;"""
+            db.execute(query, [article_title, component_order])
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
 @router.get("/articles", response_model=list[str])
 def get_all_articles():
     return ["test", "what?"]

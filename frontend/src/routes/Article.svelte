@@ -3,27 +3,40 @@
 	import { Backend, type Article } from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import ArticleRenderer from "../lib/article/ArticleRenderer.svelte";
+	import TextComponent from "../lib/article/TextComponent.svelte";
 
 	export let articleTitle: string;
 
 	let dropdownOpen = false;
 
 	let article: Article;
-	onMount(async () => {
+	async function refreshArticles() {
 		try {
 			article = await Backend.getArticle(articleTitle);
 		} catch (e) {
 			console.error(e);
 		}
+	}
+	onMount(async () => {
+		await refreshArticles();
 	});
 </script>
 
 <section class="p-5">
 	{#if article}
 		<div id="title">{article.title}</div>
-		<div>
+		<div class="flex gap-2 flex-col">
 			{#each article.textComponents as a}
-				<div>{a.componentOrder} {a.markdown}</div>
+				<div style="order: {a.componentOrder}">
+					<TextComponent
+						{articleTitle}
+						markdown={a.markdown}
+						componentOrder={a.componentOrder}
+						on:change={async () => {
+							await refreshArticles();
+						}}
+					/>
+				</div>
 			{/each}
 		</div>
 		<div class="mt-5">
@@ -40,12 +53,7 @@
 									article.textComponents.length + 1,
 								markdown: "## header",
 							});
-							try {
-								article =
-									await Backend.getArticle(articleTitle);
-							} catch (e) {
-								console.error(e);
-							}
+							await refreshArticles();
 						} catch (e) {
 							console.error(e);
 						}

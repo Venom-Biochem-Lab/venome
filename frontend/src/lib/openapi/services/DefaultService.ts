@@ -428,6 +428,29 @@ export class DefaultService {
         });
     }
     /**
+     * Delete Article Text Component
+     * @param articleTitle
+     * @param componentOrder
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteArticleTextComponent(
+        articleTitle: string,
+        componentOrder: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/article/component/text/{article_title}/{component_order}',
+            path: {
+                'article_title': articleTitle,
+                'component_order': componentOrder,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Get All Articles
      * @returns string Successful Response
      * @throws ApiError
