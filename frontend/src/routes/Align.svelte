@@ -77,7 +77,7 @@
                 </h1>
                 {#if foldseekData === undefined && !foldseekError}
                     <DelayedSpinner
-                        text="Loading FoldSeek Info"
+                        text="Loading Foldseek..."
                         textRight
                         msDelay={0}
                     />
