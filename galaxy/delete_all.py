@@ -1,7 +1,7 @@
 import requests
 import os
 
-DIR = "../backend/src/data/pdbAlphaFold"
+DIR = os.path.join('..', 'backend', 'src', 'data', 'pdbAlphaFold')
 
 
 def delete_protein_files():
