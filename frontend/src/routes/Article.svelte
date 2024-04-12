@@ -10,10 +10,10 @@
 	let dropdownOpen = false;
 	let article: Article;
 	onMount(async () => {
-		await refreshArticles();
+		await refreshArticle();
 	});
 
-	async function refreshArticles() {
+	async function refreshArticle() {
 		try {
 			article = await Backend.getArticle(articleTitle);
 		} catch (e) {
@@ -29,19 +29,20 @@
 				<div id="title" style="width: {textWidth};">
 					{article.title}
 				</div>
-				{#each article.textComponents as a}
-					<div style="order: {a.componentOrder}; width: {textWidth};">
+				{#each article.textComponents.toSorted((a, b) => a.componentOrder - b.componentOrder) as a}
+					<!-- relying on display: flex; and child's order: to order components sorted -->
+					<div style="width: {textWidth};">
 						<TextComponent
 							{articleTitle}
 							markdown={a.markdown}
 							id={a.id}
 							on:change={async () => {
-								await refreshArticles();
+								await refreshArticle();
 							}}
 						/>
 					</div>
 				{/each}
-				<div class="mt-5" style="order: 999999; width: {textWidth};">
+				<div class="mt-5" style="width: {textWidth};">
 					<Button
 						outline
 						color="light"
@@ -55,11 +56,17 @@
 									await Backend.uploadArticleTextComponent({
 										forArticleTitle: articleTitle,
 										componentOrder:
-											article.textComponents.length + 1,
+											article.textComponents.reduce(
+												(prev, cur) =>
+													cur.componentOrder > prev
+														? cur.componentOrder
+														: prev,
+												0
+											) + 1,
 										markdown:
 											"## Placeholder Text\nHover over this section and click **Edit** to edit.",
 									});
-									await refreshArticles();
+									await refreshArticle();
 								} catch (e) {
 									console.error(e);
 								}

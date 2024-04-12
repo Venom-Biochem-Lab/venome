@@ -18,12 +18,6 @@
 	let editedMarkdown = markdown;
 	let editMode = false;
 	let revealEdit = false;
-
-	function done() {
-		editMode = false;
-		dispatch("change");
-		editedMarkdown = markdown;
-	}
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -41,7 +35,14 @@
 		<Textarea rows={10} bind:value={editedMarkdown} />
 		<div class="flex justify-between p-1">
 			<div>
-				<Button outline size="xs" on:click={done}>
+				<Button
+					outline
+					size="xs"
+					on:click={() => {
+						editMode = false;
+						editedMarkdown = markdown;
+					}}
+				>
 					<CloseOutline size="sm" class="mr-1" /> Cancel Edits</Button
 				>
 				<Button
@@ -56,7 +57,8 @@
 						} catch (e) {
 							console.error(e);
 						}
-						done();
+						editMode = false;
+						dispatch("change");
 					}}><CheckOutline size="sm" class="mr-1" />Save Edits</Button
 				>
 			</div>
@@ -70,7 +72,8 @@
 					} catch (e) {
 						console.error(e);
 					}
-					done();
+					editMode = false;
+					dispatch("change");
 				}}
 				><TrashBinOutline size="sm" class="mr-1" /> Delete Forever</Button
 			>
