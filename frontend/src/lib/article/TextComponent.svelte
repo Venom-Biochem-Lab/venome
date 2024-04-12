@@ -1,8 +1,14 @@
 <script lang="ts">
-	import { Button, Textarea } from "flowbite-svelte";
+	import { Button, Textarea, Popover } from "flowbite-svelte";
 	import Markdown from "../Markdown.svelte";
 	import { Backend } from "../backend";
 	import { createEventDispatcher } from "svelte";
+	import {
+		CheckOutline,
+		CloseOutline,
+		EditOutline,
+		TrashBinOutline,
+	} from "flowbite-svelte-icons";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
 	export let articleTitle: string;
@@ -15,15 +21,22 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
-	on:mouseenter={() => (revealEdit = true)}
+	on:mouseenter={() => {
+		if (!editMode) {
+			revealEdit = true;
+		}
+	}}
 	on:mouseleave={() => (revealEdit = false)}
 	class:editing={editMode}
 	class="text-component"
 >
 	{#if editMode}
 		<Textarea rows={10} bind:value={editedMarkdown} />
-		<div class="flex justify-between">
+		<div class="flex justify-between p-1">
 			<div>
+				<Button outline size="xs" on:click={() => (editMode = false)}>
+					<CloseOutline size="sm" class="mr-1" /> Cancel Edits</Button
+				>
 				<Button
 					disabled={editedMarkdown === markdown}
 					size="xs"
@@ -38,10 +51,8 @@
 						}
 						editMode = false;
 						dispatch("change");
-					}}>Save Edits</Button
-				>
-				<Button outline size="xs" on:click={() => (editMode = false)}
-					>Cancel</Button
+					}}
+					><CheckOutline size="sm" class="mr-1" /> Save Edits</Button
 				>
 			</div>
 			<Button
@@ -56,20 +67,31 @@
 					}
 					editMode = false;
 					dispatch("change");
-				}}>Delete Forever</Button
+				}}
+				><TrashBinOutline size="sm" class="mr-1" /> Delete Forever</Button
 			>
 		</div>
 	{:else}
 		<Markdown text={String.raw`${markdown}`} />
 	{/if}
-	{#if revealEdit && !editMode}
-		<Button on:click={() => (editMode = true)}>Edit</Button>
+	{#if revealEdit}
+		<div style="position: absolute; left: -60px; top: 10px; width: 60px;">
+			<Button
+				size="xs"
+				color="light"
+				on:click={() => {
+					editMode = true;
+					revealEdit = false;
+				}}><EditOutline size="xs" /> Edit</Button
+			>
+		</div>
 	{/if}
 </div>
 
 <style>
 	.text-component {
 		padding: 5px;
+		position: relative;
 	}
 	.editing {
 		outline: 1px solid var(--primary-500);
