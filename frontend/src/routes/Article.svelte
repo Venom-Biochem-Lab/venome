@@ -31,7 +31,7 @@
 				</div>
 				{#each article.textComponents.toSorted((a, b) => a.componentOrder - b.componentOrder) as a}
 					<!-- relying on display: flex; and child's order: to order components sorted -->
-					<div style="width: {textWidth};">
+					<div id="text-{a.id}" style="width: {textWidth};">
 						<TextComponent
 							{articleTitle}
 							markdown={a.markdown}
