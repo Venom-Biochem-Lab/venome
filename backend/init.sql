@@ -61,6 +61,21 @@ CREATE TABLE tutorials (
     refs text -- bibtex references mentioned in the content/article
 );
 
+/*
+* Articles Table
+*/
+CREATE TABLE articles (
+    id serial PRIMARY KEY,
+    title text NOT NULL UNIQUE
+);
+CREATE TABLE article_text_components (
+    id serial PRIMARY KEY,
+    article_id integer NOT NULL,
+    component_order integer NOT NULL, -- where this component is within a particular article 
+    markdown text DEFAULT '',
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 
 /*
  * Inserts example species into species table

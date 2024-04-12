@@ -107,7 +107,7 @@ def edit_tutorial(body: TutorialEdit, req: Request):
             raise HTTPException(404, detail=str(e))
 
 
-@router.delete("/tutorial/{title: str}", response_model=None)
+@router.delete("/tutorial/{title:str}", response_model=None)
 def delete_tutorial(title: str, req: Request):
     requires_authentication(req)
     with Database() as db:
