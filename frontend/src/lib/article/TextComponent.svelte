@@ -33,8 +33,16 @@
 		<Button
 			disabled={editedMarkdown === markdown}
 			on:click={async () => {
-				console.log("saved edit");
-				// make a call where I put the new markdown
+				try {
+					await Backend.editArticleTextComponent({
+						newMarkdown: editedMarkdown,
+						textComponentId: id,
+					});
+				} catch (e) {
+					console.error(e);
+				}
+				editMode = false;
+				dispatch("change");
 			}}>Save</Button
 		>
 		<Button on:click={() => (editMode = false)}>Cancel</Button>

@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { Article } from '../models/Article';
 import type { ArticleUpload } from '../models/ArticleUpload';
+import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
@@ -403,6 +404,25 @@ export class DefaultService {
             path: {
                 'title': title,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article Text Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticleTextComponent(
+        requestBody: EditArticleTextComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/text',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

@@ -83,24 +83,19 @@ def delete_article_text_component(component_id: int):
 
 
 class EditArticleTextComponent(CamelModel):
-    article_title: str
-    component_order: str
+    text_component_id: int
     new_markdown: str
 
 
-# @router.put("/article/component/text")
-# def edit_article_text_component():
-#     with Database() as db:
-#         try:
-#             # """UPDATE proteins SET name = %s WHERE name = %s""",
-#             query = """UPDATE article_text_components SET
-#                        WHERE
-#                             article_id=(SELECT id FROM articles WHERE title=%s)
-#                             AND component_order=%s;"""
-#             db.execute(query, [article_title, component_order])
-#         except Exception as e:
-#             raise HTTPException(500, detail=str(e))
-#     pass
+@router.put("/article/component/text")
+def edit_article_text_component(body: EditArticleTextComponent):
+    with Database() as db:
+        try:
+            query = """UPDATE article_text_components SET markdown=%s WHERE id=%s;"""
+            db.execute(query, [body.new_markdown, body.text_component_id])
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+    pass
 
 
 @router.get("/articles", response_model=list[str])

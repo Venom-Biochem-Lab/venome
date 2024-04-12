@@ -10,6 +10,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { Article } from './models/Article';
 export type { ArticleTextComponent } from './models/ArticleTextComponent';
 export type { ArticleUpload } from './models/ArticleUpload';
+export type { EditArticleTextComponent } from './models/EditArticleTextComponent';
 export type { EditBody } from './models/EditBody';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { LoginBody } from './models/LoginBody';
