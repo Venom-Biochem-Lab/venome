@@ -32,28 +32,25 @@
 
 	let entry: ProteinEntry | null;
 	let alignEntry: ProteinEntry | null;
-	onMount(async () => {
+
+	async function fetchInfoCards(name: string, alignedWithName?: string) {
 		entry = await Backend.getProteinEntry(name);
 		if (alignedWithName) {
 			alignEntry = await Backend.getProteinEntry(alignedWithName);
 		}
-	});
+	}
+
+	$: fetchInfoCards(name, alignedWithName);
 </script>
 
 <EditMode
 	bind:disabledSave
 	on:save={async () => {
-		name = editedName;
-		alignedWithName = editedAlignedWithName;
 		await Backend.editArticleProteinComponent({
 			proteinComponentId: id,
-			newName: editedName,
-			newAlignedWithName: editedAlignedWithName,
+			newName: editedName ?? undefined,
+			newAlignedWithName: editedAlignedWithName ?? undefined,
 		});
-		entry = await Backend.getProteinEntry(name);
-		if (alignedWithName) {
-			alignEntry = await Backend.getProteinEntry(alignedWithName);
-		}
 		dispatch("change");
 	}}
 	on:cancel={() => {

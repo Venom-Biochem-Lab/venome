@@ -39,6 +39,12 @@
 			console.error(e);
 		}
 	}
+
+	function uniqueComponentId(
+		component: ArticleTextComponent | ArticleProteinComponent
+	) {
+		return `${component.componentType}-${component.id}-${component.componentOrder}`;
+	}
 </script>
 
 <section class="p-5">
@@ -48,7 +54,7 @@
 				<div id="title" style="width: {textWidth};">
 					{article.title}
 				</div>
-				{#each combined as c (`${c.componentType}-${c.id}`)}
+				{#each combined as c (uniqueComponentId(c))}
 					{#if c.componentType === "text"}
 						<div style="width: {textWidth};">
 							<TextComponent
@@ -118,7 +124,7 @@
 															: prev,
 													0
 												) + 1,
-											name: "b",
+											name: "",
 											alignedWithName: undefined,
 										}
 									);
