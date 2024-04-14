@@ -74,7 +74,7 @@
 	{/if}
 	{#if revealEdit}
 		<div
-			style="position: absolute; left: -60px; top: 10px; width: 60px;"
+			style="position: absolute; left: -60px; top: 10px; width: 60px; z-index: 999;"
 			class="flex gap-1 flex-col"
 		>
 			<Button
