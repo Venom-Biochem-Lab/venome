@@ -11,6 +11,7 @@ export type { Article } from './models/Article';
 export type { ArticleProteinComponent } from './models/ArticleProteinComponent';
 export type { ArticleTextComponent } from './models/ArticleTextComponent';
 export type { ArticleUpload } from './models/ArticleUpload';
+export type { EditArticleProteinComponent } from './models/EditArticleProteinComponent';
 export type { EditArticleTextComponent } from './models/EditArticleTextComponent';
 export type { EditBody } from './models/EditBody';
 export type { HTTPValidationError } from './models/HTTPValidationError';

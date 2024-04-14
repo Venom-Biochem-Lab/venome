@@ -127,7 +127,6 @@ def edit_article_text_component(body: EditArticleTextComponent):
             db.execute(query, [body.new_markdown, body.text_component_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
-    pass
 
 
 class UploadArticleProteinComponent(CamelModel):
@@ -161,5 +160,24 @@ def delete_article_protein_component(component_id: int):
         try:
             query = """DELETE FROM article_protein_components WHERE id=%s;"""
             db.execute(query, [component_id])
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
+class EditArticleProteinComponent(CamelModel):
+    protein_component_id: int
+    new_name: str | None = None
+    new_aligned_with_name: str | None = None
+
+
+@router.put("/article/component/protein")
+def edit_article_protein_component(body: EditArticleProteinComponent):
+    with Database() as db:
+        try:
+            query = """UPDATE article_protein_components SET name=%s, aligned_with_name=%s WHERE id=%s;"""
+            db.execute(
+                query,
+                [body.new_name, body.new_aligned_with_name, body.protein_component_id],
+            )
         except Exception as e:
             raise HTTPException(500, detail=str(e))

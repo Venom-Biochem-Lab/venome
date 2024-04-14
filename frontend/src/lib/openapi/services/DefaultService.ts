@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { Article } from '../models/Article';
 import type { ArticleUpload } from '../models/ArticleUpload';
+import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
@@ -463,6 +464,25 @@ export class DefaultService {
             path: {
                 'component_id': componentId,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article Protein Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticleProteinComponent(
+        requestBody: EditArticleProteinComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/protein',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

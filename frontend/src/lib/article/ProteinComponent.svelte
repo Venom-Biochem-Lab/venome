@@ -6,6 +6,7 @@
 	import EditMode from "./EditMode.svelte";
 	import * as d3 from "d3";
 	import { createEventDispatcher } from "svelte";
+	import { FloatingLabelInput } from "flowbite-svelte";
 
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
@@ -14,6 +15,15 @@
 	export let alignedWithName: string | undefined = undefined;
 	export let width: number = 500;
 	export let height: number = 350;
+
+	let editedName: string = name;
+	let editedAlignedWithName: string | undefined = alignedWithName;
+	let disabledSave = false;
+
+	$: {
+		disabledSave =
+			editedName === name && editedAlignedWithName === alignedWithName;
+	}
 
 	const config = {
 		hideControls: true,
@@ -31,14 +41,24 @@
 </script>
 
 <EditMode
-	on:edit={() => {
-		console.log("edit");
-	}}
-	on:save={() => {
-		console.log("save");
+	bind:disabledSave
+	on:save={async () => {
+		name = editedName;
+		alignedWithName = editedAlignedWithName;
+		await Backend.editArticleProteinComponent({
+			proteinComponentId: id,
+			newName: editedName,
+			newAlignedWithName: editedAlignedWithName,
+		});
+		entry = await Backend.getProteinEntry(name);
+		if (alignedWithName) {
+			alignEntry = await Backend.getProteinEntry(alignedWithName);
+		}
+		dispatch("change");
 	}}
 	on:cancel={() => {
-		console.log("cancel");
+		editedName = name;
+		editedAlignedWithName = alignedWithName;
 	}}
 	on:delete={async () => {
 		await Backend.deleteArticleProteinComponent(id);
@@ -74,5 +94,18 @@
 			</div>
 		</div>
 	</slot>
-	<slot slot="edit">editing</slot>
+	<slot slot="edit"
+		><div style="width: 800px; height: 300px;" class="p-5">
+			<div style="width: 300px;" class="flex gap-5 flex-col">
+				<FloatingLabelInput style="filled" bind:value={editedName}
+					>Name</FloatingLabelInput
+				>
+				<FloatingLabelInput
+					style="filled"
+					bind:value={editedAlignedWithName}
+					>Aligned With Name</FloatingLabelInput
+				>
+			</div>
+		</div></slot
+	>
 </EditMode>
