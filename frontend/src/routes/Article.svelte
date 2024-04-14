@@ -8,6 +8,7 @@
 	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import TextComponent from "../lib/article/TextComponent.svelte";
+	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 
 	export let articleTitle: string;
 
@@ -60,9 +61,10 @@
 							/>
 						</div>
 					{:else if c.componentType === "protein"}
-						<div>
-							{c.name} | {c.alignedWithName}
-						</div>
+						<ProteinComponent
+							name={c.name}
+							alignedWithName={c.alignedWithName}
+						/>
 					{/if}
 				{/each}
 				<div class="mt-5" style="width: {textWidth};">
@@ -79,7 +81,7 @@
 									await Backend.uploadArticleTextComponent({
 										forArticleTitle: articleTitle,
 										componentOrder:
-											article.textComponents.reduce(
+											combined.reduce(
 												(prev, cur) =>
 													cur.componentOrder > prev
 														? cur.componentOrder
@@ -112,7 +114,8 @@
 															: prev,
 													0
 												) + 1,
-											name: "test",
+											name: "b",
+											alignedWithName: undefined,
 										}
 									);
 									await refreshArticle();
