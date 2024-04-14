@@ -153,3 +153,13 @@ def upload_article_protein_component(body: UploadArticleProteinComponent):
             )
         except Exception as e:
             raise HTTPException(500, detail=str(e))
+
+
+@router.delete("/article/component/protein/{component_id:int}")
+def delete_article_protein_component(component_id: int):
+    with Database() as db:
+        try:
+            query = """DELETE FROM article_protein_components WHERE id=%s;"""
+            db.execute(query, [component_id])
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))

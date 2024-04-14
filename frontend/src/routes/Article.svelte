@@ -62,8 +62,12 @@
 						</div>
 					{:else if c.componentType === "protein"}
 						<ProteinComponent
+							id={c.id}
 							name={c.name}
 							alignedWithName={c.alignedWithName}
+							on:change={async () => {
+								await refreshArticle();
+							}}
 						/>
 					{/if}
 				{/each}

@@ -5,7 +5,11 @@
 	import ProteinLinkCard from "../ProteinLinkCard.svelte";
 	import EditMode from "./EditMode.svelte";
 	import * as d3 from "d3";
+	import { createEventDispatcher } from "svelte";
 
+	const dispatch = createEventDispatcher<{ change: undefined }>();
+
+	export let id: number;
 	export let name: string;
 	export let alignedWithName: string | undefined = undefined;
 	export let width: number = 500;
@@ -36,8 +40,9 @@
 	on:cancel={() => {
 		console.log("cancel");
 	}}
-	on:delete={() => {
-		console.log("del");
+	on:delete={async () => {
+		await Backend.deleteArticleProteinComponent(id);
+		dispatch("change");
 	}}
 >
 	<slot>
