@@ -68,6 +68,7 @@
 						</div>
 					{:else if c.componentType === "protein"}
 						<ProteinComponent
+							{articleTitle}
 							id={c.id}
 							name={c.name}
 							alignedWithName={c.alignedWithName}

@@ -10,6 +10,7 @@
 
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
+	export let articleTitle: string;
 	export let id: number;
 	export let name: string;
 	export let alignedWithName: string | undefined = undefined;
@@ -59,6 +60,24 @@
 	}}
 	on:delete={async () => {
 		await Backend.deleteArticleProteinComponent(id);
+		dispatch("change");
+	}}
+	on:movedown={async () => {
+		await Backend.swapComponentOrder({
+			swapUp: false,
+			articleTitle,
+			componentId: id,
+			componentType: "protein",
+		});
+		dispatch("change");
+	}}
+	on:moveup={async () => {
+		await Backend.swapComponentOrder({
+			swapUp: true,
+			articleTitle,
+			componentId: id,
+			componentType: "protein",
+		});
 		dispatch("change");
 	}}
 >

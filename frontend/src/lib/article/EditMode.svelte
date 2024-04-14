@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { Button } from "flowbite-svelte";
+	import { ArrowKeyUp, Button } from "flowbite-svelte";
 	import { createEventDispatcher } from "svelte";
 	import {
+		ArrowUpDownSolid,
+		ArrowUpSolid,
 		CheckOutline,
 		CloseOutline,
 		EditOutline,
@@ -12,6 +14,8 @@
 		delete: undefined;
 		edit: undefined;
 		cancel: undefined;
+		movedown: undefined;
+		moveup: undefined;
 	}>();
 
 	export let disabledSave: boolean = true;
@@ -69,7 +73,10 @@
 		<slot />
 	{/if}
 	{#if revealEdit}
-		<div style="position: absolute; left: -60px; top: 10px; width: 60px;">
+		<div
+			style="position: absolute; left: -60px; top: 10px; width: 60px;"
+			class="flex gap-1 flex-col"
+		>
 			<Button
 				size="xs"
 				color="light"
@@ -77,7 +84,21 @@
 					editMode = true;
 					revealEdit = false;
 					dispatch("edit");
-				}}><EditOutline size="xs" /> Edit</Button
+				}}><EditOutline size="sm" /> Edit</Button
+			>
+			<Button
+				size="xs"
+				color="light"
+				on:click={() => {
+					dispatch("moveup");
+				}}><ArrowUpSolid size="sm" class="rotate-180" /> Move</Button
+			>
+			<Button
+				size="xs"
+				color="light"
+				on:click={() => {
+					dispatch("movedown");
+				}}><ArrowUpSolid size="sm" /> Move</Button
 			>
 		</div>
 	{/if}

@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Article } from '../models/Article';
+import type { ArticleComponentSwap } from '../models/ArticleComponentSwap';
 import type { ArticleUpload } from '../models/ArticleUpload';
 import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
@@ -522,6 +523,25 @@ export class DefaultService {
             path: {
                 'component_id': componentId,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Swap Component Order
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static swapComponentOrder(
+        requestBody: ArticleComponentSwap,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/swap/{direction}',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

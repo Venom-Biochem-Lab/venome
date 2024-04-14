@@ -8,6 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Article } from './models/Article';
+export type { ArticleComponentSwap } from './models/ArticleComponentSwap';
 export type { ArticleProteinComponent } from './models/ArticleProteinComponent';
 export type { ArticleTextComponent } from './models/ArticleTextComponent';
 export type { ArticleUpload } from './models/ArticleUpload';
