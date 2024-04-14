@@ -8,6 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Article } from './models/Article';
+export type { ArticleProteinComponent } from './models/ArticleProteinComponent';
 export type { ArticleTextComponent } from './models/ArticleTextComponent';
 export type { ArticleUpload } from './models/ArticleUpload';
 export type { EditArticleTextComponent } from './models/EditArticleTextComponent';
@@ -24,6 +25,7 @@ export type { SimilarProtein } from './models/SimilarProtein';
 export type { Tutorial } from './models/Tutorial';
 export type { TutorialEdit } from './models/TutorialEdit';
 export type { TutorialUpload } from './models/TutorialUpload';
+export type { UploadArticleProteinComponent } from './models/UploadArticleProteinComponent';
 export type { UploadArticleTextComponent } from './models/UploadArticleTextComponent';
 export type { UploadBody } from './models/UploadBody';
 export { UploadError } from './models/UploadError';

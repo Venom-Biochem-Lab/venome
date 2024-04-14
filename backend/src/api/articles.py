@@ -25,33 +25,65 @@ def upload_article(body: ArticleUpload, req: Request):
 
 class ArticleTextComponent(CamelModel):
     id: int
+    component_type: str = "text"
     component_order: int
     markdown: str
+
+
+class ArticleProteinComponent(CamelModel):
+    id: int
+    component_type: str = "protein"
+    component_order: int
+    name: str
+    aligned_with_name: str | None = None
 
 
 class Article(CamelModel):
     title: str
     text_components: list[ArticleTextComponent]
+    protein_components: list[ArticleProteinComponent]
+
+
+def get_text_components(db: Database, title: str):
+    query = """SELECT id, component_order, markdown FROM article_text_components
+                WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
+    res = db.execute_return(query, [title])
+    if res is not None:
+        return [
+            ArticleTextComponent(id=i, component_order=c, markdown=m)
+            for [i, c, m] in res
+        ]
+    return []
+
+
+def get_protein_components(db: Database, title: str):
+    query = """SELECT id, component_order, name, aligned_with_name FROM article_protein_components
+                WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
+    res = db.execute_return(query, [title])
+    if res is not None:
+        return [
+            ArticleProteinComponent(
+                id=i, component_order=c, name=n, aligned_with_name=a
+            )
+            for [i, c, n, a] in res
+        ]
+    return []
 
 
 @router.get("/article/{title:str}", response_model=Article)
 def get_article(title: str):
-    print("hit")
     with Database() as db:
         try:
-            query = """SELECT id, component_order, markdown FROM article_text_components
-                       WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
-            res = db.execute_return(query, [title])
-            if res is not None:
-                return Article(
-                    title=title,
-                    text_components=[
-                        ArticleTextComponent(id=i, component_order=c, markdown=m)
-                        for [i, c, m] in res
-                    ],
-                )
+            text_components = get_text_components(db, title)
+            protein_components = get_protein_components(db, title)
         except Exception as e:
-            raise HTTPException(500, detail=str(e))
+            HTTPException(500, detail=str(e))
+
+        return Article(
+            title=title,
+            text_components=text_components,
+            protein_components=protein_components,
+        )
 
 
 class UploadArticleTextComponent(CamelModel):
@@ -98,6 +130,26 @@ def edit_article_text_component(body: EditArticleTextComponent):
     pass
 
 
-@router.get("/articles", response_model=list[str])
-def get_all_articles():
-    return ["test", "what?"]
+class UploadArticleProteinComponent(CamelModel):
+    for_article_title: str
+    component_order: int
+    name: str
+    aligned_with_name: str | None = None
+
+
+@router.post("/article/component/protein")
+def upload_article_protein_component(body: UploadArticleProteinComponent):
+    with Database() as db:
+        try:
+            query = """INSERT INTO article_protein_components (article_id, component_order, name, aligned_with_name) VALUES ((SELECT id FROM articles WHERE title=%s), %s, %s, %s);"""
+            db.execute(
+                query,
+                [
+                    body.for_article_title,
+                    body.component_order,
+                    body.name,
+                    body.aligned_with_name,
+                ],
+            )
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))

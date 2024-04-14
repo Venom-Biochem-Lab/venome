@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ArticleTextComponent = {
-    id: number;
-    componentType?: string;
+export type UploadArticleProteinComponent = {
+    forArticleTitle: string;
     componentOrder: number;
-    markdown: string;
+    name: string;
+    alignedWithName?: (string | null);
 };
 

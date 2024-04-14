@@ -17,6 +17,7 @@ import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
 import type { TutorialEdit } from '../models/TutorialEdit';
 import type { TutorialUpload } from '../models/TutorialUpload';
+import type { UploadArticleProteinComponent } from '../models/UploadArticleProteinComponent';
 import type { UploadArticleTextComponent } from '../models/UploadArticleTextComponent';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
@@ -468,14 +469,22 @@ export class DefaultService {
         });
     }
     /**
-     * Get All Articles
-     * @returns string Successful Response
+     * Upload Article Protein Component
+     * @param requestBody
+     * @returns any Successful Response
      * @throws ApiError
      */
-    public static getAllArticles(): CancelablePromise<Array<string>> {
+    public static uploadArticleProteinComponent(
+        requestBody: UploadArticleProteinComponent,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
-            method: 'GET',
-            url: '/articles',
+            method: 'POST',
+            url: '/article/component/protein',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
         });
     }
 }

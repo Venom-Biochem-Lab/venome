@@ -4,6 +4,7 @@
 		Backend,
 		type Article,
 		type ArticleTextComponent,
+		type ArticleProteinComponent,
 	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import TextComponent from "../lib/article/TextComponent.svelte";
@@ -16,14 +17,20 @@
 	onMount(async () => {
 		await refreshArticle();
 	});
+	let combined: (ArticleTextComponent | ArticleProteinComponent)[] = [];
+	$: if (article) {
+		combined = combineAndOrderComponents(article);
+	}
 
 	function combineAndOrderComponents(
 		article: Article
-	): ArticleTextComponent[] {
-		return [...article.textComponents].toSorted(
-			(a, b) => a.componentOrder - b.componentOrder
-		);
+	): (ArticleTextComponent | ArticleProteinComponent)[] {
+		return [
+			...article.textComponents,
+			...article.proteinComponents,
+		].toSorted((a, b) => a.componentOrder - b.componentOrder);
 	}
+
 	async function refreshArticle() {
 		try {
 			article = await Backend.getArticle(articleTitle);
@@ -34,24 +41,29 @@
 </script>
 
 <section class="p-5">
-	{#if article}
+	{#if article && combined}
 		<div>
 			<div class="flex gap-2 flex-col items-center">
 				<div id="title" style="width: {textWidth};">
 					{article.title}
 				</div>
-				{#each combineAndOrderComponents(article) as c (c.id)}
-					<!-- relying on display: flex; and child's order: to order components sorted -->
-					<div id="text-{c.id}" style="width: {textWidth};">
-						<TextComponent
-							{articleTitle}
-							markdown={c.markdown}
-							id={c.id}
-							on:change={async () => {
-								await refreshArticle();
-							}}
-						/>
-					</div>
+				{#each combined as c (`${c.componentType}-${c.id}`)}
+					{#if c.componentType === "text"}
+						<div style="width: {textWidth};">
+							<TextComponent
+								{articleTitle}
+								markdown={c.markdown}
+								id={c.id}
+								on:change={async () => {
+									await refreshArticle();
+								}}
+							/>
+						</div>
+					{:else if c.componentType === "protein"}
+						<div>
+							{c.name} | {c.alignedWithName}
+						</div>
+					{/if}
 				{/each}
 				<div class="mt-5" style="width: {textWidth};">
 					<Button
@@ -84,7 +96,32 @@
 								dropdownOpen = false;
 							}}>Text/Markdown Component</DropdownItem
 						>
-						<DropdownItem>Protein Component</DropdownItem>
+						<DropdownItem
+							on:click={async () => {
+								if (!combined) return;
+								try {
+									await Backend.uploadArticleProteinComponent(
+										{
+											forArticleTitle: articleTitle,
+											componentOrder:
+												combined.reduce(
+													(prev, cur) =>
+														cur.componentOrder >
+														prev
+															? cur.componentOrder
+															: prev,
+													0
+												) + 1,
+											name: "test",
+										}
+									);
+									await refreshArticle();
+								} catch (e) {
+									console.error(e);
+								}
+								dropdownOpen = false;
+							}}>Protein Component</DropdownItem
+						>
 					</Dropdown>
 				</div>
 			</div>

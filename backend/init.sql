@@ -75,6 +75,14 @@ CREATE TABLE article_text_components (
     markdown text DEFAULT '',
     FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+CREATE TABLE article_protein_components (
+    id serial PRIMARY KEY,
+    article_id integer NOT NULL,
+    component_order integer NOT NULL, -- where this component is within a particular article 
+    name text NOT NULL,
+    aligned_with_name text, 
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 
 /*
