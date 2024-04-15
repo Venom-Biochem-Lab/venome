@@ -2,19 +2,22 @@
 	import TMAlignEntry from "./TMAlignEntry.svelte";
 
 	import { onMount } from "svelte";
-	import { Backend, BACKEND_URL, type ProteinEntry } from "../lib/backend";
+	import { Backend, BACKEND_URL, type SimilarProtein, type ProteinEntry } from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { DownloadOutline } from "flowbite-svelte-icons";
 	import { Button } from "flowbite-svelte";
 	import * as d3 from "d3";
 	import { undoFormatProteinName } from "../lib/format";
+    import AlignBlock from "../lib/AlignBlock.svelte";
 
 	export let proteinA: string;
 	export let proteinB: string;
 	let combined = proteinA + "/" + proteinB;
 	let entryA: ProteinEntry | null = null;
 	let entryB: ProteinEntry | null = null;
+    let foldseekData: SimilarProtein;
+    let foldseekError = false;
 	let error = false;
 
 	const dark2green = d3.schemeDark2[0];
@@ -33,6 +36,17 @@
 
 		entryA = await Backend.getProteinEntry(proteinA);
 		entryB = await Backend.getProteinEntry(proteinB);
+
+        try {
+			foldseekData = await Backend.searchVenomeSimilarCompare(proteinA, proteinB)
+		} catch (e) {
+			console.error(e);
+			console.error(
+				"NEED TO DOWNLOAD FOLDSEEK IN THE SERVER. SEE THE SERVER ERROR MESSAGE."
+			);
+			foldseekError = true;
+		}
+        
 
 		// if we could not find the entry, the id is garbo
 		if (entryA == null || entryB == null) error = true;
@@ -58,6 +72,33 @@
 				</div>
 				<TMAlignEntry entry={entryA} color={dark2green} />
 				<TMAlignEntry entry={entryB} color={dark2orange} />
+                <h1>
+                    Foldseek Data
+                </h1>
+                {#if foldseekData === undefined && !foldseekError}
+                    <DelayedSpinner
+                        text="Loading Foldseek..."
+                        textRight
+                        msDelay={0}
+                    />
+                {:else if foldseekData !== undefined}
+                    <div>
+                        <b>Prob. Match:</b> {foldseekData.prob}
+                    </div>
+                    <div>
+                        <b>E-Value:</b> {foldseekData.evalue}
+                    </div>
+                    <div>
+                        <b>Region of Similarity</b>
+                        <AlignBlock
+                            width={260}
+                            height={20}
+                            ogLength={entryA.length}
+                            qstart={foldseekData.qstart}
+                            qend={foldseekData.qend}
+                        />
+                    </div>
+                {/if}
 				<div style="width: 300px;" class="mt-3">
 					<Button href="{BACKEND_URL}/protein/pdb/{combined}"
 						>Download Aligned PDB File<DownloadOutline
