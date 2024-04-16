@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..api_types import CamelModel
-from ..db import Database
+from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 from ..auth import requires_authentication
 from fastapi.requests import Request
@@ -24,6 +24,15 @@ def upload_article(body: ArticleUpload, req: Request):
             raise HTTPException(500, detail=str(e))
 
 
+class ArticleImageComponent(CamelModel):
+    id: int
+    component_type: str = "image"
+    component_order: int
+    src: str
+    width: int | None = None
+    height: int | None = None
+
+
 class ArticleTextComponent(CamelModel):
     id: int
     component_type: str = "text"
@@ -43,6 +52,7 @@ class Article(CamelModel):
     title: str
     text_components: list[ArticleTextComponent]
     protein_components: list[ArticleProteinComponent]
+    image_components: list[ArticleImageComponent]
 
 
 def get_text_components(db: Database, title: str):
@@ -71,12 +81,31 @@ def get_protein_components(db: Database, title: str):
     return []
 
 
+def get_image_components(db: Database, title: str):
+    query = """SELECT id, component_order, src, width, height FROM article_image_components
+                WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
+    res = db.execute_return(query, [title])
+    if res is not None:
+        return [
+            ArticleImageComponent(
+                id=i,
+                component_order=c,
+                src=bytea_to_str(src_bytes),
+                width=width,
+                height=height,
+            )
+            for [i, c, src_bytes, width, height] in res
+        ]
+    return []
+
+
 @router.get("/article/{title:str}", response_model=Article)
 def get_article(title: str):
     with Database() as db:
         try:
             text_components = get_text_components(db, title)
             protein_components = get_protein_components(db, title)
+            image_components = get_image_components(db, title)
         except Exception as e:
             HTTPException(500, detail=str(e))
 
@@ -84,6 +113,7 @@ def get_article(title: str):
             title=title,
             text_components=text_components,
             protein_components=protein_components,
+            image_components=image_components,
         )
 
 
@@ -197,8 +227,10 @@ def swap_component_order(body: ArticleComponentSwap):
         try:
             protein_components = get_protein_components(db, body.article_title)
             text_components = get_text_components(db, body.article_title)
+            image_components = get_image_components(db, body.article_title)
             combined_ordered = sorted(
-                [*protein_components, *text_components], key=lambda x: x.component_order
+                [*protein_components, *text_components, *image_components],
+                key=lambda x: x.component_order,
             )
 
             found_index = -1
@@ -240,5 +272,68 @@ def swap_component_order(body: ArticleComponentSwap):
                 query,  # type: ignore
                 [cur_order.component_order, next_order.id],
             )
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
+class UploadArticleImageComponent(CamelModel):
+    for_article_title: str
+    component_order: int
+    src: str
+    width: int | None = None
+    height: int | None = None
+
+
+@router.post("/article/component/image")
+def upload_article_image_component(body: UploadArticleImageComponent):
+    with Database() as db:
+        try:
+            query = """INSERT INTO article_image_components (article_id, component_order, src, width, height) VALUES ((SELECT id FROM articles WHERE title=%s), %s, %s, %s, %s);"""
+            db.execute(
+                query,
+                [
+                    body.for_article_title,
+                    body.component_order,
+                    str_to_bytea(body.src),
+                    body.width,
+                    body.height,
+                ],
+            )
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
+class EditArticleImageComponent(CamelModel):
+    image_component_id: int
+    new_src: str | None = None
+    new_height: int | None = None
+    new_width: int | None = None
+
+
+@router.put("/article/component/image")
+def edit_article_image_component(body: EditArticleImageComponent):
+    with Database() as db:
+        try:
+            if body.new_src is not None:
+                db.execute(
+                    """UPDATE article_image_components SET src=%s WHERE id=%s;""",
+                    [body.new_src, body.image_component_id],
+                )
+
+            db.execute(
+                """UPDATE article_image_components SET width=%s, height=%s WHERE id=%s;""",
+                [body.new_width, body.new_height, body.image_component_id],
+            )
+
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
+@router.delete("/article/component/image/{component_id:int}")
+def delete_article_image_component(component_id: int):
+    with Database() as db:
+        try:
+            query = """DELETE FROM article_image_components WHERE id=%s;"""
+            db.execute(query, [component_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))

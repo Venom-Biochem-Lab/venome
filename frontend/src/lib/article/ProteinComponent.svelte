@@ -67,7 +67,7 @@
 			swapUp: false,
 			articleTitle,
 			componentId: id,
-			componentType: "protein",
+			componentType: "image",
 		});
 		dispatch("change");
 	}}
@@ -76,7 +76,7 @@
 			swapUp: true,
 			articleTitle,
 			componentId: id,
-			componentType: "protein",
+			componentType: "image",
 		});
 		dispatch("change");
 	}}

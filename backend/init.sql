@@ -83,7 +83,15 @@ CREATE TABLE article_protein_components (
     aligned_with_name text, 
     FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-
+CREATE TABLE article_image_components (
+    id serial PRIMARY KEY,
+    article_id integer NOT NULL,
+    component_order integer NOT NULL, -- where this component is within a particular article 
+    src bytea NOT NULL, --bytes of the image
+    width integer,
+    height integer,
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 /*
  * Inserts example species into species table

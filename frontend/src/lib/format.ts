@@ -3,6 +3,16 @@ export function numberWithCommas(x: number, round = 0) {
 	return formatter.format(+x.toFixed(round));
 }
 
+export function fileToBase64String(f: File): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(f);
+		reader.onload = () => {
+			resolve(reader.result as string);
+		};
+		reader.onerror = reject;
+	});
+}
 export function fileToString(f: File): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();

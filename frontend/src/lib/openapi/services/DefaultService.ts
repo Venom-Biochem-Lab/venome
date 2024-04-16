@@ -5,6 +5,7 @@
 import type { Article } from '../models/Article';
 import type { ArticleComponentSwap } from '../models/ArticleComponentSwap';
 import type { ArticleUpload } from '../models/ArticleUpload';
+import type { EditArticleImageComponent } from '../models/EditArticleImageComponent';
 import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
@@ -19,6 +20,7 @@ import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
 import type { TutorialEdit } from '../models/TutorialEdit';
 import type { TutorialUpload } from '../models/TutorialUpload';
+import type { UploadArticleImageComponent } from '../models/UploadArticleImageComponent';
 import type { UploadArticleProteinComponent } from '../models/UploadArticleProteinComponent';
 import type { UploadArticleTextComponent } from '../models/UploadArticleTextComponent';
 import type { UploadBody } from '../models/UploadBody';
@@ -542,6 +544,64 @@ export class DefaultService {
             url: '/article/component/swap/{direction}',
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article Image Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticleImageComponent(
+        requestBody: EditArticleImageComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/image',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Article Image Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticleImageComponent(
+        requestBody: UploadArticleImageComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/component/image',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Delete Article Image Component
+     * @param componentId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteArticleImageComponent(
+        componentId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/article/component/image/{component_id}',
+            path: {
+                'component_id': componentId,
+            },
             errors: {
                 422: `Validation Error`,
             },
