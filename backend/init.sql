@@ -94,6 +94,33 @@ CREATE TABLE article_image_components (
 );
 
 /*
+* Articles Table v2
+*/
+CREATE TABLE articles_v2 (
+    id serial PRIMARY KEY,
+    title text NOT NULL UNIQUE,
+    description text,
+    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE components (
+    id serial PRIMARY KEY,
+    article_id integer NOT NULL,
+    component_order integer NOT NULL, -- where this component is within a particular article 
+    FOREIGN KEY (article_id) REFERENCES articles_v2(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE text_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+    markdown text DEFAULT '',
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+INSERT INTO articles_v2(title, description) VALUES('General Information', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida tristique est, a sollicit');
+INSERT INTO components(article_id, component_order) VALUES((SELECT id FROM articles_v2 WHERE title = 'General Information'), 1);
+INSERT INTO text_components(component_id, markdown) VALUES((SELECT id FROM components WHERE  component_order=1), '## section 1\nhello!');
+
+/*
  * Inserts example species into species table
  */
 INSERT INTO species(name) VALUES ('ganaspis hookeri');

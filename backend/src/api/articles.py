@@ -11,15 +11,15 @@ router = APIRouter()
 
 class ArticleUpload(CamelModel):
     title: str
+    description: str | None = None
 
 
 @router.post("/article/upload")
 def upload_article(body: ArticleUpload, req: Request):
-    requires_authentication(req)
     with Database() as db:
         try:
-            query = """INSERT INTO articles (title) VALUES (%s);"""
-            db.execute(query, [body.title])
+            query = """INSERT INTO articles_v2 (title, description) VALUES (%s, %s);"""
+            db.execute(query, [body.title, body.description])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
 
@@ -53,6 +53,20 @@ class Article(CamelModel):
     text_components: list[ArticleTextComponent]
     protein_components: list[ArticleProteinComponent]
     image_components: list[ArticleImageComponent]
+
+
+def get_text_components_v2(db: Database, title: str):
+    query = """SELECT components.id, components.component_order, text_components.markdown FROM components
+               JOIN text_components ON text_components.component_id = components.id
+               WHERE components.article_id = (SELECT id FROM articles_v2 WHERE title = %s);
+                """
+    res = db.execute_return(query, [title])
+    if res is not None:
+        return [
+            ArticleTextComponent(id=i, component_order=c, markdown=m)
+            for [i, c, m] in res
+        ]
+    return []
 
 
 def get_text_components(db: Database, title: str):
@@ -103,18 +117,17 @@ def get_image_components(db: Database, title: str):
 def get_article(title: str):
     with Database() as db:
         try:
-            text_components = get_text_components(db, title)
-            protein_components = get_protein_components(db, title)
-            image_components = get_image_components(db, title)
+            text_components = get_text_components_v2(db, title)
+            # protein_components = get_protein_components(db, title)
+            # image_components = get_image_components(db, title)
+            return Article(
+                title=title,
+                text_components=text_components,
+                protein_components=[],
+                image_components=[],
+            )
         except Exception as e:
             HTTPException(500, detail=str(e))
-
-        return Article(
-            title=title,
-            text_components=text_components,
-            protein_components=protein_components,
-            image_components=image_components,
-        )
 
 
 class UploadArticleTextComponent(CamelModel):
