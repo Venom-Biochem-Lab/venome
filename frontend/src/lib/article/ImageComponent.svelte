@@ -40,24 +40,8 @@
 		await Backend.deleteArticleImageComponent(id);
 		dispatch("change");
 	}}
-	on:movedown={async () => {
-		await Backend.swapComponentOrder({
-			swapUp: false,
-			articleTitle,
-			componentId: id,
-			componentType: "protein",
-		});
-		dispatch("change");
-	}}
-	on:moveup={async () => {
-		await Backend.swapComponentOrder({
-			swapUp: true,
-			articleTitle,
-			componentId: id,
-			componentType: "protein",
-		});
-		dispatch("change");
-	}}
+	on:movedown={async () => {}}
+	on:moveup={async () => {}}
 >
 	<slot>
 		{#if src === ""}

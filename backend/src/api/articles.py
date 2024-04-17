@@ -214,68 +214,6 @@ def edit_article_protein_component(body: EditArticleProteinComponent):
             raise HTTPException(500, detail=str(e))
 
 
-class ArticleComponentSwap(CamelModel):
-    swap_up: bool
-    article_title: str
-    component_type: str
-    component_id: int
-
-
-@router.put("/article/component/swap/{direction:str}")
-def swap_component_order(body: ArticleComponentSwap):
-    with Database() as db:
-        try:
-            protein_components = get_protein_components(db, body.article_title)
-            text_components = get_text_components(db, body.article_title)
-            image_components = get_image_components(db, body.article_title)
-            combined_ordered = sorted(
-                [*protein_components, *text_components, *image_components],
-                key=lambda x: x.component_order,
-            )
-
-            found_index = -1
-            for i, component in enumerate(combined_ordered):
-                if (
-                    component.component_type == body.component_type
-                    and component.id == body.component_id
-                ):
-                    found_index = i
-
-            if not body.swap_up:
-                # if can't move down, don't do anything
-                if found_index == len(combined_ordered) or found_index == -1:
-                    return
-            else:
-                # if can't move up, don't do anything
-                if found_index <= 0 or found_index == -1:
-                    return
-
-            cur_order = combined_ordered[found_index]
-            next_order = (
-                combined_ordered[found_index + 1]
-                if not body.swap_up
-                else combined_ordered[found_index - 1]
-            )
-
-            # swap orders
-            query = """UPDATE article_{}_components SET component_order=%s WHERE id=%s;""".format(
-                cur_order.component_type
-            )
-            db.execute(
-                query,  # type: ignore
-                [next_order.component_order, cur_order.id],
-            )
-            query = """UPDATE article_{}_components SET component_order=%s WHERE id=%s;""".format(
-                next_order.component_type
-            )
-            db.execute(
-                query,  # type: ignore
-                [cur_order.component_order, next_order.id],
-            )
-        except Exception as e:
-            raise HTTPException(500, detail=str(e))
-
-
 class UploadArticleImageComponent(CamelModel):
     for_article_title: str
     component_order: int

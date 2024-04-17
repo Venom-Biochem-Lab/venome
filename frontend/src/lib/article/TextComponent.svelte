@@ -36,24 +36,8 @@
 		}
 		dispatch("change");
 	}}
-	on:movedown={async () => {
-		await Backend.swapComponentOrder({
-			swapUp: false,
-			articleTitle,
-			componentId: id,
-			componentType: "text",
-		});
-		dispatch("change");
-	}}
-	on:moveup={async () => {
-		await Backend.swapComponentOrder({
-			swapUp: true,
-			articleTitle,
-			componentId: id,
-			componentType: "text",
-		});
-		dispatch("change");
-	}}
+	on:movedown={async () => {}}
+	on:moveup={async () => {}}
 >
 	<slot>
 		<Markdown text={String.raw`${markdown}`} />
