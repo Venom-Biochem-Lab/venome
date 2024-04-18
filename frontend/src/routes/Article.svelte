@@ -1,11 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import {
-		Backend,
-		type Article,
-		type ArticleTextComponent,
-		type ArticleProteinComponent,
-	} from "../lib/backend";
+	import { Backend, type Article } from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
@@ -19,18 +14,6 @@
 	onMount(async () => {
 		await refreshArticle();
 	});
-	let combined: ReturnType<typeof combineAndOrderComponents> = [];
-	$: if (article) {
-		combined = combineAndOrderComponents(article);
-	}
-
-	function combineAndOrderComponents(article: Article) {
-		return [
-			...article.textComponents,
-			...article.proteinComponents,
-			...article.imageComponents,
-		].toSorted((a, b) => a.componentOrder - b.componentOrder);
-	}
 
 	async function refreshArticle() {
 		try {
@@ -39,32 +22,16 @@
 			console.error(e);
 		}
 	}
-
-	function uniqueComponentId(
-		component: ArticleTextComponent | ArticleProteinComponent
-	) {
-		return `${component.componentType}-${component.id}-${component.componentOrder}`;
-	}
-
-	function nextComponentOrder() {
-		return (
-			combined.reduce(
-				(prev, cur) =>
-					cur.componentOrder > prev ? cur.componentOrder : prev,
-				0
-			) + 1
-		);
-	}
 </script>
 
 <section class="p-5">
-	{#if article && combined}
+	{#if article}
 		<div>
 			<div class="flex gap-2 flex-col items-center">
 				<div id="title" style="width: {textWidth};">
 					{article.title}
 				</div>
-				{#each combined as c (uniqueComponentId(c))}
+				{#each article.orderedComponents as c (c.id)}
 					{#if c.componentType === "text"}
 						<div style="width: {textWidth};">
 							<TextComponent
@@ -129,7 +96,6 @@
 						>
 						<DropdownItem
 							on:click={async () => {
-								if (!combined) return;
 								try {
 									await Backend.uploadArticleImageComponent({
 										forArticleTitle: articleTitle,
@@ -143,7 +109,6 @@
 							}}>Image Component</DropdownItem
 						><DropdownItem
 							on:click={async () => {
-								if (!combined) return;
 								try {
 									await Backend.uploadArticleProteinComponent(
 										{

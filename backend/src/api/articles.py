@@ -50,9 +50,11 @@ class ArticleProteinComponent(CamelModel):
 
 class Article(CamelModel):
     title: str
-    text_components: list[ArticleTextComponent]
-    protein_components: list[ArticleProteinComponent]
-    image_components: list[ArticleImageComponent]
+    description: str | None = None
+    date_published: str | None = None
+    ordered_components: list[
+        ArticleTextComponent | ArticleProteinComponent | ArticleImageComponent
+    ]
 
 
 def get_text_components_v2(db: Database, title: str):
@@ -112,13 +114,12 @@ def get_article(title: str):
             text_components = get_text_components_v2(db, title)
             protein_components = get_protein_components_v2(db, title)
             image_components = get_image_components_v2(db, title)
-
-            return Article(
-                title=title,
-                text_components=text_components,
-                protein_components=protein_components,
-                image_components=image_components,
+            ordered_components = sorted(
+                [*text_components, *protein_components, *image_components],
+                key=lambda x: x.component_order,
             )
+
+            return Article(title=title, ordered_components=ordered_components)
         except Exception as e:
             HTTPException(500, detail=str(e))
 

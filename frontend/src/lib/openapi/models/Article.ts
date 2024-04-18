@@ -7,8 +7,8 @@ import type { ArticleProteinComponent } from './ArticleProteinComponent';
 import type { ArticleTextComponent } from './ArticleTextComponent';
 export type Article = {
     title: string;
-    textComponents: Array<ArticleTextComponent>;
-    proteinComponents: Array<ArticleProteinComponent>;
-    imageComponents: Array<ArticleImageComponent>;
+    description?: (string | null);
+    datePublished?: (string | null);
+    orderedComponents: Array<(ArticleTextComponent | ArticleProteinComponent | ArticleImageComponent)>;
 };
 
