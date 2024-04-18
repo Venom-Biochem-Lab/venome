@@ -510,26 +510,6 @@ export class DefaultService {
         });
     }
     /**
-     * Delete Article Protein Component
-     * @param componentId
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static deleteArticleProteinComponent(
-        componentId: number,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/article/component/protein/{component_id}',
-            path: {
-                'component_id': componentId,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
      * Edit Article Image Component
      * @param requestBody
      * @returns any Successful Response

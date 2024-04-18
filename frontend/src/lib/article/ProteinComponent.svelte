@@ -59,7 +59,7 @@
 		editedAlignedWithName = alignedWithName;
 	}}
 	on:delete={async () => {
-		await Backend.deleteArticleProteinComponent(id);
+		await Backend.deleteArticleComponent(id);
 		dispatch("change");
 	}}
 	on:movedown={async () => {}}

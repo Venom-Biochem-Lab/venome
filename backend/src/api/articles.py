@@ -207,16 +207,6 @@ def upload_article_protein_component(body: UploadArticleProteinComponent):
             raise HTTPException(500, detail=str(e))
 
 
-@router.delete("/article/component/protein/{component_id:int}")
-def delete_article_protein_component(component_id: int):
-    with Database() as db:
-        try:
-            query = """DELETE FROM protein_components WHERE component_id=%s;"""
-            db.execute(query, [component_id])
-        except Exception as e:
-            raise HTTPException(500, detail=str(e))
-
-
 class EditArticleProteinComponent(CamelModel):
     protein_component_id: int
     new_name: str | None = None
