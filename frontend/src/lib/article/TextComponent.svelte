@@ -30,7 +30,7 @@
 	on:cancel={() => {}}
 	on:delete={async () => {
 		try {
-			await Backend.deleteArticleTextComponent(id);
+			await Backend.deleteArticleComponent(id);
 		} catch (e) {
 			console.error(e);
 		}

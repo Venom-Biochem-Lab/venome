@@ -452,17 +452,17 @@ export class DefaultService {
         });
     }
     /**
-     * Delete Article Text Component
+     * Delete Article Component
      * @param componentId
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static deleteArticleTextComponent(
+    public static deleteArticleComponent(
         componentId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/article/component/text/{component_id}',
+            url: '/article/component/{component_id}',
             path: {
                 'component_id': componentId,
             },

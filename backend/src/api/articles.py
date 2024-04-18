@@ -95,24 +95,6 @@ def get_protein_components(db: Database, title: str):
     return []
 
 
-def get_image_components(db: Database, title: str):
-    query = """SELECT id, component_order, src, width, height FROM article_image_components
-                WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
-    res = db.execute_return(query, [title])
-    if res is not None:
-        return [
-            ArticleImageComponent(
-                id=i,
-                component_order=c,
-                src=bytea_to_str(src_bytes),
-                width=width,
-                height=height,
-            )
-            for [i, c, src_bytes, width, height] in res
-        ]
-    return []
-
-
 @router.get("/article/{title:str}", response_model=Article)
 def get_article(title: str):
     with Database() as db:
@@ -179,11 +161,11 @@ def upload_article_text_component(body: UploadArticleTextComponent):
             raise HTTPException(500, detail=str(e))
 
 
-@router.delete("/article/component/text/{component_id:int}")
-def delete_article_text_component(component_id: int):
+@router.delete("/article/component/{component_id:int}")
+def delete_article_component(component_id: int):
     with Database() as db:
         try:
-            query = """DELETE FROM article_text_components WHERE id=%s;"""
+            query = """DELETE FROM components WHERE id=%s;"""
             db.execute(query, [component_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
