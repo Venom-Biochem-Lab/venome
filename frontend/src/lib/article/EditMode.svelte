@@ -9,6 +9,7 @@
 		EditOutline,
 		TrashBinOutline,
 	} from "flowbite-svelte-icons";
+	import { user } from "../stores/user";
 	const dispatch = createEventDispatcher<{
 		save: undefined;
 		delete: undefined;
@@ -19,6 +20,7 @@
 	}>();
 
 	export let disabledSave: boolean = true;
+	$: forceHideEdit = !$user.loggedIn;
 
 	let editMode = false;
 	let revealEdit = false;
@@ -35,7 +37,7 @@
 	class:editing={editMode}
 	class="text-component"
 >
-	{#if editMode}
+	{#if editMode && !forceHideEdit}
 		<slot name="edit" />
 		<div class="flex justify-between p-1">
 			<div>
@@ -72,7 +74,7 @@
 	{:else}
 		<slot />
 	{/if}
-	{#if revealEdit}
+	{#if revealEdit && !forceHideEdit}
 		<div
 			style="position: absolute; left: -60px; top: 10px; width: 60px; z-index: 999;"
 			class="flex gap-1 flex-col"

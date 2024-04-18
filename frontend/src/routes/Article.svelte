@@ -5,6 +5,7 @@
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
+	import { user } from "../lib/stores/user";
 
 	export let articleTitle: string;
 
@@ -71,60 +72,66 @@
 						</div>
 					{/if}
 				{/each}
-				<div class="mt-5" style="width: {textWidth};">
-					<Button
-						outline
-						color="light"
-						on:click={() => (dropdownOpen = true)}
-						>+ Add New Component</Button
-					>
-					<Dropdown open={dropdownOpen}>
-						<DropdownItem
-							on:click={async () => {
-								try {
-									await Backend.uploadArticleTextComponent({
-										forArticleTitle: articleTitle,
-										markdown:
-											"## Placeholder Text\nHover over this section and click **Edit** to edit.",
-									});
-									await refreshArticle();
-								} catch (e) {
-									console.error(e);
-								}
-								dropdownOpen = false;
-							}}>Text Component</DropdownItem
+				{#if $user.loggedIn}
+					<div class="mt-5" style="width: {textWidth};">
+						<Button
+							outline
+							color="light"
+							on:click={() => (dropdownOpen = true)}
+							>+ Add New Component</Button
 						>
-						<DropdownItem
-							on:click={async () => {
-								try {
-									await Backend.uploadArticleImageComponent({
-										forArticleTitle: articleTitle,
-										src: "",
-									});
-									await refreshArticle();
-								} catch (e) {
-									console.error(e);
-								}
-								dropdownOpen = false;
-							}}>Image Component</DropdownItem
-						><DropdownItem
-							on:click={async () => {
-								try {
-									await Backend.uploadArticleProteinComponent(
-										{
-											forArticleTitle: articleTitle,
-											name: "",
-										}
-									);
-									await refreshArticle();
-								} catch (e) {
-									console.error(e);
-								}
-								dropdownOpen = false;
-							}}>Protein Component</DropdownItem
-						>
-					</Dropdown>
-				</div>
+						<Dropdown open={dropdownOpen}>
+							<DropdownItem
+								on:click={async () => {
+									try {
+										await Backend.uploadArticleTextComponent(
+											{
+												forArticleTitle: articleTitle,
+												markdown:
+													"## Placeholder Text\nHover over this section and click **Edit** to edit.",
+											}
+										);
+										await refreshArticle();
+									} catch (e) {
+										console.error(e);
+									}
+									dropdownOpen = false;
+								}}>Text Component</DropdownItem
+							>
+							<DropdownItem
+								on:click={async () => {
+									try {
+										await Backend.uploadArticleImageComponent(
+											{
+												forArticleTitle: articleTitle,
+												src: "",
+											}
+										);
+										await refreshArticle();
+									} catch (e) {
+										console.error(e);
+									}
+									dropdownOpen = false;
+								}}>Image Component</DropdownItem
+							><DropdownItem
+								on:click={async () => {
+									try {
+										await Backend.uploadArticleProteinComponent(
+											{
+												forArticleTitle: articleTitle,
+												name: "",
+											}
+										);
+										await refreshArticle();
+									} catch (e) {
+										console.error(e);
+									}
+									dropdownOpen = false;
+								}}>Protein Component</DropdownItem
+							>
+						</Dropdown>
+					</div>
+				{/if}
 			</div>
 		</div>
 	{:else}
