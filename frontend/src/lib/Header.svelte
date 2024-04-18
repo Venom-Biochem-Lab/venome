@@ -7,9 +7,11 @@
 		SearchOutline,
 		NewspapperSolid,
 		UploadSolid,
+		SearchSolid,
 	} from "flowbite-svelte-icons";
 	import { user } from "./stores/user";
 	import Cookies from "js-cookie";
+	import ProteinIcon from "../lib/ProteinIcon.svelte";
 
 	// Checking if the user has a cookie.
 	// If they do, set user status for the whole site.
@@ -28,8 +30,8 @@
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/search" class="flex items-center gap-1"
-				><SearchOutline size="lg" />Search</a
+			<a href="/search" class="flex items-center"
+				><ProteinIcon width={35} height={35} />Proteins</a
 			>
 			<a href="/articles" class="flex items-center gap-1">
 				<NewspapperSolid size="lg" />Articles</a

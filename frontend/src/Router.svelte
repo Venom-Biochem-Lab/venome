@@ -3,7 +3,7 @@
 	import Header from "./lib/Header.svelte";
 	import Home from "./routes/Home.svelte";
 	import Search from "./routes/Search.svelte";
-	import Upload from "./routes/Upload.svelte";
+	import UploadProtein from "./routes/UploadProtein.svelte";
 	import Login from "./routes/Login.svelte";
 	import Protein from "./routes/Protein.svelte";
 	import Error from "./routes/Error.svelte";
@@ -14,6 +14,7 @@
 	import Article from "./routes/Article.svelte";
 	import Articles from "./routes/Articles.svelte";
 	import EditArticle from "./routes/EditArticle.svelte";
+	import Upload from "./routes/Upload.svelte";
 </script>
 
 <Router>
@@ -25,6 +26,7 @@
 		<Route path="/"><Home /></Route>
 		<Route path="/search"><Search /></Route>
 		<Route path="/login"><Login /></Route>
+		<Route path="/upload"><Upload /></Route>
 
 		<!-- all things proteins -->
 		<Route path="/protein/:id" let:params
@@ -33,7 +35,7 @@
 		<Route path="/protein/edit/:id" let:params
 			><Edit urlId={params.id} /></Route
 		>
-		<Route path="/upload"><Upload /></Route>
+		<Route path="/upload/protein"><UploadProtein /></Route>
 		<Route path="/align/:a/:b" let:params
 			><Align proteinA={params.a} proteinB={params.b} /></Route
 		>
