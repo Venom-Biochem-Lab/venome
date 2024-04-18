@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { onDestroy } from "svelte";
 	import { PDBeMolstarPlugin } from "../../venome-molstar/lib";
-	import { loseWebGLContext } from "./venomeMolstarUtils";
+	import {
+		loseWebGLContext,
+		colorResidues,
+		type ChainColors,
+	} from "./venomeMolstarUtils";
+	import type { QueryParam } from "../../venome-molstar/lib/helpers";
 
 	export let url = "";
 	export let format = "pdb";
@@ -10,7 +15,9 @@
 	export let width = 500;
 	export let height = 500;
 	export let hideControls = true;
+	export let chainColors: ChainColors = {};
 	let m: PDBeMolstarPlugin;
+	let subscribe: ReturnType<typeof colorByChain>;
 
 	let divEl: HTMLDivElement;
 	async function render() {
@@ -28,7 +35,7 @@
 			bgColor,
 			subscribeEvents: false,
 			selectInteraction: true,
-			alphafoldView: true,
+			alphafoldView: false,
 			reactive: true,
 			sequencePanel: true,
 			hideControls,
@@ -36,14 +43,34 @@
 		});
 	}
 
+	function colorByChain(chainColors: ChainColors) {
+		let allColors: QueryParam[] = [];
+		for (const [chainId, rgbPerResidue] of Object.entries(chainColors)) {
+			const colors = colorResidues({
+				struct_asym_id: chainId,
+				colors: rgbPerResidue,
+			});
+			// add to all colors
+			allColors = [...allColors, ...colors];
+		}
+		return m.events.loadComplete.subscribe(() => {
+			m.visual.select({ data: allColors });
+			console.log("color");
+		});
+	}
+
 	onDestroy(() => {
 		loseWebGLContext(divEl.querySelector("canvas")!);
 		m.plugin.dispose();
+		subscribe.unsubscribe();
 	});
 
 	$: {
 		if (url && divEl) {
 			render();
+			if (chainColors) {
+				subscribe = colorByChain(chainColors);
+			}
 		}
 	}
 </script>

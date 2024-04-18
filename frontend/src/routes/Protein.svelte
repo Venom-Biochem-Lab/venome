@@ -11,18 +11,31 @@
 	} from "../lib/format";
 	import { navigate } from "svelte-routing";
 	import References from "../lib/References.svelte";
-	import { ChevronDownSolid, PenOutline } from "flowbite-svelte-icons";
+	import {
+		ChevronDownSolid,
+		PaletteOutline,
+		PenOutline,
+		RefreshOutline,
+		UndoOutline,
+		UndoSolid,
+	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
+	import {
+		pLDDTToAlphaFoldResidueColors,
+		pLDDTToResidueColors,
+	} from "../lib/venomeMolstarUtils";
+	import type { ChainColors, ChainpLDDT } from "../lib/venomeMolstarUtils";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
 	export let urlId: string;
 	let entry: ProteinEntry | null = null;
 	let error = false;
+	let chainColors: ChainColors = {};
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
@@ -123,13 +136,11 @@
 
 			<div style="position: sticky; top: 55px; right: 0; z-index:999;">
 				<EntryCard title="Provided Information">
-					<Molstar
-						format="pdb"
-						url="http://localhost:8000/protein/pdb/{entry.name}"
-						width={400}
-						height={350}
-					/>
-					<div id="info-grid" class="grid grid-cols-2 mt-5">
+					<div
+						id="info-grid"
+						class="grid grid-cols-2 mb-2"
+						style="width: 400px;"
+					>
 						<b>Organism</b>
 						<div>
 							{entry.speciesName}
@@ -144,6 +155,44 @@
 									: "n/a"}</code
 							>
 						</div>
+					</div>
+					<Molstar
+						format="pdb"
+						url="http://localhost:8000/protein/pdb/{entry.name}"
+						width={400}
+						height={350}
+						{chainColors}
+					/>
+					<div class="mt-2 flex gap-2 items-center">
+						{#if Object.keys(chainColors).length > 0}
+							<Button
+								color="light"
+								size="xs"
+								on:click={() => {
+									chainColors = {};
+								}}><UndoOutline size="xs" /></Button
+							>
+						{/if}
+						<Button
+							color="light"
+							size="xs"
+							on:click={async () => {
+								if (!entry) return;
+								const pLDDTPerChain =
+									await Backend.getPLddtGivenProtein(
+										entry.name
+									);
+								for (const [
+									chainId,
+									pLDDTPerResidue,
+								] of Object.entries(pLDDTPerChain)) {
+									chainColors[chainId] =
+										pLDDTToResidueColors(pLDDTPerResidue);
+								}
+							}}
+						>
+							Color by pLDDT</Button
+						>
 					</div>
 				</EntryCard>
 			</div>
