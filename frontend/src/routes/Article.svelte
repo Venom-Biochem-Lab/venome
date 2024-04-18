@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, type Article } from "../lib/backend";
+	import { Backend, type Article, setToken } from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
@@ -84,9 +84,10 @@
 							<DropdownItem
 								on:click={async () => {
 									try {
+										setToken();
 										await Backend.uploadArticleTextComponent(
 											{
-												forArticleTitle: articleTitle,
+												articleId: article.id,
 												markdown:
 													"## Placeholder Text\nHover over this section and click **Edit** to edit.",
 											}
@@ -101,9 +102,10 @@
 							<DropdownItem
 								on:click={async () => {
 									try {
+										setToken();
 										await Backend.uploadArticleImageComponent(
 											{
-												forArticleTitle: articleTitle,
+												articleId: article.id,
 												src: "",
 											}
 										);
@@ -116,9 +118,10 @@
 							><DropdownItem
 								on:click={async () => {
 									try {
+										setToken();
 										await Backend.uploadArticleProteinComponent(
 											{
-												forArticleTitle: articleTitle,
+												articleId: article.id,
 												name: "",
 											}
 										);
@@ -135,7 +138,7 @@
 			</div>
 		</div>
 	{:else}
-		Error, no article with name '{articleTitle}'
+		Error, no article with name '{articleTitle}' found
 	{/if}
 </section>
 

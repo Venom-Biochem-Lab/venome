@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UploadArticleImageComponent = {
-    forArticleTitle: string;
+    articleId: number;
     src: string;
     width?: (number | null);
     height?: (number | null);

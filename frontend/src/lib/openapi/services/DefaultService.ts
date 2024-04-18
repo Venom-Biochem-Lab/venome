@@ -395,6 +395,17 @@ export class DefaultService {
     }
     /**
      * Get Article
+     * get_article
+     *
+     * Args:
+     * title (str): title of the article
+     *
+     * Raises:
+     * HTTPException: status 404 if the article is not found by the given title
+     * HTTPException: status 500 if any other errors occur
+     *
+     * Returns:
+     * Article
      * @param title
      * @returns Article Successful Response
      * @throws ApiError

@@ -49,6 +49,7 @@ class ArticleProteinComponent(CamelModel):
 
 
 class Article(CamelModel):
+    id: int
     title: str
     description: str | None = None
     date_published: str | None = None
@@ -107,9 +108,38 @@ def get_image_components(db: Database, title: str):
     return []
 
 
+def get_article_metadata(db: Database, title: str) -> tuple[int, str, str]:
+    query = """SELECT id, description, date_published FROM articles WHERE title = %s;"""
+    out = db.execute_return(query, [title])
+    if out is not None:
+        [id, description, date_published] = out[0]
+        return id, description, str(date_published)
+    else:
+        raise Exception("Nothing returned")
+
+
 @router.get("/article/{title:str}", response_model=Article)
 def get_article(title: str):
+    """get_article
+
+    Args:
+        title (str): title of the article
+
+    Raises:
+        HTTPException: status 404 if the article is not found by the given title
+        HTTPException: status 500 if any other errors occur
+
+    Returns:
+        Article
+    """
+
     with Database() as db:
+        try:
+            # this will fail if the article title does not exist
+            id, description, date_published = get_article_metadata(db, title)
+        except Exception as e:
+            raise HTTPException(404, detail=str(e))
+
         try:
             text_components = get_text_components(db, title)
             protein_components = get_protein_components(db, title)
@@ -118,10 +148,16 @@ def get_article(title: str):
                 [*text_components, *protein_components, *image_components],
                 key=lambda x: x.component_order,
             )
-
-            return Article(title=title, ordered_components=ordered_components)
         except Exception as e:
-            HTTPException(500, detail=str(e))
+            raise HTTPException(500, detail=str(e))
+
+        return Article(
+            id=id,
+            title=title,
+            ordered_components=ordered_components,
+            description=description,
+            date_published=date_published,
+        )
 
 
 @router.delete("/article/component/{component_id:int}")
@@ -135,39 +171,39 @@ def delete_article_component(component_id: int, req: Request):
             raise HTTPException(500, detail=str(e))
 
 
-def get_last_component_order(db: Database, article_title: str):
+def get_last_component_order(db: Database, article_id: int):
     out = db.execute_return(
         """SELECT coalesce(max(components.component_order) + 1, 0) FROM components
-           WHERE article_id=(SELECT id FROM articles WHERE title = %s)""",
-        [article_title],
+           WHERE article_id=%s""",
+        [article_id],
     )
     if out is not None:
         return out[0][0]
     else:
-        return -1
+        raise Exception("Not found")
 
 
-def get_component_id_from_order(db: Database, article_title: str, component_order: int):
+def get_component_id_from_order(db: Database, article_id: int, component_order: int):
     out = db.execute_return(
-        """SELECT id FROM components WHERE article_id = (SELECT id FROM articles WHERE title = %s) AND component_order = %s;""",
-        [article_title, component_order],
+        """SELECT id FROM components WHERE article_id = %s AND component_order = %s;""",
+        [article_id, component_order],
     )
     if out is not None:
         return out[0][0]
     else:
-        return None
+        raise Exception("Not found")
 
 
-def insert_component(db: Database, article_title: str):
-    last_component_order = get_last_component_order(db, article_title)
+def insert_component(db: Database, article_id: int):
+    last_component_order = get_last_component_order(db, article_id)
     query = """INSERT INTO components (article_id, component_order) 
-               VALUES ((SELECT id FROM articles WHERE title = %s), %s);"""
-    db.execute(query, [article_title, last_component_order])
-    return get_component_id_from_order(db, article_title, last_component_order)
+               VALUES (%s, %s);"""
+    db.execute(query, [article_id, last_component_order])
+    return get_component_id_from_order(db, article_id, last_component_order)
 
 
 class UploadArticleTextComponent(CamelModel):
-    for_article_title: str
+    article_id: int
     markdown: str
 
 
@@ -176,7 +212,7 @@ def upload_article_text_component(body: UploadArticleTextComponent, req: Request
     requires_authentication(req)
     with Database() as db:
         try:
-            component_id = insert_component(db, body.for_article_title)
+            component_id = insert_component(db, body.article_id)
             query = """INSERT INTO text_components (component_id, markdown) 
                     VALUES (%s, %s);"""
             db.execute(query, [component_id, body.markdown])
@@ -201,7 +237,7 @@ def edit_article_text_component(body: EditArticleTextComponent, req: Request):
 
 
 class UploadArticleProteinComponent(CamelModel):
-    for_article_title: str
+    article_id: int
     name: str
     aligned_with_name: str | None = None
 
@@ -211,7 +247,7 @@ def upload_article_protein_component(body: UploadArticleProteinComponent, req: R
     requires_authentication(req)
     with Database() as db:
         try:
-            component_id = insert_component(db, body.for_article_title)
+            component_id = insert_component(db, body.article_id)
             query = """INSERT INTO protein_components (component_id, name, aligned_with_name) 
                     VALUES (%s, %s, %s);"""
             db.execute(query, [component_id, body.name, body.aligned_with_name])
@@ -240,7 +276,7 @@ def edit_article_protein_component(body: EditArticleProteinComponent, req: Reque
 
 
 class UploadArticleImageComponent(CamelModel):
-    for_article_title: str
+    article_id: int
     src: str
     width: int | None = None
     height: int | None = None
@@ -251,7 +287,7 @@ def upload_article_image_component(body: UploadArticleImageComponent, req: Reque
     requires_authentication(req)
     with Database() as db:
         try:
-            component_id = insert_component(db, body.for_article_title)
+            component_id = insert_component(db, body.article_id)
             query = """INSERT INTO image_components (component_id, src, height, width) 
                     VALUES (%s, %s, %s, %s);"""
             db.execute(

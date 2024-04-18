@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Textarea } from "flowbite-svelte";
 	import Markdown from "../Markdown.svelte";
-	import { Backend } from "../backend";
+	import { Backend, setToken } from "../backend";
 	import { createEventDispatcher } from "svelte";
 	import EditMode from "./EditMode.svelte";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
@@ -17,6 +17,7 @@
 	bind:disabledSave
 	on:save={async () => {
 		try {
+			setToken();
 			await Backend.editArticleTextComponent({
 				newMarkdown: editedMarkdown,
 				componentId: id,
@@ -29,6 +30,7 @@
 	on:cancel={() => {}}
 	on:delete={async () => {
 		try {
+			setToken();
 			await Backend.deleteArticleComponent(id);
 		} catch (e) {
 			console.error(e);

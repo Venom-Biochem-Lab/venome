@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UploadArticleTextComponent = {
-    forArticleTitle: string;
+    articleId: number;
     markdown: string;
 };
 

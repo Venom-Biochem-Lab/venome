@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UploadArticleProteinComponent = {
-    forArticleTitle: string;
+    articleId: number;
     name: string;
     alignedWithName?: (string | null);
 };

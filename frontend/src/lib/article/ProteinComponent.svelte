@@ -1,6 +1,11 @@
 <script lang="ts">
 	import Molstar from "../Molstar.svelte";
-	import { BACKEND_URL, Backend, type ProteinEntry } from "../backend";
+	import {
+		BACKEND_URL,
+		Backend,
+		setToken,
+		type ProteinEntry,
+	} from "../backend";
 	import ProteinLinkCard from "../ProteinLinkCard.svelte";
 	import EditMode from "./EditMode.svelte";
 	import * as d3 from "d3";
@@ -45,6 +50,7 @@
 <EditMode
 	bind:disabledSave
 	on:save={async () => {
+		setToken();
 		await Backend.editArticleProteinComponent({
 			componentId: id,
 			newName: editedName ?? undefined,
@@ -57,6 +63,7 @@
 		editedAlignedWithName = alignedWithName;
 	}}
 	on:delete={async () => {
+		setToken();
 		await Backend.deleteArticleComponent(id);
 		dispatch("change");
 	}}
