@@ -66,38 +66,6 @@ CREATE TABLE tutorials (
 */
 CREATE TABLE articles (
     id serial PRIMARY KEY,
-    title text NOT NULL UNIQUE
-);
-CREATE TABLE article_text_components (
-    id serial PRIMARY KEY,
-    article_id integer NOT NULL,
-    component_order integer NOT NULL, -- where this component is within a particular article 
-    markdown text DEFAULT '',
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE article_protein_components (
-    id serial PRIMARY KEY,
-    article_id integer NOT NULL,
-    component_order integer NOT NULL, -- where this component is within a particular article 
-    name text NOT NULL,
-    aligned_with_name text, 
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-CREATE TABLE article_image_components (
-    id serial PRIMARY KEY,
-    article_id integer NOT NULL,
-    component_order integer NOT NULL, -- where this component is within a particular article 
-    src bytea NOT NULL, --bytes of the image
-    width integer,
-    height integer,
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-/*
-* Articles Table v2
-*/
-CREATE TABLE articles_v2 (
-    id serial PRIMARY KEY,
     title text NOT NULL UNIQUE,
     description text,
     date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP
@@ -106,7 +74,7 @@ CREATE TABLE components (
     id serial PRIMARY KEY,
     article_id integer NOT NULL,
     component_order integer NOT NULL, -- where this component is within a particular article 
-    FOREIGN KEY (article_id) REFERENCES articles_v2(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT unique_order UNIQUE (article_id, component_order)
 );
 CREATE TABLE text_components (

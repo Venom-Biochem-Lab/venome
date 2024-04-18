@@ -4,7 +4,6 @@ from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 from ..auth import requires_authentication
 from fastapi.requests import Request
-import logging as log
 
 router = APIRouter()
 
@@ -16,9 +15,10 @@ class ArticleUpload(CamelModel):
 
 @router.post("/article/upload")
 def upload_article(body: ArticleUpload, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
-            query = """INSERT INTO articles_v2 (title, description) VALUES (%s, %s);"""
+            query = """INSERT INTO articles (title, description) VALUES (%s, %s);"""
             db.execute(query, [body.title, body.description])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
@@ -57,10 +57,10 @@ class Article(CamelModel):
     ]
 
 
-def get_text_components_v2(db: Database, title: str):
+def get_text_components(db: Database, title: str):
     query = """SELECT components.id, components.component_order, text_components.markdown FROM components
                JOIN text_components ON text_components.component_id = components.id
-               WHERE components.article_id = (SELECT id FROM articles_v2 WHERE title = %s);
+               WHERE components.article_id = (SELECT id FROM articles WHERE title = %s);
                 """
     res = db.execute_return(query, [title])
     if res is not None:
@@ -71,10 +71,10 @@ def get_text_components_v2(db: Database, title: str):
     return []
 
 
-def get_protein_components_v2(db: Database, title: str):
+def get_protein_components(db: Database, title: str):
     query = """SELECT components.id, components.component_order, protein_components.name, protein_components.aligned_with_name FROM components
                JOIN protein_components ON protein_components.component_id = components.id
-               WHERE components.article_id = (SELECT id FROM articles_v2 WHERE title = %s);
+               WHERE components.article_id = (SELECT id FROM articles WHERE title = %s);
                 """
     res = db.execute_return(query, [title])
     if res is not None:
@@ -87,10 +87,10 @@ def get_protein_components_v2(db: Database, title: str):
     return []
 
 
-def get_image_components_v2(db: Database, title: str):
+def get_image_components(db: Database, title: str):
     query = """SELECT components.id, components.component_order, image_components.src, image_components.width, image_components.height FROM components
                JOIN image_components ON image_components.component_id = components.id
-               WHERE components.article_id = (SELECT id FROM articles_v2 WHERE title = %s);
+               WHERE components.article_id = (SELECT id FROM articles WHERE title = %s);
                 """
     res = db.execute_return(query, [title])
     if res is not None:
@@ -111,9 +111,9 @@ def get_image_components_v2(db: Database, title: str):
 def get_article(title: str):
     with Database() as db:
         try:
-            text_components = get_text_components_v2(db, title)
-            protein_components = get_protein_components_v2(db, title)
-            image_components = get_image_components_v2(db, title)
+            text_components = get_text_components(db, title)
+            protein_components = get_protein_components(db, title)
+            image_components = get_image_components(db, title)
             ordered_components = sorted(
                 [*text_components, *protein_components, *image_components],
                 key=lambda x: x.component_order,
@@ -125,7 +125,8 @@ def get_article(title: str):
 
 
 @router.delete("/article/component/{component_id:int}")
-def delete_article_component(component_id: int):
+def delete_article_component(component_id: int, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             query = """DELETE FROM components WHERE id=%s;"""
@@ -137,7 +138,7 @@ def delete_article_component(component_id: int):
 def get_last_component_order(db: Database, article_title: str):
     out = db.execute_return(
         """SELECT coalesce(max(components.component_order) + 1, 0) FROM components
-           WHERE article_id=(SELECT id FROM articles_v2 WHERE title = %s)""",
+           WHERE article_id=(SELECT id FROM articles WHERE title = %s)""",
         [article_title],
     )
     if out is not None:
@@ -148,7 +149,7 @@ def get_last_component_order(db: Database, article_title: str):
 
 def get_component_id_from_order(db: Database, article_title: str, component_order: int):
     out = db.execute_return(
-        """SELECT id FROM components WHERE article_id = (SELECT id FROM articles_v2 WHERE title = %s) AND component_order = %s;""",
+        """SELECT id FROM components WHERE article_id = (SELECT id FROM articles WHERE title = %s) AND component_order = %s;""",
         [article_title, component_order],
     )
     if out is not None:
@@ -160,7 +161,7 @@ def get_component_id_from_order(db: Database, article_title: str, component_orde
 def insert_component(db: Database, article_title: str):
     last_component_order = get_last_component_order(db, article_title)
     query = """INSERT INTO components (article_id, component_order) 
-               VALUES ((SELECT id FROM articles_v2 WHERE title = %s), %s);"""
+               VALUES ((SELECT id FROM articles WHERE title = %s), %s);"""
     db.execute(query, [article_title, last_component_order])
     return get_component_id_from_order(db, article_title, last_component_order)
 
@@ -171,7 +172,8 @@ class UploadArticleTextComponent(CamelModel):
 
 
 @router.post("/article/component/text")
-def upload_article_text_component(body: UploadArticleTextComponent):
+def upload_article_text_component(body: UploadArticleTextComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             component_id = insert_component(db, body.for_article_title)
@@ -188,7 +190,8 @@ class EditArticleTextComponent(CamelModel):
 
 
 @router.put("/article/component/text")
-def edit_article_text_component(body: EditArticleTextComponent):
+def edit_article_text_component(body: EditArticleTextComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             query = """UPDATE text_components SET markdown=%s WHERE component_id=%s;"""
@@ -204,7 +207,8 @@ class UploadArticleProteinComponent(CamelModel):
 
 
 @router.post("/article/component/protein")
-def upload_article_protein_component(body: UploadArticleProteinComponent):
+def upload_article_protein_component(body: UploadArticleProteinComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             component_id = insert_component(db, body.for_article_title)
@@ -222,7 +226,8 @@ class EditArticleProteinComponent(CamelModel):
 
 
 @router.put("/article/component/protein")
-def edit_article_protein_component(body: EditArticleProteinComponent):
+def edit_article_protein_component(body: EditArticleProteinComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             query = """UPDATE protein_components SET name=%s, aligned_with_name=%s WHERE component_id=%s;"""
@@ -242,7 +247,8 @@ class UploadArticleImageComponent(CamelModel):
 
 
 @router.post("/article/component/image")
-def upload_article_image_component(body: UploadArticleImageComponent):
+def upload_article_image_component(body: UploadArticleImageComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             component_id = insert_component(db, body.for_article_title)
@@ -269,7 +275,8 @@ class EditArticleImageComponent(CamelModel):
 
 
 @router.put("/article/component/image")
-def edit_article_image_component(body: EditArticleImageComponent):
+def edit_article_image_component(body: EditArticleImageComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             if body.new_src is not None:
