@@ -2,10 +2,12 @@
 	import { onMount } from "svelte";
 	import { Backend, type Article, setToken } from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
+	import { EditOutline } from "flowbite-svelte-icons";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
 	import { user } from "../lib/stores/user";
+	import { navigate } from "svelte-routing";
 
 	export let articleTitle: string;
 
@@ -31,12 +33,23 @@
 			<div class="flex gap-2 flex-col items-center">
 				<div id="title" style="width: {textWidth};">
 					{article.title}
+					{#if $user.loggedIn}
+						<Button
+							color="light"
+							outline
+							size="xs"
+							on:click={async () => {
+								navigate(`/article/edit/${articleTitle}`);
+							}}
+							><EditOutline class="mr-1" size="sm" />Edit Article
+							Metadata
+						</Button>
+					{/if}
 				</div>
 				{#each article.orderedComponents as c (c.id)}
 					{#if c.componentType === "text"}
 						<div style="width: {textWidth};">
 							<TextComponent
-								{articleTitle}
 								markdown={c.markdown}
 								id={c.id}
 								on:change={async () => {
@@ -46,7 +59,6 @@
 						</div>
 					{:else if c.componentType === "protein"}
 						<ProteinComponent
-							{articleTitle}
 							id={c.id}
 							name={c.name}
 							alignedWithName={c.alignedWithName}
@@ -60,7 +72,6 @@
 							class="flex justify-center"
 						>
 							<ImageComponent
-								{articleTitle}
 								id={c.id}
 								src={c.src}
 								height={c.height}

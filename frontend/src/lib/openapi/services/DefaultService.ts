@@ -425,6 +425,26 @@ export class DefaultService {
         });
     }
     /**
+     * Delete Article
+     * @param title
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteArticle(
+        title: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/article/{title}',
+            path: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Delete Article Component
      * @param componentId
      * @returns any Successful Response

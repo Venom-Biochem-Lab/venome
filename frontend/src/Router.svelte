@@ -17,6 +17,7 @@
 	import ArticleTest from "./routes/ArticleTest.svelte";
 	import UploadArticle from "./routes/UploadArticle.svelte";
 	import Article from "./routes/Article.svelte";
+	import EditArticle from "./routes/EditArticle.svelte";
 </script>
 
 <Router>
@@ -40,6 +41,9 @@
 		>
 		<Route path="/protein/:id" let:params
 			><Protein urlId={params.id} /></Route
+		>
+		<Route path="/article/edit/:id" let:params
+			><EditArticle articleTitle={params.id} /></Route
 		>
 		<Route path="/protein/edit/:id" let:params
 			><Edit urlId={params.id} /></Route

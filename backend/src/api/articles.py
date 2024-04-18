@@ -160,6 +160,17 @@ def get_article(title: str):
         )
 
 
+@router.delete("/article/{title:str}")
+def delete_article(title: str, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            query = """DELETE FROM articles WHERE title=%s;"""
+            db.execute(query, [title])
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
 @router.delete("/article/component/{component_id:int}")
 def delete_article_component(component_id: int, req: Request):
     requires_authentication(req)
