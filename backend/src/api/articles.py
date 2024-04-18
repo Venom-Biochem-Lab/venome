@@ -149,7 +149,8 @@ def get_all_articles_metadata():
     with Database() as db:
         try:
             res = db.execute_return(
-                """SELECT id, title, description, date_published FROM articles;"""
+                """SELECT id, title, description, date_published FROM articles
+                   ORDER BY date_published ASC;"""
             )
             if res is not None:
                 return [
