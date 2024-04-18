@@ -4,5 +4,6 @@
 /* eslint-disable */
 export type ArticleUpload = {
     title: string;
+    description?: (string | null);
 };
 

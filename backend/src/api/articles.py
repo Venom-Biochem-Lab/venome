@@ -136,14 +136,45 @@ class UploadArticleTextComponent(CamelModel):
     markdown: str
 
 
+def get_last_component_order(db: Database, article_title: str):
+    out = db.execute_return(
+        """SELECT coalesce(max(components.component_order) + 1, 0) FROM components
+           WHERE article_id=(SELECT id FROM articles_v2 WHERE title = %s)""",
+        [article_title],
+    )
+    if out is not None:
+        return out[0][0]
+    else:
+        return -1
+
+
+def get_component_id_from_order(db: Database, article_title: str, component_order: int):
+    out = db.execute_return(
+        """SELECT id FROM components WHERE article_id = (SELECT id FROM articles_v2 WHERE title = %s) AND component_order = %s;""",
+        [article_title, component_order],
+    )
+    if out is not None:
+        return out[0][0]
+    else:
+        return None
+
+
+def insert_component(db: Database, article_title: str):
+    last_component_order = get_last_component_order(db, article_title)
+    query = """INSERT INTO components (article_id, component_order) 
+               VALUES ((SELECT id FROM articles_v2 WHERE title = %s), %s);"""
+    db.execute(query, [article_title, last_component_order])
+    return get_component_id_from_order(db, article_title, last_component_order)
+
+
 @router.post("/article/component/text")
 def upload_article_text_component(body: UploadArticleTextComponent):
     with Database() as db:
         try:
-            query = """INSERT INTO article_text_components (article_id, component_order, markdown) VALUES ((SELECT id FROM articles WHERE title=%s), %s, %s);"""
-            db.execute(
-                query, [body.for_article_title, body.component_order, body.markdown]
-            )
+            component_id = insert_component(db, body.for_article_title)
+            query = """INSERT INTO text_components (component_id, markdown) 
+                    VALUES (%s, %s);"""
+            db.execute(query, [component_id, body.markdown])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
 
