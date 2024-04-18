@@ -8,6 +8,7 @@
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
 	import { user } from "../lib/stores/user";
 	import { navigate } from "svelte-routing";
+	import { dbDateToMonthDayYear } from "../lib/format";
 
 	export let articleTitle: string;
 
@@ -31,19 +32,33 @@
 	{#if article}
 		<div>
 			<div class="flex gap-2 flex-col items-center">
-				<div id="title" style="width: {textWidth};">
-					{article.title}
-					{#if $user.loggedIn}
-						<Button
-							color="light"
-							outline
-							size="xs"
-							on:click={async () => {
-								navigate(`/article/edit/${articleTitle}`);
-							}}
-							><EditOutline class="mr-1" size="sm" />Edit Article
-							Metadata
-						</Button>
+				<div id="header" style="width: {textWidth};">
+					<div id="title">
+						{article.title}
+						{#if $user.loggedIn}
+							<Button
+								color="light"
+								outline
+								size="xs"
+								on:click={async () => {
+									navigate(`/article/edit/${articleTitle}`);
+								}}
+								><EditOutline class="mr-1" size="sm" />Edit
+								Article Metadata
+							</Button>
+						{/if}
+					</div>
+					{#if article.description}
+						<div id="desc">
+							{article.description}
+						</div>
+					{/if}
+					{#if article.datePublished}
+						<div id="date">
+							Published: {dbDateToMonthDayYear(
+								article.datePublished
+							)}
+						</div>
 					{/if}
 				</div>
 				{#each article.orderedComponents as c (c.id)}
@@ -158,5 +173,14 @@
 		font-size: 2.45rem;
 		font-weight: 500;
 		color: var(--primary-700);
+	}
+	#desc {
+		color: var(--primary-700);
+		opacity: 0.8;
+	}
+	#date {
+		color: var(--primary-700);
+		opacity: 0.4;
+		font-size: smaller;
 	}
 </style>
