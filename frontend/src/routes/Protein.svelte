@@ -21,7 +21,11 @@
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
-	import { pLDDTToAlphaFoldResidueColors } from "../lib/venomeMolstarUtils";
+	import {
+		pLDDTToAlphaFoldResidueColors,
+		alphafoldColorscheme,
+		alphafoldThresholds,
+	} from "../lib/venomeMolstarUtils";
 	import type { ChainColors } from "../lib/venomeMolstarUtils";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
@@ -189,6 +193,16 @@
 						>
 							Color by pLDDT</Button
 						>
+						{#if Object.keys(chainColors).length > 0}
+							{#each alphafoldThresholds as at, i}
+								<div
+									class="legend-chip"
+									style="--color: {alphafoldColorscheme[i]};"
+								>
+									{at}
+								</div>
+							{/each}
+						{/if}
 					</div>
 				</EntryCard>
 			</div>
@@ -214,5 +228,17 @@
 		font-size: 2.45rem;
 		font-weight: 500;
 		color: var(--primary-700);
+	}
+	.legend-chip {
+		--color: black;
+		color: rgb(0, 0, 0);
+		background-color: var(--color);
+		border-radius: 3px;
+		font-size: 12px;
+
+		padding-left: 5px;
+		padding-right: 5px;
+		padding-top: 2px;
+		padding-bottom: 2px;
 	}
 </style>

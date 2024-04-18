@@ -107,7 +107,8 @@ export function colorResidues({
 	return selections;
 }
 
-const alphafoldColorscheme = [
+export const alphafoldThresholds = ["> 90", "> 70", "> 50", "< 50"];
+export const alphafoldColorscheme = [
 	"rgb(1,83,214)", // > 90
 	"rgb(100,203,243)", // > 70
 	"rgb(255,219,18)", // > 50
