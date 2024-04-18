@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type EditArticleImageComponent = {
-    imageComponentId: number;
+    componentId: number;
     newSrc?: (string | null);
     newHeight?: (number | null);
     newWidth?: (number | null);

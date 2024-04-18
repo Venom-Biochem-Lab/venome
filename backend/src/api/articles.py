@@ -261,7 +261,7 @@ def upload_article_image_component(body: UploadArticleImageComponent):
 
 
 class EditArticleImageComponent(CamelModel):
-    image_component_id: int
+    component_id: int
     new_src: str | None = None
     new_height: int | None = None
     new_width: int | None = None
@@ -273,24 +273,14 @@ def edit_article_image_component(body: EditArticleImageComponent):
         try:
             if body.new_src is not None:
                 db.execute(
-                    """UPDATE article_image_components SET src=%s WHERE id=%s;""",
-                    [body.new_src, body.image_component_id],
+                    """UPDATE image_components SET src=%s WHERE component_id=%s;""",
+                    [body.new_src, body.component_id],
                 )
 
             db.execute(
-                """UPDATE article_image_components SET width=%s, height=%s WHERE id=%s;""",
-                [body.new_width, body.new_height, body.image_component_id],
+                """UPDATE image_components SET width=%s, height=%s WHERE id=%s;""",
+                [body.new_width, body.new_height, body.component_id],
             )
 
-        except Exception as e:
-            raise HTTPException(500, detail=str(e))
-
-
-@router.delete("/article/component/image/{component_id:int}")
-def delete_article_image_component(component_id: int):
-    with Database() as db:
-        try:
-            query = """DELETE FROM article_image_components WHERE id=%s;"""
-            db.execute(query, [component_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))

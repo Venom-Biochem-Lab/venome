@@ -547,24 +547,4 @@ export class DefaultService {
             },
         });
     }
-    /**
-     * Delete Article Image Component
-     * @param componentId
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static deleteArticleImageComponent(
-        componentId: number,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/article/component/image/{component_id}',
-            path: {
-                'component_id': componentId,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
 }

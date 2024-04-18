@@ -23,7 +23,7 @@
 	{disabledSave}
 	on:save={async () => {
 		await Backend.editArticleImageComponent({
-			imageComponentId: id,
+			componentId: id,
 			newSrc: file ? await fileToBase64String(file) : null,
 			newHeight:
 				editedHeight === "" || editedHeight === null
@@ -37,7 +37,7 @@
 		dispatch("change");
 	}}
 	on:delete={async () => {
-		await Backend.deleteArticleImageComponent(id);
+		await Backend.deleteArticleComponent(id);
 		dispatch("change");
 	}}
 	on:movedown={async () => {}}
