@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import Molstar from "../Molstar.svelte";
 	import { BACKEND_URL, Backend, type ProteinEntry } from "../backend";
 	import ProteinLinkCard from "../ProteinLinkCard.svelte";
@@ -10,7 +9,6 @@
 
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
-	export let articleTitle: string;
 	export let id: number;
 	export let name: string;
 	export let alignedWithName: string | undefined = undefined;

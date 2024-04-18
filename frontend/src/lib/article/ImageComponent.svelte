@@ -1,16 +1,11 @@
 <script lang="ts">
 	import { Fileupload, Label, FloatingLabelInput } from "flowbite-svelte";
 	import EditMode from "./EditMode.svelte";
-	import {
-		fileToBase64String,
-		fileToString,
-		numberWithCommas,
-	} from "../format";
+	import { fileToBase64String } from "../format";
 	import { Backend } from "../backend";
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
-	export let articleTitle: string;
 	export let id: number;
 	export let src: string;
 	export let width: number;

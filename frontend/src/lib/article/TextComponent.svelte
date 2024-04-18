@@ -6,7 +6,6 @@
 	import EditMode from "./EditMode.svelte";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
-	export let articleTitle: string;
 	export let id: number;
 	export let markdown: string;
 	let disabledSave = false;
