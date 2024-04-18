@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type EditArticleProteinComponent = {
-    proteinComponentId: number;
+    componentId: number;
     newName?: (string | null);
     newAlignedWithName?: (string | null);
 };

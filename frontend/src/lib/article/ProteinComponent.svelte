@@ -48,7 +48,7 @@
 	bind:disabledSave
 	on:save={async () => {
 		await Backend.editArticleProteinComponent({
-			proteinComponentId: id,
+			componentId: id,
 			newName: editedName ?? undefined,
 			newAlignedWithName: editedAlignedWithName ?? undefined,
 		});

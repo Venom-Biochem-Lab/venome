@@ -208,7 +208,7 @@ def upload_article_protein_component(body: UploadArticleProteinComponent):
 
 
 class EditArticleProteinComponent(CamelModel):
-    protein_component_id: int
+    component_id: int
     new_name: str | None = None
     new_aligned_with_name: str | None = None
 
@@ -217,10 +217,10 @@ class EditArticleProteinComponent(CamelModel):
 def edit_article_protein_component(body: EditArticleProteinComponent):
     with Database() as db:
         try:
-            query = """UPDATE article_protein_components SET name=%s, aligned_with_name=%s WHERE id=%s;"""
+            query = """UPDATE protein_components SET name=%s, aligned_with_name=%s WHERE component_id=%s;"""
             db.execute(
                 query,
-                [body.new_name, body.new_aligned_with_name, body.protein_component_id],
+                [body.new_name, body.new_aligned_with_name, body.component_id],
             )
         except Exception as e:
             raise HTTPException(500, detail=str(e))
