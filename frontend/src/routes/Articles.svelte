@@ -16,11 +16,7 @@
 </script>
 
 <div class="p-5">
-	<div class="mb-5">
-		<Button on:click={() => navigate(`/upload/article`)}
-			>Upload Article</Button
-		>
-	</div>
+	<div id="article-header">Articles</div>
 	<div class="articles-container">
 		{#each articles as a}
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -102,5 +98,11 @@
 	.article-date {
 		font-size: smaller;
 		opacity: 0.4;
+	}
+
+	#article-header {
+		font-size: 2.45rem;
+		font-weight: 500;
+		color: var(--primary-700);
 	}
 </style>

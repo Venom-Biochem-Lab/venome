@@ -15,6 +15,7 @@
 	const textWidth = "800px";
 	let dropdownOpen = false;
 	let article: Article;
+	let notFound = false;
 	onMount(async () => {
 		await refreshArticle();
 	});
@@ -24,6 +25,7 @@
 			article = await Backend.getArticle(articleTitle);
 		} catch (e) {
 			console.error(e);
+			notFound = true;
 		}
 	}
 </script>
@@ -163,8 +165,8 @@
 				{/if}
 			</div>
 		</div>
-	{:else}
-		Error, no article with name '{articleTitle}' found
+	{:else if notFound}
+		{articleTitle} not found
 	{/if}
 </section>
 
