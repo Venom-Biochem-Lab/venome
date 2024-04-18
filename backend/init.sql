@@ -51,17 +51,6 @@ CREATE TABLE users (
 
 
 /*
-* Tutorials Table
-*/
-CREATE TABLE tutorials (
-    id serial PRIMARY KEY,
-    title text NOT NULL UNIQUE,
-    description text,
-    content text, -- stored markdown for the article 
-    refs text -- bibtex references mentioned in the content/article
-);
-
-/*
 * Articles Table
 */
 CREATE TABLE articles (
@@ -123,9 +112,3 @@ INSERT INTO species(name) VALUES ('unknown');
  * Password: test
  */
 INSERT INTO users(username, email, pword, admin) VALUES ('test', 'test', '$2b$12$PFoNf7YM0KNIPP8WGsJjveIOhiJjitsMtfwRcCjdcyTuqjdk/q//u', '1');
-
-
-INSERT INTO tutorials(title, description, content) VALUES('General Information', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida tristique est, a sollicit', '## section 1\nhello!');
-INSERT INTO tutorials(title, description, content) VALUES('Biology', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'test');
-INSERT INTO tutorials(title, description, content) VALUES('How to Use the Site', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'epic');
-

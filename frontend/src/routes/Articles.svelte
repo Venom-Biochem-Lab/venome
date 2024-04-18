@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { navigate } from "svelte-routing";
-	import { Button } from "flowbite-svelte";
 	import { Backend, type Article } from "../lib/backend";
 	import { dbDateToMonthDayYear } from "../lib/format";
 
