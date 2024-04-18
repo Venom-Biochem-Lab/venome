@@ -69,21 +69,25 @@ def get_text_components_v2(db: Database, title: str):
     return []
 
 
-def get_text_components(db: Database, title: str):
-    query = """SELECT id, component_order, markdown FROM article_text_components
+def get_protein_components(db: Database, title: str):
+    query = """SELECT id, component_order, name, aligned_with_name FROM article_protein_components
                 WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
     res = db.execute_return(query, [title])
     if res is not None:
         return [
-            ArticleTextComponent(id=i, component_order=c, markdown=m)
-            for [i, c, m] in res
+            ArticleProteinComponent(
+                id=i, component_order=c, name=n, aligned_with_name=a
+            )
+            for [i, c, n, a] in res
         ]
     return []
 
 
-def get_protein_components(db: Database, title: str):
-    query = """SELECT id, component_order, name, aligned_with_name FROM article_protein_components
-                WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
+def get_protein_components_v2(db: Database, title: str):
+    query = """SELECT components.id, components.component_order, protein_components.name, protein_components.aligned_with_name FROM components
+               JOIN protein_components ON protein_components.component_id = components.id
+               WHERE components.article_id = (SELECT id FROM articles_v2 WHERE title = %s);
+                """
     res = db.execute_return(query, [title])
     if res is not None:
         return [
@@ -100,12 +104,12 @@ def get_article(title: str):
     with Database() as db:
         try:
             text_components = get_text_components_v2(db, title)
-            # protein_components = get_protein_components(db, title)
+            protein_components = get_protein_components_v2(db, title)
             # image_components = get_image_components(db, title)
             return Article(
                 title=title,
                 text_components=text_components,
-                protein_components=[],
+                protein_components=protein_components,
                 image_components=[],
             )
         except Exception as e:
@@ -187,7 +191,6 @@ def edit_article_text_component(body: EditArticleTextComponent):
 
 class UploadArticleProteinComponent(CamelModel):
     for_article_title: str
-    component_order: int
     name: str
     aligned_with_name: str | None = None
 
@@ -196,16 +199,10 @@ class UploadArticleProteinComponent(CamelModel):
 def upload_article_protein_component(body: UploadArticleProteinComponent):
     with Database() as db:
         try:
-            query = """INSERT INTO article_protein_components (article_id, component_order, name, aligned_with_name) VALUES ((SELECT id FROM articles WHERE title=%s), %s, %s, %s);"""
-            db.execute(
-                query,
-                [
-                    body.for_article_title,
-                    body.component_order,
-                    body.name,
-                    body.aligned_with_name,
-                ],
-            )
+            component_id = insert_component(db, body.for_article_title)
+            query = """INSERT INTO protein_components (component_id, name, aligned_with_name) 
+                    VALUES (%s, %s, %s);"""
+            db.execute(query, [component_id, body.name, body.aligned_with_name])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
 
@@ -214,7 +211,7 @@ def upload_article_protein_component(body: UploadArticleProteinComponent):
 def delete_article_protein_component(component_id: int):
     with Database() as db:
         try:
-            query = """DELETE FROM article_protein_components WHERE id=%s;"""
+            query = """DELETE FROM protein_components WHERE component_id=%s;"""
             db.execute(query, [component_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))

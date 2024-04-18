@@ -149,10 +149,7 @@
 									await Backend.uploadArticleProteinComponent(
 										{
 											forArticleTitle: articleTitle,
-											componentOrder:
-												nextComponentOrder(),
 											name: "",
-											alignedWithName: undefined,
 										}
 									);
 									await refreshArticle();

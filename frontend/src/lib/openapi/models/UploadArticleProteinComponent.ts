@@ -4,7 +4,6 @@
 /* eslint-disable */
 export type UploadArticleProteinComponent = {
     forArticleTitle: string;
-    componentOrder: number;
     name: string;
     alignedWithName?: (string | null);
 };

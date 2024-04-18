@@ -113,13 +113,24 @@ CREATE TABLE components (
 CREATE TABLE text_components (
     id serial PRIMARY KEY,
     component_id integer NOT NULL,
+
+    -- component specific info
     markdown text DEFAULT '',
+
     FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO articles_v2(title, description) VALUES('General Information', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida tristique est, a sollicit');
-INSERT INTO components(article_id, component_order) VALUES((SELECT id FROM articles_v2 WHERE title = 'General Information'), 1);
-INSERT INTO text_components(component_id, markdown) VALUES((SELECT id FROM components WHERE  component_order=1), '## section 1\nhello!');
+CREATE TABLE protein_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    name text NOT NULL,
+    aligned_with_name text, 
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 
 /*
  * Inserts example species into species table
