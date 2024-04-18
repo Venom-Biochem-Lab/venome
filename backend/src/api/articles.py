@@ -279,7 +279,7 @@ def edit_article_image_component(body: EditArticleImageComponent):
                 )
 
             db.execute(
-                """UPDATE image_components SET width=%s, height=%s WHERE id=%s;""",
+                """UPDATE image_components SET width=%s, height=%s WHERE component_id=%s;""",
                 [body.new_width, body.new_height, body.component_id],
             )
 
