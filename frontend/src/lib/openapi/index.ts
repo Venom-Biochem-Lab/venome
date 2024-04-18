@@ -12,6 +12,7 @@ export type { ArticleImageComponent } from './models/ArticleImageComponent';
 export type { ArticleProteinComponent } from './models/ArticleProteinComponent';
 export type { ArticleTextComponent } from './models/ArticleTextComponent';
 export type { ArticleUpload } from './models/ArticleUpload';
+export type { EditArticle } from './models/EditArticle';
 export type { EditArticleImageComponent } from './models/EditArticleImageComponent';
 export type { EditArticleProteinComponent } from './models/EditArticleProteinComponent';
 export type { EditArticleTextComponent } from './models/EditArticleTextComponent';

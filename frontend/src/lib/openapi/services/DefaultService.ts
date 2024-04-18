@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { Article } from '../models/Article';
 import type { ArticleUpload } from '../models/ArticleUpload';
+import type { EditArticle } from '../models/EditArticle';
 import type { EditArticleImageComponent } from '../models/EditArticleImageComponent';
 import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
@@ -375,25 +376,6 @@ export class DefaultService {
         });
     }
     /**
-     * Upload Article
-     * @param requestBody
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static uploadArticle(
-        requestBody: ArticleUpload,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/article/upload',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
      * Get Article
      * get_article
      *
@@ -415,7 +397,7 @@ export class DefaultService {
     ): CancelablePromise<Article> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/article/{title}',
+            url: '/article/meta/{title}',
             path: {
                 'title': title,
             },
@@ -435,10 +417,48 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/article/{title}',
+            url: '/article/meta/{title}',
             path: {
                 'title': title,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Article
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticle(
+        requestBody: ArticleUpload,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/meta/upload',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticle(
+        requestBody: EditArticle,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/meta',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

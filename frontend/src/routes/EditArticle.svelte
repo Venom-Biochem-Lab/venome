@@ -73,9 +73,11 @@
 				on:click={async () => {
 					try {
 						setToken();
-						await Backend.uploadArticle({
-							title,
-							description:
+						await Backend.editArticle({
+							articleTitle: article.title,
+							newArticleTitle:
+								title !== article.title ? title : undefined,
+							newDescription:
 								description.length > 0 ? description : null,
 						});
 						navigate(`/article/${title}`);

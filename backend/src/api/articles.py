@@ -8,22 +8,6 @@ from fastapi.requests import Request
 router = APIRouter()
 
 
-class ArticleUpload(CamelModel):
-    title: str
-    description: str | None = None
-
-
-@router.post("/article/upload")
-def upload_article(body: ArticleUpload, req: Request):
-    requires_authentication(req)
-    with Database() as db:
-        try:
-            query = """INSERT INTO articles (title, description) VALUES (%s, %s);"""
-            db.execute(query, [body.title, body.description])
-        except Exception as e:
-            raise HTTPException(500, detail=str(e))
-
-
 class ArticleImageComponent(CamelModel):
     id: int
     component_type: str = "image"
@@ -118,7 +102,7 @@ def get_article_metadata(db: Database, title: str) -> tuple[int, str, str]:
         raise Exception("Nothing returned")
 
 
-@router.get("/article/{title:str}", response_model=Article)
+@router.get("/article/meta/{title:str}", response_model=Article)
 def get_article(title: str):
     """get_article
 
@@ -160,7 +144,23 @@ def get_article(title: str):
         )
 
 
-@router.delete("/article/{title:str}")
+class ArticleUpload(CamelModel):
+    title: str
+    description: str | None = None
+
+
+@router.post("/article/meta/upload")
+def upload_article(body: ArticleUpload, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            query = """INSERT INTO articles (title, description) VALUES (%s, %s);"""
+            db.execute(query, [body.title, body.description])
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
+@router.delete("/article/meta/{title:str}")
 def delete_article(title: str, req: Request):
     requires_authentication(req)
     with Database() as db:
@@ -169,6 +169,36 @@ def delete_article(title: str, req: Request):
             db.execute(query, [title])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
+
+
+class EditArticle(CamelModel):
+    article_title: str
+    new_article_title: str | None = None
+    new_description: str | None = None
+
+
+@router.put("/article/meta")
+def edit_article(body: EditArticle, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            if (
+                body.new_article_title is not None
+                and body.new_article_title != body.article_title
+            ):
+                db.execute(
+                    """UPDATE articles SET title = %s WHERE title = %s;""",
+                    [body.new_article_title, body.article_title],
+                )
+                # for the other queries later
+                body.article_title = body.new_article_title
+
+            db.execute(
+                """UPDATE articles SET description = %s WHERE title = %s;""",
+                [body.new_description, body.article_title],
+            )
+        except Exception:
+            raise HTTPException(501, detail="Article not unique")
 
 
 @router.delete("/article/component/{component_id:int}")
