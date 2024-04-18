@@ -3,10 +3,10 @@
 	import { links } from "svelte-routing";
 	import { onMount } from "svelte";
 	import {
-		UploadOutline,
 		UserOutline,
-		TableRowOutline,
-		BookOutline,
+		SearchOutline,
+		NewspapperSolid,
+		UploadSolid,
 	} from "flowbite-svelte-icons";
 	import { user } from "./stores/user";
 	import Cookies from "js-cookie";
@@ -29,16 +29,16 @@
 		</div>
 		<div class="nav">
 			<a href="/search" class="flex items-center gap-1"
-				><TableRowOutline size="lg" />Search</a
+				><SearchOutline size="lg" />Search</a
+			>
+			<a href="/tutorials" class="flex items-center gap-1">
+				<NewspapperSolid size="lg" />Articles</a
 			>
 			{#if $user.loggedIn}
 				<a href="/upload" class="flex items-center gap-1">
-					<UploadOutline size="lg" />Upload</a
+					<UploadSolid size="lg" />Upload</a
 				>
 			{/if}
-			<a href="/tutorials" class="flex items-center gap-1">
-				<BookOutline size="lg" />Tutorials</a
-			>
 		</div>
 	</div>
 
