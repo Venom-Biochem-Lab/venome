@@ -4,6 +4,7 @@ from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 from ..auth import requires_authentication
 from fastapi.requests import Request
+from .protein import format_protein_name
 
 router = APIRouter()
 
@@ -310,6 +311,12 @@ class UploadArticleProteinComponent(CamelModel):
 @router.post("/article/component/protein")
 def upload_article_protein_component(body: UploadArticleProteinComponent, req: Request):
     requires_authentication(req)
+
+    # replaces spaces with underscore, which is how proteins are stored in the DB
+    body.name = format_protein_name(body.name)
+    if body.aligned_with_name is not None:
+        body.aligned_with_name = format_protein_name(body.aligned_with_name)
+
     with Database() as db:
         try:
             component_id = insert_component(db, body.article_id)
@@ -329,6 +336,13 @@ class EditArticleProteinComponent(CamelModel):
 @router.put("/article/component/protein")
 def edit_article_protein_component(body: EditArticleProteinComponent, req: Request):
     requires_authentication(req)
+
+    # replaces spaces with underscore, which is how proteins are stored in the DB
+    if body.new_name is not None:
+        body.new_name = format_protein_name(body.new_name)
+    if body.new_aligned_with_name is not None:
+        body.new_aligned_with_name = format_protein_name(body.new_aligned_with_name)
+
     with Database() as db:
         try:
             query = """UPDATE protein_components SET name=%s, aligned_with_name=%s WHERE component_id=%s;"""
