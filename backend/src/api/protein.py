@@ -105,9 +105,28 @@ def str_as_file_stream(input_str: str, filename_as: str) -> StreamingResponse:
     )
 
 
+def get_residue_bfactors(pdb: PDB):
+    chains = {}
+    for chain in pdb.structure.get_chains():
+        chains[chain.get_id()] = []
+        for r in chain.get_residues():
+            for a in r.get_atoms():
+                chains[chain.get_id()].append(a.bfactor)
+                break
+    return chains
+
+
 """
     ENDPOINTS TODO: add the other protein types here instead of in api_types.py
 """
+
+
+@router.get("/protein/pLDDT/{protein_name:str}", response_model=dict[str, list[float]])
+def get_pLDDT_given_protein(protein_name: str):
+    if protein_name_found(protein_name):
+        pdb = parse_protein_pdb(protein_name, encoding="file")
+        return get_residue_bfactors(pdb)
+    return {}
 
 
 class UploadPNGBody(CamelModel):

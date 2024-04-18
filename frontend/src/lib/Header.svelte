@@ -13,9 +13,12 @@
 	import Cookies from "js-cookie";
 	import ProteinIcon from "../lib/ProteinIcon.svelte";
 
-	// Checking if the user has a cookie.
-	// If they do, set user status for the whole site.
 	onMount(async () => {
+        /**
+         * Checking if the user has a cookie. If they do, set user svelte store loggin attribute.
+         * Done here because the header is loaded first, which means user can still directly navigate
+         * to restricted pages if they refresh while logged in.
+         */
 		if (Cookies.get("auth")) {
 			$user.loggedIn = true;
 		}

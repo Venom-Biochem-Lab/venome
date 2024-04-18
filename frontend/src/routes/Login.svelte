@@ -6,35 +6,32 @@
 	import { navigate } from "svelte-routing";
 	import { user } from "../lib/stores/user"
 
-	/*
-	 * Deletes the cookie upon entering the login page.
-	 * We want to do this to avoid bugs, and to let the user log out.
-	 */
 	 onMount(async () => {
+        /**
+         * Deletes the cookie and clears user store attributes upon entering the login page.
+         * Done here, because the log out button redirects to this page.
+         */
 		clearToken()
 		Cookies.remove("auth")
 		$user.loggedIn = false
 		$user.username = ""
-		$user.admin = true
+		$user.admin = false
 	});
 
 	let email: string = "";
 	let password: string = "";
 	$: formValid = email.length > 0 && password.length > 0;
 
-	let error = false;
-
-	let token = "";
 	/**
-	 * Gets run on button "Login" or form submit (pressing enter)
-	 * @todo add login logic with tokens and making a request to the backend
+	 * Gets run on pressing "Login" button or form submit (pressing enter)
 	 */
 	let result: LoginResponse | null = null;
 	async function submitForm() {
 		if (!formValid) return;
 		console.log("submitted");
 		try {
-			// Attempting to get a valid authentication token from the API
+			
+            // Makes call to /users/login API endpoint, sending username and password in JSON format.
 			result = await Backend.login({
 				email,
 				password,
@@ -43,24 +40,29 @@
 			if (result == null) {
 				// If result is null, log to console. Don't expect this would happen.
 				console.log("Response is null");
+                alert("NULL response. This is probably our fault.")
+
 			} else if (result["error"] != "") {
-				// User entered wrong username or password, or account doesn't exist.
-				// @todo Display this error message to the user.
+				// API returned an error. This either means the account doesn't exist, or user entered wrong username / password.
+                // @todo Display this in a better way than an alert popup.
 				console.log("Response received. Error: " + result["error"]);
 				alert(result["error"])
+
 			} else if (result["token"] != "") {
-				// User entered the correct username / password and got a result.
-				// @todo Store this in a cookie.
+				// User entered the correct username and password.
 				console.log("Response received. Token: " + result["token"]);
 				Cookies.set("auth", result["token"]);
 				$user.loggedIn = true
+                $user.username = email
+                $user.admin = true
 				navigate(`/search`);
+
 			} else {
-				// User got a result, but both fields are null. This should never happen.
-				console.log(
-					"Unexpected edge cage regarding user authentication."
-				);
+				// User got a result, but both the error and token field are empty. This indicates a bug on our end.
+				console.log("Unexpected edge cage regarding user authentication.");
+                alert("Unexpected edge cage regarding user authentication. This is probably our fault.")
 			}
+
 		} catch (e) {
 			alert([e])
 			console.log(e);

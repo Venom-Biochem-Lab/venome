@@ -122,6 +122,49 @@ export class DefaultService {
         });
     }
     /**
+     * Search Venome Similar Compare
+     * @param proteinName
+     * @param proteinCompare
+     * @returns SimilarProtein Successful Response
+     * @throws ApiError
+     */
+    public static searchVenomeSimilarCompare(
+        proteinName: string,
+        proteinCompare: string,
+    ): CancelablePromise<SimilarProtein> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/venome/similar/{protein_name}/{protein_compare}',
+            path: {
+                'protein_name': proteinName,
+                'protein_compare': proteinCompare,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Plddt Given Protein
+     * @param proteinName
+     * @returns number Successful Response
+     * @throws ApiError
+     */
+    public static getPLddtGivenProtein(
+        proteinName: string,
+    ): CancelablePromise<Record<string, Array<number>>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/pLDDT/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Get Pdb File
      * @param proteinName
      * @returns any Successful Response

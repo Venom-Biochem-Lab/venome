@@ -24,7 +24,7 @@ def login(body: LoginBody):
             if entry_sql is None or len(entry_sql) == 0:
                 return LoginResponse(token="", error="Invalid Email or Password")
 
-            # Grabs the stored hash and admin.
+            # Grabs the stored hash and admin status.
             password_hash, admin = entry_sql[0]
 
             # Returns "incorrect email/password" message if password is incorrect.
