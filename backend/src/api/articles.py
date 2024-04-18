@@ -69,20 +69,6 @@ def get_text_components_v2(db: Database, title: str):
     return []
 
 
-def get_protein_components(db: Database, title: str):
-    query = """SELECT id, component_order, name, aligned_with_name FROM article_protein_components
-                WHERE article_id=(SELECT id FROM articles WHERE title=%s);"""
-    res = db.execute_return(query, [title])
-    if res is not None:
-        return [
-            ArticleProteinComponent(
-                id=i, component_order=c, name=n, aligned_with_name=a
-            )
-            for [i, c, n, a] in res
-        ]
-    return []
-
-
 def get_protein_components_v2(db: Database, title: str):
     query = """SELECT components.id, components.component_order, protein_components.name, protein_components.aligned_with_name FROM components
                JOIN protein_components ON protein_components.component_id = components.id
@@ -99,18 +85,39 @@ def get_protein_components_v2(db: Database, title: str):
     return []
 
 
+def get_image_components_v2(db: Database, title: str):
+    query = """SELECT components.id, components.component_order, image_components.src, image_components.width, image_components.height FROM components
+               JOIN image_components ON image_components.component_id = components.id
+               WHERE components.article_id = (SELECT id FROM articles_v2 WHERE title = %s);
+                """
+    res = db.execute_return(query, [title])
+    if res is not None:
+        return [
+            ArticleImageComponent(
+                id=i,
+                component_order=c,
+                src=bytea_to_str(src_bytes),
+                width=width,
+                height=height,
+            )
+            for [i, c, src_bytes, width, height] in res
+        ]
+    return []
+
+
 @router.get("/article/{title:str}", response_model=Article)
 def get_article(title: str):
     with Database() as db:
         try:
             text_components = get_text_components_v2(db, title)
             protein_components = get_protein_components_v2(db, title)
-            # image_components = get_image_components(db, title)
+            image_components = get_image_components_v2(db, title)
+
             return Article(
                 title=title,
                 text_components=text_components,
                 protein_components=protein_components,
-                image_components=[],
+                image_components=image_components,
             )
         except Exception as e:
             HTTPException(500, detail=str(e))
@@ -228,7 +235,6 @@ def edit_article_protein_component(body: EditArticleProteinComponent):
 
 class UploadArticleImageComponent(CamelModel):
     for_article_title: str
-    component_order: int
     src: str
     width: int | None = None
     height: int | None = None
@@ -238,12 +244,13 @@ class UploadArticleImageComponent(CamelModel):
 def upload_article_image_component(body: UploadArticleImageComponent):
     with Database() as db:
         try:
-            query = """INSERT INTO article_image_components (article_id, component_order, src, width, height) VALUES ((SELECT id FROM articles WHERE title=%s), %s, %s, %s, %s);"""
+            component_id = insert_component(db, body.for_article_title)
+            query = """INSERT INTO image_components (component_id, src, height, width) 
+                    VALUES (%s, %s, %s, %s);"""
             db.execute(
                 query,
                 [
-                    body.for_article_title,
-                    body.component_order,
+                    component_id,
                     str_to_bytea(body.src),
                     body.width,
                     body.height,

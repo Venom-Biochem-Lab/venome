@@ -4,7 +4,6 @@
 /* eslint-disable */
 export type UploadArticleImageComponent = {
     forArticleTitle: string;
-    componentOrder: number;
     src: string;
     width?: (number | null);
     height?: (number | null);

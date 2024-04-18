@@ -109,7 +109,6 @@ CREATE TABLE components (
     FOREIGN KEY (article_id) REFERENCES articles_v2(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT unique_order UNIQUE (article_id, component_order)
 );
-
 CREATE TABLE text_components (
     id serial PRIMARY KEY,
     component_id integer NOT NULL,
@@ -119,7 +118,6 @@ CREATE TABLE text_components (
 
     FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-
 CREATE TABLE protein_components (
     id serial PRIMARY KEY,
     component_id integer NOT NULL,
@@ -127,6 +125,17 @@ CREATE TABLE protein_components (
     -- component specific info
     name text NOT NULL,
     aligned_with_name text, 
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE image_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    src bytea NOT NULL, --bytes of the image
+    width integer,
+    height integer,
 
     FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
 );

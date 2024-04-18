@@ -133,7 +133,6 @@
 								try {
 									await Backend.uploadArticleImageComponent({
 										forArticleTitle: articleTitle,
-										componentOrder: nextComponentOrder(),
 										src: "",
 									});
 									await refreshArticle();
