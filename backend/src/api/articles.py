@@ -122,12 +122,6 @@ def delete_article_component(component_id: int):
             raise HTTPException(500, detail=str(e))
 
 
-class UploadArticleTextComponent(CamelModel):
-    for_article_title: str
-    component_order: int
-    markdown: str
-
-
 def get_last_component_order(db: Database, article_title: str):
     out = db.execute_return(
         """SELECT coalesce(max(components.component_order) + 1, 0) FROM components
@@ -157,6 +151,11 @@ def insert_component(db: Database, article_title: str):
                VALUES ((SELECT id FROM articles_v2 WHERE title = %s), %s);"""
     db.execute(query, [article_title, last_component_order])
     return get_component_id_from_order(db, article_title, last_component_order)
+
+
+class UploadArticleTextComponent(CamelModel):
+    for_article_title: str
+    markdown: str
 
 
 @router.post("/article/component/text")

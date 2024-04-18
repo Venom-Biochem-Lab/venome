@@ -4,7 +4,6 @@
 /* eslint-disable */
 export type UploadArticleTextComponent = {
     forArticleTitle: string;
-    componentOrder: number;
     markdown: string;
 };
 

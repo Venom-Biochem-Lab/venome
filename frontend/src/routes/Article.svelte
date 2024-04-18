@@ -117,7 +117,6 @@
 								try {
 									await Backend.uploadArticleTextComponent({
 										forArticleTitle: articleTitle,
-										componentOrder: nextComponentOrder(),
 										markdown:
 											"## Placeholder Text\nHover over this section and click **Edit** to edit.",
 									});
