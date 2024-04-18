@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do not edit */
+/* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -129,6 +129,26 @@ export class DefaultService {
             path: {
                 'protein_name': proteinName,
                 'protein_compare': proteinCompare,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Plddt Given Protein
+     * @param proteinName
+     * @returns number Successful Response
+     * @throws ApiError
+     */
+    public static getPLddtGivenProtein(
+        proteinName: string,
+    ): CancelablePromise<Record<string, Array<number>>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/pLDDT/{protein_name}',
+            path: {
+                'protein_name': proteinName,
             },
             errors: {
                 422: `Validation Error`,
