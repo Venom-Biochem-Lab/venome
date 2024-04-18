@@ -20,7 +20,7 @@
 		try {
 			await Backend.editArticleTextComponent({
 				newMarkdown: editedMarkdown,
-				textComponentId: id,
+				componentId: id,
 			});
 		} catch (e) {
 			console.error(e);

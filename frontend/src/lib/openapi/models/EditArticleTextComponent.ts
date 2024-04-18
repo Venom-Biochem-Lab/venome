@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type EditArticleTextComponent = {
-    textComponentId: number;
+    componentId: number;
     newMarkdown: string;
 };
 

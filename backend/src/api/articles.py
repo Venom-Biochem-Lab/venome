@@ -112,6 +112,16 @@ def get_article(title: str):
             HTTPException(500, detail=str(e))
 
 
+@router.delete("/article/component/{component_id:int}")
+def delete_article_component(component_id: int):
+    with Database() as db:
+        try:
+            query = """DELETE FROM components WHERE id=%s;"""
+            db.execute(query, [component_id])
+        except Exception as e:
+            raise HTTPException(500, detail=str(e))
+
+
 class UploadArticleTextComponent(CamelModel):
     for_article_title: str
     component_order: int
@@ -161,18 +171,8 @@ def upload_article_text_component(body: UploadArticleTextComponent):
             raise HTTPException(500, detail=str(e))
 
 
-@router.delete("/article/component/{component_id:int}")
-def delete_article_component(component_id: int):
-    with Database() as db:
-        try:
-            query = """DELETE FROM components WHERE id=%s;"""
-            db.execute(query, [component_id])
-        except Exception as e:
-            raise HTTPException(500, detail=str(e))
-
-
 class EditArticleTextComponent(CamelModel):
-    text_component_id: int
+    component_id: int
     new_markdown: str
 
 
@@ -180,8 +180,8 @@ class EditArticleTextComponent(CamelModel):
 def edit_article_text_component(body: EditArticleTextComponent):
     with Database() as db:
         try:
-            query = """UPDATE article_text_components SET markdown=%s WHERE id=%s;"""
-            db.execute(query, [body.new_markdown, body.text_component_id])
+            query = """UPDATE text_components SET markdown=%s WHERE component_id=%s;"""
+            db.execute(query, [body.new_markdown, body.component_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
 

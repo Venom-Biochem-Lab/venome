@@ -414,6 +414,26 @@ export class DefaultService {
         });
     }
     /**
+     * Delete Article Component
+     * @param componentId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteArticleComponent(
+        componentId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/article/component/{component_id}',
+            path: {
+                'component_id': componentId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Edit Article Text Component
      * @param requestBody
      * @returns any Successful Response
@@ -446,26 +466,6 @@ export class DefaultService {
             url: '/article/component/text',
             body: requestBody,
             mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
-     * Delete Article Component
-     * @param componentId
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static deleteArticleComponent(
-        componentId: number,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/article/component/{component_id}',
-            path: {
-                'component_id': componentId,
-            },
             errors: {
                 422: `Validation Error`,
             },
