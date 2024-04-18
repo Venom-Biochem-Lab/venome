@@ -144,6 +144,29 @@ def get_article(title: str):
         )
 
 
+@router.get("/article/all/meta", response_model=list[Article])
+def get_all_articles_metadata():
+    with Database() as db:
+        try:
+            res = db.execute_return(
+                """SELECT id, title, description, date_published FROM articles;"""
+            )
+            if res is not None:
+                return [
+                    Article(
+                        id=id,
+                        title=title,
+                        description=description,
+                        date_published=str(date_published),
+                        ordered_components=[],
+                    )
+                    for [id, title, description, date_published] in res
+                ]
+            return []
+        except Exception:
+            raise HTTPException(500, "Error in with selecting articles")
+
+
 class ArticleUpload(CamelModel):
     title: str
     description: str | None = None

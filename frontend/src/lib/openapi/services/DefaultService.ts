@@ -427,6 +427,17 @@ export class DefaultService {
         });
     }
     /**
+     * Get All Articles Metadata
+     * @returns Article Successful Response
+     * @throws ApiError
+     */
+    public static getAllArticlesMetadata(): CancelablePromise<Array<Article>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/article/all/meta',
+        });
+    }
+    /**
      * Upload Article
      * @param requestBody
      * @returns any Successful Response

@@ -17,6 +17,7 @@
 	import ArticleTest from "./routes/ArticleTest.svelte";
 	import UploadArticle from "./routes/UploadArticle.svelte";
 	import Article from "./routes/Article.svelte";
+	import Articles from "./routes/Articles.svelte";
 	import EditArticle from "./routes/EditArticle.svelte";
 </script>
 
@@ -32,6 +33,7 @@
 		<Route path="/upload/tutorial"><UploadTutorial /></Route>
 		<Route path="/upload/article"><UploadArticle /></Route>
 		<Route path="/login"><Login /></Route>
+		<Route path="/articles"><Articles /></Route>
 		<Route path="/tutorials"><Tutorials /></Route>
 		<Route path="/tutorial/:id" let:params
 			><Tutorial tutorialTitle={params.id} /></Route

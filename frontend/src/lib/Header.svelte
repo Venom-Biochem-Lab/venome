@@ -31,7 +31,7 @@
 			<a href="/search" class="flex items-center gap-1"
 				><SearchOutline size="lg" />Search</a
 			>
-			<a href="/tutorials" class="flex items-center gap-1">
+			<a href="/articles" class="flex items-center gap-1">
 				<NewspapperSolid size="lg" />Articles</a
 			>
 			{#if $user.loggedIn}
