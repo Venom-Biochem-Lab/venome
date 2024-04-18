@@ -51,14 +51,50 @@ CREATE TABLE users (
 
 
 /*
-* Tutorials Table
+* Articles Table
 */
-CREATE TABLE tutorials (
+CREATE TABLE articles (
     id serial PRIMARY KEY,
     title text NOT NULL UNIQUE,
     description text,
-    content text, -- stored markdown for the article 
-    refs text -- bibtex references mentioned in the content/article
+    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE components (
+    id serial PRIMARY KEY,
+    article_id integer NOT NULL,
+    component_order integer NOT NULL, -- where this component is within a particular article 
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT unique_order UNIQUE (article_id, component_order)
+);
+CREATE TABLE text_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    markdown text DEFAULT '',
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE protein_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    name text NOT NULL,
+    aligned_with_name text, 
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE image_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    src bytea NOT NULL, --bytes of the image
+    width integer,
+    height integer,
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
@@ -76,9 +112,3 @@ INSERT INTO species(name) VALUES ('unknown');
  * Password: test
  */
 INSERT INTO users(username, email, pword, admin) VALUES ('test', 'test', '$2b$12$PFoNf7YM0KNIPP8WGsJjveIOhiJjitsMtfwRcCjdcyTuqjdk/q//u', '1');
-
-
-INSERT INTO tutorials(title, description, content) VALUES('General Information', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida tristique est, a sollicit', '## section 1\nhello!');
-INSERT INTO tutorials(title, description, content) VALUES('Biology', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'test');
-INSERT INTO tutorials(title, description, content) VALUES('How to Use the Site', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'epic');
-

@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-	import TMAlignEntry from "./TMAlignEntry.svelte";
+	import TMAlignEntry from "../lib/ProteinLinkCard.svelte";
 
 	import { onMount } from "svelte";
 	import { Backend, BACKEND_URL, type SimilarProtein, type ProteinEntry } from "../lib/backend";

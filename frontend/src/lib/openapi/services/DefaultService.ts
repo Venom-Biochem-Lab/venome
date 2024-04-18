@@ -1,7 +1,13 @@
-/* generated using openapi-typescript-codegen -- do not edit */
+/* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Article } from '../models/Article';
+import type { ArticleUpload } from '../models/ArticleUpload';
+import type { EditArticle } from '../models/EditArticle';
+import type { EditArticleImageComponent } from '../models/EditArticleImageComponent';
+import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
+import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
@@ -14,6 +20,9 @@ import type { SimilarProtein } from '../models/SimilarProtein';
 import type { Tutorial } from '../models/Tutorial';
 import type { TutorialEdit } from '../models/TutorialEdit';
 import type { TutorialUpload } from '../models/TutorialUpload';
+import type { UploadArticleImageComponent } from '../models/UploadArticleImageComponent';
+import type { UploadArticleProteinComponent } from '../models/UploadArticleProteinComponent';
+import type { UploadArticleTextComponent } from '../models/UploadArticleTextComponent';
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { UploadPNGBody } from '../models/UploadPNGBody';
@@ -129,6 +138,26 @@ export class DefaultService {
             path: {
                 'protein_name': proteinName,
                 'protein_compare': proteinCompare,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Plddt Given Protein
+     * @param proteinName
+     * @returns number Successful Response
+     * @throws ApiError
+     */
+    public static getPLddtGivenProtein(
+        proteinName: string,
+    ): CancelablePromise<Record<string, Array<number>>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/pLDDT/{protein_name}',
+            path: {
+                'protein_name': proteinName,
             },
             errors: {
                 422: `Validation Error`,
@@ -332,26 +361,6 @@ export class DefaultService {
         });
     }
     /**
-     * Delete Tutorial
-     * @param title
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static deleteTutorial(
-        title: string,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/tutorial/{title: str}',
-            query: {
-                'title': title,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
      * Edit Tutorial
      * @param requestBody
      * @returns any Successful Response
@@ -382,6 +391,260 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/tutorial',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Delete Tutorial
+     * @param title
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteTutorial(
+        title: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/tutorial/{title}',
+            path: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Article
+     * get_article
+     *
+     * Args:
+     * title (str): title of the article
+     *
+     * Raises:
+     * HTTPException: status 404 if the article is not found by the given title
+     * HTTPException: status 500 if any other errors occur
+     *
+     * Returns:
+     * Article
+     * @param title
+     * @returns Article Successful Response
+     * @throws ApiError
+     */
+    public static getArticle(
+        title: string,
+    ): CancelablePromise<Article> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/article/meta/{title}',
+            path: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Delete Article
+     * @param title
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteArticle(
+        title: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/article/meta/{title}',
+            path: {
+                'title': title,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get All Articles Metadata
+     * @returns Article Successful Response
+     * @throws ApiError
+     */
+    public static getAllArticlesMetadata(): CancelablePromise<Array<Article>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/article/all/meta',
+        });
+    }
+    /**
+     * Upload Article
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticle(
+        requestBody: ArticleUpload,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/meta/upload',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticle(
+        requestBody: EditArticle,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/meta',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Delete Article Component
+     * @param componentId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteArticleComponent(
+        componentId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/article/component/{component_id}',
+            path: {
+                'component_id': componentId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article Text Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticleTextComponent(
+        requestBody: EditArticleTextComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/text',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Article Text Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticleTextComponent(
+        requestBody: UploadArticleTextComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/component/text',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article Protein Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticleProteinComponent(
+        requestBody: EditArticleProteinComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/protein',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Article Protein Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticleProteinComponent(
+        requestBody: UploadArticleProteinComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/component/protein',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Article Image Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editArticleImageComponent(
+        requestBody: EditArticleImageComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/image',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Upload Article Image Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadArticleImageComponent(
+        requestBody: UploadArticleImageComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/component/image',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

@@ -1,53 +1,55 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, type Tutorial } from "../lib/backend";
 	import { navigate } from "svelte-routing";
-	import { Button } from "flowbite-svelte";
+	import { Backend, type Article } from "../lib/backend";
+	import { dbDateToMonthDayYear } from "../lib/format";
 
-	let tutorials: Tutorial[] = [];
-	let error = false;
-
+	let articles: Article[] = [];
 	onMount(async () => {
 		try {
-			tutorials = await Backend.getAllTutorials();
+			articles = await Backend.getAllArticlesMetadata();
 		} catch (e) {
-			error = true;
+			console.error(e);
 		}
-		console.log("Received", tutorials);
 	});
 </script>
 
 <div class="p-5">
-	<div class="mb-5">
-		<Button on:click={() => navigate(`/upload/tutorial`)}
-			>Upload Tutorial</Button
-		>
-	</div>
-	<div class="tutorials-container">
-		{#each tutorials as tutorial}
+	<div id="article-header">Articles</div>
+	<div class="articles-container">
+		{#each articles as a}
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div
-				class="tutorial"
+				class="article"
 				on:click={() => {
-					navigate(`/tutorial/${tutorial.title}`);
+					navigate(`/article/${a.title}`);
 				}}
 			>
-				<div class="tutorial-title">{tutorial.title}</div>
-				<div class="tutorial-desc">{tutorial.description ?? ""}</div>
+				{#if a.datePublished}
+					<div class="article-date">
+						{dbDateToMonthDayYear(a.datePublished)}
+					</div>
+				{/if}
+				<div class="article-title">{a.title}</div>
+				{#if a.description}
+					<div class="article-desc">
+						{a.description}
+					</div>
+				{/if}
 			</div>
 		{/each}
 	</div>
 </div>
 
 <style>
-	.tutorials-container {
+	.articles-container {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: row;
 		gap: 10px;
 	}
-	.tutorial {
+	.article {
 		--border-opacity: 0.2;
 		display: flex;
 		flex-direction: column;
@@ -61,21 +63,21 @@
 		transition: all 0.2s ease-in-out;
 		align-self: start;
 	}
-	.tutorial:hover {
+	.article:hover {
 		transform: scale(1.02);
 		--border-opacity: 0.3;
 		box-shadow: 0 1px 2px 2px #00000010;
 		cursor: pointer;
 	}
 
-	.tutorial-title {
+	.article-title {
 		font-size: 1.2em;
 		color: var(--primary-700);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	.tutorial-desc {
+	.article-desc {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -92,15 +94,14 @@
 			-webkit-box-orient: vertical;
 		}
 	}
-
-	.title {
-		font-size: 24px;
-		margin-bottom: 5px;
+	.article-date {
+		font-size: smaller;
+		opacity: 0.4;
 	}
 
-	.summary {
-		font-size: 18px;
-		margin-left: 40px;
-		margin-right: 40px;
+	#article-header {
+		font-size: 2.45rem;
+		font-weight: 500;
+		color: var(--primary-700);
 	}
 </style>
