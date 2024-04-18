@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { Fileupload, Label, FloatingLabelInput } from "flowbite-svelte";
 	import EditMode from "./EditMode.svelte";
-	import { fileToBase64String, fileToString } from "../format";
+	import {
+		fileToBase64String,
+		fileToString,
+		numberWithCommas,
+	} from "../format";
 	import { Backend } from "../backend";
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
@@ -17,22 +21,22 @@
 		file === undefined && editedWidth === width && editedHeight === height;
 	let editedWidth: number | string = width;
 	let editedHeight: number | string = height;
+
+	function hasNoInput(edited: string | number | null) {
+		return edited === "" || edited === null;
+	}
 </script>
 
 <EditMode
 	{disabledSave}
 	on:save={async () => {
+		const AUTO_SIZE = null;
+		const NO_FILE_INPUT = undefined;
 		await Backend.editArticleImageComponent({
 			componentId: id,
-			newSrc: file ? await fileToBase64String(file) : null,
-			newHeight:
-				editedHeight === "" || editedHeight === null
-					? null
-					: Number(editedHeight),
-			newWidth:
-				editedWidth === "" || editedWidth === null
-					? null
-					: Number(editedWidth),
+			newSrc: file ? await fileToBase64String(file) : NO_FILE_INPUT,
+			newHeight: hasNoInput(editedHeight) ? AUTO_SIZE : +editedHeight,
+			newWidth: hasNoInput(editedWidth) ? AUTO_SIZE : +editedWidth,
 		});
 		dispatch("change");
 	}}
