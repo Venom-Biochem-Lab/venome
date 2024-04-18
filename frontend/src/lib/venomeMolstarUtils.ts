@@ -132,17 +132,8 @@ export function pLDDTToAlphaFoldResidueColors(pLDDT: number[]): ResidueColor[] {
 }
 
 export function pLDDTToResidueColors(pLDDT: number[]): ResidueColor[] {
-	const colors = pLDDT.map((d) => {
-		if (d > 90) {
-			return alphafoldColorscheme[0];
-		} else if (d > 70) {
-			return alphafoldColorscheme[1];
-		} else if (d > 50) {
-			return alphafoldColorscheme[2];
-		} else {
-			return alphafoldColorscheme[3];
-		}
-	});
+	const interpolate = d3.interpolateSpectral;
+	const colors = pLDDT.map((d) => interpolate(d / 100));
 	return colors.map((c) => {
 		const rgb = d3.color(c)!.rgb()!;
 		return { r: rgb.r, g: rgb.g, b: rgb.b };

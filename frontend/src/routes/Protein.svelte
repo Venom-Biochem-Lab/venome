@@ -13,22 +13,16 @@
 	import References from "../lib/References.svelte";
 	import {
 		ChevronDownSolid,
-		PaletteOutline,
 		PenOutline,
-		RefreshOutline,
 		UndoOutline,
-		UndoSolid,
 	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
-	import {
-		pLDDTToAlphaFoldResidueColors,
-		pLDDTToResidueColors,
-	} from "../lib/venomeMolstarUtils";
-	import type { ChainColors, ChainpLDDT } from "../lib/venomeMolstarUtils";
+	import { pLDDTToAlphaFoldResidueColors } from "../lib/venomeMolstarUtils";
+	import type { ChainColors } from "../lib/venomeMolstarUtils";
 
 	const fileDownloadDropdown = ["pdb", "fasta"];
 
@@ -187,7 +181,9 @@
 									pLDDTPerResidue,
 								] of Object.entries(pLDDTPerChain)) {
 									chainColors[chainId] =
-										pLDDTToResidueColors(pLDDTPerResidue);
+										pLDDTToAlphaFoldResidueColors(
+											pLDDTPerResidue
+										);
 								}
 							}}
 						>
