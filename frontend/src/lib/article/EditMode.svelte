@@ -88,7 +88,8 @@
 					dispatch("edit");
 				}}><EditOutline size="sm" /> Edit</Button
 			>
-			<Button
+			<!-- bring back later -->
+			<!-- <Button
 				size="xs"
 				color="light"
 				on:click={() => {
@@ -101,7 +102,7 @@
 				on:click={() => {
 					dispatch("movedown");
 				}}><ArrowUpSolid size="sm" /> Move</Button
-			>
+			> -->
 		</div>
 	{/if}
 </div>

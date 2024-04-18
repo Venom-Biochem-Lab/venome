@@ -100,7 +100,7 @@
 		</div>
 	</slot>
 	<slot slot="edit"
-		><div style="width: 800px; height: 300px;" class="p-5">
+		><div style="width: 500px;" class="p-5">
 			<div style="width: 300px;" class="flex gap-5 flex-col">
 				<FloatingLabelInput style="filled" bind:value={editedName}
 					>Name</FloatingLabelInput

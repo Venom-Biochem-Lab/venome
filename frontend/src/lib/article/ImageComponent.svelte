@@ -63,7 +63,7 @@
 		{/if}
 	</slot>
 	<slot slot="edit">
-		<div class="flex flex-col gap-2 p-5">
+		<div class="flex flex-col gap-2 p-5" style="width: 500px;">
 			<div>
 				<Label for="image-upload" class="block mb-2"
 					>Upload New Image</Label
