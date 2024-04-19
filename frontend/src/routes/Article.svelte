@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import { Backend, type Article, setToken } from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-	import { EditOutline } from "flowbite-svelte-icons";
+	import { ArrowLeftOutline, EditOutline } from "flowbite-svelte-icons";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
@@ -11,6 +11,7 @@
 	import { dbDateToMonthDayYear } from "../lib/format";
 
 	export let articleTitle: string;
+	export let editMode = false;
 
 	const textWidth = "800px";
 	let dropdownOpen = false;
@@ -35,15 +36,44 @@
 		<div>
 			<div class="flex gap-2 flex-col items-center">
 				<div id="header" style="width: {textWidth};">
+					{#if editMode}
+						<div class="flex gap-2 items-center">
+							<Button
+								color="light"
+								outline
+								size="xs"
+								on:click={async () => {
+									navigate(`/article/${articleTitle}`);
+								}}
+								><ArrowLeftOutline class="mr-1" size="sm" />Back
+								to viewing
+							</Button>
+							Edit a component by hovering and click <b>Edit</b> or
+							edit the metadata/header.
+						</div>
+					{/if}
 					<div id="title">
 						{article.title}
-						{#if $user.loggedIn}
+						{#if !editMode && $user.loggedIn}
 							<Button
 								color="light"
 								outline
 								size="xs"
 								on:click={async () => {
 									navigate(`/article/edit/${articleTitle}`);
+								}}
+								><EditOutline class="mr-1" size="sm" />Edit
+								Article
+							</Button>
+						{:else}
+							<Button
+								color="light"
+								outline
+								size="xs"
+								on:click={async () => {
+									navigate(
+										`/article/meta/edit/${articleTitle}`
+									);
 								}}
 								><EditOutline class="mr-1" size="sm" />Edit
 								Article Metadata
@@ -67,6 +97,7 @@
 					{#if c.componentType === "text"}
 						<div style="width: {textWidth};">
 							<TextComponent
+								{editMode}
 								markdown={c.markdown}
 								id={c.id}
 								on:change={async () => {
@@ -76,6 +107,7 @@
 						</div>
 					{:else if c.componentType === "protein"}
 						<ProteinComponent
+							{editMode}
 							id={c.id}
 							name={c.name}
 							alignedWithName={c.alignedWithName}
@@ -89,6 +121,7 @@
 							class="flex justify-center"
 						>
 							<ImageComponent
+								{editMode}
 								id={c.id}
 								src={c.src}
 								height={c.height}
@@ -100,7 +133,7 @@
 						</div>
 					{/if}
 				{/each}
-				{#if $user.loggedIn}
+				{#if $user.loggedIn && editMode}
 					<div class="mt-5" style="width: {textWidth};">
 						<Button
 							outline

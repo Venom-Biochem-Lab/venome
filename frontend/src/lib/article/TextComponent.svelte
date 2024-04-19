@@ -8,12 +8,14 @@
 
 	export let id: number;
 	export let markdown: string;
+	export let editMode = false;
 	let disabledSave = false;
 
 	let editedMarkdown = markdown;
 </script>
 
 <EditMode
+	forceHideEdit={!editMode}
 	bind:disabledSave
 	on:save={async () => {
 		try {

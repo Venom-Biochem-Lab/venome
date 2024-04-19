@@ -19,6 +19,7 @@
 	export let alignedWithName: string | undefined = undefined;
 	export let width: number = 500;
 	export let height: number = 350;
+	export let editMode = false;
 
 	let editedName: string = name;
 	let editedAlignedWithName: string | undefined = alignedWithName;
@@ -48,6 +49,7 @@
 </script>
 
 <EditMode
+	forceHideEdit={!editMode}
 	bind:disabledSave
 	on:save={async () => {
 		setToken();

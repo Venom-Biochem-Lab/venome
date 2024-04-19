@@ -10,6 +10,7 @@
 	export let src: string;
 	export let width: number;
 	export let height: number;
+	export let editMode = false;
 
 	const AUTO_SIZE = null;
 	const NO_FILE_INPUT = undefined;
@@ -28,6 +29,7 @@
 </script>
 
 <EditMode
+	forceHideEdit={!editMode}
 	{disabledSave}
 	on:save={async () => {
 		try {

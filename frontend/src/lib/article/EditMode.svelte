@@ -1,15 +1,12 @@
 <script lang="ts">
-	import { ArrowKeyUp, Button } from "flowbite-svelte";
+	import { Button } from "flowbite-svelte";
 	import { createEventDispatcher } from "svelte";
 	import {
-		ArrowUpDownSolid,
-		ArrowUpSolid,
 		CheckOutline,
 		CloseOutline,
 		EditOutline,
 		TrashBinOutline,
 	} from "flowbite-svelte-icons";
-	import { user } from "../stores/user";
 	const dispatch = createEventDispatcher<{
 		save: undefined;
 		delete: undefined;
@@ -20,7 +17,7 @@
 	}>();
 
 	export let disabledSave: boolean = true;
-	$: forceHideEdit = !$user.loggedIn;
+	export let forceHideEdit = false;
 
 	let editMode = false;
 	let revealEdit = false;

@@ -80,7 +80,7 @@
 							newDescription:
 								description.length > 0 ? description : null,
 						});
-						navigate(`/article/${title}`);
+						navigate(`/article/edit/${title}`);
 					} catch (e) {
 						error = true;
 						console.error(e);
@@ -91,7 +91,7 @@
 			<Button
 				outline
 				on:click={() => {
-					navigate(`/article/${title}`);
+					navigate(`/article/edit/${title}`);
 				}}>Cancel</Button
 			>
 		</div>
