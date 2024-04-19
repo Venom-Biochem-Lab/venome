@@ -36,7 +36,7 @@
 		<div>
 			<div class="flex gap-2 flex-col items-center">
 				<div id="header" style="width: {textWidth};">
-					{#if editMode}
+					{#if editMode && $user.loggedIn}
 						<div class="flex gap-2 items-center">
 							<Button
 								color="light"
@@ -65,7 +65,7 @@
 								><EditOutline class="mr-1" size="sm" />Edit
 								Article
 							</Button>
-						{:else}
+						{:else if editMode && $user.loggedIn}
 							<Button
 								color="light"
 								outline
