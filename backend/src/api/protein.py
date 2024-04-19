@@ -397,3 +397,24 @@ def align_proteins(proteinA: str, proteinB: str):
     except Exception as e:
         log.error(e)
         raise HTTPException(status_code=500, detail=str(e))
+    
+# Returns the alignment string info from TM Align's console log.
+@router.get("/protein/alignment/{proteinA:str}/{proteinB:str}", response_model=list[str])
+def align_proteins(proteinA: str, proteinB: str):
+    if not protein_name_found(proteinA) or not protein_name_found(proteinB):
+        raise HTTPException(
+            status_code=404, detail="One of the proteins provided is not found in DB"
+        )
+    try:
+        filepath_pdbA = stored_pdb_file_name(proteinA)
+        filepath_pdbB = stored_pdb_file_name(proteinB)
+        tmalign_output = tm_align_return(filepath_pdbA, filepath_pdbB, 1)
+        
+        log.warn("TM Align Output follows:")
+        tmalign_output_list = tmalign_output.splitlines()
+        tmalign_curated = tmalign_output_list[18:21]
+        log.warn(tmalign_curated)
+        return tmalign_curated
+    except Exception as e:
+        log.error(e)
+        raise HTTPException(status_code=500, detail=str(e))
