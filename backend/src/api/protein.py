@@ -380,7 +380,13 @@ def edit_protein_entry(body: EditBody, req: Request):
     except Exception:
         raise HTTPException(500, "Edit failed, git gud")
 
+"""
+Q:  Why not combine /protein/pdb and /protein/alignment into one endpoint which returns the same value, since
+    it looks like they do the same thing?
 
+A:  In order to display a PDB in Mol*, we need to pass it an HTTP URL. That's the primary purpose of /protein/pdb - 
+    to give it that URL. As such, we need a different endpoint to get the alignment logs from TMalign. 
+"""
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.
 @router.get("/protein/pdb/{proteinA:str}/{proteinB:str}", response_model=str)
 def align_proteins(proteinA: str, proteinB: str):
@@ -398,6 +404,7 @@ def align_proteins(proteinA: str, proteinB: str):
         log.error(e)
         raise HTTPException(status_code=500, detail=str(e))
     
+
 # Returns the alignment string info from TM Align's console log.
 @router.get("/protein/alignment/{proteinA:str}/{proteinB:str}", response_model=list[str])
 def align_proteins(proteinA: str, proteinB: str):
