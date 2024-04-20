@@ -46,7 +46,7 @@
 	class:editing={editMode}
 	class="edit-container"
 	style={revealEdit && !forceHideEdit
-		? "outline: 1px solid lightgrey; border-radius: 5px;"
+		? "background-color: var(--primary-100);"
 		: ""}
 >
 	{#if editMode && !forceHideEdit}
