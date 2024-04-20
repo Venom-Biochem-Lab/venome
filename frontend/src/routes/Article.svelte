@@ -7,7 +7,11 @@
 		InsertBlankComponentEnd,
 	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-	import { ArrowLeftOutline, EditOutline } from "flowbite-svelte-icons";
+	import {
+		ArrowLeftOutline,
+		EditOutline,
+		PlusOutline,
+	} from "flowbite-svelte-icons";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
@@ -146,12 +150,13 @@
 				{#if $user.loggedIn && editMode}
 					<div class="mt-5" style="width: {textWidth};">
 						<Button
+							style="width: 100%;"
 							outline
 							color="light"
 							on:click={() => (dropdownOpen = true)}
-							>+ Add New Component</Button
+							><PlusOutline /> Add Component</Button
 						>
-						<Dropdown open={dropdownOpen} placement="top">
+						<Dropdown open={dropdownOpen}>
 							{#each Object.entries(InsertBlankComponentEnd.componentType) as [name, t]}
 								<DropdownItem
 									on:click={async () => {

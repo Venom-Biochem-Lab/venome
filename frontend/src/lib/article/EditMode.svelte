@@ -44,7 +44,7 @@
 		dropdownOpen = false;
 	}}
 	class:editing={editMode}
-	class="text-component"
+	class="edit-container"
 	style={revealEdit && !forceHideEdit
 		? "outline: 1px solid lightgrey; border-radius: 5px;"
 		: ""}
@@ -98,7 +98,6 @@
 					dropdownOpen = true;
 				}}
 			>
-				<PlusSolid size="sm" />
 				Insert
 				<ArrowUpSolid size="sm" class="rotate-180" />
 			</Button>
@@ -136,8 +135,7 @@
 </div>
 
 <style>
-	.text-component {
-		padding: 5px;
+	.edit-container {
 		position: relative;
 	}
 	.editing {
