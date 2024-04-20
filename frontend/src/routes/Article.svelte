@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, setContext } from "svelte";
+	import { onMount } from "svelte";
 	import {
 		Backend,
 		type Article,
@@ -7,18 +7,15 @@
 		InsertBlankComponentEnd,
 	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-	import {
-		ArrowLeftOutline,
-		CirclePlusSolid,
-		EditOutline,
-	} from "flowbite-svelte-icons";
+	import { ArrowLeftOutline, EditOutline } from "flowbite-svelte-icons";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
 	import { user } from "../lib/stores/user";
 	import { navigate } from "svelte-routing";
 	import { dbDateToMonthDayYear } from "../lib/format";
-	import { componentTypes } from "../lib/article/articleUtils";
+	import References from "../lib/References.svelte";
+	import Markdown from "../lib/Markdown.svelte";
 
 	export let articleTitle: string;
 	export let editMode = false;
@@ -49,7 +46,7 @@
 					{#if editMode && $user.loggedIn}
 						<div class="flex gap-2 items-center">
 							<Button
-								color="light"
+								color="primary"
 								outline
 								size="xs"
 								on:click={async () => {
@@ -58,8 +55,6 @@
 								><ArrowLeftOutline class="mr-1" size="sm" />Back
 								to viewing
 							</Button>
-							Edit a component by hovering and click <b>Edit</b> or
-							edit the metadata/header.
 						</div>
 					{/if}
 					<div id="title">
@@ -156,7 +151,7 @@
 							on:click={() => (dropdownOpen = true)}
 							>+ Add New Component</Button
 						>
-						<Dropdown open={dropdownOpen}>
+						<Dropdown open={dropdownOpen} placement="top">
 							{#each Object.entries(InsertBlankComponentEnd.componentType) as [name, t]}
 								<DropdownItem
 									on:click={async () => {
@@ -177,6 +172,32 @@
 								>
 							{/each}
 						</Dropdown>
+					</div>
+				{/if}
+				{#if article.refs}
+					<div style="width: {textWidth};">
+						<div class="flex gap-2 items-end">
+							<Markdown text="# References" />
+							{#if $user.loggedIn && editMode}
+								<div>
+									<Button
+										color="light"
+										outline
+										size="xs"
+										on:click={async () => {
+											navigate(
+												`/article/meta/edit/${articleTitle}`
+											);
+										}}
+										><EditOutline
+											class="mr-1"
+											size="sm"
+										/>Edit Article References
+									</Button>
+								</div>
+							{/if}
+						</div>
+						<References bibtex={String.raw`${article.refs}`} />
 					</div>
 				{/if}
 			</div>

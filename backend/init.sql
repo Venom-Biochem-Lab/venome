@@ -57,7 +57,8 @@ CREATE TABLE articles (
     id serial PRIMARY KEY,
     title text NOT NULL UNIQUE,
     description text,
-    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    refs text -- bibtex references mentioned in the content/article
 );
 CREATE TABLE components (
     id serial PRIMARY KEY,

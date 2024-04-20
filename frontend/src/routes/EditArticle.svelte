@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Label, Input, Button, Helper } from "flowbite-svelte";
+	import { Label, Input, Button, Helper, Textarea } from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import { Backend, setToken, type Article } from "../lib/backend";
 	import { onMount } from "svelte";
@@ -7,6 +7,8 @@
 
 	let title: string = "";
 	let description: string = "";
+	let refs: string = "";
+
 	let articlesExists = true;
 	let error = false;
 	let article: Article;
@@ -20,9 +22,10 @@
 
 		title = article.title;
 		description = article.description ?? "";
+		refs = article.refs ?? "";
 	});
 
-	function wasEdited(title: string, description: string) {
+	function wasEdited(title: string, description: string, refs: string) {
 		if (!article) return false;
 
 		let descriptionEdited = false;
@@ -35,7 +38,21 @@
 			// if there is something, it was edited if diff
 			descriptionEdited = description !== article.description;
 		}
-		return (descriptionEdited || title !== article.title) && title !== "";
+
+		let refsEdited = false;
+		const refsNullInDB =
+			article.refs === null || article.refs === undefined;
+		if (refsNullInDB) {
+			// then I reassigned description to be ""
+			refsEdited = refs !== ""; // so anything other than "" would be edited
+		} else {
+			// if there is something, it was edited if diff
+			refsEdited = refs !== article.refs;
+		}
+		return (
+			(refsEdited || descriptionEdited || title !== article.title) &&
+			title !== ""
+		);
 	}
 </script>
 
@@ -67,18 +84,27 @@
 					placeholder="Enter a unique description... (optional)"
 				/>
 			</div>
+			<div>
+				<Label for="desc" class="block mb-2">References (BibTeX)</Label>
+				<Textarea
+					bind:value={refs}
+					rows={20}
+					placeholder="Enter BibTeX..."
+				/>
+			</div>
 		</div>
 		<div class="mt-5">
 			<Button
 				on:click={async () => {
 					try {
 						setToken();
-						await Backend.editArticle({
+						await Backend.editArticleMetadata({
 							articleTitle: article.title,
 							newArticleTitle:
 								title !== article.title ? title : undefined,
 							newDescription:
 								description.length > 0 ? description : null,
+							newRefs: refs.length > 0 ? refs : null,
 						});
 						navigate(`/article/edit/${title}`);
 					} catch (e) {
@@ -86,7 +112,8 @@
 						console.error(e);
 					}
 				}}
-				disabled={!wasEdited(title, description)}>Edit Article</Button
+				disabled={!wasEdited(title, description, refs)}
+				>Edit Article</Button
 			>
 			<Button
 				outline

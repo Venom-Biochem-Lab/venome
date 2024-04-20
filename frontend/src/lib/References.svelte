@@ -7,6 +7,7 @@
 	$: {
 		try {
 			bib = parseBibFile(bibtex);
+			console.log(bib.content);
 		} catch (e) {
 			console.log("error in syntax");
 		}

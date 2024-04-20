@@ -47,7 +47,9 @@
 		}
 	}
 
-	$: fetchInfoCards(name, alignedWithName);
+	$: if (name !== "") {
+		fetchInfoCards(name, alignedWithName);
+	}
 </script>
 
 <EditMode

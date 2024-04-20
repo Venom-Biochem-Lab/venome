@@ -4,8 +4,8 @@
 /* eslint-disable */
 import type { Article } from '../models/Article';
 import type { ArticleUpload } from '../models/ArticleUpload';
-import type { EditArticle } from '../models/EditArticle';
 import type { EditArticleImageComponent } from '../models/EditArticleImageComponent';
+import type { EditArticleMetadata } from '../models/EditArticleMetadata';
 import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
@@ -410,13 +410,13 @@ export class DefaultService {
         });
     }
     /**
-     * Edit Article
+     * Edit Article Metadata
      * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static editArticle(
-        requestBody: EditArticle,
+    public static editArticleMetadata(
+        requestBody: EditArticleMetadata,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',

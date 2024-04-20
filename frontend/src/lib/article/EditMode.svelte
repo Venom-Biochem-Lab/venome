@@ -45,9 +45,9 @@
 	}}
 	class:editing={editMode}
 	class="text-component"
-	style="outline: 1px solid {revealEdit
-		? 'lightgrey'
-		: 'transparent'}; border-radius: 5px;"
+	style={revealEdit && !forceHideEdit
+		? "outline: 1px solid lightgrey; border-radius: 5px;"
+		: ""}
 >
 	{#if editMode && !forceHideEdit}
 		<slot name="edit" />

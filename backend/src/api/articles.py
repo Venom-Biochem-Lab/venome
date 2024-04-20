@@ -39,6 +39,7 @@ class Article(CamelModel):
     title: str
     description: str | None = None
     date_published: str | None = None
+    refs: str | None = None
     ordered_components: list[
         ArticleTextComponent | ArticleProteinComponent | ArticleImageComponent
     ]
@@ -94,12 +95,12 @@ def get_image_components(db: Database, title: str):
     return []
 
 
-def get_article_metadata(db: Database, title: str) -> tuple[int, str, str]:
-    query = """SELECT id, description, date_published FROM articles WHERE title = %s;"""
+def get_article_metadata(db: Database, title: str) -> tuple[int, str, str, str]:
+    query = """SELECT id, description, date_published, refs FROM articles WHERE title = %s;"""
     out = db.execute_return(query, [title])
     if out is not None:
-        [id, description, date_published] = out[0]
-        return id, description, str(date_published)
+        [id, description, date_published, refs] = out[0]
+        return id, description, str(date_published), refs
     else:
         raise Exception("Nothing returned")
 
@@ -122,7 +123,7 @@ def get_article(title: str):
     with Database() as db:
         try:
             # this will fail if the article title does not exist
-            id, description, date_published = get_article_metadata(db, title)
+            id, description, date_published, refs = get_article_metadata(db, title)
         except Exception as e:
             raise HTTPException(404, detail=str(e))
 
@@ -143,6 +144,7 @@ def get_article(title: str):
             ordered_components=ordered_components,
             description=description,
             date_published=date_published,
+            refs=refs,
         )
 
 
@@ -197,14 +199,15 @@ def delete_article(title: str, req: Request):
             raise HTTPException(500, detail=str(e))
 
 
-class EditArticle(CamelModel):
+class EditArticleMetadata(CamelModel):
     article_title: str
     new_article_title: str | None = None
     new_description: str | None = None
+    new_refs: str | None = None
 
 
 @router.put("/article/meta")
-def edit_article(body: EditArticle, req: Request):
+def edit_article_metadata(body: EditArticleMetadata, req: Request):
     requires_authentication(req)
     with Database() as db:
         try:
@@ -222,6 +225,10 @@ def edit_article(body: EditArticle, req: Request):
             db.execute(
                 """UPDATE articles SET description = %s WHERE title = %s;""",
                 [body.new_description, body.article_title],
+            )
+            db.execute(
+                """UPDATE articles SET refs = %s WHERE title = %s;""",
+                [body.new_refs, body.article_title],
             )
         except Exception:
             raise HTTPException(501, detail="Article not unique")
