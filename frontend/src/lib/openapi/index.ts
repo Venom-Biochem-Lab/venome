@@ -18,6 +18,7 @@ export type { EditArticleProteinComponent } from './models/EditArticleProteinCom
 export type { EditArticleTextComponent } from './models/EditArticleTextComponent';
 export type { EditBody } from './models/EditBody';
 export type { HTTPValidationError } from './models/HTTPValidationError';
+export type { InsertComponent } from './models/InsertComponent';
 export type { LoginBody } from './models/LoginBody';
 export type { LoginResponse } from './models/LoginResponse';
 export type { ProteinEditSuccess } from './models/ProteinEditSuccess';
@@ -26,9 +27,6 @@ export type { RangeFilter } from './models/RangeFilter';
 export type { SearchProteinsBody } from './models/SearchProteinsBody';
 export type { SearchProteinsResults } from './models/SearchProteinsResults';
 export type { SimilarProtein } from './models/SimilarProtein';
-export type { Tutorial } from './models/Tutorial';
-export type { TutorialEdit } from './models/TutorialEdit';
-export type { TutorialUpload } from './models/TutorialUpload';
 export type { UploadArticleImageComponent } from './models/UploadArticleImageComponent';
 export type { UploadArticleProteinComponent } from './models/UploadArticleProteinComponent';
 export type { UploadArticleTextComponent } from './models/UploadArticleTextComponent';

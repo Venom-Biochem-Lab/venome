@@ -6,6 +6,7 @@
 	import EditMode from "./EditMode.svelte";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
+	export let articleId: number;
 	export let id: number;
 	export let markdown: string;
 	export let editMode = false;
@@ -15,6 +16,8 @@
 </script>
 
 <EditMode
+	{articleId}
+	componentId={id}
 	forceHideEdit={!editMode}
 	bind:disabledSave
 	on:save={async () => {

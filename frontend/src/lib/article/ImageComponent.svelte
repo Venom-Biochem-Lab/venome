@@ -6,6 +6,7 @@
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
+	export let articleId: number;
 	export let id: number;
 	export let src: string;
 	export let width: number;
@@ -29,6 +30,8 @@
 </script>
 
 <EditMode
+	{articleId}
+	componentId={id}
 	forceHideEdit={!editMode}
 	{disabledSave}
 	on:save={async () => {

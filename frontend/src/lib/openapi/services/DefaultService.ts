@@ -9,6 +9,7 @@ import type { EditArticleImageComponent } from '../models/EditArticleImageCompon
 import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
+import type { InsertComponent } from '../models/InsertComponent';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
 import type { ProteinEditSuccess } from '../models/ProteinEditSuccess';
@@ -17,9 +18,6 @@ import type { RangeFilter } from '../models/RangeFilter';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
 import type { SimilarProtein } from '../models/SimilarProtein';
-import type { Tutorial } from '../models/Tutorial';
-import type { TutorialEdit } from '../models/TutorialEdit';
-import type { TutorialUpload } from '../models/TutorialUpload';
 import type { UploadArticleImageComponent } from '../models/UploadArticleImageComponent';
 import type { UploadArticleProteinComponent } from '../models/UploadArticleProteinComponent';
 import type { UploadArticleTextComponent } from '../models/UploadArticleTextComponent';
@@ -330,95 +328,6 @@ export class DefaultService {
         });
     }
     /**
-     * Get All Tutorials
-     * @returns Tutorial Successful Response
-     * @throws ApiError
-     */
-    public static getAllTutorials(): CancelablePromise<Array<Tutorial>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/tutorials',
-        });
-    }
-    /**
-     * Get Tutorial
-     * @param title
-     * @returns Tutorial Successful Response
-     * @throws ApiError
-     */
-    public static getTutorial(
-        title: string,
-    ): CancelablePromise<Tutorial> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/tutorial/{title: str}',
-            query: {
-                'title': title,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
-     * Edit Tutorial
-     * @param requestBody
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static editTutorial(
-        requestBody: TutorialEdit,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/tutorial',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
-     * Upload Tutorial
-     * @param requestBody
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static uploadTutorial(
-        requestBody: TutorialUpload,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/tutorial',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
-     * Delete Tutorial
-     * @param title
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static deleteTutorial(
-        title: string,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/tutorial/{title}',
-            path: {
-                'title': title,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-    /**
      * Get Article
      * get_article
      *
@@ -645,6 +554,25 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/article/component/image',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Insert Component Above
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static insertComponentAbove(
+        requestBody: InsertComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/component/insert-above',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

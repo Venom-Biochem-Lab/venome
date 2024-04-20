@@ -14,6 +14,7 @@
 
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
+	export let articleId: number;
 	export let id: number;
 	export let name: string;
 	export let alignedWithName: string | undefined = undefined;
@@ -49,6 +50,8 @@
 </script>
 
 <EditMode
+	{articleId}
+	componentId={id}
 	forceHideEdit={!editMode}
 	bind:disabledSave
 	on:save={async () => {

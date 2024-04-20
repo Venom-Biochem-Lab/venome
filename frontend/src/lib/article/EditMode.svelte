@@ -1,12 +1,16 @@
 <script lang="ts">
-	import { Button } from "flowbite-svelte";
-	import { createEventDispatcher } from "svelte";
+	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
+	import { createEventDispatcher, getContext } from "svelte";
 	import {
 		CheckOutline,
 		CloseOutline,
 		EditOutline,
 		TrashBinOutline,
+		CirclePlusSolid,
+		PlusSolid,
+		ArrowUpSolid,
 	} from "flowbite-svelte-icons";
+	import { Backend } from "../backend";
 	const dispatch = createEventDispatcher<{
 		save: undefined;
 		delete: undefined;
@@ -14,23 +18,31 @@
 		cancel: undefined;
 		movedown: undefined;
 		moveup: undefined;
+		insertAbove: undefined;
 	}>();
 
+	export let articleId: number;
+	export let componentId: number;
 	export let disabledSave: boolean = true;
 	export let forceHideEdit = false;
 
 	let editMode = false;
 	let revealEdit = false;
+	let dropdownOpen = false;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
+
 <div
 	on:mouseenter={() => {
 		if (!editMode) {
 			revealEdit = true;
 		}
 	}}
-	on:mouseleave={() => (revealEdit = false)}
+	on:mouseleave={() => {
+		revealEdit = false;
+		dropdownOpen = false;
+	}}
 	class:editing={editMode}
 	class="text-component"
 >
@@ -73,9 +85,38 @@
 	{/if}
 	{#if revealEdit && !forceHideEdit}
 		<div
-			style="position: absolute; left: -60px; top: 10px; width: 60px; z-index: 999;"
-			class="flex gap-1 flex-col"
+			style="position: absolute; left: -180px; top: 10px; width: 180px; z-index: 999; padding: 10px;"
+			class="flex gap-2"
 		>
+			<Button
+				size="xs"
+				color="light"
+				on:click={() => {
+					dropdownOpen = true;
+				}}
+			>
+				<PlusSolid size="sm" />
+				Insert
+				<ArrowUpSolid size="sm" class="rotate-180" />
+			</Button>
+			<Dropdown open={dropdownOpen} placement="top">
+				<DropdownItem
+					on:click={async () => {
+						try {
+							await Backend.insertComponentAbove({
+								articleId,
+								componentId,
+								componentType: "text",
+							});
+							dropdownOpen = false;
+							revealEdit = false;
+							dispatch("save");
+						} catch (e) {
+							console.error(e);
+						}
+					}}>Text Component</DropdownItem
+				>
+			</Dropdown>
 			<Button
 				size="xs"
 				color="light"
@@ -113,5 +154,17 @@
 		outline: 1px solid var(--primary-500);
 		border-radius: 3px;
 		background-color: var(--primary-100);
+	}
+	.add-up {
+		position: absolute;
+		top: -5px;
+		left: 0;
+		height: 10px;
+		width: 100%;
+		transition: all 0.2s ease-in-out;
+	}
+	.add-up:hover {
+		background-color: var(--primary-200);
+		cursor: pointer;
 	}
 </style>

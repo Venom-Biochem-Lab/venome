@@ -1,8 +1,12 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, setContext } from "svelte";
 	import { Backend, type Article, setToken } from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-	import { ArrowLeftOutline, EditOutline } from "flowbite-svelte-icons";
+	import {
+		ArrowLeftOutline,
+		CirclePlusSolid,
+		EditOutline,
+	} from "flowbite-svelte-icons";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
@@ -94,44 +98,49 @@
 					{/if}
 				</div>
 				{#each article.orderedComponents as c (c.id)}
-					{#if c.componentType === "text"}
-						<div style="width: {textWidth};">
-							<TextComponent
+					<div style="position: relative;">
+						{#if c.componentType === "text"}
+							<div style="width: {textWidth};">
+								<TextComponent
+									articleId={article.id}
+									{editMode}
+									markdown={c.markdown}
+									id={c.id}
+									on:change={async () => {
+										await refreshArticle();
+									}}
+								/>
+							</div>
+						{:else if c.componentType === "protein"}
+							<ProteinComponent
+								articleId={article.id}
 								{editMode}
-								markdown={c.markdown}
 								id={c.id}
+								name={c.name}
+								alignedWithName={c.alignedWithName}
 								on:change={async () => {
 									await refreshArticle();
 								}}
 							/>
-						</div>
-					{:else if c.componentType === "protein"}
-						<ProteinComponent
-							{editMode}
-							id={c.id}
-							name={c.name}
-							alignedWithName={c.alignedWithName}
-							on:change={async () => {
-								await refreshArticle();
-							}}
-						/>
-					{:else if c.componentType === "image"}
-						<div
-							style="width: {textWidth};"
-							class="flex justify-center"
-						>
-							<ImageComponent
-								{editMode}
-								id={c.id}
-								src={c.src}
-								height={c.height}
-								width={c.width}
-								on:change={async () => {
-									await refreshArticle();
-								}}
-							/>
-						</div>
-					{/if}
+						{:else if c.componentType === "image"}
+							<div
+								style="width: {textWidth};"
+								class="flex justify-center"
+							>
+								<ImageComponent
+									articleId={article.id}
+									{editMode}
+									id={c.id}
+									src={c.src}
+									height={c.height}
+									width={c.width}
+									on:change={async () => {
+										await refreshArticle();
+									}}
+								/>
+							</div>
+						{/if}
+					</div>
 				{/each}
 				{#if $user.loggedIn && editMode}
 					<div class="mt-5" style="width: {textWidth};">

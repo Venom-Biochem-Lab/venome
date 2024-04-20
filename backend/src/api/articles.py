@@ -260,12 +260,16 @@ def get_component_id_from_order(db: Database, article_id: int, component_order: 
         raise Exception("Not found")
 
 
-def insert_component(db: Database, article_id: int):
-    last_component_order = get_last_component_order(db, article_id)
+def insert_component(db: Database, article_id: int, component_order: int):
     query = """INSERT INTO components (article_id, component_order) 
                VALUES (%s, %s);"""
-    db.execute(query, [article_id, last_component_order])
-    return get_component_id_from_order(db, article_id, last_component_order)
+    db.execute(query, [article_id, component_order])
+    return get_component_id_from_order(db, article_id, component_order)
+
+
+def insert_component_to_end(db: Database, article_id: int):
+    last = get_last_component_order(db, article_id)
+    return insert_component(db, article_id, last)
 
 
 class UploadArticleTextComponent(CamelModel):
@@ -278,7 +282,7 @@ def upload_article_text_component(body: UploadArticleTextComponent, req: Request
     requires_authentication(req)
     with Database() as db:
         try:
-            component_id = insert_component(db, body.article_id)
+            component_id = insert_component_to_end(db, body.article_id)
             query = """INSERT INTO text_components (component_id, markdown) 
                     VALUES (%s, %s);"""
             db.execute(query, [component_id, body.markdown])
@@ -319,7 +323,7 @@ def upload_article_protein_component(body: UploadArticleProteinComponent, req: R
 
     with Database() as db:
         try:
-            component_id = insert_component(db, body.article_id)
+            component_id = insert_component_to_end(db, body.article_id)
             query = """INSERT INTO protein_components (component_id, name, aligned_with_name) 
                     VALUES (%s, %s, %s);"""
             db.execute(query, [component_id, body.name, body.aligned_with_name])
@@ -366,7 +370,7 @@ def upload_article_image_component(body: UploadArticleImageComponent, req: Reque
     requires_authentication(req)
     with Database() as db:
         try:
-            component_id = insert_component(db, body.article_id)
+            component_id = insert_component_to_end(db, body.article_id)
             query = """INSERT INTO image_components (component_id, src, height, width) 
                     VALUES (%s, %s, %s, %s);"""
             db.execute(
@@ -407,3 +411,71 @@ def edit_article_image_component(body: EditArticleImageComponent, req: Request):
 
         except Exception as e:
             raise HTTPException(500, detail=str(e))
+
+
+def inc_order(db: Database, article_id: int, component_order: int):
+    # I want to increment all components >= component_order at the article_id
+    db.execute(
+        """UPDATE components set component_order = component_order + 1 
+           WHERE article_id = %s AND component_order >= %s;""",
+        [article_id, component_order],
+    )
+
+
+def get_order_from_component_id(db: Database, component_id: int):
+    res = db.execute_return(
+        """SELECT component_order FROM components WHERE id=%s;""", [component_id]
+    )
+    if res is not None:
+        return res[0][0]
+    else:
+        raise Exception("Couldn't find component")
+
+
+def insert_component_and_shift_rest_down(
+    db: Database, article_id: int, component_id: int
+):
+    order = get_order_from_component_id(db, component_id)
+    # shift all the other ones down
+    inc_order(db, article_id, order)
+    # then insert at the old place
+    return insert_component(db, article_id, order)
+
+
+class InsertComponent(CamelModel):
+    article_id: int
+    component_id: int
+    component_type: str = "text"
+
+
+COMPONENT_TYPES = ["text", "image", "protein"]
+
+
+@router.post("/article/component/insert-above")
+def insert_component_above(body: InsertComponent):
+    if body.component_type not in COMPONENT_TYPES:
+        raise HTTPException(404, "type not found")
+
+    with Database() as db:
+        try:
+            id = insert_component_and_shift_rest_down(
+                db, body.article_id, body.component_id
+            )
+            if body.component_type == "text":
+                db.execute(
+                    "INSERT INTO text_components (component_id, markdown) VALUES (%s, %s);",
+                    [id, "## HOVER TO EDIT"],
+                )
+            elif body.component_type == "protein":
+                db.execute(
+                    """INSERT INTO protein_components (component_id, name) VALUES (%s, %s);""",
+                    [id, ""],
+                )
+            elif body.component_type == "image":
+                db.execute(
+                    """INSERT INTO image_components (component_id, src) VALUES (%s, %s);""",
+                    [id, str_to_bytea("no_image_found")],
+                )
+
+        except Exception:
+            raise HTTPException(500, "order shift failed")

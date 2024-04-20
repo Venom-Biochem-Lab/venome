@@ -63,8 +63,7 @@ CREATE TABLE components (
     id serial PRIMARY KEY,
     article_id integer NOT NULL,
     component_order integer NOT NULL, -- where this component is within a particular article 
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT unique_order UNIQUE (article_id, component_order)
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 CREATE TABLE text_components (
     id serial PRIMARY KEY,
