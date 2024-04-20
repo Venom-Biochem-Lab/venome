@@ -4,6 +4,8 @@
 	import { fileToBase64String } from "../format";
 	import { Backend, setToken } from "../backend";
 	import { createEventDispatcher } from "svelte";
+	import Placeholder from "./Placeholder.svelte";
+
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
 	export let articleId: number;
@@ -61,10 +63,10 @@
 	on:moveup={async () => {}}
 >
 	<slot>
-		{#if src === ""}
-			<p>No image selected</p>
-		{:else}
+		{#if src !== ""}
 			<img {src} alt="" {width} {height} />
+		{:else}
+			<Placeholder name="image component" color="lightcoral" />
 		{/if}
 	</slot>
 	<slot slot="edit">

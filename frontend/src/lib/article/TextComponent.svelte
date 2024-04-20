@@ -4,6 +4,7 @@
 	import { Backend, setToken } from "../backend";
 	import { createEventDispatcher } from "svelte";
 	import EditMode from "./EditMode.svelte";
+	import Placeholder from "./Placeholder.svelte";
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
 	export let articleId: number;
@@ -46,7 +47,11 @@
 	on:moveup={async () => {}}
 >
 	<slot>
-		<Markdown text={String.raw`${markdown}`} />
+		{#if markdown.length > 0}
+			<Markdown text={String.raw`${markdown}`} />
+		{:else}
+			<Placeholder name="text component" color="slateblue" />
+		{/if}
 	</slot>
 	<slot slot="edit">
 		<Textarea rows={10} bind:value={editedMarkdown} />

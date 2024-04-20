@@ -45,6 +45,9 @@
 	}}
 	class:editing={editMode}
 	class="text-component"
+	style="outline: 1px solid {revealEdit
+		? 'lightgrey'
+		: 'transparent'}; border-radius: 5px;"
 >
 	{#if editMode && !forceHideEdit}
 		<slot name="edit" />
@@ -85,7 +88,7 @@
 	{/if}
 	{#if revealEdit && !forceHideEdit}
 		<div
-			style="position: absolute; left: -180px; top: 10px; width: 180px; z-index: 999; padding: 10px;"
+			style="position: absolute; left: -180px; top: -10px; width: 180px; z-index: 998; padding: 10px;"
 			class="flex gap-2"
 		>
 			<Button

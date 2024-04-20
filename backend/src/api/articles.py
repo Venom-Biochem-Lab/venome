@@ -452,7 +452,7 @@ def insert_blank_component(
     if component_type == "text":
         db.execute(
             "INSERT INTO text_components (component_id, markdown) VALUES (%s, %s);",
-            [component_id, "## HOVER TO EDIT"],
+            [component_id, ""],
         )
     elif component_type == "protein":
         db.execute(
