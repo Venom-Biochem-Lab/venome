@@ -5,6 +5,7 @@ from fastapi.exceptions import HTTPException
 from ..auth import requires_authentication
 from fastapi.requests import Request
 from .protein import format_protein_name
+from typing import Literal
 
 router = APIRouter()
 
@@ -442,40 +443,58 @@ def insert_component_and_shift_rest_down(
     return insert_component(db, article_id, order)
 
 
+ComponentType = Literal["text", "image", "protein"]
+
+
+def insert_blank_component(
+    db: Database, component_id: int, component_type: ComponentType
+):
+    if component_type == "text":
+        db.execute(
+            "INSERT INTO text_components (component_id, markdown) VALUES (%s, %s);",
+            [component_id, "## HOVER TO EDIT"],
+        )
+    elif component_type == "protein":
+        db.execute(
+            """INSERT INTO protein_components (component_id, name) VALUES (%s, %s);""",
+            [component_id, ""],
+        )
+    elif component_type == "image":
+        db.execute(
+            """INSERT INTO image_components (component_id, src) VALUES (%s, %s);""",
+            [component_id, str_to_bytea("")],
+        )
+
+
 class InsertComponent(CamelModel):
     article_id: int
     component_id: int
-    component_type: str = "text"
+    component_type: ComponentType = "text"
 
 
-COMPONENT_TYPES = ["text", "image", "protein"]
-
-
-@router.post("/article/component/insert-above")
+@router.post("/article/component/insert/above")
 def insert_component_above(body: InsertComponent):
-    if body.component_type not in COMPONENT_TYPES:
-        raise HTTPException(404, "type not found")
-
     with Database() as db:
         try:
             id = insert_component_and_shift_rest_down(
                 db, body.article_id, body.component_id
             )
-            if body.component_type == "text":
-                db.execute(
-                    "INSERT INTO text_components (component_id, markdown) VALUES (%s, %s);",
-                    [id, "## HOVER TO EDIT"],
-                )
-            elif body.component_type == "protein":
-                db.execute(
-                    """INSERT INTO protein_components (component_id, name) VALUES (%s, %s);""",
-                    [id, ""],
-                )
-            elif body.component_type == "image":
-                db.execute(
-                    """INSERT INTO image_components (component_id, src) VALUES (%s, %s);""",
-                    [id, str_to_bytea("no_image_found")],
-                )
+            insert_blank_component(db, id, body.component_type)
 
+        except Exception:
+            raise HTTPException(500, "order shift failed")
+
+
+class InsertBlankComponentEnd(CamelModel):
+    article_id: int
+    component_type: ComponentType = "text"
+
+
+@router.post("/article/component/insert/blank")
+def insert_blank_component_end(body: InsertBlankComponentEnd):
+    with Database() as db:
+        try:
+            id = insert_component_to_end(db, body.article_id)
+            insert_blank_component(db, id, body.component_type)
         except Exception:
             raise HTTPException(500, "order shift failed")

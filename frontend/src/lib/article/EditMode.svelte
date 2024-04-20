@@ -10,7 +10,7 @@
 		PlusSolid,
 		ArrowUpSolid,
 	} from "flowbite-svelte-icons";
-	import { Backend } from "../backend";
+	import { Backend, InsertComponent } from "../backend";
 	const dispatch = createEventDispatcher<{
 		save: undefined;
 		delete: undefined;
@@ -100,22 +100,24 @@
 				<ArrowUpSolid size="sm" class="rotate-180" />
 			</Button>
 			<Dropdown open={dropdownOpen} placement="top">
-				<DropdownItem
-					on:click={async () => {
-						try {
-							await Backend.insertComponentAbove({
-								articleId,
-								componentId,
-								componentType: "text",
-							});
-							dropdownOpen = false;
-							revealEdit = false;
-							dispatch("save");
-						} catch (e) {
-							console.error(e);
-						}
-					}}>Text Component</DropdownItem
-				>
+				{#each Object.entries(InsertComponent.componentType) as [name, t]}
+					<DropdownItem
+						on:click={async () => {
+							try {
+								await Backend.insertComponentAbove({
+									articleId,
+									componentId,
+									componentType: t,
+								});
+								dropdownOpen = false;
+								revealEdit = false;
+								dispatch("save");
+							} catch (e) {
+								console.error(e);
+							}
+						}}>{name} Component</DropdownItem
+					>
+				{/each}
 			</Dropdown>
 			<Button
 				size="xs"
@@ -126,21 +128,6 @@
 					dispatch("edit");
 				}}><EditOutline size="sm" /> Edit</Button
 			>
-			<!-- bring back later -->
-			<!-- <Button
-				size="xs"
-				color="light"
-				on:click={() => {
-					dispatch("moveup");
-				}}><ArrowUpSolid size="sm" class="rotate-180" /> Move</Button
-			>
-			<Button
-				size="xs"
-				color="light"
-				on:click={() => {
-					dispatch("movedown");
-				}}><ArrowUpSolid size="sm" /> Move</Button
-			> -->
 		</div>
 	{/if}
 </div>

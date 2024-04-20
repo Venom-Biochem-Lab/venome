@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { onMount, setContext } from "svelte";
-	import { Backend, type Article, setToken } from "../lib/backend";
+	import {
+		Backend,
+		type Article,
+		setToken,
+		InsertBlankComponentEnd,
+	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import {
 		ArrowLeftOutline,
@@ -13,6 +18,7 @@
 	import { user } from "../lib/stores/user";
 	import { navigate } from "svelte-routing";
 	import { dbDateToMonthDayYear } from "../lib/format";
+	import { componentTypes } from "../lib/article/articleUtils";
 
 	export let articleTitle: string;
 	export let editMode = false;
@@ -151,57 +157,25 @@
 							>+ Add New Component</Button
 						>
 						<Dropdown open={dropdownOpen}>
-							<DropdownItem
-								on:click={async () => {
-									try {
-										setToken();
-										await Backend.uploadArticleTextComponent(
-											{
-												articleId: article.id,
-												markdown:
-													"## Placeholder Text\nHover over this section and click **Edit** to edit.",
-											}
-										);
-										await refreshArticle();
-									} catch (e) {
-										console.error(e);
-									}
-									dropdownOpen = false;
-								}}>Text Component</DropdownItem
-							>
-							<DropdownItem
-								on:click={async () => {
-									try {
-										setToken();
-										await Backend.uploadArticleImageComponent(
-											{
-												articleId: article.id,
-												src: "",
-											}
-										);
-										await refreshArticle();
-									} catch (e) {
-										console.error(e);
-									}
-									dropdownOpen = false;
-								}}>Image Component</DropdownItem
-							><DropdownItem
-								on:click={async () => {
-									try {
-										setToken();
-										await Backend.uploadArticleProteinComponent(
-											{
-												articleId: article.id,
-												name: "",
-											}
-										);
-										await refreshArticle();
-									} catch (e) {
-										console.error(e);
-									}
-									dropdownOpen = false;
-								}}>Protein Component</DropdownItem
-							>
+							{#each Object.entries(InsertBlankComponentEnd.componentType) as [name, t]}
+								<DropdownItem
+									on:click={async () => {
+										try {
+											setToken();
+											await Backend.insertBlankComponentEnd(
+												{
+													articleId: article.id,
+													componentType: t,
+												}
+											);
+											await refreshArticle();
+										} catch (e) {
+											console.error(e);
+										}
+										dropdownOpen = false;
+									}}>{name} Component</DropdownItem
+								>
+							{/each}
 						</Dropdown>
 					</div>
 				{/if}

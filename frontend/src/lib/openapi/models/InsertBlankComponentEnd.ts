@@ -2,12 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type InsertComponent = {
+export type InsertBlankComponentEnd = {
     articleId: number;
-    componentId: number;
-    componentType?: InsertComponent.componentType;
+    componentType?: InsertBlankComponentEnd.componentType;
 };
-export namespace InsertComponent {
+export namespace InsertBlankComponentEnd {
     export enum componentType {
         TEXT = 'text',
         IMAGE = 'image',

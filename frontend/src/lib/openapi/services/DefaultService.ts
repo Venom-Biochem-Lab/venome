@@ -9,6 +9,7 @@ import type { EditArticleImageComponent } from '../models/EditArticleImageCompon
 import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
+import type { InsertBlankComponentEnd } from '../models/InsertBlankComponentEnd';
 import type { InsertComponent } from '../models/InsertComponent';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
@@ -572,7 +573,26 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/article/component/insert-above',
+            url: '/article/component/insert/above',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Insert Blank Component End
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static insertBlankComponentEnd(
+        requestBody: InsertBlankComponentEnd,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/article/component/insert/blank',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

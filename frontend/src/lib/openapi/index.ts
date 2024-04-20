@@ -18,7 +18,8 @@ export type { EditArticleProteinComponent } from './models/EditArticleProteinCom
 export type { EditArticleTextComponent } from './models/EditArticleTextComponent';
 export type { EditBody } from './models/EditBody';
 export type { HTTPValidationError } from './models/HTTPValidationError';
-export type { InsertComponent } from './models/InsertComponent';
+export { InsertBlankComponentEnd } from './models/InsertBlankComponentEnd';
+export { InsertComponent } from './models/InsertComponent';
 export type { LoginBody } from './models/LoginBody';
 export type { LoginResponse } from './models/LoginResponse';
 export type { ProteinEditSuccess } from './models/ProteinEditSuccess';
