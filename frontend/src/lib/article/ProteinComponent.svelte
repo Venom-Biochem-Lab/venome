@@ -71,8 +71,6 @@
 		editedAlignedWithName = alignedWithName;
 	}}
 	on:delete={async () => {
-		setToken();
-		await Backend.deleteArticleComponent(id);
 		dispatch("change");
 	}}
 	on:movedown={async () => {}}

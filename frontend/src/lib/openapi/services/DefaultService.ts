@@ -430,17 +430,20 @@ export class DefaultService {
     }
     /**
      * Delete Article Component
+     * @param articleId
      * @param componentId
      * @returns any Successful Response
      * @throws ApiError
      */
     public static deleteArticleComponent(
+        articleId: number,
         componentId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/article/component/{component_id}',
+            url: '/article/{article_id}/component/{component_id}',
             path: {
+                'article_id': articleId,
                 'component_id': componentId,
             },
             errors: {

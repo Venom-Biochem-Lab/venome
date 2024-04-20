@@ -234,13 +234,24 @@ def edit_article_metadata(body: EditArticleMetadata, req: Request):
             raise HTTPException(501, detail="Article not unique")
 
 
-@router.delete("/article/component/{component_id:int}")
-def delete_article_component(component_id: int, req: Request):
+def dec_order(db: Database, article_id: int, component_order: int):
+    # I want to dec components >= component_order at the article_id
+    db.execute(
+        """UPDATE components set component_order = component_order - 1 
+           WHERE article_id = %s AND component_order >= %s;""",
+        [article_id, component_order],
+    )
+
+
+@router.delete("/article/{article_id:int}/component/{component_id:int}")
+def delete_article_component(article_id: int, component_id: int, req: Request):
     requires_authentication(req)
     with Database() as db:
         try:
+            order = get_order_from_component_id(db, component_id)
             query = """DELETE FROM components WHERE id=%s;"""
             db.execute(query, [component_id])
+            dec_order(db, article_id, order)
         except Exception as e:
             raise HTTPException(500, detail=str(e))
 

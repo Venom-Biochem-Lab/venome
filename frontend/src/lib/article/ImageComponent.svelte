@@ -51,13 +51,7 @@
 		}
 	}}
 	on:delete={async () => {
-		try {
-			setToken();
-			await Backend.deleteArticleComponent(id);
-			dispatch("change");
-		} catch (e) {
-			console.error(e);
-		}
+		dispatch("change");
 	}}
 	on:movedown={async () => {}}
 	on:moveup={async () => {}}

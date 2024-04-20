@@ -35,12 +35,6 @@
 	}}
 	on:cancel={() => {}}
 	on:delete={async () => {
-		try {
-			setToken();
-			await Backend.deleteArticleComponent(id);
-		} catch (e) {
-			console.error(e);
-		}
 		dispatch("change");
 	}}
 	on:movedown={async () => {}}

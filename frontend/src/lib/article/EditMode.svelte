@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-	import { createEventDispatcher, getContext } from "svelte";
+	import { createEventDispatcher } from "svelte";
 	import {
 		CheckOutline,
 		CloseOutline,
@@ -10,7 +10,7 @@
 		PlusSolid,
 		ArrowUpSolid,
 	} from "flowbite-svelte-icons";
-	import { Backend, InsertComponent } from "../backend";
+	import { Backend, InsertComponent, setToken } from "../backend";
 	const dispatch = createEventDispatcher<{
 		save: undefined;
 		delete: undefined;
@@ -78,6 +78,15 @@
 				outline
 				on:click={async () => {
 					editMode = false;
+					try {
+						setToken();
+						await Backend.deleteArticleComponent(
+							articleId,
+							componentId
+						);
+					} catch (e) {
+						console.error(e);
+					}
 					dispatch("delete");
 				}}
 				><TrashBinOutline size="sm" class="mr-1" /> Delete Forever</Button
