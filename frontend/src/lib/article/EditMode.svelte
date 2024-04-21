@@ -101,7 +101,7 @@
 	{/if}
 	{#if revealEdit && !forceHideEdit}
 		<div
-			style="position: absolute; left: -180px; top: 0; width: 180px; z-index: 998; padding: 10px; padding-top: 0; outline: 1px solid slateblue;"
+			style="position: absolute; left: -180px; top: 0; width: 180px; z-index: 998; padding: 10px; padding-top: 0;"
 			class="flex gap-2"
 		>
 			<div class="flex gap-2 flex-wrap">
