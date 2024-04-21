@@ -57,14 +57,14 @@ CREATE TABLE articles (
     id serial PRIMARY KEY,
     title text NOT NULL UNIQUE,
     description text,
-    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    refs text -- bibtex references mentioned in the content/article
 );
 CREATE TABLE components (
     id serial PRIMARY KEY,
     article_id integer NOT NULL,
     component_order integer NOT NULL, -- where this component is within a particular article 
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT unique_order UNIQUE (article_id, component_order)
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 CREATE TABLE text_components (
     id serial PRIMARY KEY,

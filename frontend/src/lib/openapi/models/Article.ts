@@ -10,6 +10,7 @@ export type Article = {
     title: string;
     description?: (string | null);
     datePublished?: (string | null);
+    refs?: (string | null);
     orderedComponents: Array<(ArticleTextComponent | ArticleProteinComponent | ArticleImageComponent)>;
 };
 

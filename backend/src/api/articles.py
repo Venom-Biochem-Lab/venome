@@ -5,6 +5,7 @@ from fastapi.exceptions import HTTPException
 from ..auth import requires_authentication
 from fastapi.requests import Request
 from .protein import format_protein_name
+from typing import Literal
 
 router = APIRouter()
 
@@ -38,6 +39,7 @@ class Article(CamelModel):
     title: str
     description: str | None = None
     date_published: str | None = None
+    refs: str | None = None
     ordered_components: list[
         ArticleTextComponent | ArticleProteinComponent | ArticleImageComponent
     ]
@@ -93,12 +95,12 @@ def get_image_components(db: Database, title: str):
     return []
 
 
-def get_article_metadata(db: Database, title: str) -> tuple[int, str, str]:
-    query = """SELECT id, description, date_published FROM articles WHERE title = %s;"""
+def get_article_metadata(db: Database, title: str) -> tuple[int, str, str, str]:
+    query = """SELECT id, description, date_published, refs FROM articles WHERE title = %s;"""
     out = db.execute_return(query, [title])
     if out is not None:
-        [id, description, date_published] = out[0]
-        return id, description, str(date_published)
+        [id, description, date_published, refs] = out[0]
+        return id, description, str(date_published), refs
     else:
         raise Exception("Nothing returned")
 
@@ -121,7 +123,7 @@ def get_article(title: str):
     with Database() as db:
         try:
             # this will fail if the article title does not exist
-            id, description, date_published = get_article_metadata(db, title)
+            id, description, date_published, refs = get_article_metadata(db, title)
         except Exception as e:
             raise HTTPException(404, detail=str(e))
 
@@ -142,6 +144,7 @@ def get_article(title: str):
             ordered_components=ordered_components,
             description=description,
             date_published=date_published,
+            refs=refs,
         )
 
 
@@ -196,14 +199,15 @@ def delete_article(title: str, req: Request):
             raise HTTPException(500, detail=str(e))
 
 
-class EditArticle(CamelModel):
+class EditArticleMetadata(CamelModel):
     article_title: str
     new_article_title: str | None = None
     new_description: str | None = None
+    new_refs: str | None = None
 
 
 @router.put("/article/meta")
-def edit_article(body: EditArticle, req: Request):
+def edit_article_metadata(body: EditArticleMetadata, req: Request):
     requires_authentication(req)
     with Database() as db:
         try:
@@ -222,17 +226,32 @@ def edit_article(body: EditArticle, req: Request):
                 """UPDATE articles SET description = %s WHERE title = %s;""",
                 [body.new_description, body.article_title],
             )
+            db.execute(
+                """UPDATE articles SET refs = %s WHERE title = %s;""",
+                [body.new_refs, body.article_title],
+            )
         except Exception:
             raise HTTPException(501, detail="Article not unique")
 
 
-@router.delete("/article/component/{component_id:int}")
-def delete_article_component(component_id: int, req: Request):
+def dec_order(db: Database, article_id: int, component_order: int):
+    # I want to dec components >= component_order at the article_id
+    db.execute(
+        """UPDATE components set component_order = component_order - 1 
+           WHERE article_id = %s AND component_order >= %s;""",
+        [article_id, component_order],
+    )
+
+
+@router.delete("/article/{article_id:int}/component/{component_id:int}")
+def delete_article_component(article_id: int, component_id: int, req: Request):
     requires_authentication(req)
     with Database() as db:
         try:
+            order = get_order_from_component_id(db, component_id)
             query = """DELETE FROM components WHERE id=%s;"""
             db.execute(query, [component_id])
+            dec_order(db, article_id, order)
         except Exception as e:
             raise HTTPException(500, detail=str(e))
 
@@ -260,12 +279,16 @@ def get_component_id_from_order(db: Database, article_id: int, component_order: 
         raise Exception("Not found")
 
 
-def insert_component(db: Database, article_id: int):
-    last_component_order = get_last_component_order(db, article_id)
+def insert_component(db: Database, article_id: int, component_order: int):
     query = """INSERT INTO components (article_id, component_order) 
                VALUES (%s, %s);"""
-    db.execute(query, [article_id, last_component_order])
-    return get_component_id_from_order(db, article_id, last_component_order)
+    db.execute(query, [article_id, component_order])
+    return get_component_id_from_order(db, article_id, component_order)
+
+
+def insert_component_to_end(db: Database, article_id: int):
+    last = get_last_component_order(db, article_id)
+    return insert_component(db, article_id, last)
 
 
 class UploadArticleTextComponent(CamelModel):
@@ -278,7 +301,7 @@ def upload_article_text_component(body: UploadArticleTextComponent, req: Request
     requires_authentication(req)
     with Database() as db:
         try:
-            component_id = insert_component(db, body.article_id)
+            component_id = insert_component_to_end(db, body.article_id)
             query = """INSERT INTO text_components (component_id, markdown) 
                     VALUES (%s, %s);"""
             db.execute(query, [component_id, body.markdown])
@@ -319,7 +342,7 @@ def upload_article_protein_component(body: UploadArticleProteinComponent, req: R
 
     with Database() as db:
         try:
-            component_id = insert_component(db, body.article_id)
+            component_id = insert_component_to_end(db, body.article_id)
             query = """INSERT INTO protein_components (component_id, name, aligned_with_name) 
                     VALUES (%s, %s, %s);"""
             db.execute(query, [component_id, body.name, body.aligned_with_name])
@@ -366,7 +389,7 @@ def upload_article_image_component(body: UploadArticleImageComponent, req: Reque
     requires_authentication(req)
     with Database() as db:
         try:
-            component_id = insert_component(db, body.article_id)
+            component_id = insert_component_to_end(db, body.article_id)
             query = """INSERT INTO image_components (component_id, src, height, width) 
                     VALUES (%s, %s, %s, %s);"""
             db.execute(
@@ -407,3 +430,129 @@ def edit_article_image_component(body: EditArticleImageComponent, req: Request):
 
         except Exception as e:
             raise HTTPException(500, detail=str(e))
+
+
+def inc_order(db: Database, article_id: int, component_order: int):
+    # I want to increment all components >= component_order at the article_id
+    db.execute(
+        """UPDATE components set component_order = component_order + 1 
+           WHERE article_id = %s AND component_order >= %s;""",
+        [article_id, component_order],
+    )
+
+
+def get_order_from_component_id(db: Database, component_id: int):
+    res = db.execute_return(
+        """SELECT component_order FROM components WHERE id=%s;""", [component_id]
+    )
+    if res is not None:
+        return res[0][0]
+    else:
+        raise Exception("Couldn't find component")
+
+
+def insert_component_and_shift_rest_down(
+    db: Database, article_id: int, component_id: int
+):
+    order = get_order_from_component_id(db, component_id)
+    # shift all the other ones down
+    inc_order(db, article_id, order)
+    # then insert at the old place
+    return insert_component(db, article_id, order)
+
+
+ComponentType = Literal["text", "image", "protein"]
+
+
+def insert_blank_component(
+    db: Database, component_id: int, component_type: ComponentType
+):
+    if component_type == "text":
+        db.execute(
+            "INSERT INTO text_components (component_id, markdown) VALUES (%s, %s);",
+            [component_id, ""],
+        )
+    elif component_type == "protein":
+        db.execute(
+            """INSERT INTO protein_components (component_id, name) VALUES (%s, %s);""",
+            [component_id, ""],
+        )
+    elif component_type == "image":
+        db.execute(
+            """INSERT INTO image_components (component_id, src) VALUES (%s, %s);""",
+            [component_id, str_to_bytea("")],
+        )
+
+
+class InsertComponent(CamelModel):
+    article_id: int
+    component_id: int
+    component_type: ComponentType = "text"
+
+
+@router.post("/article/component/insert/above")
+def insert_component_above(body: InsertComponent, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            id = insert_component_and_shift_rest_down(
+                db, body.article_id, body.component_id
+            )
+            insert_blank_component(db, id, body.component_type)
+
+        except Exception:
+            raise HTTPException(500, "order shift failed")
+
+
+class InsertBlankComponentEnd(CamelModel):
+    article_id: int
+    component_type: ComponentType = "text"
+
+
+@router.post("/article/component/insert/blank")
+def insert_blank_component_end(body: InsertBlankComponentEnd):
+    with Database() as db:
+        try:
+            id = insert_component_to_end(db, body.article_id)
+            insert_blank_component(db, id, body.component_type)
+        except Exception:
+            raise HTTPException(500, "order shift failed")
+
+
+def article_length(db: Database, article_id: int):
+    res = db.execute_return(
+        """SELECT count(*) FROM components WHERE article_id=%s""", [article_id]
+    )
+    if res is not None:
+        return res[0][0]
+    else:
+        raise Exception("fail db length")
+
+
+class MoveComponent(CamelModel):
+    article_id: int
+    component_id: int
+    direction: Literal["up", "down"]
+
+
+@router.put("/article/component/move")
+def move_component(body: MoveComponent, req: Request):
+    requires_authentication(req)
+    with Database() as db:
+        try:
+            cur_order = get_order_from_component_id(db, body.component_id)
+            new_order = cur_order + (1 if body.direction == "down" else -1)
+            if new_order < 0 or new_order >= article_length(db, body.article_id):
+                raise Exception("cant move out of bounds, so don't swap at all")
+
+            # update the other component with the current one
+            db.execute(
+                """UPDATE components SET component_order=%s WHERE article_id=%s AND component_order=%s""",
+                [cur_order, body.article_id, new_order],
+            )
+            db.execute(
+                """UPDATE components SET component_order=%s WHERE id=%s""",
+                [new_order, body.component_id],
+            )
+        except Exception:
+            raise HTTPException(500, "order shift failed")
