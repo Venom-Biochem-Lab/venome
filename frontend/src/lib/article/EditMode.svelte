@@ -110,6 +110,7 @@
 					color="light"
 					on:click={async () => {
 						try {
+							setToken();
 							await Backend.moveComponent({
 								articleId,
 								componentId,
@@ -140,6 +141,7 @@
 						<DropdownItem
 							on:click={async () => {
 								try {
+									setToken();
 									await Backend.insertComponentAbove({
 										articleId,
 										componentId,
@@ -161,6 +163,7 @@
 					color="light"
 					on:click={async () => {
 						try {
+							setToken();
 							await Backend.moveComponent({
 								articleId,
 								componentId,

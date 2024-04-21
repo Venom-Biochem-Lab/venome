@@ -491,7 +491,8 @@ class InsertComponent(CamelModel):
 
 
 @router.post("/article/component/insert/above")
-def insert_component_above(body: InsertComponent):
+def insert_component_above(body: InsertComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             id = insert_component_and_shift_rest_down(
@@ -535,7 +536,8 @@ class MoveComponent(CamelModel):
 
 
 @router.put("/article/component/move")
-def move_component(body: MoveComponent):
+def move_component(body: MoveComponent, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             cur_order = get_order_from_component_id(db, body.component_id)
