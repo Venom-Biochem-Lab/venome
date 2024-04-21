@@ -13,6 +13,7 @@ import type { InsertBlankComponentEnd } from '../models/InsertBlankComponentEnd'
 import type { InsertComponent } from '../models/InsertComponent';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
+import type { MoveComponent } from '../models/MoveComponent';
 import type { ProteinEditSuccess } from '../models/ProteinEditSuccess';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { RangeFilter } from '../models/RangeFilter';
@@ -596,6 +597,25 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/article/component/insert/blank',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Move Component
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static moveComponent(
+        requestBody: MoveComponent,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/article/component/move',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

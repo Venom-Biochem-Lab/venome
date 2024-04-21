@@ -516,3 +516,41 @@ def insert_blank_component_end(body: InsertBlankComponentEnd):
             insert_blank_component(db, id, body.component_type)
         except Exception:
             raise HTTPException(500, "order shift failed")
+
+
+def article_length(db: Database, article_id: int):
+    res = db.execute_return(
+        """SELECT count(*) FROM components WHERE article_id=%s""", [article_id]
+    )
+    if res is not None:
+        return res[0][0]
+    else:
+        raise Exception("fail db length")
+
+
+class MoveComponent(CamelModel):
+    article_id: int
+    component_id: int
+    direction: Literal["up", "down"]
+
+
+@router.put("/article/component/move")
+def move_component(body: MoveComponent):
+    with Database() as db:
+        try:
+            cur_order = get_order_from_component_id(db, body.component_id)
+            new_order = cur_order + (1 if body.direction == "down" else -1)
+            if new_order < 0 or new_order >= article_length(db, body.article_id):
+                raise Exception("cant move out of bounds, so don't swap at all")
+
+            # update the other component with the current one
+            db.execute(
+                """UPDATE components SET component_order=%s WHERE article_id=%s AND component_order=%s""",
+                [cur_order, body.article_id, new_order],
+            )
+            db.execute(
+                """UPDATE components SET component_order=%s WHERE id=%s""",
+                [new_order, body.component_id],
+            )
+        except Exception:
+            raise HTTPException(500, "order shift failed")

@@ -70,11 +70,9 @@
 		editedName = name;
 		editedAlignedWithName = alignedWithName;
 	}}
-	on:delete={async () => {
+	on:change={() => {
 		dispatch("change");
 	}}
-	on:movedown={async () => {}}
-	on:moveup={async () => {}}
 >
 	<slot>
 		{#if name !== ""}

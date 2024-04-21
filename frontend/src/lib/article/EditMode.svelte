@@ -10,15 +10,19 @@
 		PlusSolid,
 		ArrowUpSolid,
 	} from "flowbite-svelte-icons";
-	import { Backend, InsertComponent, setToken } from "../backend";
+	import {
+		Backend,
+		InsertComponent,
+		MoveComponent,
+		setToken,
+	} from "../backend";
+
 	const dispatch = createEventDispatcher<{
 		save: undefined;
 		delete: undefined;
 		edit: undefined;
 		cancel: undefined;
-		movedown: undefined;
-		moveup: undefined;
-		insertAbove: undefined;
+		change: undefined;
 	}>();
 
 	export let articleId: number;
@@ -87,7 +91,7 @@
 					} catch (e) {
 						console.error(e);
 					}
-					dispatch("delete");
+					dispatch("change");
 				}}
 				><TrashBinOutline size="sm" class="mr-1" /> Delete Forever</Button
 			>
@@ -97,48 +101,90 @@
 	{/if}
 	{#if revealEdit && !forceHideEdit}
 		<div
-			style="position: absolute; left: -180px; top: -10px; width: 180px; z-index: 998; padding: 10px;"
+			style="position: absolute; left: -180px; top: 0; width: 180px; z-index: 998; padding: 10px; padding-top: 0; outline: 1px solid slateblue;"
 			class="flex gap-2"
 		>
-			<Button
-				size="xs"
-				color="light"
-				on:click={() => {
-					dropdownOpen = true;
-				}}
-			>
-				Insert
-				<ArrowUpSolid size="sm" class="rotate-180" />
-			</Button>
-			<Dropdown open={dropdownOpen} placement="top">
-				{#each Object.entries(InsertComponent.componentType) as [name, t]}
-					<DropdownItem
-						on:click={async () => {
-							try {
-								await Backend.insertComponentAbove({
-									articleId,
-									componentId,
-									componentType: t,
-								});
-								dropdownOpen = false;
-								revealEdit = false;
-								dispatch("save");
-							} catch (e) {
-								console.error(e);
-							}
-						}}>{name} Component</DropdownItem
-					>
-				{/each}
-			</Dropdown>
-			<Button
-				size="xs"
-				color="light"
-				on:click={() => {
-					editMode = true;
-					revealEdit = false;
-					dispatch("edit");
-				}}><EditOutline size="sm" /> Edit</Button
-			>
+			<div class="flex gap-2 flex-wrap">
+				<Button
+					size="xs"
+					color="light"
+					on:click={async () => {
+						try {
+							await Backend.moveComponent({
+								articleId,
+								componentId,
+								direction: MoveComponent.direction.UP,
+							});
+							revealEdit = false;
+							dispatch("change");
+						} catch (e) {
+							console.error(e);
+						}
+					}}
+				>
+					Move <ArrowUpSolid size="sm" class="rotate-180" />
+				</Button>
+
+				<Button
+					size="xs"
+					color="light"
+					on:click={() => {
+						dropdownOpen = true;
+					}}
+				>
+					Insert
+					<ArrowUpSolid size="sm" class="rotate-180" />
+				</Button>
+				<Dropdown open={dropdownOpen} placement="bottom-end">
+					{#each Object.entries(InsertComponent.componentType) as [name, t]}
+						<DropdownItem
+							on:click={async () => {
+								try {
+									await Backend.insertComponentAbove({
+										articleId,
+										componentId,
+										componentType: t,
+									});
+									dropdownOpen = false;
+									revealEdit = false;
+									dispatch("change");
+								} catch (e) {
+									console.error(e);
+								}
+							}}>{name} Component</DropdownItem
+						>
+					{/each}
+				</Dropdown>
+
+				<Button
+					size="xs"
+					color="light"
+					on:click={async () => {
+						try {
+							await Backend.moveComponent({
+								articleId,
+								componentId,
+								direction: MoveComponent.direction.DOWN,
+							});
+							revealEdit = false;
+							dispatch("change");
+						} catch (e) {
+							console.error(e);
+						}
+					}}
+				>
+					Move <ArrowUpSolid size="sm" /></Button
+				>
+				<Button
+					size="xs"
+					color="light"
+					on:click={() => {
+						editMode = true;
+						revealEdit = false;
+						dispatch("edit");
+					}}><EditOutline size="sm" /> Edit</Button
+				>
+			</div>
 		</div>
 	{/if}
 </div>

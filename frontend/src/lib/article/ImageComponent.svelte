@@ -50,11 +50,9 @@
 			console.error(e);
 		}
 	}}
-	on:delete={async () => {
+	on:change={() => {
 		dispatch("change");
 	}}
-	on:movedown={async () => {}}
-	on:moveup={async () => {}}
 >
 	<slot>
 		{#if src !== ""}

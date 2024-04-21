@@ -33,12 +33,9 @@
 		}
 		dispatch("change");
 	}}
-	on:cancel={() => {}}
-	on:delete={async () => {
+	on:change={() => {
 		dispatch("change");
 	}}
-	on:movedown={async () => {}}
-	on:moveup={async () => {}}
 >
 	<slot>
 		{#if markdown.length > 0}
