@@ -40,15 +40,15 @@
 	let entry: ProteinEntry | null;
 	let alignEntry: ProteinEntry | null;
 
-	async function fetchInfoCards(name: string, alignedWithName?: string) {
-		entry = await Backend.getProteinEntry(name);
-		if (alignedWithName) {
-			alignEntry = await Backend.getProteinEntry(alignedWithName);
-		}
-	}
-
 	$: if (name !== "") {
-		fetchInfoCards(name, alignedWithName);
+		Backend.getProteinEntry(name).then((result) => (entry = result));
+	}
+	$: if (alignedWithName && alignedWithName !== "") {
+		Backend.getProteinEntry(alignedWithName).then(
+			(result) => (alignEntry = result)
+		);
+	} else {
+		alignEntry = null;
 	}
 </script>
 
