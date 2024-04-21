@@ -37,13 +37,15 @@
 		spin: false,
 	};
 
-	let entry: ProteinEntry | null;
-	let alignEntry: ProteinEntry | null;
+	let entry: ProteinEntry | null = null;
+	let alignEntry: ProteinEntry | null = null;
 
 	$: if (name !== "") {
 		Backend.getProteinEntry(name).then((result) => (entry = result));
+	} else {
+		entry = null;
 	}
-	$: if (alignedWithName && alignedWithName !== "") {
+	$: if (alignedWithName !== undefined && alignedWithName !== "") {
 		Backend.getProteinEntry(alignedWithName).then(
 			(result) => (alignEntry = result)
 		);
@@ -75,7 +77,7 @@
 	}}
 >
 	<slot>
-		{#if name !== ""}
+		{#if entry !== null}
 			<div class="flex gap-3">
 				<div class="flex gap-2 flex-col">
 					{#if entry}
