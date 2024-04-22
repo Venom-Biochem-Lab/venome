@@ -29,6 +29,8 @@ class SearchProteinsBody(CamelModel):
     species_filter: str | None = None
     length_filter: RangeFilter | None = None
     mass_filter: RangeFilter | None = None
+    num: int | None = None
+    page: int | None = None
 
 
 class SearchProteinsResults(CamelModel):
@@ -94,8 +96,16 @@ def gen_sql_filters(
 @router.post("/search/proteins", response_model=SearchProteinsResults)
 def search_proteins(body: SearchProteinsBody):
     text_query = sanitize_query(body.query)
+    limit = 10000 # Limit defaulted to exceed the number of entries in db to grab whole thing.
+    offset = 0
     with Database() as db:
         try:
+            # If both the number requested and the page number are present in the request, the limit and offset are set.
+            # Otherwise, defaults to entire database.
+            if body.num != None and body.page != None:
+                limit = body.num
+                offset = limit * body.page
+                
             filter_clauses = gen_sql_filters(
                 "species",
                 "proteins_scores",
@@ -124,10 +134,12 @@ def search_proteins(body: SearchProteinsBody):
                                      FROM proteins) as proteins_scores
                                 JOIN species ON species.id = proteins_scores.species_id
                                 WHERE {} {}
-                                ORDER BY (proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC;
+                                ORDER BY (proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC
+                                LIMIT {} OFFSET {};
                                 """.format(
-                score_filter, filter_clauses
+                score_filter, filter_clauses, limit, offset
             )  # numbers in order by correspond to weighting
+            log.warn("EQ:" + entries_query)
             log.warn(filter_clauses)
             entries_result = db.execute_return(
                 sanitize_query(entries_query),
