@@ -96,7 +96,7 @@ def gen_sql_filters(
 @router.post("/search/proteins", response_model=SearchProteinsResults)
 def search_proteins(body: SearchProteinsBody):
     text_query = sanitize_query(body.query)
-    limit = 10000 # Limit defaulted to exceed the number of entries in db to grab whole thing.
+    limit = 10000  # Limit defaulted to exceed the number of entries in db to grab whole thing.
     offset = 0
     with Database() as db:
         try:
@@ -105,7 +105,7 @@ def search_proteins(body: SearchProteinsBody):
             if body.proteinsPerPage != None and body.page != None:
                 limit = body.proteinsPerPage
                 offset = limit * body.page
-                
+
             filter_clauses = gen_sql_filters(
                 "species",
                 "proteins_scores",
