@@ -29,7 +29,7 @@ class SearchProteinsBody(CamelModel):
     species_filter: str | None = None
     length_filter: RangeFilter | None = None
     mass_filter: RangeFilter | None = None
-    num: int | None = None
+    proteinsPerPage: int | None = None
     page: int | None = None
 
 
@@ -102,8 +102,8 @@ def search_proteins(body: SearchProteinsBody):
         try:
             # If both the number requested and the page number are present in the request, the limit and offset are set.
             # Otherwise, defaults to entire database.
-            if body.num != None and body.page != None:
-                limit = body.num
+            if body.proteinsPerPage != None and body.page != None:
+                limit = body.proteinsPerPage
                 offset = limit * body.page
                 
             filter_clauses = gen_sql_filters(
@@ -135,7 +135,8 @@ def search_proteins(body: SearchProteinsBody):
                                 JOIN species ON species.id = proteins_scores.species_id
                                 WHERE {} {}
                                 ORDER BY (proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC
-                                LIMIT {} OFFSET {};
+                                LIMIT {}
+                                OFFSET {};
                                 """.format(
                 score_filter, filter_clauses, limit, offset
             )  # numbers in order by correspond to weighting

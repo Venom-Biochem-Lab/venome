@@ -8,7 +8,7 @@ export type SearchProteinsBody = {
     speciesFilter?: (string | null);
     lengthFilter?: (RangeFilter | null);
     massFilter?: (RangeFilter | null);
-    num?: (number | null);
+    proteinsPerPage?: (number | null);
     page?: (number | null);
 };
 

@@ -7,6 +7,7 @@
 	import RangerFilter from "../lib/RangerFilter.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
     import app from "../main";
+    import { navigate } from "svelte-routing";
 
 	let query = "";
 	let proteinEntries: ProteinEntry[];
@@ -17,13 +18,27 @@
 	let lengthExtent: { min: number; max: number };
 	let massFilter: { min: number; max: number } | undefined;
 	let massExtent: { min: number; max: number };
+
+    let urlParams = new URLSearchParams(window.location.search)
+    let proteinsPerPage = 20 // The number of proteins to show per page
+    let page = 0
 	onMount(async () => {
+        // Redirects user to ?page=1 if page query string not present
+
+        /*
+        if (page == null) {
+            navigate('search?page=1')
+        }
+        console.log("Page is", page)
+        */
+
 		await search();
 		species = await Backend.searchSpecies();
 		lengthExtent = await Backend.searchRangeLength();
 		massExtent = await Backend.searchRangeMass();
 		massFilter = massExtent;
 		lengthFilter = lengthExtent;
+        console.log(page)
 	});
 
 	async function search() {
@@ -32,6 +47,8 @@
 			speciesFilter,
 			lengthFilter,
 			massFilter,
+            proteinsPerPage,
+            page
 		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
@@ -41,6 +58,7 @@
 		lengthFilter = lengthExtent;
 		massFilter = massExtent;
 		query = "";
+        page = 0;
 		await search();
 	}
 </script>
@@ -64,6 +82,7 @@
 								outline
 								on:click={async () => {
 									speciesFilter = s;
+                                    page = 0;
 									await search();
 								}}
 							>
@@ -81,6 +100,7 @@
 						max={lengthExtent.max}
 						on:change={async ({ detail }) => {
 							lengthFilter = detail;
+                            page = 0;
 							await search();
 						}}
 					/>
@@ -95,6 +115,7 @@
 						max={massExtent.max}
 						on:change={async ({ detail }) => {
 							massFilter = detail;
+                            page = 0;
 							await search();
 						}}
 					/>
@@ -124,7 +145,15 @@
 		</form>
 		{#if totalFound > 0}
 			<div id="found">
-				{totalFound} proteins found
+				{totalFound} proteins shown |
+                <Button disabled={page <= 0} on:click={async()=>{
+                    page--
+                    await search();
+                }}>Previous {proteinsPerPage}</Button> | 
+                <Button disabled={totalFound < proteinsPerPage} on:click={async()=>{
+                    page++
+                    await search();
+                }}>Next {proteinsPerPage}</Button>
 			</div>
 		{/if}
 		{#if proteinEntries === undefined || proteinEntries.length === 0}
