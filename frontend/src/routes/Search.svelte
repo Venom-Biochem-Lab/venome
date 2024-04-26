@@ -143,7 +143,7 @@
 			/>
 			<Button type="submit" size="sm">Search</Button>
 		</form>
-		{#if totalFound > 0}
+		{#if totalFound > 0 || page > 0}
 			<div id="found">
                 {#if totalFound == 1}
                     {totalFound} protein shown |
