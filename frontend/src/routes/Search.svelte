@@ -150,7 +150,6 @@
                 {:else}
                     {totalFound} proteins shown |
                 {/if}
-				
                 <Button disabled={page <= 0} on:click={async()=>{
                     page--
                     await search();
