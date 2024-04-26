@@ -3,6 +3,7 @@
 	import { navigate } from "svelte-routing";
 	import { Backend, setToken, type Article } from "../lib/backend";
 	import { onMount } from "svelte";
+    import { user } from "../lib/stores/user";
 	export let articleTitle: string;
 
 	let title: string = "";
@@ -13,6 +14,13 @@
 	let error = false;
 	let article: Article;
 	onMount(async () => {
+        if (!$user.loggedIn) {
+			alert(
+				"You are not logged in. You are being redirected to home. TODO: Make this better."
+			);
+			navigate("/");
+		}
+        
 		try {
 			article = await Backend.getArticle(articleTitle);
 		} catch (e) {

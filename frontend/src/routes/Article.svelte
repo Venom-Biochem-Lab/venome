@@ -29,6 +29,12 @@
 	let article: Article;
 	let notFound = false;
 	onMount(async () => {
+        if (editMode && !$user.loggedIn) {
+			alert(
+				"You are not logged in. You are being redirected to home. TODO: Make this better."
+			);
+			navigate("/");
+		}
 		await refreshArticle();
 	});
 

@@ -7,6 +7,17 @@
 		UploadSolid,
 	} from "flowbite-svelte-icons";
 	import { navigate } from "svelte-routing";
+    import { onMount } from "svelte";
+    import { user } from "../lib/stores/user";
+
+    onMount(async () => {
+		if (!$user.loggedIn) {
+			alert(
+				"You are not logged in. You are being redirected to home. TODO: Make this better."
+			);
+			navigate("/");
+		}
+    })
 </script>
 
 <section class="p-5">
