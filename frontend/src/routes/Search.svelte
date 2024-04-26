@@ -53,6 +53,10 @@
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
 	}
+    async function searchAndResetPage() {
+        page = 0;
+        await search();
+    }
 	async function resetFilter() {
 		speciesFilter = undefined;
 		lengthFilter = lengthExtent;
@@ -133,7 +137,7 @@
 	</div>
 
 	<div id="view">
-		<form id="search-bar" on:submit|preventDefault={search}>
+		<form id="search-bar" on:submit|preventDefault={searchAndResetPage}>
 			<Search
 				size="lg"
 				type="text"
