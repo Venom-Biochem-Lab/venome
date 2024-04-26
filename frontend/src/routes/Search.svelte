@@ -18,6 +18,7 @@
 	let lengthExtent: { min: number; max: number };
 	let massFilter: { min: number; max: number } | undefined;
 	let massExtent: { min: number; max: number };
+    let filterResetCounter = 0;
 
     let urlParams = new URLSearchParams(window.location.search)
     let proteinsPerPage = 20 // The number of proteins to show per page
@@ -63,6 +64,7 @@
 		massFilter = massExtent;
 		query = "";
         page = 0;
+        filterResetCounter++; // Incrementing this so relevant components can be destroyed and re-created
 		await search();
 	}
 </script>
@@ -98,28 +100,32 @@
 			<div>
 				<h3>Amino Acids Length</h3>
 				{#if lengthExtent && lengthFilter}
-					<RangerFilter
-						min={lengthExtent.min}
-						max={lengthExtent.max}
-						on:change={async ({ detail }) => {
-							lengthFilter = detail;
-                            await searchAndResetPage();
-						}}
-					/>
+                    {#key filterResetCounter}
+                        <RangerFilter
+                            min={lengthExtent.min}
+                            max={lengthExtent.max}
+                            on:change={async ({ detail }) => {
+                                lengthFilter = detail;
+                                await searchAndResetPage();
+                            }}
+                        />
+                    {/key}
 				{/if}
 			</div>
 
 			<div>
 				<h3>Mass (Da)</h3>
 				{#if massExtent && massFilter}
-					<RangerFilter
-						min={massExtent.min}
-						max={massExtent.max}
-						on:change={async ({ detail }) => {
-							massFilter = detail;
-                            await searchAndResetPage()
-						}}
-					/>
+                    {#key filterResetCounter}
+                        <RangerFilter
+                            min={massExtent.min}
+                            max={massExtent.max}
+                            on:change={async ({ detail }) => {
+                                massFilter = detail;
+                                await searchAndResetPage()
+                            }}
+                        />
+                    {/key}
 				{/if}
 			</div>
 
