@@ -17,7 +17,7 @@
 </div>
 <div id="title_page">
 	<div id="side_col" class="col">
-		<h3>Get to know the <a href="https://venombiochemistrylab.weebly.com/">Venome Lab!</a></h3>
+		<h3>Get to know the <a href="https://venombiochemistrylab.weebly.com/">Venome Lab</a>!</h3>
 		<p>The Venome Lab is based out of OSU and studies three species of parasitic wasps and their proteins</p>
 		<h3>There are so many wasps in there</h3>
 		<!--search bar-->
@@ -70,7 +70,6 @@
 	}
 
 	h3 {
-		margin: 5px;
 		margin-bottom: 3px;
 		margin-top: 10px;
 	}
@@ -94,7 +93,7 @@
 
 	.col {
 		margin: 0% 0.5%;
-		padding: 1%;
+		padding: 2%;
 		background-color:aliceblue;
 	}
 
@@ -119,12 +118,13 @@
 	}
 
 	ul li {
-		margin-left: 3%;
+		margin-left: 7%;
 		list-style-type: circle;
 	}
 
 	input {
 		margin-bottom: 15px;
 	}
+	
 
 </style>
