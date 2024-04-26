@@ -86,8 +86,7 @@
 								outline
 								on:click={async () => {
 									speciesFilter = s;
-                                    page = 0;
-									await search();
+                                    await searchAndResetPage();
 								}}
 							>
 								{s}
@@ -104,8 +103,7 @@
 						max={lengthExtent.max}
 						on:change={async ({ detail }) => {
 							lengthFilter = detail;
-                            page = 0;
-							await search();
+                            await searchAndResetPage();
 						}}
 					/>
 				{/if}
@@ -119,8 +117,7 @@
 						max={massExtent.max}
 						on:change={async ({ detail }) => {
 							massFilter = detail;
-                            page = 0;
-							await search();
+                            await searchAndResetPage()
 						}}
 					/>
 				{/if}
@@ -170,7 +167,12 @@
 				textRight
 			/>
         {:else if proteinEntries.length === 0}
-            No proteins found
+            { #if page > 0 }
+                No more proteins found
+            {:else}
+                No proteins found
+            {/if}
+            
 		{:else}
 			<ListProteins allEntries={proteinEntries} />
 		{/if}
