@@ -145,7 +145,12 @@
 		</form>
 		{#if totalFound > 0}
 			<div id="found">
-				{totalFound} proteins shown |
+                {#if totalFound == 1}
+                    {totalFound} protein shown |
+                {:else}
+                    {totalFound} proteins shown |
+                {/if}
+				
                 <Button disabled={page <= 0} on:click={async()=>{
                     page--
                     await search();
