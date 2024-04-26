@@ -156,11 +156,13 @@
                 }}>Next {proteinsPerPage}</Button>
 			</div>
 		{/if}
-		{#if proteinEntries === undefined || proteinEntries.length === 0}
+		{#if proteinEntries === undefined}
 			<DelayedSpinner
 				text="Fetching Proteins from the Venome DB..."
 				textRight
 			/>
+        {:else if proteinEntries.length === 0}
+            No proteins found
 		{:else}
 			<ListProteins allEntries={proteinEntries} />
 		{/if}
