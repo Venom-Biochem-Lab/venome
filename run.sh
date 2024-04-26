@@ -9,17 +9,17 @@ function all() {
 }
 
 function start() {
-	docker-compose up -d
+	docker compose up -d
 }
 
 function stop() { 
-	docker-compose down
+	docker compose down
 }
 
 # generates the api bridge between frontend and backend
 function gen_api() {
 	cd frontend
-	yarn openapi && docker-compose restart frontend
+	yarn openapi && docker compose restart frontend
 	cd ..
 }
 
@@ -92,7 +92,7 @@ function soft_restart() {
 # complete from scratch rebuild
 function hard_restart() {
 	stop
-	docker-compose up --build -d	
+	docker compose up --build -d	
 	reload_init_sql
 }
 
