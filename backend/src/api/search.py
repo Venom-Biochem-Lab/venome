@@ -102,7 +102,7 @@ def search_proteins(body: SearchProteinsBody):
         try:
             # If both the number requested and the page number are present in the request, the limit and offset are set.
             # Otherwise, defaults to entire database.
-            if body.proteinsPerPage != None and body.page != None:
+            if body.proteinsPerPage is not None and body.page is not None:
                 limit = body.proteinsPerPage
                 offset = limit * body.page
 
