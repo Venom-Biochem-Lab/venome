@@ -22,6 +22,7 @@
 			>
 				<div class="prot-thumb mr-2">
 					<img
+						loading="lazy"
 						class="prot-thumb"
 						src={entry.thumbnail ?? ""}
 						alt="thumbnail"
@@ -53,9 +54,9 @@
 
 <style>
 	.prot-container {
-		--border-opacity: 0.3;
+		--border-opacity: 0.2;
 		display: flex;
-		outline: hsla(var(--darkblue-hsl), var(--border-opacity)) 1px solid;
+		outline: hsla(0, 0%, 0%, var(--border-opacity)) 1px solid;
 		border-radius: 5px;
 		width: 500px;
 		padding-left: 15px;
@@ -67,7 +68,7 @@
 	}
 	.prot-container:hover {
 		transform: scale(1.02);
-		--border-opacity: 0.5;
+		--border-opacity: 0.3;
 		box-shadow: 0 1px 2px 2px #00000010;
 		cursor: pointer;
 	}
@@ -77,7 +78,7 @@
 	}
 	.prot-name {
 		font-size: 1.5em;
-		color: var(--darkblue);
+		color: var(--primary-700);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;

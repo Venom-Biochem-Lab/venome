@@ -3,7 +3,7 @@ import logging as log
 from passlib.hash import bcrypt
 from ..api_types import LoginBody, LoginResponse
 from ..db import Database
-from ..auth import generateAuthToken
+from ..auth import generate_auth_token
 
 router = APIRouter()
 
@@ -24,7 +24,7 @@ def login(body: LoginBody):
             if entry_sql is None or len(entry_sql) == 0:
                 return LoginResponse(token="", error="Invalid Email or Password")
 
-            # Grabs the stored hash and admin.
+            # Grabs the stored hash and admin status.
             password_hash, admin = entry_sql[0]
 
             # Returns "incorrect email/password" message if password is incorrect.
@@ -32,8 +32,10 @@ def login(body: LoginBody):
                 return LoginResponse(token="", error="Invalid Email or Password")
 
             # Generates the token and returns
-            token = generateAuthToken(email, admin)
-            log.warn("Giving token:", token)
+            token = generate_auth_token(email, admin)
+            log.warn(
+                f"Giving token: {token}",
+            )
             return LoginResponse(token=token, error="")
 
         except Exception as e:

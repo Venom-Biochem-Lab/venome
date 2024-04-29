@@ -33,4 +33,5 @@ def init_fastapi_app() -> FastAPI:
     app = FastAPI(
         title="Venome Backend", generate_unique_id_function=custom_generate_unique_id
     )
+    app = disable_cors(app)
     return app

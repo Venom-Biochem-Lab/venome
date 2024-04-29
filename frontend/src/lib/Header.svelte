@@ -3,24 +3,29 @@
 	import { links } from "svelte-routing";
 	import { onMount } from "svelte";
 	import {
-		UploadOutline,
 		UserOutline,
-		TableRowOutline,
-		BookOutline,
+		SearchOutline,
+		NewspapperSolid,
+		UploadSolid,
+		SearchSolid,
 	} from "flowbite-svelte-icons";
-	import {user} from "./stores/user"
-	import Cookies from "js-cookie"
+	import { user } from "./stores/user";
+	import Cookies from "js-cookie";
+	import ProteinIcon from "../lib/ProteinIcon.svelte";
 
-	// Checking if the user has a cookie.
-	// If they do, set user status for the whole site.
 	onMount(async () => {
+		/**
+		 * Checking if the user has a cookie. If they do, set user svelte store loggin attribute.
+		 * Done here because the header is loaded first, which means user can still directly navigate
+		 * to restricted pages if they refresh while logged in.
+		 */
 		if (Cookies.get("auth")) {
-			$user.loggedIn = true
+			$user.loggedIn = true;
 		}
 	});
 </script>
 
-<header class="flex justify-between" use:links>
+<header class="flex justify-between" style="z-index: 999;" use:links>
 	<div class="nav-container">
 		<div id="logo">
 			<a href="/">
@@ -28,29 +33,28 @@
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/search" class="flex items-center gap-1"
-				><TableRowOutline size="lg" />Search</a
+			<a href="/search" class="flex items-center"
+				><ProteinIcon width={35} height={35} />Proteins</a
+			>
+			<a href="/articles" class="flex items-center gap-1">
+				<NewspapperSolid size="lg" />Articles</a
 			>
 			{#if $user.loggedIn}
-			<a href="/upload" class="flex items-center gap-1">
-				<UploadOutline size="lg" />Upload</a
-			>
+				<a href="/upload" class="flex items-center gap-1">
+					<UploadSolid size="lg" />Upload</a
+				>
 			{/if}
-			<a href="/tutorials" class="flex items-center gap-1">
-				<BookOutline size="lg" />Tutorials</a
-			>
 		</div>
 	</div>
 
 	<a href="/login" class="flex items-center gap-1 mr-5">
 		<UserOutline size="lg" />
-			{#if $user.loggedIn}
-				Logout
-			{:else}
-				Login
-			{/if}
-		</a
-	>
+		{#if $user.loggedIn}
+			Logout
+		{:else}
+			Login
+		{/if}
+	</a>
 </header>
 <div style="height: 60px;" />
 
@@ -91,9 +95,9 @@
 	}
 
 	a {
-		color: var(--darkblue);
+		color: var(--primary-700);
 	}
 	a:hover {
-		color: var(--darkblue);
+		color: var(--primary-800);
 	}
 </style>

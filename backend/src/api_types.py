@@ -32,6 +32,7 @@ class ProteinEntry(CamelModel):
     refs: str | None = None
     thumbnail: str | None = None
     description: str | None = None
+    date_published: str | None = None
 
 
 class AllEntries(CamelModel):
@@ -76,3 +77,12 @@ class LoginBody(CamelModel):
 class LoginResponse(CamelModel):
     token: str
     error: str
+
+
+class CompareBody(CamelModel):
+    proteinA: str
+    proteinB: str
+
+
+class CompareResponse(CamelModel):
+    file: list[str]

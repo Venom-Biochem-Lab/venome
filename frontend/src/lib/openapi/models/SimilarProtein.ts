@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -7,5 +7,8 @@ export type SimilarProtein = {
     prob: number;
     evalue: number;
     description?: string;
+    qstart: number;
+    qend: number;
+    alntmscore: number;
 };
 

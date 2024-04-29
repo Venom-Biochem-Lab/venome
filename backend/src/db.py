@@ -37,12 +37,12 @@ class Database:
         self.conn = None
 
     def execute(
-        self, query: LiteralString | sql.Composed, params: list[Any] | None = None
+        self, query: LiteralString | sql.Composed | str, params: list[Any] | None = None
     ):
         """Executes an SQL query and returns nothing"""
         try:
             if self.cur is not None:
-                self.cur.execute(query, params)
+                self.cur.execute(query, params)  # type: ignore
         except (Exception, psycopg.DatabaseError) as error:
             raise Exception(error) from error
 

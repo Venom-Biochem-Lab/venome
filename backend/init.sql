@@ -11,6 +11,8 @@
 -- Generated columns:
 -- https://www.postgresql.org/docs/current/ddl-generated-columns.html
 
+CREATE EXTENSION pg_trgm; -- for trigram matching fuzzy search similarity() func
+
 /*
  * Species Table
  */
@@ -25,13 +27,14 @@ CREATE TABLE species (
 CREATE TABLE proteins (
     id serial PRIMARY KEY,
     name text NOT NULL UNIQUE, -- user specified name of the protein (TODO: consider having a string limit)
-    description text, 
+    description text,
     length integer, -- length of amino acid sequence
     mass numeric, -- mass in amu/daltons
-    content bytea, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
-    refs bytea, -- bibtex references mentioned in the content/article
+    content text, -- stored markdown for the protein article (TODO: consider having a limit to how big this can be)
+    refs text, -- bibtex references mentioned in the content/article
     species_id integer NOT NULL,
     thumbnail bytea, -- thumbnail image of the protein in base64 format
+    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (species_id) REFERENCES species(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -46,12 +49,61 @@ CREATE TABLE users (
     admin boolean NOT NULL
 );
 
+
+/*
+* Articles Table
+*/
+CREATE TABLE articles (
+    id serial PRIMARY KEY,
+    title text NOT NULL UNIQUE,
+    description text,
+    date_published timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    refs text -- bibtex references mentioned in the content/article
+);
+CREATE TABLE components (
+    id serial PRIMARY KEY,
+    article_id integer NOT NULL,
+    component_order integer NOT NULL, -- where this component is within a particular article 
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE text_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    markdown text DEFAULT '',
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE protein_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    name text NOT NULL,
+    aligned_with_name text, 
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE image_components (
+    id serial PRIMARY KEY,
+    component_id integer NOT NULL,
+
+    -- component specific info
+    src bytea NOT NULL, --bytes of the image
+    width integer,
+    height integer,
+
+    FOREIGN KEY (component_id) REFERENCES components(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
 /*
  * Inserts example species into species table
  */
-INSERT INTO species(name) VALUES ('ganaspis hookeri'); 
-INSERT INTO species(name) VALUES ('leptopilina boulardi'); 
-INSERT INTO species(name) VALUES ('leptopilina heterotoma'); 
+INSERT INTO species(name) VALUES ('ganaspis hookeri');
+INSERT INTO species(name) VALUES ('leptopilina boulardi');
+INSERT INTO species(name) VALUES ('leptopilina heterotoma');
 INSERT INTO species(name) VALUES ('unknown');
 
 /*

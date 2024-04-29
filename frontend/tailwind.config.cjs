@@ -11,25 +11,19 @@ const config = {
 	theme: {
 		extend: {
 			colors: {
-				// flowbite-svelte
 				primary: {
-					// TODO: actually interpolate lightness here
-					50: "hsla(205, 57%, 23%, 1)",
-					100: "hsla(205, 57%, 23%, 1)",
-					200: "hsla(205, 57%, 23%, 1)",
-					300: "hsla(205, 57%, 23%, 1)",
-					400: "hsla(205, 57%, 23%, 1)",
-					500: "hsla(205, 57%, 23%, 1)",
-					600: "hsla(205, 57%, 23%, 1)",
-					700: "hsla(205, 57%, 23%, 1)",
-					800: "hsla(205, 57%, 23%, 1)",
-					900: "hsla(205, 57%, 23%, 1)",
+					50: "var(--primary-50)",
+					100: "var(--primary-100)",
+					200: "var(--primary-200)",
+					300: "var(--primary-300)",
+					400: "var(--primary-400)",
+					500: "var(--primary-500)",
+					600: "var(--primary-600)",
+					700: "var(--primary-700)", // flowbite uses this one for 'primary' variants
+					800: "var(--primary-800)",
+					900: "var(--primary-900)",
+					950: "var(--primary-950)",
 				},
-				// then match the css global variables defined in .postcss file
-				darkblue: "hsla(205, 57%, 23%, 1)",
-				lightblue: "hsla(198, 41%, 54%, 1)",
-				darkorange: "hsla(27, 77%, 55%, 1)",
-				lightorange: "hsla(38, 83%, 60%, 1)",
 			},
 		},
 	},

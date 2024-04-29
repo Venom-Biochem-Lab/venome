@@ -1,10 +1,18 @@
 <script lang="ts">
-	import { Backend, UploadError, setToken, type ProteinEntry } from "../lib/backend";
-	import { Button, Input, Label, Helper, Select } from "flowbite-svelte";
+	import { Backend, setToken, type ProteinEntry } from "../lib/backend";
+	import {
+		Button,
+		Input,
+		Label,
+		Helper,
+		Select,
+		Popover,
+	} from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import { onMount } from "svelte";
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
 	import { user } from "../lib/stores/user";
+	import { undoFormatProteinName } from "../lib/format";
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
 	// and reuploaded/edited
@@ -23,7 +31,7 @@
 	let ogSpecies: string;
 	let species: string;
 
-	let uploadError: UploadError | undefined;
+	let uploadError = "";
 	let entry: ProteinEntry | null = null;
 	let error = false;
 	let allSpecies: string[] | null;
@@ -46,7 +54,7 @@
 			error = true;
 		} else {
 			// keep track of db value and the value we change (og denotes original / db)
-			name = entry.name;
+			name = undoFormatProteinName(entry.name); // replaces _ with " "
 			ogName = name;
 
 			content = entry.content ?? "";
@@ -92,7 +100,7 @@
 					id="protein-name"
 					placeholder="Name"
 				/>
-				{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
+				{#if uploadError}
 					<Helper class="mt-2" color="red"
 						>This name already exists, please create a unique name
 						and resubmit</Helper
@@ -140,31 +148,32 @@
 					on:click={async () => {
 						if (entry) {
 							try {
-								setToken()
-								const err = await Backend.editProteinEntry({
-									newName: name,
-									oldName: entry.name,
-									newSpeciesName: species,
-									oldSpeciesName: ogSpecies,
-									newContent:
-										content !== ogContent
-											? content
-											: undefined,
-									newRefs: refs !== ogRefs ? refs : undefined,
-									newDescription:
-										description !== ogDescription
-											? description
-											: undefined,
-								});
-								if (err) {
-									uploadError = err;
-									console.log(uploadError);
-								} else {
-									// success, so we can go back!
-									navigate(`/protein/${name}`);
-								}
+								setToken();
+								const editSuccessful =
+									await Backend.editProteinEntry({
+										newName: name,
+										oldName: entry.name,
+										newSpeciesName: species,
+										oldSpeciesName: ogSpecies,
+										newContent:
+											content !== ogContent
+												? content
+												: undefined,
+										newRefs:
+											refs !== ogRefs ? refs : undefined,
+										newDescription:
+											description !== ogDescription
+												? description
+												: undefined,
+									});
+								// success, so we can go back, but now with the new name stored in the db.
+								navigate(
+									`/protein/${editSuccessful.editedName}`
+								);
+								uploadError = ""; // no upload error to report
 							} catch (e) {
-								console.log(e);
+								// in this case, there was some edit error so we should display it
+								uploadError = String(e);
 							}
 						}
 					}}
@@ -172,19 +181,40 @@
 					>Edit Protein</Button
 				>
 
-				<Button outline on:click={() => navigate(`/protein/${name}`)}
+				<Button outline on:click={() => navigate(`/protein/${urlId}`)}
 					>Cancel</Button
 				>
 			</div>
 			<div>
-				<Button
-					color="red"
-					on:click={async () => {
-						setToken()
-						await Backend.deleteProteinEntry(urlId);
-						navigate("/");
-					}}>Delete Protein Entry</Button
+				<Button id="del-prot" color="red">Delete Protein Entry</Button>
+				<Popover
+					arrow={false}
+					placement="right-end"
+					trigger="click"
+					triggeredBy="#del-prot"
+					title="Confirm"
 				>
+					<div>
+						Are you sure you want to delete this protein?
+						<br />
+						The protein will be deleted forever.
+					</div>
+					<div class="mt-2">
+						<Button
+							color="red"
+							size="sm"
+							on:click={async () => {
+								try {
+									setToken();
+									await Backend.deleteProteinEntry(urlId);
+									navigate("/search");
+								} catch (e) {
+									console.error(e);
+								}
+							}}>Confirm Delete</Button
+						>
+					</div>
+				</Popover>
 			</div>
 		</div>
 	{/if}

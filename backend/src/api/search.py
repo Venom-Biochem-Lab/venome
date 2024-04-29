@@ -14,6 +14,9 @@ class SimilarProtein(CamelModel):
     prob: float
     evalue: float
     description: str = ""
+    qstart: int
+    qend: int
+    alntmscore: int
 
 
 class RangeFilter(CamelModel):
@@ -26,6 +29,8 @@ class SearchProteinsBody(CamelModel):
     species_filter: str | None = None
     length_filter: RangeFilter | None = None
     mass_filter: RangeFilter | None = None
+    proteinsPerPage: int | None = None
+    page: int | None = None
 
 
 class SearchProteinsResults(CamelModel):
@@ -74,41 +79,72 @@ def get_descriptions(protein_names: list[str]):
 
 
 def gen_sql_filters(
+    species_table: str,
+    proteins_table: str,
     species_filter: str | None,
     length_filter: RangeFilter | None = None,
     mass_filter: RangeFilter | None = None,
 ) -> str:
     filters = [
-        category_where_clause("species.name", species_filter),
-        range_where_clause("proteins.length", length_filter),
-        range_where_clause("proteins.mass", mass_filter),
+        category_where_clause(f"{species_table}.name", species_filter),
+        range_where_clause(f"{proteins_table}.length", length_filter),
+        range_where_clause(f"{proteins_table}.mass", mass_filter),
     ]
     return " AND " + combine_where_clauses(filters) if any(filters) else ""
 
 
 @router.post("/search/proteins", response_model=SearchProteinsResults)
 def search_proteins(body: SearchProteinsBody):
-    title_query = sanitize_query(body.query)
+    text_query = sanitize_query(body.query)
+    limit = 10000  # Limit defaulted to exceed the number of entries in db to grab whole thing.
+    offset = 0
     with Database() as db:
         try:
+            # If both the number requested and the page number are present in the request, the limit and offset are set.
+            # Otherwise, defaults to entire database.
+            if body.proteinsPerPage is not None and body.page is not None:
+                limit = body.proteinsPerPage
+                offset = limit * body.page
+
             filter_clauses = gen_sql_filters(
-                body.species_filter, body.length_filter, body.mass_filter
+                "species",
+                "proteins_scores",
+                body.species_filter,
+                body.length_filter,
+                body.mass_filter,
             )
-            entries_query = """SELECT proteins.name, 
-                                      proteins.description, 
-                                      proteins.length, 
-                                      proteins.mass, 
+            threshold = 0
+            score_filter = (
+                f"(proteins_scores.name_score >= {threshold} OR proteins_scores.desc_score >= {threshold} OR  proteins_scores.content_score >= {threshold})"  # show only the scores > 0
+                if len(text_query) > 0
+                else "TRUE"  # show all scores
+            )
+            # cursed shit, edit this at some point
+            # note that we have a sub query since postgres can't do where clauses on aliased tables
+            entries_query = """SELECT proteins_scores.name, 
+                                      proteins_scores.description, 
+                                      proteins_scores.length, 
+                                      proteins_scores.mass, 
                                       species.name,
-                                      proteins.thumbnail
-                                FROM proteins 
-                                JOIN species ON species.id = proteins.species_id 
-                                WHERE proteins.name ILIKE %s"""
+                                      proteins_scores.thumbnail
+                                FROM (SELECT *, 
+                                             similarity(name, %s) as name_score, 
+                                             similarity(description, %s) as desc_score,
+                                             similarity(content, %s) as content_score
+                                     FROM proteins) as proteins_scores
+                                JOIN species ON species.id = proteins_scores.species_id
+                                WHERE {} {}
+                                ORDER BY (proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC
+                                LIMIT {}
+                                OFFSET {};
+                                """.format(
+                score_filter, filter_clauses, limit, offset
+            )  # numbers in order by correspond to weighting
+            log.warn("EQ:" + entries_query)
             log.warn(filter_clauses)
             entries_result = db.execute_return(
-                sanitize_query(entries_query + filter_clauses),
-                [
-                    f"%{title_query}%",
-                ],
+                sanitize_query(entries_query),
+                [text_query, text_query, text_query],
             )
             if entries_result is not None:
                 return SearchProteinsResults(
@@ -180,14 +216,21 @@ def search_venome_similar(protein_name: str):
         similar = easy_search(
             stored_pdb_file_name(protein_name),
             venome_folder,
-            out_format="target,prob,evalue",
-        )[1:]
+            out_format="target,prob,evalue,qstart,qend",
+        )  # qend,qstart refer to alignment
         formatted = [
-            SimilarProtein(name=name.rstrip(".pdb"), prob=prob, evalue=evalue)
-            for [name, prob, evalue] in similar
+            SimilarProtein(
+                name=name.rstrip(".pdb"),
+                prob=prob,
+                evalue=evalue,
+                qstart=qstart,
+                qend=qend,
+                alntmscore=0,
+            )
+            for [name, prob, evalue, qstart, qend] in similar
         ]
     except Exception:
-        raise HTTPException(404, "Foldseek not found on the system")
+        raise HTTPException(404, "Error in 'foldseek easy-search' command")
 
     try:
         # populate protein descriptions for the similar proteins
@@ -199,3 +242,42 @@ def search_venome_similar(protein_name: str):
         raise HTTPException(500, "Error getting protein descriptions")
 
     return formatted
+
+
+@router.get(
+    "/search/venome/similar/{protein_name:str}/{protein_compare:str}",
+    response_model=SimilarProtein,
+)
+def search_venome_similar_compare(protein_name: str, protein_compare: str):
+    target = stored_pdb_file_name(protein_compare)
+    # ignore the first since it's itself as the most similar
+    try:
+        similar = easy_search(
+            stored_pdb_file_name(protein_name),
+            target,
+            out_format="target,prob,evalue,qstart,qend",
+        )  # qend,qstart refer to alignment
+        formatted = [
+            SimilarProtein(
+                name=name.rstrip(".pdb"),
+                prob=prob,
+                evalue=evalue,
+                qstart=qstart,
+                qend=qend,
+                alntmscore=0,
+            )
+            for [name, prob, evalue, qstart, qend] in similar
+        ]
+    except Exception:
+        raise HTTPException(404, "Error in 'foldseek easy-search' command")
+
+    try:
+        # populate protein descriptions for the similar proteins
+        descriptions = get_descriptions([s.name for s in formatted])
+        if descriptions is not None:
+            for f, d in zip(formatted, descriptions):
+                f.description = d
+    except Exception:
+        raise HTTPException(500, "Error getting protein descriptions")
+
+    return formatted[0]

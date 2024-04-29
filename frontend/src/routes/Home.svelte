@@ -6,6 +6,9 @@
 	import { navigate } from "svelte-routing";
 	import { user } from "../lib/stores/user"
 	import ProteinVis from "../lib/ProteinVis.svelte";
+	/* Put stuff here */
+	import * as d3 from "d3";
+	console.log(d3.schemeDark2[0]);
 </script>
 
 <svelte:head>

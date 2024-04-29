@@ -5,9 +5,11 @@ from io import StringIO
 from Bio.PDB import PDBParser
 from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
+from fastapi.exceptions import HTTPException
 
 from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
-from ..auth import requiresAuthentication
+from ..tmalign import tm_align_return
+from ..auth import requires_authentication
 from io import BytesIO
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
@@ -95,9 +97,36 @@ def pdb_to_fasta(pdb: PDB):
     return ">{}\n{}".format(pdb.name, "".join(pdb.amino_acids()))
 
 
+def str_as_file_stream(input_str: str, filename_as: str) -> StreamingResponse:
+    return StreamingResponse(
+        BytesIO(input_str.encode()),
+        media_type="text/plain",
+        headers={"Content-Disposition": f"attachment; filename={filename_as}"},
+    )
+
+
+def get_residue_bfactors(pdb: PDB):
+    chains = {}
+    for chain in pdb.structure.get_chains():
+        chains[chain.get_id()] = []
+        for r in chain.get_residues():
+            for a in r.get_atoms():
+                chains[chain.get_id()].append(a.bfactor)
+                break
+    return chains
+
+
 """
     ENDPOINTS TODO: add the other protein types here instead of in api_types.py
 """
+
+
+@router.get("/protein/pLDDT/{protein_name:str}", response_model=dict[str, list[float]])
+def get_pLDDT_given_protein(protein_name: str):
+    if protein_name_found(protein_name):
+        pdb = parse_protein_pdb(protein_name, encoding="file")
+        return get_residue_bfactors(pdb)
+    return {}
 
 
 class UploadPNGBody(CamelModel):
@@ -135,18 +164,18 @@ def get_protein_entry(protein_name: str):
     with Database() as db:
         try:
             query = """SELECT proteins.name, 
-            				  proteins.description,
+                              proteins.description,
                               proteins.length, 
                               proteins.mass, 
                               proteins.content, 
                               proteins.refs, 
                               species.name,
-                              proteins.thumbnail
+                              proteins.thumbnail,
+                              proteins.date_published
                        FROM proteins
                        JOIN species ON species.id = proteins.species_id
                        WHERE proteins.name = %s;"""
             entry_sql = db.execute_return(query, [protein_name])
-            log.warn(entry_sql)
 
             # if we got a result back
             if entry_sql is not None and len(entry_sql) != 0:
@@ -161,15 +190,16 @@ def get_protein_entry(protein_name: str):
                     refs,
                     species_name,
                     thumbnail,
+                    date_published,
                 ) = only_returned_entry
 
-                # if byte arrays are present, decode them into a string
-                if content is not None:
-                    content = bytea_to_str(content)
-                if refs is not None:
-                    refs = bytea_to_str(refs)
                 if thumbnail is not None:
+                    # if byte arrays are present, decode them into a string
                     thumbnail = bytea_to_str(thumbnail)
+
+                if date_published is not None:
+                    # forces the datetime object into a linux utc string
+                    date_published = str(date_published)
 
                 return ProteinEntry(
                     name=name,
@@ -180,6 +210,7 @@ def get_protein_entry(protein_name: str):
                     refs=refs,
                     species_name=species_name,
                     thumbnail=thumbnail,
+                    date_published=date_published,
                 )
 
         except Exception as e:
@@ -189,7 +220,7 @@ def get_protein_entry(protein_name: str):
 # TODO: add permissions so only the creator can delete not just anyone
 @router.delete("/protein/entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str, req: Request):
-    requiresAuthentication(req)
+    requires_authentication(req)
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
         # remove protein
@@ -206,7 +237,8 @@ def delete_protein_entry(protein_name: str, req: Request):
 
 
 @router.post("/protein/upload/png", response_model=None)
-def upload_protein_png(body: UploadPNGBody):
+def upload_protein_png(body: UploadPNGBody, req: Request):
+    requires_authentication(req)
     with Database() as db:
         try:
             query = """UPDATE proteins SET thumbnail = %s WHERE name = %s"""
@@ -218,7 +250,7 @@ def upload_protein_png(body: UploadPNGBody):
 # None return means success
 @router.post("/protein/upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody, req: Request):
-    requiresAuthentication(req)
+    requires_authentication(req)
 
     body.name = format_protein_name(body.name)
     # check that the name is not already taken in the DB
@@ -263,8 +295,8 @@ def upload_protein_entry(body: UploadBody, req: Request):
                     body.description,
                     pdb.num_amino_acids,
                     pdb.mass_daltons,
-                    str_to_bytea(body.content),
-                    str_to_bytea(body.refs),
+                    body.content,
+                    body.refs,
                     body.species_name,
                 ],
             )
@@ -273,13 +305,25 @@ def upload_protein_entry(body: UploadBody, req: Request):
             return UploadError.QUERY_ERROR
 
 
-# TODO: add more edits, now only does name and content edits
-@router.put("/protein/edit", response_model=UploadError | None)
+class ProteinEditSuccess(CamelModel):
+    edited_name: str
+
+
+@router.put("/protein/edit", response_model=ProteinEditSuccess)
 def edit_protein_entry(body: EditBody, req: Request):
+    """edit_protein_entry
+    Returns: On successful edit, will return an object with editedName
+    If not successful will through an HTTP status 500
+    """
+
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
-    requiresAuthentication(req)
+    requires_authentication(req)
     try:
+        # replace spaces in the name with underscores
+        body.old_name = format_protein_name(body.old_name)
+        body.new_name = format_protein_name(body.new_name)
+
         if body.new_name != body.old_name:
             os.rename(
                 stored_pdb_file_name(body.old_name), stored_pdb_file_name(body.new_name)
@@ -310,7 +354,7 @@ def edit_protein_entry(body: EditBody, req: Request):
                 db.execute(
                     """UPDATE proteins SET content = %s WHERE name = %s""",
                     [
-                        str_to_bytea(body.new_content),
+                        body.new_content,
                         body.old_name if not name_changed else body.new_name,
                     ],
                 )
@@ -319,7 +363,7 @@ def edit_protein_entry(body: EditBody, req: Request):
                 db.execute(
                     """UPDATE proteins SET refs = %s WHERE name = %s""",
                     [
-                        str_to_bytea(body.new_refs),
+                        body.new_refs,
                         body.old_name if not name_changed else body.new_name,
                     ],
                 )
@@ -332,6 +376,24 @@ def edit_protein_entry(body: EditBody, req: Request):
                         body.old_name if not name_changed else body.new_name,
                     ],
                 )
-
+            return ProteinEditSuccess(edited_name=body.new_name)
     except Exception:
-        return UploadError.WRITE_ERROR
+        raise HTTPException(500, "Edit failed, git gud")
+
+
+# /pdb with two attributes returns both PDBs, superimposed and with different colors.
+@router.get("/protein/pdb/{proteinA:str}/{proteinB:str}", response_model=str)
+def align_proteins(proteinA: str, proteinB: str):
+    if not protein_name_found(proteinA) or not protein_name_found(proteinB):
+        raise HTTPException(
+            status_code=404, detail="One of the proteins provided is not found in DB"
+        )
+
+    try:
+        filepath_pdbA = stored_pdb_file_name(proteinA)
+        filepath_pdbB = stored_pdb_file_name(proteinB)
+        superimposed_pdb = tm_align_return(filepath_pdbA, filepath_pdbB)
+        return str_as_file_stream(superimposed_pdb, f"{proteinA}_{proteinB}.pdb")
+    except Exception as e:
+        log.error(e)
+        raise HTTPException(status_code=500, detail=str(e))
