@@ -6,8 +6,8 @@
 	import { Search, Button } from "flowbite-svelte";
 	import RangerFilter from "../lib/RangerFilter.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
-    import app from "../main";
-    import { navigate } from "svelte-routing";
+	import app from "../main";
+	import { navigate } from "svelte-routing";
 
 	let query = "";
 	let proteinEntries: ProteinEntry[];
@@ -18,28 +18,18 @@
 	let lengthExtent: { min: number; max: number };
 	let massFilter: { min: number; max: number } | undefined;
 	let massExtent: { min: number; max: number };
-    let filterResetCounter = 0;
+	let filterResetCounter = 0;
 
-    let urlParams = new URLSearchParams(window.location.search)
-    let proteinsPerPage = 20 // The number of proteins to show per page
-    let page = 0
+	let proteinsPerPage = 20; // The number of proteins to show per page
+	let page = 0;
 	onMount(async () => {
-        // Redirects user to ?page=1 if page query string not present
-
-        /*
-        if (page == null) {
-            navigate('search?page=1')
-        }
-        console.log("Page is", page)
-        */
-
 		await search();
 		species = await Backend.searchSpecies();
 		lengthExtent = await Backend.searchRangeLength();
 		massExtent = await Backend.searchRangeMass();
 		massFilter = massExtent;
 		lengthFilter = lengthExtent;
-        console.log(page)
+		console.log(page);
 	});
 
 	async function search() {
@@ -48,23 +38,23 @@
 			speciesFilter,
 			lengthFilter,
 			massFilter,
-            proteinsPerPage,
-            page
+			proteinsPerPage,
+			page,
 		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
 	}
-    async function searchAndResetPage() {
-        page = 0;
-        await search();
-    }
+	async function searchAndResetPage() {
+		page = 0;
+		await search();
+	}
 	async function resetFilter() {
 		speciesFilter = undefined;
 		lengthFilter = lengthExtent;
 		massFilter = massExtent;
 		query = "";
-        page = 0;
-        filterResetCounter++; // Incrementing this so relevant components can be destroyed and re-created
+		page = 0;
+		filterResetCounter++; // Incrementing this so relevant components can be destroyed and re-created
 		await search();
 	}
 </script>
@@ -88,7 +78,7 @@
 								outline
 								on:click={async () => {
 									speciesFilter = s;
-                                    await searchAndResetPage();
+									await searchAndResetPage();
 								}}
 							>
 								{s}
@@ -100,32 +90,32 @@
 			<div>
 				<h3>Amino Acids Length</h3>
 				{#if lengthExtent && lengthFilter}
-                    {#key filterResetCounter}
-                        <RangerFilter
-                            min={lengthExtent.min}
-                            max={lengthExtent.max}
-                            on:change={async ({ detail }) => {
-                                lengthFilter = detail;
-                                await searchAndResetPage();
-                            }}
-                        />
-                    {/key}
+					{#key filterResetCounter}
+						<RangerFilter
+							min={lengthExtent.min}
+							max={lengthExtent.max}
+							on:change={async ({ detail }) => {
+								lengthFilter = detail;
+								await searchAndResetPage();
+							}}
+						/>
+					{/key}
 				{/if}
 			</div>
 
 			<div>
 				<h3>Mass (Da)</h3>
 				{#if massExtent && massFilter}
-                    {#key filterResetCounter}
-                        <RangerFilter
-                            min={massExtent.min}
-                            max={massExtent.max}
-                            on:change={async ({ detail }) => {
-                                massFilter = detail;
-                                await searchAndResetPage()
-                            }}
-                        />
-                    {/key}
+					{#key filterResetCounter}
+						<RangerFilter
+							min={massExtent.min}
+							max={massExtent.max}
+							on:change={async ({ detail }) => {
+								massFilter = detail;
+								await searchAndResetPage();
+							}}
+						/>
+					{/key}
 				{/if}
 			</div>
 
@@ -152,19 +142,25 @@
 		</form>
 		{#if totalFound > 0 || page > 0}
 			<div id="found">
-                {#if totalFound == 1}
-                    {totalFound} protein shown |
-                {:else}
-                    {totalFound} proteins shown |
-                {/if}
-                <Button disabled={page <= 0} on:click={async()=>{
-                    page--
-                    await search();
-                }}>Previous {proteinsPerPage}</Button> | 
-                <Button disabled={totalFound < proteinsPerPage} on:click={async()=>{
-                    page++
-                    await search();
-                }}>Next {proteinsPerPage}</Button>
+				{#if totalFound == 1}
+					{totalFound} protein shown |
+				{:else}
+					{totalFound} proteins shown |
+				{/if}
+				<Button
+					disabled={page <= 0}
+					on:click={async () => {
+						page--;
+						await search();
+					}}>Previous {proteinsPerPage}</Button
+				> |
+				<Button
+					disabled={totalFound < proteinsPerPage}
+					on:click={async () => {
+						page++;
+						await search();
+					}}>Next {proteinsPerPage}</Button
+				>
 			</div>
 		{/if}
 		{#if proteinEntries === undefined}
@@ -172,13 +168,12 @@
 				text="Fetching Proteins from the Venome DB..."
 				textRight
 			/>
-        {:else if proteinEntries.length === 0}
-            { #if page > 0 }
-                No more proteins found
-            {:else}
-                No proteins found
-            {/if}
-            
+		{:else if proteinEntries.length === 0}
+			{#if page > 0}
+				No more proteins found
+			{:else}
+				No proteins found
+			{/if}
 		{:else}
 			<ListProteins allEntries={proteinEntries} />
 		{/if}
