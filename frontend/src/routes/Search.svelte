@@ -6,8 +6,6 @@
 	import { Search, Button } from "flowbite-svelte";
 	import RangerFilter from "../lib/RangerFilter.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
-	import app from "../main";
-	import { navigate } from "svelte-routing";
 
 	let query = "";
 	let proteinEntries: ProteinEntry[];
