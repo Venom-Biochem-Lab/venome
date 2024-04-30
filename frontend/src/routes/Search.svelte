@@ -19,7 +19,7 @@
 	let massFilter: { min: number; max: number } | undefined;
 	let massExtent: { min: number; max: number };
 	let filterResetCounter = 0;
-
+	let searchTop: HTMLFormElement;
 	let proteinsPerPage = 20; // The number of proteins to show per page
 	let page = 0;
 	onMount(async () => {
@@ -67,10 +67,12 @@
 		totalFound = result.totalFound;
 	}
 	async function searchAndResetPage() {
+		scrollTop();
 		page = 0;
 		await search();
 	}
 	async function resetFilter() {
+		scrollTop();
 		speciesFilter = undefined;
 		lengthFilter = lengthExtent;
 		massFilter = massExtent;
@@ -78,6 +80,10 @@
 		page = 0;
 		filterResetCounter++; // Incrementing this so relevant components can be destroyed and re-created
 		await search();
+	}
+
+	function scrollTop() {
+		searchTop.scrollIntoView({ block: "end" });
 	}
 </script>
 
@@ -142,8 +148,13 @@
 			</div>
 
 			<div class="mt-5">
-				<Button on:click={resetFilter} outline size="xs" color="light"
-					>Reset All Filters</Button
+				<Button
+					on:click={async () => {
+						await resetFilter();
+					}}
+					outline
+					size="xs"
+					color="light">Reset All Filters</Button
 				>
 			</div>
 		{:else}
@@ -152,7 +163,11 @@
 	</div>
 
 	<div id="view">
-		<form id="search-bar" on:submit|preventDefault={searchAndResetPage}>
+		<form
+			id="search-bar"
+			on:submit|preventDefault={searchAndResetPage}
+			bind:this={searchTop}
+		>
 			<div style="width: 500px;">
 				<Search
 					size="lg"
@@ -178,7 +193,9 @@
 			{/if}
 		{:else}
 			<ListProteins allEntries={proteinEntries} />
-			<InfiniteLoading on:infinite={infiniteProteinScroll} />
+			{#if totalFound !== 0}
+				<InfiniteLoading on:infinite={infiniteProteinScroll} />
+			{/if}
 		{/if}
 	</div>
 </section>
