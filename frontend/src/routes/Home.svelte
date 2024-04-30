@@ -1,14 +1,5 @@
 <script lang="ts">
-	import { Backend, clearToken, type LoginResponse } from "../lib/backend";
-	import { Button, Label, Input } from "flowbite-svelte";
-	import Cookies from "js-cookie";
-	import { onMount } from "svelte";
-	import { navigate } from "svelte-routing";
-	import { user } from "../lib/stores/user"
-	import ProteinVis from "../lib/ProteinVis.svelte";
-	/* Put stuff here */
-	import * as d3 from "d3";
-	console.log(d3.schemeDark2[0]);
+	import Molstar from "../lib/Molstar.svelte";
 </script>
 
 <svelte:head>
@@ -35,7 +26,7 @@
 			<button>Roll the dice</button>
 		</form>
 
-		<ProteinVis
+		<Molstar
 			format="pdb"
 			width={400}
 			height={400}
