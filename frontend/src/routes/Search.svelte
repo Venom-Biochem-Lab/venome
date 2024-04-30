@@ -6,6 +6,8 @@
 	import { Search, Button } from "flowbite-svelte";
 	import RangerFilter from "../lib/RangerFilter.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
+	import InfiniteLoading from "svelte-infinite-loading";
+	import type { InfiniteEvent } from "svelte-infinite-loading";
 
 	let query = "";
 	let proteinEntries: ProteinEntry[];
@@ -29,6 +31,28 @@
 		lengthFilter = lengthExtent;
 		console.log(page);
 	});
+
+	function infiniteProteinScroll({
+		detail: { loaded, complete },
+	}: InfiniteEvent) {
+		page++;
+		Backend.searchProteins({
+			query,
+			speciesFilter,
+			lengthFilter,
+			massFilter,
+			proteinsPerPage,
+			page,
+		}).then((d) => {
+			totalFound = d.totalFound;
+			if (totalFound === 0) {
+				complete();
+			} else {
+				proteinEntries = proteinEntries.concat(d.proteinEntries); // add on top instead of replacing as we load more
+				loaded();
+			}
+		});
+	}
 
 	async function search() {
 		const result = await Backend.searchProteins({
@@ -154,26 +178,7 @@
 			{/if}
 		{:else}
 			<ListProteins allEntries={proteinEntries} />
-			<div class="m-2">
-				<Button
-					color="light"
-					class="w-full"
-					on:click={async () => {
-						page++;
-						const result = await Backend.searchProteins({
-							query,
-							speciesFilter,
-							lengthFilter,
-							massFilter,
-							proteinsPerPage,
-							page,
-						});
-						proteinEntries = proteinEntries.concat(
-							result.proteinEntries
-						);
-					}}>Show More</Button
-				>
-			</div>
+			<InfiniteLoading on:infinite={infiniteProteinScroll} />
 		{/if}
 	</div>
 </section>
