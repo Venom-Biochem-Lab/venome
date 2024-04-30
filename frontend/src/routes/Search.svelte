@@ -129,38 +129,18 @@
 
 	<div id="view">
 		<form id="search-bar" on:submit|preventDefault={searchAndResetPage}>
-			<Search
-				size="lg"
-				type="text"
-				class="flex gap-2 items-center"
-				placeholder="Enter search..."
-				bind:value={query}
-			/>
-			<Button type="submit" size="sm">Search</Button>
-		</form>
-		{#if totalFound > 0 || page > 0}
-			<div id="found">
-				{#if totalFound == 1}
-					{totalFound} protein shown |
-				{:else}
-					{totalFound} proteins shown |
-				{/if}
-				<Button
-					disabled={page <= 0}
-					on:click={async () => {
-						page--;
-						await search();
-					}}>Previous {proteinsPerPage}</Button
-				> |
-				<Button
-					disabled={totalFound < proteinsPerPage}
-					on:click={async () => {
-						page++;
-						await search();
-					}}>Next {proteinsPerPage}</Button
-				>
+			<div style="width: 500px;">
+				<Search
+					size="lg"
+					type="text"
+					class="flex gap-2 items-center"
+					bind:value={query}
+				></Search>
 			</div>
-		{/if}
+			<div>
+				<Button type="submit">Search Proteins</Button>
+			</div>
+		</form>
 		{#if proteinEntries === undefined}
 			<DelayedSpinner
 				text="Fetching Proteins from the Venome DB..."
@@ -174,6 +154,26 @@
 			{/if}
 		{:else}
 			<ListProteins allEntries={proteinEntries} />
+			<div class="m-2">
+				<Button
+					color="light"
+					class="w-full"
+					on:click={async () => {
+						page++;
+						const result = await Backend.searchProteins({
+							query,
+							speciesFilter,
+							lengthFilter,
+							massFilter,
+							proteinsPerPage,
+							page,
+						});
+						proteinEntries = proteinEntries.concat(
+							result.proteinEntries
+						);
+					}}>Show More</Button
+				>
+			</div>
 		{/if}
 	</div>
 </section>
@@ -200,16 +200,16 @@
 
 	#search-bar {
 		display: flex;
-		width: 500px;
 		gap: 5px;
 		padding: 10px;
+		align-items: center;
 	}
 
 	#found {
 		position: absolute;
 		top: 25px;
 		right: 25px;
-		color: var(--primary-500);
+		color: var(--primary-700);
 	}
 	h3 {
 		margin-bottom: 3px;
