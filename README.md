@@ -9,46 +9,45 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 
 **Quick Links**
 
--   [Getting Started](#getting-started) below to quickly run the development server locally
+-   [⚡️ Quick Start](#getting-started) below to quickly run the development server locally
 -   [`docs/`](./docs/) for in depth help or details
 	- [`run.md`](./run.md) for how to use our [`run.sh`](./run.sh) build script
 	- [`frontend.md`](./frontend.md) for the **frontend** architecture and help
 	- [`backend.md`](./backend.md) for the **backend** architecture and help
 	- [`auth.md`](./auth.md) for how we did authentication 
 
-## Getting Started
+## ️⚡️ Quick Start
 
-If you want to run the frontend and backend yourself, you can! Keep reading...
+This section tells you how to run the Venome website in three easy steps.
 
-By the time you finish this guide, you will be able to run the JS frontend [Svelte](https://kit.svelte.dev/) and the Python backend [FastAPI](https://fastapi.tiangolo.com/). 
+**1. Install Docker**
 
-Note that we use `docker-compose` as defined in the [`docker-compose.yml`](./docker-compose.yml).
+A quick way to install Docker is by installing [Docker Desktop](https://www.docker.com/products/docker-desktop/). 
 
-If you want to see more specific docs go to the [ `docs/` ](./docs/README.md) for more info.
 
-> [!IMPORTANT]
-> You must have [Docker Desktop](https://www.docker.com/products/docker-desktop/) GUI installed and the `docker-compose` bash command.
+**2. Build the Website**
 
-You can run everything by doing
-
-```bash
-sh run.sh
-```
-
-or directly executing 
+Execute the [`run.sh`](./run.sh) script in your terminal with the command
 
 ```bash
 ./run.sh
 ```
 
-this will download a docker container running the svelte frontend, the python backend, and the postgres database all in development hot-reload mode. Installation may take a few minutes. 
+**3. View the Website**
 
-Now navigate to [http://localhost:5173](http://localhost:5173) to see the frontend. 
+Then navigate to http://localhost:5173 to see the frontend in action.
 
-> [!TIP]
-> Check the [`docs/run.md`](./docs/run.md) for documentation on the [`run.sh`](./run.sh) file for more build commands
+**(optional)**
+
+Optionally you can upload all the venom lab proteins by running
+
+```bash
+./run.sh upload_all
+```
 
 ### Local Development Environment
+
+If you would like to have autocomplete and other nice development features, keep reading.
 
 We use VSCode for all development and make sure to download a few extensions like
 
@@ -78,25 +77,4 @@ Then install frontend packages
 cd frontend
 yarn
 ```
-
-### Where to look
-
-I'd recommend going to the [`frontend/package.json`](./frontend/package.json) and [`frontend/src/App.svelte`](./frontend/src/App.svelte) if you want to get started in the frontend.
-
-I'd recommend going to the [`backend/src/server.py`](./backend/src/server.py) and [`backend/init.sql`](./backend/init.sql) for the backend/db.
-
-
-
-> [!TIP]
-> If you have more questions, create an issue on this github or look for specific documentation in the [`docs/`](./docs/) directory
-
-
-## Resources
-
--   [Design Space (Figma)](https://www.figma.com/file/G1pbQsYy4lCTVCvMEnGydX/Unknown-Venome-Project?type=design&node-id=0%3A1&mode=design&t=re8tfITwMPw75A2I-1)
--   [Whiteboard (Figma Jam)](https://www.figma.com/file/ZKwrwzXrbwqMJUTFPF4yV0/Open-Venome-Project?type=whiteboard&node-id=0%3A1&t=DZbia2Quj2IXPhHm-1)
--   [Protein BioChem](<https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/02%3A_Structure_and_Function/203%3A_Structure__Function-_Proteins_I>)
--   [SvelteKit](https://kit.svelte.dev/)
--   [Svelte](https://svelte.dev/)
--   [FastAPI](https://fastapi.tiangolo.com/)
 
