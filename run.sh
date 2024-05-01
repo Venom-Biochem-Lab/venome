@@ -8,6 +8,12 @@ function all() {
 	start
 }
 
+function quickstart() {
+	start
+	add_foldseek
+	add_tmalign
+}
+
 function start() {
 	docker compose up -d
 }

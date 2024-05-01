@@ -30,7 +30,7 @@ A quick way to install Docker is by installing [Docker Desktop](https://www.dock
 Execute the [`run.sh`](./run.sh) script in your terminal with the command
 
 ```bash
-./run.sh
+./run.sh quickstart
 ```
 
 **3. View the Website**
