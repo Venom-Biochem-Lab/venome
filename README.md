@@ -3,15 +3,18 @@
 
 ![Github Actions CI tests](https://github.com/xnought/venome/actions/workflows/ci.yml/badge.svg)
 
-A wikipedia for venom proteins: upload, search, organize, visualize, and download protein files all open source.
+A website to store, visualize, and analyze venom proteins.
 
 In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
-> [!IMPORTANT]
-> -   [Getting Started](#getting-started) to quickly run the docker container locally
-> -   [`docs/`](./docs/) contains deeper code documentation
-> -   [`frontend/`](./frontend/) contains the user interface in Svelte/TypeScript
-> -   [`backend/`](./backend/) contains the backend HTTP server and Database
+**Quick Links**
+
+-   [Getting Started](#getting-started) below to quickly run the development server locally
+-   [`docs/`](./docs/) for in depth help or details
+	- [`run.md`](./run.md) for how to use our [`run.sh`](./run.sh) build script
+	- [`frontend.md`](./frontend.md) for the **frontend** architecture and help
+	- [`backend.md`](./backend.md) for the **backend** architecture and help
+	- [`auth.md`](./auth.md) for how we did authentication 
 
 ## Getting Started
 
