@@ -52,9 +52,14 @@ The FastAPI [`backend`](../backend/) has all its definitions in the [`backend/sr
 You can easily then define HTTP endpoints like so
 
 ```python
-@router.get("/test/overview")
+class TestOverviewResponse(CamelModel):
+	hello_there: str
+
+@router.get("/test/overview", response_model=TestOverviewResponse)
 def test_overview():
-	return {"hello": 1}
+	return TestOverviewResponse(hello_there="world")
 ```
 
-would trigger if a `GET` request to the backend at route `test/overview` was received and would respond with the JSON of `{"hello": 1}`. Please see examples in the [`backend/src/api/protein.py`](../backend/src/api/protein.py).
+would trigger if a `GET` request to the backend at route `test/overview` was received and would respond with the JSON of `{"helloThere": "world"}`. As you can see `TestOverviewResponse` object is transformed in JSON on the response and the variables are switched from snake_case to camelCase.
+
+Please see examples in the [`backend/src/api/protein.py`](../backend/src/api/protein.py).
