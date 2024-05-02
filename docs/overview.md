@@ -42,3 +42,19 @@ The entire HTTP backend runs through these defined endpoints.
 
 ## Fourth pass
 
+The Svelte [`frontend`](../frontend/) defines all the routes like I said in the [`frontend/src/Router.svelte`](../frontend/src/Router.svelte) component. For organizational purposes, all the sub components which correspond to a route declaration are kept in the [`frontend/src/routes/`](../frontend/src/routes/) folder. The rest of the frontend code that are not routes live in the  [`frontend/src/lib/`](../frontend/src/lib/) folder.
+
+To give you one example, the [`frontend/src/routes/Protein.svelte`](../frontend/src/routes/Protein.svelte) corresponds to a particular `/protein/` route. But within this Protein Svelte component, I reference other useful shared code, like [`frontend/src/lib/Molstar.svelte`](../frontend/src/lib/Molstar.svelte) which renders proteins in 3D.
+
+
+The FastAPI [`backend`](../backend/) has all its definitions in the [`backend/src/api/`](../backend/src/api/) folder. Routes are defined through a `router` variable decorator which is a FastAPI `APIRouter()` object declared at the top of any file that serves endpoints.
+
+You can easily then define HTTP endpoints like so
+
+```python
+@router.get("/test/overview")
+def test_overview():
+	return {"hello": 1}
+```
+
+would trigger if a `GET` request to the backend at route `test/overview` was received and would respond with the JSON of `{"hello": 1}`. Please see examples in the [`backend/src/api/protein.py`](../backend/src/api/protein.py).
