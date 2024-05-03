@@ -16,6 +16,7 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 	- [`frontend.md`](./docs/frontend.md) for the **frontend** architecture and help
 	- [`backend.md`](./docs/backend.md) for the **backend** architecture and help
 	- [`auth.md`](./docs/auth.md) for how we did authentication 
+	- [`deployment.md`](./docs/deployment.md) for how to deploy to the internet
 
 ## ️⚡️ Quick Start
 
