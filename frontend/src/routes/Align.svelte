@@ -113,6 +113,14 @@
                             <div>
                                 <b>TM Score (Chain 2-Normalized):</b> {tmData.chain2TmScore}
                             </div>
+                            <div>
+                                <b>Alignment String</b>
+                                <div class="sidescroll">
+                                    {tmData.alignmentString[0]}<br/>
+                                    {tmData.alignmentString[1]}<br/>
+                                    {tmData.alignmentString[2]}<br/>
+                                </div>
+                            </div>
                         {/if}
                     </AccordionItem>
                 </Accordion>
@@ -194,4 +202,9 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+    .sidescroll {
+        font-family: monospace;
+        white-space: pre;
+        overflow-x: scroll;
+    }
 </style>
