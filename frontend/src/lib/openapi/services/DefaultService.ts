@@ -20,6 +20,7 @@ import type { RangeFilter } from '../models/RangeFilter';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
 import type { SimilarProtein } from '../models/SimilarProtein';
+import type { TMAlignInfo } from '../models/TMAlignInfo';
 import type { UploadArticleImageComponent } from '../models/UploadArticleImageComponent';
 import type { UploadArticleProteinComponent } from '../models/UploadArticleProteinComponent';
 import type { UploadArticleTextComponent } from '../models/UploadArticleTextComponent';
@@ -320,6 +321,29 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/protein/pdb/{proteinA}/{proteinB}',
+            path: {
+                'proteinA': proteinA,
+                'proteinB': proteinB,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Tm Info
+     * @param proteinA
+     * @param proteinB
+     * @returns TMAlignInfo Successful Response
+     * @throws ApiError
+     */
+    public static getTmInfo(
+        proteinA: string,
+        proteinB: string,
+    ): CancelablePromise<TMAlignInfo> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/tmalign/{proteinA}/{proteinB}',
             path: {
                 'proteinA': proteinA,
                 'proteinB': proteinB,
