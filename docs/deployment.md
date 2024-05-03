@@ -2,7 +2,7 @@
 
 To deploy venome we use the Oregon State [Center for Quantitative Life Sciences (CQLS)](https://cqls.oregonstate.edu/) servers. They have a linux virtual machine that we can ssh into and expose our application to the internet.
 
-## `ssh`ing into the our VM
+## `ssh`ing into the VM
 
 **1. Make an account through CQLS**
 
