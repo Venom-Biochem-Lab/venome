@@ -29,6 +29,7 @@ export type { RangeFilter } from './models/RangeFilter';
 export type { SearchProteinsBody } from './models/SearchProteinsBody';
 export type { SearchProteinsResults } from './models/SearchProteinsResults';
 export type { SimilarProtein } from './models/SimilarProtein';
+export type { TMAlignInfo } from './models/TMAlignInfo';
 export type { UploadArticleImageComponent } from './models/UploadArticleImageComponent';
 export type { UploadArticleProteinComponent } from './models/UploadArticleProteinComponent';
 export type { UploadArticleTextComponent } from './models/UploadArticleTextComponent';

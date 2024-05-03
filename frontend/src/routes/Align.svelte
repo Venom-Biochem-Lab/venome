@@ -10,6 +10,7 @@
 	import * as d3 from "d3";
 	import { undoFormatProteinName } from "../lib/format";
     import AlignBlock from "../lib/AlignBlock.svelte";
+    import { AccordionItem, Accordion } from "flowbite-svelte";
 
 	export let proteinA: string;
 	export let proteinB: string;
