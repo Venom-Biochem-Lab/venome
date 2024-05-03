@@ -381,6 +381,7 @@ def edit_protein_entry(body: EditBody, req: Request):
     except Exception:
         raise HTTPException(500, "Edit failed, git gud")
 
+
 # /pdb with two attributes returns both PDBs, superimposed and with different colors.
 @router.get("/protein/pdb/{proteinA:str}/{proteinB:str}", response_model=str)
 def align_proteins(proteinA: str, proteinB: str):
@@ -397,7 +398,8 @@ def align_proteins(proteinA: str, proteinB: str):
     except Exception as e:
         log.error(e)
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+
 class TMAlignInfo(CamelModel):
     aligned_length: str | None
     rmsd: str | None
@@ -406,8 +408,11 @@ class TMAlignInfo(CamelModel):
     chain2_tm_score: str | None
     alignment_string: str
 
+
 # Returns the alignment string info from TM Align's console log.
-@router.get("/protein/tmalign/{proteinA:str}/{proteinB:str}", response_model=TMAlignInfo)
+@router.get(
+    "/protein/tmalign/{proteinA:str}/{proteinB:str}", response_model=TMAlignInfo
+)
 def get_tm_info(proteinA: str, proteinB: str):
     if not protein_name_found(proteinA) or not protein_name_found(proteinB):
         raise HTTPException(
@@ -417,14 +422,14 @@ def get_tm_info(proteinA: str, proteinB: str):
         filepath_pdbA = stored_pdb_file_name(proteinA)
         filepath_pdbB = stored_pdb_file_name(proteinB)
         tmalign_output = tm_align_return(filepath_pdbA, filepath_pdbB, 1)
-        
+
         log.warn("TM Align Output follows:")
         # Split TMAlign data into an array format
         tmalign_output_list = tmalign_output.splitlines()
         log.warn(tmalign_output)
 
         # Grab aligned length, RMSD, and Seq ID
-        tmalign_tri = tmalign_output_list[12].split(', ')
+        tmalign_tri = tmalign_output_list[12].split(", ")
         # Note: \d+?.\d* means "match 1 or more numbers, 0 or 1 decimal points, and 0 or more numbers" in regex
         aligned_length = re.search("\d+?.\d*", tmalign_tri[0]).group()
         rmsd = re.search("\d+.?\d*", tmalign_tri[1]).group()
@@ -432,21 +437,24 @@ def get_tm_info(proteinA: str, proteinB: str):
 
         # Grabs both TM scores
         # NOTE: This is ONLY grabbing the TM-Score from the file. It's leaving out the LN and d0 stats.
-        chain1_normalized_tm_score = re.search("\d+.?\d*", tmalign_output_list[13]).group()
-        chain2_normalized_tm_score = re.search("\d+.?\d*", tmalign_output_list[14]).group()
+        chain1_normalized_tm_score = re.search(
+            "\d+.?\d*", tmalign_output_list[13]
+        ).group()
+        chain2_normalized_tm_score = re.search(
+            "\d+.?\d*", tmalign_output_list[14]
+        ).group()
 
         # Grabs TM Alignment String
-        tmalign_string= "\n".join(tmalign_output_list[18:21])
+        tmalign_string = "\n".join(tmalign_output_list[18:21])
         log.warn(tmalign_string)
 
-
         return TMAlignInfo(
-            aligned_length = aligned_length,
-            rmsd = rmsd,
-            seq_id = seq_id,
-            chain1_tm_score = chain1_normalized_tm_score,
-            chain2_tm_score = chain2_normalized_tm_score,
-            alignment_string = tmalign_string
+            aligned_length=aligned_length,
+            rmsd=rmsd,
+            seq_id=seq_id,
+            chain1_tm_score=chain1_normalized_tm_score,
+            chain2_tm_score=chain2_normalized_tm_score,
+            alignment_string=tmalign_string,
         )
     except Exception as e:
         log.error(e)

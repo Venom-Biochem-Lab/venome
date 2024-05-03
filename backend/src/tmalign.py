@@ -101,7 +101,7 @@ def tm_align(
     return desired_file
 
 
-def tm_align_return(pdbA: str, pdbB: str, consoleOutput = False) -> str:
+def tm_align_return(pdbA: str, pdbB: str, consoleOutput=False) -> str:
     """
     Description:
         Returns two overlaid, aligned, and colored PDB structures in a single PDB file.
@@ -124,7 +124,11 @@ def tm_align_return(pdbA: str, pdbB: str, consoleOutput = False) -> str:
             cmd = f"{TMALIGN_EXECUTABLE} {pdbA} {pdbB} -o {output_location} > {output_location}.txt"
             bash_cmd(cmd)
 
-            tmalign_pdb_path = f"{output_location}_all_atm" if not consoleOutput else f"{output_location}.txt"
+            tmalign_pdb_path = (
+                f"{output_location}_all_atm"
+                if not consoleOutput
+                else f"{output_location}.txt"
+            )
 
             with open(tmalign_pdb_path, "r") as tmalign_pdb_file:
                 tmalign_pdb_file_str = tmalign_pdb_file.read()
