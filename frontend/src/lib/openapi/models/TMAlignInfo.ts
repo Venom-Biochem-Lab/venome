@@ -6,8 +6,8 @@ export type TMAlignInfo = {
     alignedLength: (string | null);
     rmsd: (string | null);
     seqId: (string | null);
-    chain1Tmscore: (string | null);
-    chain2Tmscore: (string | null);
+    chain1TmScore: (string | null);
+    chain2TmScore: (string | null);
     alignmentString: Array<string>;
 };
 

@@ -331,13 +331,13 @@ export class DefaultService {
         });
     }
     /**
-     * Tm Info
+     * Get Tm Info
      * @param proteinA
      * @param proteinB
      * @returns TMAlignInfo Successful Response
      * @throws ApiError
      */
-    public static tmInfo(
+    public static getTmInfo(
         proteinA: string,
         proteinB: string,
     ): CancelablePromise<TMAlignInfo> {

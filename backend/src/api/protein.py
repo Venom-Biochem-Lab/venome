@@ -402,13 +402,13 @@ class TMAlignInfo(CamelModel):
     aligned_length: str | None
     rmsd: str | None
     seq_id: str | None
-    chain1_tmscore: str | None
-    chain2_tmscore: str | None
+    chain1_tm_score: str | None
+    chain2_tm_score: str | None
     alignment_string: list[str]
 
 # Returns the alignment string info from TM Align's console log.
 @router.get("/protein/tmalign/{proteinA:str}/{proteinB:str}", response_model=TMAlignInfo)
-def tm_info(proteinA: str, proteinB: str):
+def get_tm_info(proteinA: str, proteinB: str):
     if not protein_name_found(proteinA) or not protein_name_found(proteinB):
         raise HTTPException(
             status_code=404, detail="One of the proteins provided is not found in DB"
@@ -444,8 +444,8 @@ def tm_info(proteinA: str, proteinB: str):
             aligned_length = aligned_length,
             rmsd = rmsd,
             seq_id = seq_id,
-            chain1_tmscore = chain1_normalized_tm_score,
-            chain2_tmscore = chain2_normalized_tm_score,
+            chain1_tm_score = chain1_normalized_tm_score,
+            chain2_tm_score = chain2_normalized_tm_score,
             alignment_string = tmalign_string
         )
     except Exception as e:

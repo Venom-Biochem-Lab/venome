@@ -2,7 +2,7 @@
 	import TMAlignEntry from "../lib/ProteinLinkCard.svelte";
 
 	import { onMount } from "svelte";
-	import { Backend, BACKEND_URL, type SimilarProtein, type ProteinEntry } from "../lib/backend";
+	import { Backend, BACKEND_URL, type SimilarProtein, type ProteinEntry, type TMAlignInfo } from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { DownloadOutline } from "flowbite-svelte-icons";
@@ -20,6 +20,8 @@
     let foldseekData: SimilarProtein;
     let foldseekError = false;
 	let error = false;
+    let tmData: TMAlignInfo;
+    let tmDataError = false;
 
 	const dark2green = d3.schemeDark2[0];
 	const dark2orange = d3.schemeDark2[1];
@@ -47,8 +49,16 @@
 			);
 			foldseekError = true;
 		}
-        
 
+        try {
+            tmData = await Backend.getTmInfo(proteinA, proteinB)
+        } catch (e) {
+            console.error(e);
+            console.error("NEED TO DOWMLOAD T M ALIGN IN THE SERVER. SEE THE SERVER ERROR MESSAGE.")
+            tmDataError = true;
+        }
+        
+        
 		// if we could not find the entry, the id is garbo
 		if (entryA == null || entryB == null) error = true;
 		console.log(entryA, entryB);
@@ -73,6 +83,39 @@
 				</div>
 				<TMAlignEntry entry={entryA} color={dark2green} />
 				<TMAlignEntry entry={entryB} color={dark2orange} />
+                <Accordion>
+                    <AccordionItem>
+                        <span slot="header" style="font-size: 18px;"
+                            >TM-Align Data <span
+                                style="font-weight: 300; font-size: 15px;"
+                                ></span
+                            ></span
+                        >
+                        {#if tmData === undefined && ! tmDataError}
+                            <DelayedSpinner
+                                text="Loading TM-Align"
+                                textRight
+                                msDelay={0}
+                            />
+                        {:else if tmData !== undefined}
+                            <div>
+                                <b>Aligned Length:</b> {tmData.alignedLength}
+                            </div>
+                            <div>
+                                <b>RMSD:</b> {tmData.rmsd}
+                            </div>
+                            <div>
+                                <b>Seq_ID:</b> {tmData.seqId}
+                            </div>
+                            <div>
+                                <b>TM Score (Chain 1-Normalized):</b> {tmData.chain1TmScore}
+                            </div>
+                            <div>
+                                <b>TM Score (Chain 2-Normalized):</b> {tmData.chain2TmScore}
+                            </div>
+                        {/if}
+                    </AccordionItem>
+                </Accordion>
                 <h1>
                     Foldseek Data
                 </h1>
