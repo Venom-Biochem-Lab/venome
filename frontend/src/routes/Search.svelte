@@ -6,6 +6,8 @@
 	import { Search, Button } from "flowbite-svelte";
 	import RangerFilter from "../lib/RangerFilter.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
+	import InfiniteLoading from "svelte-infinite-loading";
+	import type { InfiniteEvent } from "svelte-infinite-loading";
 
 	let query = "";
 	let proteinEntries: ProteinEntry[];
@@ -16,6 +18,10 @@
 	let lengthExtent: { min: number; max: number };
 	let massFilter: { min: number; max: number } | undefined;
 	let massExtent: { min: number; max: number };
+	let filterResetCounter = 0;
+	let searchTop: HTMLFormElement;
+	let proteinsPerPage = 20; // The number of proteins to show per page
+	let page = 0;
 	onMount(async () => {
 		await search();
 		species = await Backend.searchSpecies();
@@ -23,7 +29,30 @@
 		massExtent = await Backend.searchRangeMass();
 		massFilter = massExtent;
 		lengthFilter = lengthExtent;
+		console.log(page);
 	});
+
+	function infiniteProteinScroll({
+		detail: { loaded, complete },
+	}: InfiniteEvent) {
+		page++;
+		Backend.searchProteins({
+			query,
+			speciesFilter,
+			lengthFilter,
+			massFilter,
+			proteinsPerPage,
+			page,
+		}).then((d) => {
+			totalFound = d.totalFound;
+			if (totalFound === 0) {
+				complete();
+			} else {
+				proteinEntries = proteinEntries.concat(d.proteinEntries); // add on top instead of replacing as we load more
+				loaded();
+			}
+		});
+	}
 
 	async function search() {
 		const result = await Backend.searchProteins({
@@ -31,16 +60,30 @@
 			speciesFilter,
 			lengthFilter,
 			massFilter,
+			proteinsPerPage,
+			page,
 		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
 	}
+	async function searchAndResetPage() {
+		scrollTop();
+		page = 0;
+		await search();
+	}
 	async function resetFilter() {
+		scrollTop();
 		speciesFilter = undefined;
 		lengthFilter = lengthExtent;
 		massFilter = massExtent;
 		query = "";
+		page = 0;
+		filterResetCounter++; // Incrementing this so relevant components can be destroyed and re-created
 		await search();
+	}
+
+	function scrollTop() {
+		searchTop.scrollIntoView({ block: "end" });
 	}
 </script>
 
@@ -63,7 +106,7 @@
 								outline
 								on:click={async () => {
 									speciesFilter = s;
-									await search();
+									await searchAndResetPage();
 								}}
 							>
 								{s}
@@ -75,34 +118,43 @@
 			<div>
 				<h3>Amino Acids Length</h3>
 				{#if lengthExtent && lengthFilter}
-					<RangerFilter
-						min={lengthExtent.min}
-						max={lengthExtent.max}
-						on:change={async ({ detail }) => {
-							lengthFilter = detail;
-							await search();
-						}}
-					/>
+					{#key filterResetCounter}
+						<RangerFilter
+							min={lengthExtent.min}
+							max={lengthExtent.max}
+							on:change={async ({ detail }) => {
+								lengthFilter = detail;
+								await searchAndResetPage();
+							}}
+						/>
+					{/key}
 				{/if}
 			</div>
 
 			<div>
 				<h3>Mass (Da)</h3>
 				{#if massExtent && massFilter}
-					<RangerFilter
-						min={massExtent.min}
-						max={massExtent.max}
-						on:change={async ({ detail }) => {
-							massFilter = detail;
-							await search();
-						}}
-					/>
+					{#key filterResetCounter}
+						<RangerFilter
+							min={massExtent.min}
+							max={massExtent.max}
+							on:change={async ({ detail }) => {
+								massFilter = detail;
+								await searchAndResetPage();
+							}}
+						/>
+					{/key}
 				{/if}
 			</div>
 
 			<div class="mt-5">
-				<Button on:click={resetFilter} outline size="xs" color="light"
-					>Reset All Filters</Button
+				<Button
+					on:click={async () => {
+						await resetFilter();
+					}}
+					outline
+					size="xs"
+					color="light">Reset All Filters</Button
 				>
 			</div>
 		{:else}
@@ -111,28 +163,39 @@
 	</div>
 
 	<div id="view">
-		<form id="search-bar" on:submit|preventDefault={search}>
-			<Search
-				size="lg"
-				type="text"
-				class="flex gap-2 items-center"
-				placeholder="Enter search..."
-				bind:value={query}
-			/>
-			<Button type="submit" size="sm">Search</Button>
-		</form>
-		{#if totalFound > 0}
-			<div id="found">
-				{totalFound} proteins found
+		<form
+			id="search-bar"
+			on:submit|preventDefault={searchAndResetPage}
+			bind:this={searchTop}
+		>
+			<div style="width: 500px;">
+				<Search
+					size="lg"
+					type="text"
+					class="flex gap-2 items-center"
+					bind:value={query}
+				></Search>
 			</div>
-		{/if}
-		{#if proteinEntries === undefined || proteinEntries.length === 0}
+			<div>
+				<Button type="submit">Search Proteins</Button>
+			</div>
+		</form>
+		{#if proteinEntries === undefined}
 			<DelayedSpinner
 				text="Fetching Proteins from the Venome DB..."
 				textRight
 			/>
+		{:else if proteinEntries.length === 0}
+			{#if page > 0}
+				No more proteins found
+			{:else}
+				No proteins found
+			{/if}
 		{:else}
 			<ListProteins allEntries={proteinEntries} />
+			{#if totalFound !== 0}
+				<InfiniteLoading on:infinite={infiniteProteinScroll} />
+			{/if}
 		{/if}
 	</div>
 </section>
@@ -159,16 +222,16 @@
 
 	#search-bar {
 		display: flex;
-		width: 500px;
 		gap: 5px;
 		padding: 10px;
+		align-items: center;
 	}
 
 	#found {
 		position: absolute;
 		top: 25px;
 		right: 25px;
-		color: var(--primary-500);
+		color: var(--primary-700);
 	}
 	h3 {
 		margin-bottom: 3px;

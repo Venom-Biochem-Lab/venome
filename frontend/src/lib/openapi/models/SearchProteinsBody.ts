@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -8,5 +8,7 @@ export type SearchProteinsBody = {
     speciesFilter?: (string | null);
     lengthFilter?: (RangeFilter | null);
     massFilter?: (RangeFilter | null);
+    proteinsPerPage?: (number | null);
+    page?: (number | null);
 };
 

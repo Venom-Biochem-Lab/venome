@@ -14,18 +14,18 @@
 	import ProteinIcon from "../lib/ProteinIcon.svelte";
 
 	onMount(async () => {
-        /**
-         * Checking if the user has a cookie. If they do, set user svelte store loggin attribute.
-         * Done here because the header is loaded first, which means user can still directly navigate
-         * to restricted pages if they refresh while logged in.
-         */
+		/**
+		 * Checking if the user has a cookie. If they do, set user svelte store loggin attribute.
+		 * Done here because the header is loaded first, which means user can still directly navigate
+		 * to restricted pages if they refresh while logged in.
+		 */
 		if (Cookies.get("auth")) {
 			$user.loggedIn = true;
 		}
 	});
 </script>
 
-<header class="flex justify-between" use:links>
+<header class="flex justify-between" style="z-index: 999;" use:links>
 	<div class="nav-container">
 		<div id="logo">
 			<a href="/">

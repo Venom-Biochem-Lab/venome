@@ -99,7 +99,6 @@
 		flex-wrap: wrap;
 		padding: 10px;
 		margin-left: 10px;
-		height: calc(100vh - 100px);
 	}
 	.prot-info {
 		width: 300px;

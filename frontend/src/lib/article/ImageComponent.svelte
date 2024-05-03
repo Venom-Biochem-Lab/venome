@@ -4,12 +4,16 @@
 	import { fileToBase64String } from "../format";
 	import { Backend, setToken } from "../backend";
 	import { createEventDispatcher } from "svelte";
+	import Placeholder from "./Placeholder.svelte";
+
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
+	export let articleId: number;
 	export let id: number;
 	export let src: string;
 	export let width: number;
 	export let height: number;
+	export let editMode = false;
 
 	const AUTO_SIZE = null;
 	const NO_FILE_INPUT = undefined;
@@ -28,6 +32,9 @@
 </script>
 
 <EditMode
+	{articleId}
+	componentId={id}
+	forceHideEdit={!editMode}
 	{disabledSave}
 	on:save={async () => {
 		try {
@@ -43,23 +50,15 @@
 			console.error(e);
 		}
 	}}
-	on:delete={async () => {
-		try {
-			setToken();
-			await Backend.deleteArticleComponent(id);
-			dispatch("change");
-		} catch (e) {
-			console.error(e);
-		}
+	on:change={() => {
+		dispatch("change");
 	}}
-	on:movedown={async () => {}}
-	on:moveup={async () => {}}
 >
 	<slot>
-		{#if src === ""}
-			<p>No image selected</p>
-		{:else}
+		{#if src !== ""}
 			<img {src} alt="" {width} {height} />
+		{:else}
+			<Placeholder name="image component" color="lightcoral" />
 		{/if}
 	</slot>
 	<slot slot="edit">

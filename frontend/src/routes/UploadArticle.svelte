@@ -2,9 +2,19 @@
 	import { Label, Input, Button, Helper } from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import { Backend, setToken } from "../lib/backend";
+    import { onMount } from "svelte";
+    import { user } from "../lib/stores/user";
 	let title: string = "";
 	let description: string = "";
 	let error = false;
+    onMount(async () => {
+		if (!$user.loggedIn) {
+			alert(
+				"You are not logged in. You are being redirected to home. TODO: Make this better."
+			);
+			navigate("/");
+		}
+    })
 </script>
 
 <section class="p-5">

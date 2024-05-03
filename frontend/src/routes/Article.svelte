@@ -1,22 +1,40 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, type Article, setToken } from "../lib/backend";
+	import {
+		Backend,
+		type Article,
+		setToken,
+		InsertBlankComponentEnd,
+	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-	import { EditOutline } from "flowbite-svelte-icons";
+	import {
+		ArrowLeftOutline,
+		EditOutline,
+		PlusOutline,
+	} from "flowbite-svelte-icons";
 	import TextComponent from "../lib/article/TextComponent.svelte";
 	import ProteinComponent from "../lib/article/ProteinComponent.svelte";
 	import ImageComponent from "../lib/article/ImageComponent.svelte";
 	import { user } from "../lib/stores/user";
 	import { navigate } from "svelte-routing";
 	import { dbDateToMonthDayYear } from "../lib/format";
+	import References from "../lib/References.svelte";
+	import Markdown from "../lib/Markdown.svelte";
 
 	export let articleTitle: string;
+	export let editMode = false;
 
 	const textWidth = "800px";
 	let dropdownOpen = false;
 	let article: Article;
 	let notFound = false;
 	onMount(async () => {
+        if (editMode && !$user.loggedIn) {
+			alert(
+				"You are not logged in. You are being redirected to home. TODO: Make this better."
+			);
+			navigate("/");
+		}
 		await refreshArticle();
 	});
 
@@ -35,15 +53,42 @@
 		<div>
 			<div class="flex gap-2 flex-col items-center">
 				<div id="header" style="width: {textWidth};">
+					{#if editMode && $user.loggedIn}
+						<div class="flex gap-2 items-center">
+							<Button
+								color="primary"
+								outline
+								size="xs"
+								on:click={async () => {
+									navigate(`/article/${articleTitle}`);
+								}}
+								><ArrowLeftOutline class="mr-1" size="sm" />Back
+								to viewing
+							</Button>
+						</div>
+					{/if}
 					<div id="title">
 						{article.title}
-						{#if $user.loggedIn}
+						{#if !editMode && $user.loggedIn}
 							<Button
 								color="light"
 								outline
 								size="xs"
 								on:click={async () => {
 									navigate(`/article/edit/${articleTitle}`);
+								}}
+								><EditOutline class="mr-1" size="sm" />Edit
+								Article
+							</Button>
+						{:else if editMode && $user.loggedIn}
+							<Button
+								color="light"
+								outline
+								size="xs"
+								on:click={async () => {
+									navigate(
+										`/article/meta/edit/${articleTitle}`
+									);
 								}}
 								><EditOutline class="mr-1" size="sm" />Edit
 								Article Metadata
@@ -64,103 +109,106 @@
 					{/if}
 				</div>
 				{#each article.orderedComponents as c (c.id)}
-					{#if c.componentType === "text"}
-						<div style="width: {textWidth};">
-							<TextComponent
-								markdown={c.markdown}
+					<div style="position: relative;">
+						{#if c.componentType === "text"}
+							<div style="width: {textWidth};">
+								<TextComponent
+									articleId={article.id}
+									{editMode}
+									markdown={c.markdown}
+									id={c.id}
+									on:change={async () => {
+										await refreshArticle();
+									}}
+								/>
+							</div>
+						{:else if c.componentType === "protein"}
+							<ProteinComponent
+								articleId={article.id}
+								{editMode}
 								id={c.id}
+								name={c.name}
+								alignedWithName={c.alignedWithName}
 								on:change={async () => {
 									await refreshArticle();
 								}}
 							/>
-						</div>
-					{:else if c.componentType === "protein"}
-						<ProteinComponent
-							id={c.id}
-							name={c.name}
-							alignedWithName={c.alignedWithName}
-							on:change={async () => {
-								await refreshArticle();
-							}}
-						/>
-					{:else if c.componentType === "image"}
-						<div
-							style="width: {textWidth};"
-							class="flex justify-center"
-						>
-							<ImageComponent
-								id={c.id}
-								src={c.src}
-								height={c.height}
-								width={c.width}
-								on:change={async () => {
-									await refreshArticle();
-								}}
-							/>
-						</div>
-					{/if}
+						{:else if c.componentType === "image"}
+							<div
+								style="width: {textWidth};"
+								class="flex justify-center"
+							>
+								<ImageComponent
+									articleId={article.id}
+									{editMode}
+									id={c.id}
+									src={c.src}
+									height={c.height}
+									width={c.width}
+									on:change={async () => {
+										await refreshArticle();
+									}}
+								/>
+							</div>
+						{/if}
+					</div>
 				{/each}
-				{#if $user.loggedIn}
+				{#if $user.loggedIn && editMode}
 					<div class="mt-5" style="width: {textWidth};">
 						<Button
+							style="width: 100%;"
 							outline
 							color="light"
 							on:click={() => (dropdownOpen = true)}
-							>+ Add New Component</Button
+							><PlusOutline /> Add Component</Button
 						>
 						<Dropdown open={dropdownOpen}>
-							<DropdownItem
-								on:click={async () => {
-									try {
-										setToken();
-										await Backend.uploadArticleTextComponent(
-											{
-												articleId: article.id,
-												markdown:
-													"## Placeholder Text\nHover over this section and click **Edit** to edit.",
-											}
-										);
-										await refreshArticle();
-									} catch (e) {
-										console.error(e);
-									}
-									dropdownOpen = false;
-								}}>Text Component</DropdownItem
-							>
-							<DropdownItem
-								on:click={async () => {
-									try {
-										setToken();
-										await Backend.uploadArticleImageComponent(
-											{
-												articleId: article.id,
-												src: "",
-											}
-										);
-										await refreshArticle();
-									} catch (e) {
-										console.error(e);
-									}
-									dropdownOpen = false;
-								}}>Image Component</DropdownItem
-							><DropdownItem
-								on:click={async () => {
-									try {
-										setToken();
-										await Backend.uploadArticleProteinComponent(
-											{
-												articleId: article.id,
-												name: "",
-											}
-										);
-										await refreshArticle();
-									} catch (e) {
-										console.error(e);
-									}
-									dropdownOpen = false;
-								}}>Protein Component</DropdownItem
-							>
+							{#each Object.entries(InsertBlankComponentEnd.componentType) as [name, t]}
+								<DropdownItem
+									on:click={async () => {
+										try {
+											setToken();
+											await Backend.insertBlankComponentEnd(
+												{
+													articleId: article.id,
+													componentType: t,
+												}
+											);
+											await refreshArticle();
+										} catch (e) {
+											console.error(e);
+										}
+										dropdownOpen = false;
+									}}>{name} Component</DropdownItem
+								>
+							{/each}
 						</Dropdown>
+					</div>
+				{/if}
+				{#if article.refs}
+					<div style="width: {textWidth};">
+						<div class="flex gap-2 items-end">
+							<Markdown text="# References" />
+							{#if $user.loggedIn && editMode}
+								<div>
+									<Button
+										color="light"
+										outline
+										size="xs"
+										on:click={async () => {
+											navigate(
+												`/article/meta/edit/${articleTitle}`
+											);
+										}}
+										><EditOutline
+											class="mr-1"
+											size="sm"
+										/>Edit Article References
+									</Button>
+								</div>
+							{/if}
+						</div>
+						<References bibtex={String.raw`${article.refs}`} />
 					</div>
 				{/if}
 			</div>

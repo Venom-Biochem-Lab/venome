@@ -11,14 +11,17 @@
 	import * as d3 from "d3";
 	import { createEventDispatcher } from "svelte";
 	import { FloatingLabelInput } from "flowbite-svelte";
+	import Placeholder from "./Placeholder.svelte";
 
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
+	export let articleId: number;
 	export let id: number;
 	export let name: string;
 	export let alignedWithName: string | undefined = undefined;
 	export let width: number = 500;
 	export let height: number = 350;
+	export let editMode = false;
 
 	let editedName: string = name;
 	let editedAlignedWithName: string | undefined = alignedWithName;
@@ -34,20 +37,27 @@
 		spin: false,
 	};
 
-	let entry: ProteinEntry | null;
-	let alignEntry: ProteinEntry | null;
+	let entry: ProteinEntry | null = null;
+	let alignEntry: ProteinEntry | null = null;
 
-	async function fetchInfoCards(name: string, alignedWithName?: string) {
-		entry = await Backend.getProteinEntry(name);
-		if (alignedWithName) {
-			alignEntry = await Backend.getProteinEntry(alignedWithName);
-		}
+	$: if (name !== "") {
+		Backend.getProteinEntry(name).then((result) => (entry = result));
+	} else {
+		entry = null;
 	}
-
-	$: fetchInfoCards(name, alignedWithName);
+	$: if (alignedWithName !== undefined && alignedWithName !== "") {
+		Backend.getProteinEntry(alignedWithName).then(
+			(result) => (alignEntry = result)
+		);
+	} else {
+		alignEntry = null;
+	}
 </script>
 
 <EditMode
+	{articleId}
+	componentId={id}
+	forceHideEdit={!editMode}
 	bind:disabledSave
 	on:save={async () => {
 		setToken();
@@ -62,42 +72,45 @@
 		editedName = name;
 		editedAlignedWithName = alignedWithName;
 	}}
-	on:delete={async () => {
-		setToken();
-		await Backend.deleteArticleComponent(id);
+	on:change={() => {
 		dispatch("change");
 	}}
-	on:movedown={async () => {}}
-	on:moveup={async () => {}}
 >
 	<slot>
-		<div class="flex gap-3">
-			<div class="flex gap-2 flex-col">
-				{#if entry}
-					<div>
-						<ProteinLinkCard {entry} color={d3.schemeDark2[0]} />
-					</div>
-				{/if}
-				{#if alignEntry}
-					<div>
-						<ProteinLinkCard
-							entry={alignEntry}
-							color={d3.schemeDark2[1]}
-						/>
-					</div>
-				{/if}
+		{#if entry !== null}
+			<div class="flex gap-3">
+				<div class="flex gap-2 flex-col">
+					{#if entry}
+						<div>
+							<ProteinLinkCard
+								{entry}
+								color={d3.schemeDark2[0]}
+							/>
+						</div>
+					{/if}
+					{#if alignEntry}
+						<div>
+							<ProteinLinkCard
+								entry={alignEntry}
+								color={d3.schemeDark2[1]}
+							/>
+						</div>
+					{/if}
+				</div>
+				<div>
+					<Molstar
+						url={`${BACKEND_URL}/protein/pdb/${name}${alignedWithName ? "/" + alignedWithName : ""}`}
+						{width}
+						{height}
+						zIndex={1}
+						hideControls={config.hideControls ?? true}
+						spin={config.spin ?? false}
+					/>
+				</div>
 			</div>
-			<div>
-				<Molstar
-					url={`${BACKEND_URL}/protein/pdb/${name}${alignedWithName ? "/" + alignedWithName : ""}`}
-					{width}
-					{height}
-					zIndex={1}
-					hideControls={config.hideControls ?? true}
-					spin={config.spin ?? false}
-				/>
-			</div>
-		</div>
+		{:else}
+			<Placeholder name="protein component" color="steelblue" />
+		{/if}
 	</slot>
 	<slot slot="edit"
 		><div style="width: 500px;" class="p-5">
