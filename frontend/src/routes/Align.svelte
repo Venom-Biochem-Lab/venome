@@ -116,33 +116,40 @@
                         {/if}
                     </AccordionItem>
                 </Accordion>
-                <h1>
-                    Foldseek Data
-                </h1>
-                {#if foldseekData === undefined && !foldseekError}
+                <Accordion>
+                    <AccordionItem>
+                        <span slot="header" style="font-size: 18px;"
+                            >Foldseek Data <span
+                                style="font-weight: 300; font-size: 15px;"
+                                ></span
+                            ></span
+                        >
+                        {#if foldseekData === undefined && !foldseekError}
                     <DelayedSpinner
                         text="Loading Foldseek..."
                         textRight
                         msDelay={0}
                     />
-                {:else if foldseekData !== undefined}
-                    <div>
-                        <b>Prob. Match:</b> {foldseekData.prob}
-                    </div>
-                    <div>
-                        <b>E-Value:</b> {foldseekData.evalue}
-                    </div>
-                    <div>
-                        <b>Region of Similarity</b>
-                        <AlignBlock
-                            width={260}
-                            height={20}
-                            ogLength={entryA.length}
-                            qstart={foldseekData.qstart}
-                            qend={foldseekData.qend}
-                        />
-                    </div>
-                {/if}
+                    {:else if foldseekData !== undefined}
+                        <div>
+                            <b>Prob. Match:</b> {foldseekData.prob}
+                        </div>
+                        <div>
+                            <b>E-Value:</b> {foldseekData.evalue}
+                        </div>
+                        <div>
+                            <b>Region of Similarity</b>
+                            <AlignBlock
+                                width={260}
+                                height={20}
+                                ogLength={entryA.length}
+                                qstart={foldseekData.qstart}
+                                qend={foldseekData.qend}
+                            />
+                        </div>
+                    {/if}
+                    </AccordionItem>
+                </Accordion>       
 				<div style="width: 300px;" class="mt-3">
 					<Button href="{BACKEND_URL}/protein/pdb/{combined}"
 						>Download Aligned PDB File<DownloadOutline
