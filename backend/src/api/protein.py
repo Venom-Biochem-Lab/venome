@@ -404,7 +404,7 @@ class TMAlignInfo(CamelModel):
     seq_id: str | None
     chain1_tm_score: str | None
     chain2_tm_score: str | None
-    alignment_string: list[str]
+    alignment_string: str
 
 # Returns the alignment string info from TM Align's console log.
 @router.get("/protein/tmalign/{proteinA:str}/{proteinB:str}", response_model=TMAlignInfo)
@@ -423,21 +423,21 @@ def get_tm_info(proteinA: str, proteinB: str):
         tmalign_output_list = tmalign_output.splitlines()
         log.warn(tmalign_output)
 
-        # Grab aligned length, RMSD, and 
+        # Grab aligned length, RMSD, and Seq ID
         tmalign_tri = tmalign_output_list[12].split(', ')
-
-        log.warn("Aligned Length:")
-        log.warn(tmalign_tri[0])
         # Note: \d+?.\d* means "match 1 or more numbers, 0 or 1 decimal points, and 0 or more numbers" in regex
         aligned_length = re.search("\d+?.\d*", tmalign_tri[0]).group()
         rmsd = re.search("\d+.?\d*", tmalign_tri[1]).group()
         seq_id = re.search("\d+.?\d*", tmalign_tri[2]).group()
 
-        tmalign_string= tmalign_output_list[18:21]
-
+        # Grabs both TM scores
         # NOTE: This is ONLY grabbing the TM-Score from the file. It's leaving out the LN and d0 stats.
         chain1_normalized_tm_score = re.search("\d+.?\d*", tmalign_output_list[13]).group()
         chain2_normalized_tm_score = re.search("\d+.?\d*", tmalign_output_list[14]).group()
+
+        # Grabs TM Alignment String
+        tmalign_string= "\n".join(tmalign_output_list[18:21])
+        log.warn(tmalign_string)
 
 
         return TMAlignInfo(

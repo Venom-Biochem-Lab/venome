@@ -116,9 +116,7 @@
                             <div>
                                 <b>Alignment String</b>
                                 <div class="sidescroll">
-                                    {tmData.alignmentString[0]}<br/>
-                                    {tmData.alignmentString[1]}<br/>
-                                    {tmData.alignmentString[2]}<br/>
+                                    {tmData.alignmentString}
                                 </div>
                             </div>
                         {/if}
