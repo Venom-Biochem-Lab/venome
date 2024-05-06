@@ -1,5 +1,28 @@
 <script lang="ts">
-	import Molstar from "../lib/Molstar.svelte";
+	import BigNavLink from "../lib/BigNavLink.svelte";
+
+	const quickLinks = [
+		{
+			title: "Search for Venom Proteins",
+			desc: "Search over 400 proteins parasitoid wasp venom proteins using filtering or search.",
+			href: "/search",
+		},
+		{
+			title: "Read Interactive Articles",
+			desc: "Learn about our proteins, how the site works, research, and more!",
+			href: "/articles",
+		},
+		{
+			title: "Upload",
+			desc: "Upload new proteins or create new articles for others to view.",
+			href: "/upload",
+		},
+		{
+			title: "Open Source Code",
+			desc: "See our GitHub repository and contribute to the project.",
+			href: "https://github.com/xnought/venome",
+		},
+	];
 </script>
 
 <svelte:head>
@@ -23,6 +46,17 @@
 		</div>
 	</div>
 </div>
+
+<section class="p-5">
+	<div class="flex gap-5 flex-wrap">
+		{#each quickLinks as q}
+			<BigNavLink {...q} />
+		{/each}
+	</div>
+
+	<div>Random protein here</div>
+	<div>About us here</div>
+</section>
 
 <style>
 </style>
