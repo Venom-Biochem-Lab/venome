@@ -70,9 +70,11 @@
 	}
 
 	onDestroy(() => {
-		loseWebGLContext(divEl.querySelector("canvas")!);
-		m.plugin.dispose();
-		subscribe.unsubscribe();
+		if (divEl && divEl.querySelector("canvas")) {
+			loseWebGLContext(divEl.querySelector("canvas")!);
+			m.plugin.dispose();
+			subscribe.unsubscribe();
+		}
 	});
 
 	$: {
