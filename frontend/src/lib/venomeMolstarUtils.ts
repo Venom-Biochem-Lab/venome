@@ -8,6 +8,12 @@ export type ResidueColor = { r: number; g: number; b: number };
 export type ChainId = string;
 export type ChainColors = { [chainId: ChainId]: ResidueColor[] };
 export type ChainpLDDT = { [chainId: ChainId]: number[] };
+export type HideCanvasControls = Pick<
+	InitParams,
+	"hideCanvasControls"
+>["hideCanvasControls"];
+
+export const colorScheme = d3.schemeDark2;
 
 export async function screenshotMolstar(initParams: Partial<InitParams>) {
 	const { div, molstar } = await renderHeadless(initParams);
