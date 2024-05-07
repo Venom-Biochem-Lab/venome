@@ -12,6 +12,7 @@
 -- https://www.postgresql.org/docs/current/ddl-generated-columns.html
 
 CREATE EXTENSION pg_trgm; -- for trigram matching fuzzy search similarity() func
+CREATE EXTENSION tsm_system_rows; -- for random sampling: TABLESAMPLE system_rows(n: int) -> n random rows
 
 /*
  * Species Table
