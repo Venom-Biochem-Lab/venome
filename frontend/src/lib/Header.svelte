@@ -62,14 +62,14 @@
 	header {
 		display: flex;
 		justify-content: space-between;
-		background-color: #08163803;
+		background-color: hsla(0, 0%, 100%, 0.5);
 		box-shadow: 0px 0px 2px 2px hsla(0, 0%, 0%, 0.1);
 		height: 60px;
 		position: fixed;
 		top: 0;
 		width: 100%;
 		z-index: 998;
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(20px);
 	}
 
 	#logo {
