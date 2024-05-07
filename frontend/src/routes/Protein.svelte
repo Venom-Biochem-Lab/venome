@@ -136,7 +136,7 @@
 				</div>
 			</div>
 
-			<div style="position: sticky; top: 55px; right: 0; ">
+			<div style="position: sticky; top: 55px; right: 0; z-index: 999;">
 				<EntryCard title="Provided Information">
 					<div
 						id="info-grid"
@@ -164,6 +164,13 @@
 						width={400}
 						height={350}
 						{chainColors}
+						hideCanvasControls={[
+							"animation",
+							"controlInfo",
+							"expand",
+							"selection",
+							"controlToggle",
+						]}
 					/>
 					<div class="mt-2 flex gap-2 items-center">
 						{#if Object.keys(chainColors).length > 0}

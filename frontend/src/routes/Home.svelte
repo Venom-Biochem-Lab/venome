@@ -1,5 +1,10 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { BACKEND_URL, Backend, type ProteinEntry } from "../lib/backend";
 	import BigNavLink from "../lib/BigNavLink.svelte";
+	import Molstar from "../lib/Molstar.svelte";
+	import ProteinLinkCard from "../lib/ProteinLinkCard.svelte";
+	import { colorScheme } from "../lib/venomeMolstarUtils";
 
 	const quickLinks = [
 		{
@@ -19,10 +24,16 @@
 		},
 		{
 			title: "Open Source Code",
-			desc: "See our GitHub repository and contribute to the project.",
+			desc: "This sites code is completely open source on GitHub.",
 			href: "https://github.com/xnought/venome",
 		},
 	];
+
+	let randomProtein: ProteinEntry;
+	onMount(async () => {
+		randomProtein = await Backend.getRandomProtein();
+		console.log(randomProtein);
+	});
 </script>
 
 <svelte:head>
@@ -47,14 +58,46 @@
 	</div>
 </div>
 
-<section class="p-5">
+<section class="p-5 flex gap-5 flex-col">
 	<div class="flex gap-5 flex-wrap">
 		{#each quickLinks as q}
 			<BigNavLink {...q} />
 		{/each}
 	</div>
 
-	<div>Random protein here</div>
+	{#if randomProtein}
+		<div>
+			<div
+				style="color: var(--primary-700); font-size: 20px; font-weight: 300;"
+			>
+				Random Protein
+			</div>
+			<div class="flex gap-5">
+				<div>
+					<Molstar
+						format="pdb"
+						url="{BACKEND_URL}/protein/pdb/{randomProtein.name}"
+						width={600}
+						height={500}
+						zIndex={990}
+						hideCanvasControls={[
+							"animation",
+							"controlToggle",
+							"selection",
+							"expand",
+							"controlInfo",
+						]}
+					/>
+				</div>
+				<div>
+					<ProteinLinkCard
+						color={colorScheme[0]}
+						entry={randomProtein}
+					/>
+				</div>
+			</div>
+		</div>
+	{/if}
 	<div>About us here</div>
 </section>
 
