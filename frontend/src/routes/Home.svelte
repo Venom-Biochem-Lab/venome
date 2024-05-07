@@ -5,6 +5,8 @@
 	import Molstar from "../lib/Molstar.svelte";
 	import ProteinLinkCard from "../lib/ProteinLinkCard.svelte";
 	import { colorScheme } from "../lib/venomeMolstarUtils";
+	import { Card } from "flowbite-svelte";
+	import EntryCard from "../lib/EntryCard.svelte";
 
 	const quickLinks = [
 		{
@@ -18,12 +20,12 @@
 			href: "/articles",
 		},
 		{
-			title: "Upload",
+			title: "Upload New Proteins",
 			desc: "Upload new proteins or create new articles for others to view.",
 			href: "/upload",
 		},
 		{
-			title: "Open Source Code",
+			title: "Completely Open Source",
 			desc: "This sites code is completely open source on GitHub.",
 			href: "https://github.com/xnought/venome",
 		},
@@ -59,43 +61,42 @@
 </div>
 
 <section class="p-5 flex gap-5 flex-col">
-	<div class="flex gap-5 flex-wrap">
-		{#each quickLinks as q}
-			<BigNavLink {...q} />
-		{/each}
+	<div class="flex justify-center">
+		<div class="flex gap-5 flex-wrap">
+			{#each quickLinks as q}
+				<BigNavLink {...q} />
+			{/each}
+		</div>
 	</div>
 
 	{#if randomProtein}
 		<div>
-			<div
-				style="color: var(--primary-700); font-size: 20px; font-weight: 300;"
-			>
-				Random Protein
-			</div>
-			<div class="flex gap-5">
-				<div>
-					<Molstar
-						format="pdb"
-						url="{BACKEND_URL}/protein/pdb/{randomProtein.name}"
-						width={600}
-						height={500}
-						zIndex={990}
-						hideCanvasControls={[
-							"animation",
-							"controlToggle",
-							"selection",
-							"expand",
-							"controlInfo",
-						]}
-					/>
+			<EntryCard title="Random Protein" style="margin-top: 0;">
+				<div class="flex gap-5">
+					<div>
+						<ProteinLinkCard
+							color={colorScheme[0]}
+							entry={randomProtein}
+						/>
+					</div>
+					<div>
+						<Molstar
+							format="pdb"
+							url="{BACKEND_URL}/protein/pdb/{randomProtein.name}"
+							width={600}
+							height={500}
+							zIndex={990}
+							hideCanvasControls={[
+								"animation",
+								"controlToggle",
+								"selection",
+								"expand",
+								"controlInfo",
+							]}
+						/>
+					</div>
 				</div>
-				<div>
-					<ProteinLinkCard
-						color={colorScheme[0]}
-						entry={randomProtein}
-					/>
-				</div>
-			</div>
+			</EntryCard>
 		</div>
 	{/if}
 	<div>About us here</div>
