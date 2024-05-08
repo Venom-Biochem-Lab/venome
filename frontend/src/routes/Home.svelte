@@ -4,14 +4,18 @@
 	import BigNavLink from "../lib/BigNavLink.svelte";
 	import Molstar from "../lib/Molstar.svelte";
 	import ProteinLinkCard from "../lib/ProteinLinkCard.svelte";
-	import { colorScheme } from "../lib/venomeMolstarUtils";
-	import { Card } from "flowbite-svelte";
+	import {
+		colorEntireChain,
+		colorScheme,
+		jsColorToResidueColor,
+	} from "../lib/venomeMolstarUtils";
 	import EntryCard from "../lib/EntryCard.svelte";
+	import * as d3 from "d3";
 
 	const quickLinks = [
 		{
 			title: "Search for Venom Proteins",
-			desc: "Search over 400 proteins parasitoid wasp venom proteins using filtering or search.",
+			desc: "Search over 400 proteins parasitoid wasp venom proteins using filtering or search. <b>Sneak peak below ↓</b>.",
 			href: "/search",
 		},
 		{
@@ -31,10 +35,20 @@
 		},
 	];
 
-	let randomProtein: ProteinEntry;
+	const numRandomProteins = 4;
+	const homeColorScheme = [
+		colorScheme[0],
+		colorScheme[1],
+		d3.schemeSet1[1],
+		d3.schemeSet1[0],
+	]; // add more colors here if you increase numRandomProteins
+	let randomProteins: ProteinEntry[] = new Array(numRandomProteins).fill(
+		undefined
+	);
 	onMount(async () => {
-		randomProtein = await Backend.getRandomProtein();
-		console.log(randomProtein);
+		for (let i = 0; i < randomProteins.length; i++) {
+			randomProteins[i] = await Backend.getRandomProtein();
+		}
 	});
 </script>
 
@@ -69,22 +83,17 @@
 		</div>
 	</div>
 
-	{#if randomProtein}
-		<div>
-			<EntryCard title="Random Protein" style="margin-top: 0;">
-				<div class="flex gap-5">
-					<div>
-						<ProteinLinkCard
-							color={colorScheme[0]}
-							entry={randomProtein}
-						/>
-					</div>
+	<div class="flex justify-center">
+		<div class="flex gap-5 flex-wrap content-start">
+			{#each randomProteins.filter((d) => d !== undefined) as randomProtein, i}
+				{@const hexColor = homeColorScheme[i]}
+				<div class="flex gap-5 flex-col">
 					<div>
 						<Molstar
 							format="pdb"
 							url="{BACKEND_URL}/protein/pdb/{randomProtein.name}"
-							width={600}
-							height={500}
+							width={375}
+							height={350}
 							zIndex={990}
 							hideCanvasControls={[
 								"animation",
@@ -93,13 +102,60 @@
 								"expand",
 								"controlInfo",
 							]}
+							chainColors={{
+								A: colorEntireChain(
+									jsColorToResidueColor(hexColor),
+									randomProtein.length
+								),
+							}}
 						/>
 					</div>
+					<ProteinLinkCard color={hexColor} entry={randomProtein} />
 				</div>
-			</EntryCard>
+			{/each}
 		</div>
-	{/if}
-	<div>About us here</div>
+	</div>
+	<div>
+		<EntryCard title="Who created Venome?" style="margin-top: 5px;">
+			<div>
+				<div style="font-weight: 300;" class="flex gap-2 flex-col">
+					<div style="width: 400px;">
+						<img
+							src="group-2024.jpg"
+							width="400"
+							alt="Founding Venome team picture in 2024."
+						/>
+					</div>
+					<div>
+						This website started in Fall 2023 as a Senior Computer
+						Science Capstone project in collaboration with the <a
+							href="https://venombiochemistrylab.weebly.com/"
+							target="_blank"
+							>Venom Biochemistry and Molecular Biology Laboratory</a
+						> at Oregon State University.
+					</div>
+					<div>
+						Why the name? Just as a collection of genes is a genome,
+						a collection of venom proteins is a venome.
+					</div>
+					<div>
+						Pictured here, the founding group was <a
+							href="https://donnybertucci.com"
+							target="_blank">Donald Bertucci</a
+						>, Ansen Garvin, Cora Bailey, Amanda Sinha,
+						<a
+							href="https://biochem.oregonstate.edu/directory/michael-youkhateh"
+							target="_blank">Michael Youkhateh</a
+						>, and
+						<a
+							href="https://biochem.oregonstate.edu/directory/nathan-mortimer"
+							target="_blank">Nathan Mortimer</a
+						>.
+					</div>
+				</div>
+			</div>
+		</EntryCard>
+	</div>
 </section>
 
 <style>

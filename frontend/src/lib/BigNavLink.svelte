@@ -22,7 +22,7 @@
 >
 	<div>
 		<div class="title-nav">{title}</div>
-		<div class="desc-nav">{desc}</div>
+		<div class="desc-nav">{@html desc}</div>
 	</div>
 	<div class={hovering ? "arrow-icon-active" : "arrow-icon"}>
 		<svg

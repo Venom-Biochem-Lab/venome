@@ -1,5 +1,4 @@
 <script lang="ts">
-	import logo from "../images/logo.svg";
 	import { links } from "svelte-routing";
 	import { onMount } from "svelte";
 	import {
@@ -29,7 +28,7 @@
 	<div class="nav-container">
 		<div id="logo">
 			<a href="/">
-				<img src={logo} alt="Venome Logo" />
+				<img src="logo.svg" alt="Venome Logo" />
 			</a>
 		</div>
 		<div class="nav">
