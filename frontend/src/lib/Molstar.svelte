@@ -69,8 +69,12 @@
 	onDestroy(() => {
 		if (divEl && divEl.querySelector("canvas")) {
 			loseWebGLContext(divEl.querySelector("canvas")!);
-			m.plugin.dispose();
-			subscribe.unsubscribe();
+			if (m) {
+				m.plugin.dispose();
+			}
+			if (subscribe) {
+				subscribe.unsubscribe();
+			}
 		}
 	});
 
