@@ -35,6 +35,7 @@
 	let entry: ProteinEntry | null = null;
 	let error = false;
 	let chainColors: ChainColors = {};
+	let searchOpen = false;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
@@ -87,17 +88,19 @@
 				</div>
 				<div class="mt-3">
 					<Accordion>
-						<AccordionItem open>
+						<AccordionItem bind:open={searchOpen}>
 							<span slot="header" style="font-size: 18px;"
 								>3D Similar Proteins <span
 									style="font-weight: 300; font-size: 15px;"
 									>(click to compute with Foldseek)</span
 								></span
 							>
-							<SimilarProteins
-								queryProteinName={entry.name}
-								length={entry.length}
-							/>
+							{#if searchOpen}
+								<SimilarProteins
+									queryProteinName={entry.name}
+									length={entry.length}
+								/>
+							{/if}
 						</AccordionItem>
 					</Accordion>
 				</div>
@@ -118,26 +121,8 @@
 			{/if}
 		</div>
 		<div id="right-side" class="flex flex-col">
-			<div>
-				<div>
-					<Button
-						outline
-						size="xs"
-						color="light"
-						on:click={() =>
-							navigate(
-								`${BACKEND_URL}/protein/pdb/${entry?.name}`
-							)}
-						>Download .pdb file<DownloadOutline
-							size="sm"
-							class="ml-1"
-						/></Button
-					>
-				</div>
-			</div>
-
 			<div style="position: sticky; top: 55px; right: 0; z-index: 999;">
-				<EntryCard title="Provided Information">
+				<EntryCard title="Information">
 					<div
 						id="info-grid"
 						class="grid grid-cols-2 mb-2"
@@ -158,7 +143,7 @@
 							>
 						</div>
 					</div>
-					<div style="width: 100%; text-align: end;" class="mb-2">
+					<div style="width: 100%;" class="mb-2 flex justify-between">
 						<Button
 							size="xs"
 							color="light"
@@ -168,6 +153,19 @@
 							>Fullscreen <ExpandOutline
 								class="ml-1"
 								size="sm"
+							/></Button
+						>
+						<Button
+							outline
+							size="xs"
+							color="light"
+							on:click={() =>
+								navigate(
+									`${BACKEND_URL}/protein/pdb/${entry?.name}`
+								)}
+							>Download .pdb file<DownloadOutline
+								size="sm"
+								class="ml-1"
 							/></Button
 						>
 					</div>

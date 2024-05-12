@@ -16,6 +16,7 @@
 	let maxEvalue: number;
 	onMount(async () => {
 		try {
+			console.log("mounted");
 			similarProteins =
 				await Backend.searchVenomeSimilar(queryProteinName);
 			maxEvalue = similarProteins
