@@ -15,6 +15,8 @@
 		ChevronDownSolid,
 		EditOutline,
 		UndoOutline,
+		DownloadOutline,
+		DownloadSolid,
 	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
@@ -119,20 +121,19 @@
 		<div id="right-side" class="flex flex-col">
 			<div>
 				<div>
-					<Button outline id="download" size="xs" color="light"
-						>Download Structure <ChevronDownSolid
+					<Button
+						outline
+						size="xs"
+						color="light"
+						on:click={() =>
+							navigate(
+								`${BACKEND_URL}/protein/pdb/${entry?.name}`
+							)}
+						>Download .pdb file<DownloadOutline
 							size="sm"
 							class="ml-1"
 						/></Button
 					>
-					<Dropdown triggeredBy="#download" trigger="click">
-						{#each fileDownloadDropdown as fileType}
-							<DropdownItem
-								href="{BACKEND_URL}/protein/{fileType}/{entry.name}"
-								>{fileType.toUpperCase()}</DropdownItem
-							>
-						{/each}
-					</Dropdown>
 				</div>
 			</div>
 
