@@ -459,3 +459,35 @@ def get_tm_info(proteinA: str, proteinB: str):
     except Exception as e:
         log.error(e)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/protein/random", response_model=ProteinEntry)
+def get_random_protein():
+    with Database() as db:
+        try:
+            query = """SELECT 
+                        proteins.name,
+                        proteins.length, 
+                        proteins.mass, 
+                        proteins.description, 
+                        species.name as species_name 
+                       FROM proteins TABLESAMPLE SYSTEM_ROWS(1)
+                       JOIN species ON species.id = proteins.species_id;"""
+            res = db.execute_return(query)
+            if res is not None:
+                name, length, mass, description, species_name = res[0]
+                return ProteinEntry(
+                    name=name,
+                    length=length,
+                    mass=mass,
+                    description=description,
+                    species_name=species_name,
+                )
+            else:
+                raise HTTPException(
+                    status_code=501, detail="SQL query couldn't execute"
+                )
+
+        except Exception as e:
+            log.error(e)
+            raise HTTPException(status_code=500, detail=str(e))

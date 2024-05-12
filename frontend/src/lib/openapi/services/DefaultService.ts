@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do not edit */
+/* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -351,6 +351,17 @@ export class DefaultService {
             errors: {
                 422: `Validation Error`,
             },
+        });
+    }
+    /**
+     * Get Random Protein
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getRandomProtein(): CancelablePromise<ProteinEntry> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/random',
         });
     }
     /**

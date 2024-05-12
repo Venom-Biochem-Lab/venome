@@ -5,6 +5,7 @@
 		loseWebGLContext,
 		colorResidues,
 		type ChainColors,
+		type HideCanvasControls,
 	} from "./venomeMolstarUtils";
 	import type { QueryParam } from "../../venome-molstar/lib/helpers";
 
@@ -18,9 +19,10 @@
 	export let zIndex = 999;
 	export let spin = false;
 	export let chainColors: ChainColors = {};
+	export let hideCanvasControls: HideCanvasControls = [];
+
 	let m: PDBeMolstarPlugin;
 	let subscribe: ReturnType<typeof colorByChain>;
-
 	let divEl: HTMLDivElement;
 	async function render() {
 		m = new PDBeMolstarPlugin();
@@ -41,12 +43,7 @@
 			reactive: true,
 			sequencePanel: true,
 			hideControls,
-			hideCanvasControls: [
-				"animation",
-				"expand",
-				"controlInfo",
-				"selection",
-			],
+			hideCanvasControls,
 		});
 		if (spin) {
 			m.visual.toggleSpin();
@@ -72,8 +69,12 @@
 	onDestroy(() => {
 		if (divEl && divEl.querySelector("canvas")) {
 			loseWebGLContext(divEl.querySelector("canvas")!);
-			m.plugin.dispose();
-			subscribe.unsubscribe();
+			if (m.plugin) {
+				m.plugin.dispose();
+			}
+			if (subscribe) {
+				subscribe.unsubscribe();
+			}
 		}
 	});
 

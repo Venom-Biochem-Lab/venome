@@ -8,6 +8,12 @@ export type ResidueColor = { r: number; g: number; b: number };
 export type ChainId = string;
 export type ChainColors = { [chainId: ChainId]: ResidueColor[] };
 export type ChainpLDDT = { [chainId: ChainId]: number[] };
+export type HideCanvasControls = Pick<
+	InitParams,
+	"hideCanvasControls"
+>["hideCanvasControls"];
+
+export const colorScheme = d3.schemeDark2;
 
 export async function screenshotMolstar(initParams: Partial<InitParams>) {
 	const { div, molstar } = await renderHeadless(initParams);
@@ -135,8 +141,17 @@ export function pLDDTToAlphaFoldResidueColors(pLDDT: number[]): ResidueColor[] {
 export function pLDDTToResidueColors(pLDDT: number[]): ResidueColor[] {
 	const interpolate = d3.interpolateSpectral;
 	const colors = pLDDT.map((d) => interpolate(d / 100));
-	return colors.map((c) => {
-		const rgb = d3.color(c)!.rgb()!;
-		return { r: rgb.r, g: rgb.g, b: rgb.b };
-	});
+	return colors.map(jsColorToResidueColor);
+}
+
+export function jsColorToResidueColor(color: string): ResidueColor {
+	const rgb = d3.color(color)!.rgb()!;
+	return { r: rgb.r, g: rgb.g, b: rgb.b };
+}
+
+export function colorEntireChain(
+	color: ResidueColor,
+	numResiduesInChain: number
+) {
+	return new Array(numResiduesInChain).fill(color);
 }

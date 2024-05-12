@@ -1,124 +1,172 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { BACKEND_URL, Backend, type ProteinEntry } from "../lib/backend";
+	import BigNavLink from "../lib/BigNavLink.svelte";
 	import Molstar from "../lib/Molstar.svelte";
+	import ProteinLinkCard from "../lib/ProteinLinkCard.svelte";
+	import {
+		colorEntireChain,
+		colorScheme,
+		jsColorToResidueColor,
+	} from "../lib/venomeMolstarUtils";
+	import EntryCard from "../lib/EntryCard.svelte";
+	import * as d3 from "d3";
+
+	const quickLinks = [
+		{
+			title: "Search for Venom Proteins",
+			desc: "Search over 400 proteins parasitoid wasp venom proteins using filtering or search. <b>Sneak peak below ↓</b>",
+			href: "/search",
+		},
+		{
+			title: "Read Interactive Articles",
+			desc: "Learn about our proteins, how the site works, research, and more!",
+			href: "/articles",
+		},
+		{
+			title: "Upload New Proteins",
+			desc: "Upload new proteins or create new articles for others to view.",
+			href: "/upload",
+		},
+		{
+			title: "Completely Open Source",
+			desc: "This sites code is completely open source on GitHub.",
+			href: "https://github.com/xnought/venome",
+		},
+	];
+
+	const numRandomProteins = 4;
+	const homeColorScheme = [
+		colorScheme[0],
+		colorScheme[1],
+		d3.schemeSet1[1],
+		d3.schemeSet1[0],
+	]; // add more colors here if you increase numRandomProteins
+	let randomProteins: ProteinEntry[] = new Array(2).fill(undefined);
+	onMount(async () => {
+		for (let i = 0; i < randomProteins.length; i++) {
+			randomProteins[i] = await Backend.getRandomProtein();
+		}
+	});
 </script>
 
 <svelte:head>
 	<title>Venome Home</title>
 </svelte:head>
 
-<div id="title">
-	<h1>Welcome to the Unknown Venome</h1>
-</div>
-<div id="title_page">
-	<div id="side_col" class="col">
-		<h3>Get to know the <a href="https://venombiochemistrylab.weebly.com/">Venome Lab</a>!</h3>
-		<p>The Venome Lab is based out of OSU and studies three species of parasitic wasps and their proteins</p>
-		<h3>There are so many wasps in there</h3>
-		<!--search bar-->
-		<img src="https://biochem.oregonstate.edu/sites/biochem.oregonstate.edu/files/styles/600_x_var/public/2023-02/Nate.jpg?itok=eoH8WcNU" alt="A picture of Nate Mortimer in lab gear doing some scientific stuff." id="DeadInTheWater">
+<div class="bg-gradient-to-b from-primary-700 to-primary-500">
+	<div
+		style="color: white; padding-left: 40px; padding-top: 30px; padding-bottom: 40px;"
+	>
+		<div style="font-size: 30px; font-weight: 100;">The Unknown</div>
+		<div style="font-size: 55px; margin-top: -20px;">Venome</div>
+		<div style="font-size: 22px; font-weight: 200;">
+			A platform that stores and visualizes the <u>
+				<a
+					style="color: white; font-weight: 500;"
+					href="https://venombiochemistrylab.weebly.com/"
+					target="_blank">Venom Biochemistry Lab</a
+				>
+			</u>’s Proteins at Oregon State University
+		</div>
 	</div>
-	<div id="middle_col" class="col">
-		<h3>Looking for something specific? Start searching now!</h3>
-		<!--search bar-->
-		<form>
-			<input type="text">
-			<!--I'm feeling lucky-->
-			<button>Roll the dice</button>
-		</form>
+</div>
 
-		<Molstar
-			format="pdb"
-			width={400}
-			height={400}
-		/>
-		<div class="protein_about">
-			<p>lorem ipsum dolor sit something about the proteins</p>
+<section class="p-5 flex gap-5 flex-col">
+	<div class="flex justify-center">
+		<div class="flex gap-5 flex-wrap">
+			{#each quickLinks as q}
+				<BigNavLink {...q} />
+			{/each}
 		</div>
 	</div>
-	<div id="side_col" class="col">
-		<h3>New? Check out our <a href="/tutorials">tutorials</a>!</h3>
-		<p>Whether you're a protein expert looking to analyze some proteins or a new student with a budding interest in biochemistry, this is the place for you.</p>
-		<h3>See <em>all</em> of our proteins, <a href="/search">listed here</a>!</h3>
-		<p>Filter down the Venome lab's catalog of proteins and see all the features within.</p>
-		<!--search bar-->
-		<div id="GettingStarted">
-			<h3>Get started with these helpful tutorials!</h3>
-			<ul>
-				<li>using the site</li>
-				<li>biochem basics</li>
-			</ul>
+
+	<div class="flex justify-center">
+		<div>
+			<div class="flex gap-2 mb-2">
+				<span class="font-medium">Sneak Peak ↓</span>
+				<span class="font-light"
+					>Here's a couple random proteins from our database</span
+				>
+			</div>
+			<div class="flex gap-5 flex-wrap content-start">
+				{#each randomProteins.filter((d) => d !== undefined) as randomProtein, i}
+					{@const hexColor = homeColorScheme[i]}
+					<div class="flex gap-5 flex-col">
+						<ProteinLinkCard
+							color={hexColor}
+							entry={randomProtein}
+						/>
+						<div>
+							<Molstar
+								spin
+								format="pdb"
+								url="{BACKEND_URL}/protein/pdb/{randomProtein.name}"
+								width={375}
+								height={350}
+								zIndex={990}
+								hideCanvasControls={[
+									"animation",
+									"controlToggle",
+									"selection",
+									"expand",
+									"controlInfo",
+								]}
+								chainColors={{
+									A: colorEntireChain(
+										jsColorToResidueColor(hexColor),
+										randomProtein.length
+									),
+								}}
+							/>
+						</div>
+					</div>
+				{/each}
+			</div>
 		</div>
 	</div>
-</div>
+	<div>
+		<EntryCard title="Who created Venome?" style="margin-top: 5px;">
+			<div>
+				<div style="font-weight: 300;" class="flex gap-2 flex-col">
+					<div style="width: 400px;">
+						<img
+							src="group-2024.jpg"
+							width="400"
+							alt="Founding Venome team picture in 2024."
+						/>
+					</div>
+					<div>
+						This website started in Fall 2023 as a Senior Computer
+						Science Capstone project in collaboration with the <a
+							href="https://venombiochemistrylab.weebly.com/"
+							target="_blank"
+							>Venom Biochemistry and Molecular Biology Laboratory</a
+						> at Oregon State University.
+					</div>
+					<div>
+						Why the name? Just as a collection of genes is a genome,
+						a collection of venom proteins is a venome.
+					</div>
+					<div>
+						Pictured here, the founding group was <a
+							href="https://donnybertucci.com"
+							target="_blank">Donald Bertucci</a
+						>, Ansen Garvin, Cora Bailey, Amanda Sinha,
+						<a
+							href="https://biochem.oregonstate.edu/directory/michael-youkhateh"
+							target="_blank">Michael Youkhateh</a
+						>, and
+						<a
+							href="https://biochem.oregonstate.edu/directory/nathan-mortimer"
+							target="_blank">Nathan Mortimer</a
+						>.
+					</div>
+				</div>
+			</div>
+		</EntryCard>
+	</div>
+</section>
 
 <style>
-	#title {
-		width: 100%;
-	}
-
-	h1 {
-		margin-top: 10px;
-		margin-bottom: 3px;
-		text-align: center;
-		color: rgb(25, 63, 90);
-	}
-
-	h3 {
-		margin-bottom: 3px;
-		margin-top: 10px;
-	}
-
-	input {
-		padding: 5px;
-		display: inline;
-	}
-
-	button {
-		background-color: rgb(25, 63, 90);
-		border-radius: 3px;
-		color: lightgray;
-		padding: 3px;
-	}
-
-	#title_page {
-		margin: 0% 2%;
-		display: flex;
-	}
-
-	.col {
-		margin: 0% 0.5%;
-		padding: 2%;
-		background-color:aliceblue;
-	}
-
-	#side_col {
-		width: 27%
-	}
-
-	#middle_col {
-		width: 42%;
-	}
-
-	ProteinVis {
-		margin: 1%;
-		max-width: 30%;
-		max-height: 30%;
-		display: block;
-	}
-
-	.protein_about {
-		margin-left: 20px;
-		display: block;
-	}
-
-	ul li {
-		margin-left: 7%;
-		list-style-type: circle;
-	}
-
-	input {
-		margin-bottom: 15px;
-	}
-	
-
 </style>
