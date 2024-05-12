@@ -86,7 +86,7 @@
 				</div>
 				<div class="mt-3">
 					<Accordion>
-						<AccordionItem>
+						<AccordionItem open>
 							<span slot="header" style="font-size: 18px;"
 								>3D Similar Proteins <span
 									style="font-weight: 300; font-size: 15px;"
