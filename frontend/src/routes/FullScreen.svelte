@@ -4,15 +4,22 @@
 	import { Backend, BACKEND_URL, type ProteinEntry } from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
-	import { DownloadOutline } from "flowbite-svelte-icons";
+	import { DownloadOutline, UndoOutline } from "flowbite-svelte-icons";
 	import { Button } from "flowbite-svelte";
-	import { colorScheme } from "../lib/venomeMolstarUtils";
+	import {
+		colorScheme,
+		alphafoldColorscheme,
+		alphafoldThresholds,
+		pLDDTToAlphaFoldResidueColors,
+		type ChainColors,
+	} from "../lib/venomeMolstarUtils";
 	import { navigate } from "svelte-routing";
 
 	export let proteinName: string;
 	let entry: ProteinEntry | null = null;
 	let error = false;
 	const dark2green = colorScheme[0];
+	let chainColors: ChainColors = {};
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
@@ -55,13 +62,58 @@
 					>
 				</div>
 			</div>
-			<div class="z-999">
+			<div class="z-999 flex flex-col">
 				<Molstar
 					format="pdb"
 					url="{BACKEND_URL}/protein/pdb/{entry.name}"
+					{chainColors}
 					width={1000}
 					height={900}
 				/>
+
+				<div class="mt-2 flex gap-2 items-center">
+					{#if Object.keys(chainColors).length > 0}
+						<Button
+							outline
+							color="light"
+							size="xs"
+							on:click={() => {
+								chainColors = {};
+							}}><UndoOutline size="xs" /></Button
+						>
+					{/if}
+					<Button
+						color="light"
+						size="xs"
+						outline
+						on:click={async () => {
+							if (!entry) return;
+							const pLDDTPerChain =
+								await Backend.getPLddtGivenProtein(entry.name);
+							for (const [
+								chainId,
+								pLDDTPerResidue,
+							] of Object.entries(pLDDTPerChain)) {
+								chainColors[chainId] =
+									pLDDTToAlphaFoldResidueColors(
+										pLDDTPerResidue
+									);
+							}
+						}}
+					>
+						Color by pLDDT</Button
+					>
+					{#if Object.keys(chainColors).length > 0}
+						{#each alphafoldThresholds as at, i}
+							<div
+								class="legend-chip"
+								style="--color: {alphafoldColorscheme[i]};"
+							>
+								{at}
+							</div>
+						{/each}
+					{/if}
+				</div>
 			</div>
 		{:else if !error}
 			<!-- Otherwise, tell user we tell the user we are loading -->
@@ -78,5 +130,17 @@
 		font-size: 2.45rem;
 		font-weight: 500;
 		color: var(--primary-700);
+	}
+	.legend-chip {
+		--color: black;
+		color: white;
+		background-color: var(--color);
+		border-radius: 3px;
+		font-size: 12px;
+
+		padding-left: 5px;
+		padding-right: 5px;
+		padding-top: 2px;
+		padding-bottom: 2px;
 	}
 </style>
