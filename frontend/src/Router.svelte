@@ -15,6 +15,7 @@
 	import Articles from "./routes/Articles.svelte";
 	import EditArticle from "./routes/EditArticle.svelte";
 	import Upload from "./routes/Upload.svelte";
+	import FullScreen from "./routes/FullScreen.svelte";
 </script>
 
 <Router>
@@ -36,6 +37,9 @@
 			><Edit urlId={params.id} /></Route
 		>
 		<Route path="/upload/protein"><UploadProtein /></Route>
+		<Route path="/fullscreen/:id" let:params
+			><FullScreen proteinName={params.id} /></Route
+		>
 		<Route path="/align/:a/:b" let:params
 			><Align proteinA={params.a} proteinB={params.b} /></Route
 		>

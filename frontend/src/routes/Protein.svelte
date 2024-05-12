@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import { Backend, BACKEND_URL, type ProteinEntry } from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
-	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
+	import { Button } from "flowbite-svelte";
 	import Markdown from "../lib/Markdown.svelte";
 	import {
 		numberWithCommas,
@@ -17,6 +17,7 @@
 		UndoOutline,
 		DownloadOutline,
 		DownloadSolid,
+		ExpandOutline,
 	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
@@ -29,8 +30,6 @@
 		alphafoldThresholds,
 	} from "../lib/venomeMolstarUtils";
 	import type { ChainColors } from "../lib/venomeMolstarUtils";
-
-	const fileDownloadDropdown = ["pdb", "fasta"];
 
 	export let urlId: string;
 	let entry: ProteinEntry | null = null;
@@ -159,6 +158,19 @@
 							>
 						</div>
 					</div>
+					<div style="width: 100%; text-align: end;" class="mb-2">
+						<Button
+							size="xs"
+							color="light"
+							outline
+							on:click={() =>
+								navigate(`/fullscreen/${entry?.name}`)}
+							>Fullscreen <ExpandOutline
+								class="ml-1"
+								size="sm"
+							/></Button
+						>
+					</div>
 					<Molstar
 						format="pdb"
 						url="http://localhost:8000/protein/pdb/{entry.name}"
@@ -176,6 +188,7 @@
 					<div class="mt-2 flex gap-2 items-center">
 						{#if Object.keys(chainColors).length > 0}
 							<Button
+								outline
 								color="light"
 								size="xs"
 								on:click={() => {
@@ -186,6 +199,7 @@
 						<Button
 							color="light"
 							size="xs"
+							outline
 							on:click={async () => {
 								if (!entry) return;
 								const pLDDTPerChain =
@@ -243,7 +257,7 @@
 	}
 	.legend-chip {
 		--color: black;
-		color: rgb(0, 0, 0);
+		color: white;
 		background-color: var(--color);
 		border-radius: 3px;
 		font-size: 12px;

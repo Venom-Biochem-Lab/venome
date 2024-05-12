@@ -15,6 +15,7 @@
 	import AlignBlock from "../lib/AlignBlock.svelte";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
 	import { colorScheme } from "../lib/venomeMolstarUtils";
+	import { navigate } from "svelte-routing";
 
 	export let proteinA: string;
 	export let proteinB: string;
@@ -170,9 +171,14 @@
 					</AccordionItem>
 				</Accordion>
 				<div style="width: 300px;" class="mt-3">
-					<Button href="{BACKEND_URL}/protein/pdb/{combined}"
-						>Download Aligned PDB File<DownloadOutline
-							size="md"
+					<Button
+						color="light"
+						outline
+						size="xs"
+						on:click={() =>
+							navigate(`${BACKEND_URL}/protein/pdb/${combined}`)}
+						>Download aligned .pdb file<DownloadOutline
+							size="sm"
 							class="ml-2"
 						/></Button
 					>
