@@ -3,14 +3,13 @@
 	import { onMount } from "svelte";
 	import {
 		UserOutline,
-		SearchOutline,
 		NewspapperSolid,
 		UploadSolid,
-		SearchSolid,
 	} from "flowbite-svelte-icons";
 	import { user } from "./stores/user";
 	import Cookies from "js-cookie";
 	import ProteinIcon from "../lib/ProteinIcon.svelte";
+	import Logo from "../lib/Logo.svelte";
 
 	onMount(async () => {
 		/**
@@ -28,7 +27,7 @@
 	<div class="nav-container">
 		<div id="logo">
 			<a href="/">
-				<img src="logo.svg" alt="Venome Logo" />
+				<Logo height={45} width={100} />
 			</a>
 		</div>
 		<div class="nav">
@@ -69,12 +68,6 @@
 		width: 100%;
 		z-index: 998;
 		backdrop-filter: blur(20px);
-	}
-
-	#logo {
-		/* TODO remove these hard coded constraints and do it right */
-		height: 45px;
-		width: 100px;
 	}
 
 	.nav-container {
