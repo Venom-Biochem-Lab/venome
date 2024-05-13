@@ -152,7 +152,18 @@
 						Pictured here, the founding group was <a
 							href="https://donnybertucci.com"
 							target="_blank">Donald Bertucci</a
-						>, Ansen Garvin, Cora Bailey, Amanda Sinha,
+						>,
+						<a href="http://ansengarvin.com" target="_blank"
+							>Ansen Garvin</a
+						>,
+						<a
+							href="https://www.linkedin.com/in/cora-bailey-a08004243/"
+							target="_blank">Cora Bailey</a
+						>,
+						<a
+							href="https://www.linkedin.com/in/amanda-sinha-310b6921b/"
+							target="_blank">Amanda Sinha</a
+						>,
 						<a
 							href="https://biochem.oregonstate.edu/directory/michael-youkhateh"
 							target="_blank">Michael Youkhateh</a
