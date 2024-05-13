@@ -12,6 +12,8 @@
 	import { createEventDispatcher } from "svelte";
 	import { FloatingLabelInput } from "flowbite-svelte";
 	import Placeholder from "./Placeholder.svelte";
+	import LegendpLddt from "../LegendpLDDT.svelte";
+	import type { ChainColors } from "../venomeMolstarUtils";
 
 	const dispatch = createEventDispatcher<{ change: undefined }>();
 
@@ -23,6 +25,7 @@
 	export let height: number = 350;
 	export let editMode = false;
 
+	let chainColors: ChainColors = {};
 	let editedName: string = name;
 	let editedAlignedWithName: string | undefined = alignedWithName;
 	let disabledSave = false;
@@ -96,6 +99,9 @@
 							/>
 						</div>
 					{/if}
+					{#if !alignedWithName}
+						<LegendpLddt bind:chainColors proteinName={name} />
+					{/if}
 				</div>
 				<div>
 					<Molstar
@@ -105,6 +111,14 @@
 						zIndex={1}
 						hideControls={config.hideControls ?? true}
 						spin={config.spin ?? false}
+						{chainColors}
+						hideCanvasControls={[
+							"animation",
+							"controlInfo",
+							"selection",
+							"expand",
+							"controlToggle",
+						]}
 					/>
 				</div>
 			</div>

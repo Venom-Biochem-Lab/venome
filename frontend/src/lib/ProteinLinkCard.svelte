@@ -3,6 +3,7 @@
 	import { numberWithCommas, undoFormatProteinName } from "./format";
 	import type { ProteinEntry } from "./backend";
 	import { ArrowUpRightFromSquareOutline } from "flowbite-svelte-icons";
+	import { link } from "svelte-routing";
 
 	export let entry: ProteinEntry;
 	export let color: string;
@@ -12,6 +13,7 @@
 	<div>
 		<h3 class="hide-ellipses">
 			<a
+				use:link
 				href="/protein/{entry.name}"
 				style="color: {color}"
 				class="flex gap-1 items-center"

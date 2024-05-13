@@ -4,15 +4,10 @@
 	import { Backend, BACKEND_URL, type ProteinEntry } from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
-	import { DownloadOutline, UndoOutline } from "flowbite-svelte-icons";
+	import { DownloadOutline } from "flowbite-svelte-icons";
 	import { Button } from "flowbite-svelte";
-	import {
-		colorScheme,
-		alphafoldColorscheme,
-		alphafoldThresholds,
-		pLDDTToAlphaFoldResidueColors,
-		type ChainColors,
-	} from "../lib/venomeMolstarUtils";
+	import { colorScheme, type ChainColors } from "../lib/venomeMolstarUtils";
+	import LegendpLddt from "../lib/LegendpLDDT.svelte";
 	import { navigate } from "svelte-routing";
 
 	export let proteinName: string;
@@ -70,50 +65,7 @@
 					width={1000}
 					height={900}
 				/>
-
-				<div class="mt-2 flex gap-2 items-center">
-					{#if Object.keys(chainColors).length > 0}
-						<Button
-							outline
-							color="light"
-							size="xs"
-							on:click={() => {
-								chainColors = {};
-							}}><UndoOutline size="xs" /></Button
-						>
-					{/if}
-					<Button
-						color="light"
-						size="xs"
-						outline
-						on:click={async () => {
-							if (!entry) return;
-							const pLDDTPerChain =
-								await Backend.getPLddtGivenProtein(entry.name);
-							for (const [
-								chainId,
-								pLDDTPerResidue,
-							] of Object.entries(pLDDTPerChain)) {
-								chainColors[chainId] =
-									pLDDTToAlphaFoldResidueColors(
-										pLDDTPerResidue
-									);
-							}
-						}}
-					>
-						Color by pLDDT</Button
-					>
-					{#if Object.keys(chainColors).length > 0}
-						{#each alphafoldThresholds as at, i}
-							<div
-								class="legend-chip"
-								style="--color: {alphafoldColorscheme[i]};"
-							>
-								{at}
-							</div>
-						{/each}
-					{/if}
-				</div>
+				<LegendpLddt bind:chainColors proteinName={entry.name} />
 			</div>
 		{:else if !error}
 			<!-- Otherwise, tell user we tell the user we are loading -->

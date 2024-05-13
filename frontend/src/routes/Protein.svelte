@@ -12,11 +12,8 @@
 	import { navigate } from "svelte-routing";
 	import References from "../lib/References.svelte";
 	import {
-		ChevronDownSolid,
 		EditOutline,
-		UndoOutline,
 		DownloadOutline,
-		DownloadSolid,
 		ExpandOutline,
 	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
@@ -24,12 +21,8 @@
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
-	import {
-		pLDDTToAlphaFoldResidueColors,
-		alphafoldColorscheme,
-		alphafoldThresholds,
-	} from "../lib/venomeMolstarUtils";
 	import type { ChainColors } from "../lib/venomeMolstarUtils";
+	import LegendpLddt from "../lib/LegendpLDDT.svelte";
 
 	export let urlId: string;
 	let entry: ProteinEntry | null = null;
@@ -183,51 +176,8 @@
 							"controlToggle",
 						]}
 					/>
-					<div class="mt-2 flex gap-2 items-center">
-						{#if Object.keys(chainColors).length > 0}
-							<Button
-								outline
-								color="light"
-								size="xs"
-								on:click={() => {
-									chainColors = {};
-								}}><UndoOutline size="xs" /></Button
-							>
-						{/if}
-						<Button
-							color="light"
-							size="xs"
-							outline
-							on:click={async () => {
-								if (!entry) return;
-								const pLDDTPerChain =
-									await Backend.getPLddtGivenProtein(
-										entry.name
-									);
-								for (const [
-									chainId,
-									pLDDTPerResidue,
-								] of Object.entries(pLDDTPerChain)) {
-									chainColors[chainId] =
-										pLDDTToAlphaFoldResidueColors(
-											pLDDTPerResidue
-										);
-								}
-							}}
-						>
-							Color by pLDDT</Button
-						>
-						{#if Object.keys(chainColors).length > 0}
-							{#each alphafoldThresholds as at, i}
-								<div
-									class="legend-chip"
-									style="--color: {alphafoldColorscheme[i]};"
-								>
-									{at}
-								</div>
-							{/each}
-						{/if}
-					</div>
+
+					<LegendpLddt bind:chainColors proteinName={entry.name} />
 				</EntryCard>
 			</div>
 		</div>
