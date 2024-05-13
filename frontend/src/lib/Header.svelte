@@ -31,7 +31,7 @@
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/search" class="flex items-center"
+			<a href="/proteins" class="flex items-center"
 				><ProteinIcon width={35} height={35} />Proteins</a
 			>
 			<a href="/articles" class="flex items-center gap-1">

@@ -207,7 +207,7 @@
 								try {
 									setToken();
 									await Backend.deleteProteinEntry(urlId);
-									navigate("/search");
+									navigate("/proteins");
 								} catch (e) {
 									console.error(e);
 								}

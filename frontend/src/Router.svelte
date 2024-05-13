@@ -2,7 +2,7 @@
 	import { Router, Route } from "svelte-routing";
 	import Header from "./lib/Header.svelte";
 	import Home from "./routes/Home.svelte";
-	import Search from "./routes/Search.svelte";
+	import Proteins from "./routes/Proteins.svelte";
 	import UploadProtein from "./routes/UploadProtein.svelte";
 	import Login from "./routes/Login.svelte";
 	import Protein from "./routes/Protein.svelte";
@@ -25,7 +25,7 @@
 	<main id="layout">
 		<!-- main navigation routes -->
 		<Route path="/"><Home /></Route>
-		<Route path="/search"><Search /></Route>
+		<Route path="/proteins"><Proteins /></Route>
 		<Route path="/login"><Login /></Route>
 		<Route path="/upload"><Upload /></Route>
 

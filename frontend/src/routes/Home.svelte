@@ -16,7 +16,7 @@
 		{
 			title: "Search for Venom Proteins",
 			desc: "Search over 400 proteins parasitoid wasp venom proteins using filtering or search. <b>Sneak peak below ↓</b>",
-			href: "/search",
+			href: "/proteins",
 		},
 		{
 			title: "Read Interactive Articles",
