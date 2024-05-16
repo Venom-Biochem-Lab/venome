@@ -7,7 +7,8 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"openapi": "npx openapi-typescript-codegen --input http://localhost:8000/openapi.json --output ./src/lib/openapi --client fetch"
+		"openapi": "npx openapi-typescript-codegen --input http://localhost:8000/openapi.json --output ./src/lib/openapi --client fetch",
+		"build:venome_molstar": "yarn workspace venome-molstar ts:build"
 	},
 	"devDependencies": {
 		"@fontsource-variable/inter": "^5.0.16",

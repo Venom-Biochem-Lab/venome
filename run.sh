@@ -8,6 +8,12 @@ function all() {
 	start
 }
 
+function quickstart() {
+	start
+	add_foldseek
+	add_tmalign
+}
+
 function start() {
 	docker compose up -d
 }
@@ -127,6 +133,16 @@ function add_tmalign() {
 function remove_tmalign() {
 	docker exec -it venome-backend rm -f TMalign_cpp.gz*
 	docker exec -it venome-backend rm -fr tmalign/
+}
+
+function rebuild_venome_molstar_pkg() {
+	# build locally
+	cd frontend
+	yarn build:venome_molstar
+
+	# build on docker
+	docker exec -it venome-frontend cd frontend
+	docker exec -it venome-frontend yarn build:venome_molstar
 }
 
 function scrape_func_names() {
