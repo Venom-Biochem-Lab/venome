@@ -144,3 +144,13 @@ However if you want to add foldseek run
 ```
 
 to the docker container and then it will compute.
+
+## TM Align
+
+To add TM Align do
+
+```bash
+./run.sh add_tmalign
+```
+
+which will download the executable to the docker.

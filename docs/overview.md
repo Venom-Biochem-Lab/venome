@@ -46,6 +46,7 @@ The Svelte [`frontend`](../frontend/) defines all the routes like I said in the 
 
 To give you one example, the [`frontend/src/routes/Protein.svelte`](../frontend/src/routes/Protein.svelte) corresponds to a particular `/protein/` route. But within this Protein Svelte component, I reference other useful shared code, like [`frontend/src/lib/Molstar.svelte`](../frontend/src/lib/Molstar.svelte) which renders proteins in 3D.
 
+Please see the [`frontend.md`](./frontend.md) for more explanation.
 
 The FastAPI [`backend`](../backend/) has all its definitions in the [`backend/src/api/`](../backend/src/api/) folder. Routes are defined through a `router` variable decorator which is a FastAPI `APIRouter()` object declared at the top of any file that serves endpoints.
 
@@ -99,11 +100,14 @@ See [`Protein.svelte`](../frontend/src/routes/Protein.svelte) for more concrete 
 > [!IMPORTANT]
 > On every change the a backend endpoint (response_model, name, endpoint) you will need to run `./run.sh gen_api` again to regenerate the frontend fetch wrapper functions
 
+
 ## Sixth pass
 
 So you basically know everything about the frontend, so I'll pivot to only passing over the backend. The backend actually also houses a postgreSQL database. From python you can connect to a database and make queries to it. Please see examples like in [`search.py`](../backend/src/api/search.py) where I import Database and use it.
 
 This database is set up in the docker container and named venome. When the docker initially builds, it loads the [`init.sql`](../backend/init.sql) which describes the schema of our database. If you change the init.sql file, it won't automatically change the database. You'll need to manually restart the entire docker from scratch `./run.sh hard_restart` or simply reload the init.sql file only with `./run.sh reload_init_sql`. Note that these operations lose all the data stored forever.
+
+Please see the [`backend.md`](./backend.md) for more explanation.
 
 
 
