@@ -154,3 +154,23 @@ To add TM Align do
 ```
 
 which will download the executable to the docker.
+
+## Uploading proteins programmatically
+
+We have a script to upload all 437 venom lab proteins to venome. 
+
+You'll simply have to do
+
+```bash
+./run.sh upload_all
+```
+
+and to delete them do 
+
+```bash
+./run.sh delete_all
+```
+
+If you get an error about `requests` library error, you'll need to install requests globally for python. Do `pip3 install requests`. 
+
+The script doesn't upload thumbnails for the proteins in the browser. So you'll have to manually upload thumbnails in the browser after running the upload script. To do this, just go to http://localhost:5173/force-upload-thumbnails and wait till that finishes.
