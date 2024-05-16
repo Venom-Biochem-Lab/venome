@@ -135,6 +135,16 @@ function remove_tmalign() {
 	docker exec -it venome-backend rm -fr tmalign/
 }
 
+function rebuild_venome_molstar_pkg() {
+	# build locally
+	cd frontend
+	yarn build:venome_molstar
+
+	# build on docker
+	docker exec -it venome-frontend cd frontend
+	docker exec -it venome-frontend yarn build:venome_molstar
+}
+
 function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))
 }
