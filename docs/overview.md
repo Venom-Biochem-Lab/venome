@@ -1,4 +1,9 @@
-# Overview
+# Video Overviews
+
+1. Installation: https://drive.google.com/file/d/1gLsz08U_brD-3WGMxDqsqqSM9GdNGJQc/view?usp=sharing
+2. ...
+
+# Text Version Overview
 
 This document outlines all our design choices and architecture decisions. It also points you in the right direction to get started developing. 
 
