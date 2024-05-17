@@ -147,7 +147,9 @@ to the docker container and then it will compute.
 
 ## TM Align
 
-To add TM Align do
+For protein aligning and model combining (e.g. on the Compare page), we use [TM Align](https://zhanggroup.org/TM-align/).
+
+To add TM Align to your local development setup, run
 
 ```bash
 ./run.sh add_tmalign
