@@ -28,6 +28,10 @@ To have those packages also installed/reflected in the backend run
 sh run.sh install_backend
 ```
 
+## Database
+
+See [database.md](database.md)
+
 ## Docker
 
 > [!IMPORTANT]
@@ -52,10 +56,6 @@ https://github.com/xnought/venome/assets/65095341/c44f1d8c-0d58-407c-9aa2-29c4a9
 
 
 this is where you can see print statements and other debug info / errors.
-
-## Database
-
-See [database.md](database.md)
 
 ## Foldseek
 
