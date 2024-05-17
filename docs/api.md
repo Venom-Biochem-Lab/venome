@@ -1,4 +1,6 @@
 ﻿# How To: Create and Use API Endpoints
+This is step-by-step guide on how to create API endpoints. For higher-level overviews on how our backend works, see [backend.md](backend.md) and [overview.md](overview.md).
+
 
 ## 1. Create the Endpoint
 We use a Python framework called FastAPI to generate our API calls. Each one of our API calls are python functions inside of [`backend/src/api/`](../backend/src/api/). You can see a lot of examples in that folder, but each individual API call looks something like this:
@@ -18,7 +20,7 @@ def test_overview(query):
 
 You can learn about what each constituent part means over at [overview.md](overview.md), in the fourth pass. For this example, I modified test_overview to take in a "query" argument, which the caller supplies in the form of a JSON.
 
-Most often, you want to make a backend to access our database. You can learn more about how to do this in [backend.md](backend.md)
+Most often, you want to make a backend to access our database. You can learn more about how to do this in [database.md](database.md)
 
 
 ## 2. Test the Endpoint
