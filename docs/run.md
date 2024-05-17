@@ -22,6 +22,11 @@ or
 ./run.sh start
 ```
 
+**starting with foldseek and tmalign**
+```bash
+./run.sh quickstart
+```
+
 **If you're having big errors and have tried everything. Start over from scratch with**
 
 ```bash
@@ -47,6 +52,7 @@ or
 |  `<cmd>` |  what it does  |
 |---|---|
 |  `start` |  Starts/runs the docker container where edits to the backend or frontend will hot reload |
+|  `quickstart` | Starts/runs the docker container as above, and installs foldseek / tmalign. |
 |  `stop` |   Stops the docker container |
 |  `soft_restart` |  Updates or adds packages, reloads the database from [`init.sql`](../backend/init.sql). |
 |  `hard_restart` |  Builds the docker container from scratch and starts it, do this if you're having errors that even `soft_restart` can't fix |
@@ -59,6 +65,8 @@ or
 |  `delete_all` |  Deletes all protein entries and restarts the server from scratch |
 |  `add_foldseek` |  installs foldseek onto the docker container via wget |
 |  `remove_foldseek` |  deletes foldseek from the docker container |
+|  `add_tmalign` | installs tm align onto the docker container via wget |
+|  `remove_tmalign` | deletes tmalign from the docker container |
 
 There are actually many more functions, so please check out [`run.sh`](../run.sh).
 
