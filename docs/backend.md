@@ -34,6 +34,12 @@ This documentation goes over how to deal with the PostgreSQL database.
 
 ### Usage
 
+To access the database, first import the Database class from db.py:
+
+```py
+from ..db import Database
+```
+
 Then, you can execute SQL queries by
 
 ```py
