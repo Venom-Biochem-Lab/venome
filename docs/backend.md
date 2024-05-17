@@ -30,7 +30,7 @@ sh run.sh install_backend
 
 ## Database
 
-This documentation goes over how to deal with the PostgreSQL database. 
+This documentation goes over how to access the PostgreSQL Database from the FastAPI server
 
 ### Usage
 
