@@ -4,6 +4,8 @@
 # EXAMPLE: sh run.sh start
 # more docs are in the docs/run.md file
 
+docker_compose_prod=docker-compose-prod.yml
+
 function all() {
 	start
 }
@@ -12,6 +14,13 @@ function quickstart() {
 	start
 	add_foldseek
 	add_tmalign
+}
+
+function prod_start() {
+	docker compose -f $docker_compose_prod up -d 
+}
+function prod_stop() {
+	docker compose -f $docker_compose_prod down
 }
 
 function start() {

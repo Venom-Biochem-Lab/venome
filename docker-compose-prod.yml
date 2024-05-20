@@ -1,0 +1,50 @@
+# https://github.com/zeno-ml/zeno-hub/blob/main/docker-compose.yml
+version: "3"
+services:
+    frontend:
+        container_name: venome-frontend
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "5173:5173"
+        environment:
+            PUBLIC_BACKEND_URL: http://localhost:8000
+        command: ["yarn", "dev", "--", "--host", "0.0.0.0"]
+    backend:
+        container_name: venome-backend
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+        depends_on:
+            - postgres
+        environment:
+            PUBLIC_FRONTEND_URL: http://localhost:5173
+            BACKEND_HOST: 0.0.0.0
+            BACKEND_PORT: 8000
+            DB_HOST: postgres
+            DB_PORT: 5432
+            DB_NAME: venome
+            DB_USER: myuser
+            DB_PASSWORD: mypassword
+        # command: poetry run dev
+        command: poetry run uvicorn src.server:export_app_for_docker --reload --host 0.0.0.0 --timeout-keep-alive 75 --workers 4
+
+    postgres:
+        container_name: venome-postgres
+        image: postgres:latest
+        environment:
+            POSTGRES_DB: venome
+            POSTGRES_USER: myuser
+            POSTGRES_PASSWORD: mypassword
+        volumes:
+            - postgres_data:/var/lib/postgresql/data # so the inserted data persists even when docker is turned off
+
+        ports:
+            # Use a different port to avoid clashes with local postgres
+            - "3000:5432"
+
+volumes:
+    postgres_data:
