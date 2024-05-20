@@ -4,7 +4,7 @@
 # EXAMPLE: sh run.sh start
 # more docs are in the docs/run.md file
 
-docker_compose_prod=docker-compose-prod.yml
+COMPOSE_CONFIG=docker-compose.yml
 
 function all() {
 	start
@@ -16,25 +16,18 @@ function quickstart() {
 	add_tmalign
 }
 
-function prod_start() {
-	docker compose -f $docker_compose_prod up -d 
-}
-function prod_stop() {
-	docker compose -f $docker_compose_prod down
-}
-
 function start() {
-	docker compose up -d
+	docker compose -f $COMPOSE_CONFIG up -d
 }
 
 function stop() { 
-	docker compose down
+	docker compose -f $COMPOSE_CONFIG down
 }
 
 # generates the api bridge between frontend and backend
 function gen_api() {
 	cd frontend
-	yarn openapi && docker compose restart frontend
+	yarn openapi && docker compose -f $COMPOSE_CONFIG restart frontend
 	cd ..
 }
 
@@ -133,7 +126,7 @@ function soft_restart() {
 # complete from scratch rebuild
 function hard_restart() {
 	stop
-	docker compose up --build -d	
+	docker compose -f $COMPOSE_CONFIG up --build -d	
 	reload_init_sql
 }
 
