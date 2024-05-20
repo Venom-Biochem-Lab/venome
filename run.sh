@@ -31,19 +31,45 @@ function gen_api() {
 
 # clears the postgres persistent storage
 function rm_volume() {
- 	stop
-	docker volume rm venome_postgres_data
+  stop
+  docker volume rm venome_postgres_data
+  start
 }
 
 # runs db from scratch from the init.sql file, but first backs up the existing db
 function reload_init_sql() {
-	rm_volume
-	start	
+  rm_volume
+  start
 }
 
-# creates a sql dump file of the database (backup) into the backend/data folder
+function sql_date_backup() {
+  docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome --inserts > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+}
+
 function sql_dump() {
-	docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+	if [ "$1" != "" ]; then
+		docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome --inserts > $1
+	else
+		echo "ERROR: .sql file not specified."
+	fi
+}
+
+function sql_delete() {
+	rm_volume
+}
+
+function sql_load() {
+	if [ "$1" != "" ]; then
+		docker exec -t venome-postgres psql --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome -c "$(cat $1)"
+	else
+		echo "ERROR: .sql file not specified."
+	fi
+}
+
+function sql_delete_and_load() {
+	sql_delete 
+	sleep 1 # not sure why this works
+	sql_load $1
 }
 
 function restart_venv() {
@@ -165,7 +191,7 @@ for func in "${functions[@]}"; do
 	# if the func exists in this file, and the first cmd line arg matches the func name, 
 	# run the func
 	if [ "$1" == "$func" ]; then
-		$1
+		$1 $2 # $2 and on are arguments passed into the $1 function
 		exit 0
 	fi
 done
