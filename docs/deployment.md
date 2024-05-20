@@ -37,5 +37,15 @@ and enter your OSU ONID password again.
 
 ✅ Success you are in!
 
+## Weird issues I've encountered
+
+### CQLS cloning repo
+
+If you need to reclone the repo, make sure to use the https link and the not ssh link for the github repo link. No clue why but the ssh link hangs forever.
+
+### Proxy server
+
+For some reason, if you are on a proxy server, docker can't connect to the internet at all. To fix this, you need to point docker to what the $http_proxy enviroment variables says with https://docs.docker.com/config/daemon/systemd/. Follow those instructions. You might also need to update the docker/config.json with the same info. In my case there was a config.json in ~/.docker/config.json and in /etc/docker/config.json. No clue why there are multiple, but just make sure they all agree and restart the daemon and docker. 
+
 
 
