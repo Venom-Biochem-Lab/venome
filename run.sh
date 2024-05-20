@@ -193,7 +193,15 @@ for func in "${functions[@]}"; do
 	# if the func exists in this file, and the first cmd line arg matches the func name, 
 	# run the func
 	if [ "$1" == "$func" ]; then
-		$1 $2 # $2 and on are arguments passed into the $1 function
+
+		if [ "$2" == "-p" ]; then
+			# if you put a -p after the function name, indicates production config
+			COMPOSE_CONFIG=docker-compose-prod.yml
+			$1 $3 # $2 was -p so rest of arguments onwards $3 is second arg now
+			else
+			$1 $2 # $2 and on are arguments passed into the $1 function
+		fi
+
 		exit 0
 	fi
 done
