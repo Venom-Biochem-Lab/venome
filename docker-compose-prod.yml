@@ -5,12 +5,12 @@ services:
         container_name: venome-frontend
         build:
             context: ./frontend
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.prod
         ports:
             - "5173:5173"
         environment:
             PUBLIC_BACKEND_URL: http://localhost:8000
-        command: ["yarn", "dev", "--", "--host", "0.0.0.0"]
+        command: yarn preview -- --host 0.0.0.0 --port 5173
     backend:
         container_name: venome-backend
         build:
@@ -22,15 +22,14 @@ services:
             - postgres
         environment:
             PUBLIC_FRONTEND_URL: http://localhost:5173
-            BACKEND_HOST: 0.0.0.0
+            BACKEND_HOST: localhost
             BACKEND_PORT: 8000
             DB_HOST: postgres
             DB_PORT: 5432
             DB_NAME: venome
             DB_USER: myuser
             DB_PASSWORD: mypassword
-        # command: poetry run dev
-        command: poetry run uvicorn src.server:export_app_for_docker --reload --host 0.0.0.0 --timeout-keep-alive 75 --workers 4
+        command: poetry run uvicorn --factory src.server:export_app_for_docker --host 0.0.0.0 --timeout-keep-alive 75
 
     postgres:
         container_name: venome-postgres
