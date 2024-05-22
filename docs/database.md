@@ -81,24 +81,3 @@ You should get access to the psql shell now, where you can run stuff like
 
 
 If you have errors, make sure the docker container is already running (`./run.sh start` cmd).
-
-## Backups
-If you plan to make any glaring changes, make sure to make backups/sql dumps with
-
-```bash
-sh run.sh sql_dump
-```
-and verify the backup succeeded by checking the  [`backend/backups/`](../backend/backups/README.md).
-
-## Reloading from [`init.sql`](../backend/init.sql)
-
-> [!WARNING]
-> Reloading this file will override the existing data and schema in the running db
-
-The [`init.sql`](../backend/init.sql) only gets loaded on the first run of docker. It stops running this file on subsequent docker runs.
-
-To reload the docker db with this file, simply run
-
-```bash
-sh run.sh reload_init_sql
-```
