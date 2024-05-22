@@ -21,7 +21,7 @@ For example
 or
 
 ```bash
-./run.sh sql_reload backend/init.sql 
+./run.sh reload_from_backup backups/v0.0.2
 ```
 
 ## Production Build
@@ -41,5 +41,5 @@ will run `docker compose -f docker-compose-prod.yml up -d` instead of the normal
 For example to delete the current database and reload from the backend/init.sql, I can as long as I include the `-p` flag too for production
 
 ```bash
-./run.sh sql_reload -p backend/init.sql
+./run.sh reload_from_backup -p backups/v0.0.2
 ```
