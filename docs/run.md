@@ -30,7 +30,7 @@ Commands from [`run.sh`](../run.sh) listed below with descriptions for how to us
 |  `start` |  Starts/runs the docker container where edits to the backend or frontend will hot reload |
 |  `stop` |   Stops the docker container |
 |  `restart` |   Stops then starts the docker container. |
-|  `rebuild_from_scratch` |  Nukes the docker and rebuilds everything from scratch. |
+|  `restart_from_scratch` |  Nukes the docker and rebuilds everything from scratch. |
 |  `refresh_packages` |   Updates or adds new packages in frontend and backend, needs to be run every time you add a new package locally |
 
 
@@ -52,8 +52,6 @@ Note that for production mode, if there is a second argument like `<filename>` i
 ### Addons
 |  ./runsh `<cmd>` |  what it does  |
 |---|---|
-|  `add_venom_lab_proteins` |  Uploads all venom lab protein with POST requests (might have to `pip3 install requests` globally)  |
-|  `remove_venom_lab_proteins` |  Deletes all venom lab protein with DELETE requests (might have to `pip3 install requests` globally)  |
 |  `add_foldseek` |  installs foldseek onto the docker container via wget |
 |  `remove_foldseek` |  deletes foldseek from the docker container |
 |  `add_tmalign` | installs tm align onto the docker container via wget |

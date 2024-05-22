@@ -136,21 +136,10 @@ function refresh_packages() {
 	restart
 }
 
-
 # complete from scratch rebuild
-function rebuild_from_scratch() {
+function restart_from_scratch() {
 	stop
 	docker compose -f $COMPOSE_CONFIG up --build -d	
-}
-
-function add_venom_lab_proteins() {
-	cd galaxy
-	python3 upload_all.py
-}
-
-function remove_venom_lab_proteins() {
-	cd galaxy
-	python3 delete_all.py 
 }
 
 function add_foldseek() {
