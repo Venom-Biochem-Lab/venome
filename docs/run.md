@@ -2,10 +2,6 @@
 
 The [`run.sh`](../run.sh) contains all the commands to run the backend, frontend, restart the containers, and more.
 
-> [!IMPORTANT]
-> Use the `-p` flag right after the `<cmd>` for production mode. This will change the default [`docker-compose.yml`](../docker-compose.yml) to [`docker-compose-prod.yml`](../docker-compose-prod.yml) in the [`run.sh`](../run.sh).
-> For example you can run `./run.sh start -p` to build in production mode. Or to source the schema with the init.sql you can do `./run.sh sql_reload -p backend/init.sql`.
-
 You can easily call a function defined in the [`run.sh`](../run.sh) by calling
 
 ```bash
@@ -28,10 +24,9 @@ Commands from [`run.sh`](../run.sh) listed below with descriptions for how to us
 
 ### Build commands
 
-
 |  ./run.sh `<cmd>` |  what it does  |
 |---|---|
-|  `gen_api` |  Creates/Generates the frontend api code based on the FastAPI endpoints [`frontend/src/lib/backend/openapi/`](../frontend/src/lib/backend/openapi/). Note that the docker needs to be running. |
+|  `gen_api` |  Creates/Generates the frontend api code based on the FastAPI endpoints [`frontend/src/lib/backend/openapi/`](../frontend/src/lib/openapi/). Note that the docker needs to be running. |
 |  `start` |  Starts/runs the docker container where edits to the backend or frontend will hot reload |
 |  `stop` |   Stops the docker container |
 |  `restart` |   Stops then starts the docker container. |
