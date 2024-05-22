@@ -20,7 +20,7 @@ Commands from [`run.sh`](../run.sh) listed below with descriptions for how to us
 
 > [!IMPORTANT]
 > Use the `-p` flag right after the `<cmd>` for production mode. This will change the default [`docker-compose.yml`](../docker-compose.yml) to [`docker-compose-prod.yml`](../docker-compose-prod.yml) in the [`run.sh`](../run.sh).
-> For example you can run `./run.sh start -p` to build in production mode. Or to source the schema with the init.sql you can do `./run.sh reload_from_backup -p backups/v0.0.2`.
+> For example you can run `./run.sh start -p` to build in production mode. Or to load from a backup with production you can do `./run.sh reload_from_backup -p backups/v0.0.2`.
 
 ### Build commands
 
@@ -36,7 +36,7 @@ Commands from [`run.sh`](../run.sh) listed below with descriptions for how to us
 
 ### Database commands
 
-Note that for production mode, if there is a second argument like `<filename>` it follows the `-p` flag. For example `./run.sh reload_from_backup -p backups/init.sql`. If you're running in default dev mode, ignore this. Also try to save the backups under the `backups/` folder and make sure to choose a unique name if you're backing up stuff.
+Note that for production mode, if there is a second argument like `<filename>` it follows the `-p` flag. For example `./run.sh reload_from_backup -p backups/v0.0.2`. If you're running in default dev mode, ignore this. Also try to save the backups under the `backups/` folder and make sure to choose a unique name if you're backing up stuff.
 
 |  ./run.sh `<cmd>` |  what it does  |
 |---|---|

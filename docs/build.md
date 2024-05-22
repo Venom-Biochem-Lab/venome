@@ -38,7 +38,7 @@ For example
 
 will run `docker compose -f docker-compose-prod.yml up -d` instead of the normal config. This works for any other command too.
 
-For example to delete the current database and reload from the backend/init.sql, I can as long as I include the `-p` flag too for production
+For example to delete the current database and reload from the last snapshot, as long as I include the `-p` flag too for production it works
 
 ```bash
 ./run.sh reload_from_backup -p backups/v0.0.2
