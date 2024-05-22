@@ -87,7 +87,7 @@ function backup() {
 function reload_from_backup() {
 	if [ "$1" != "" ]; then
 		docker exec -t venome-backend rm -fr src/data/stored_proteins # remove what's already there
-		docker cp $1/stored_proteins/ venome-backend:/app/src/data/ # send over our backup files to docker
+		docker cp $1/stored_proteins/ venome-backend:/app/src/data/stored_proteins/ # send over our backup files to docker
 		sleep 5
 		sql_reload  $1/dump.sql # reload from the schema
 	else
