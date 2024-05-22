@@ -143,7 +143,7 @@ function restart_from_scratch() {
 }
 
 function add_foldseek() {
-	docker exec -it venome-backend wget https://mmseqs.com/foldseek/foldseek-linux-sse2.tar.gz
+	docker exec -it venome-backend wget --no-check-certificate https://mmseqs.com/foldseek/foldseek-linux-sse2.tar.gz
 	docker exec -it venome-backend tar -xvf foldseek-linux-sse2.tar.gz
 	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz
 }
@@ -154,7 +154,7 @@ function remove_foldseek() {
 }
 
 function add_tmalign() {
-	docker exec -it venome-backend wget https://seq2fun.dcmb.med.umich.edu//TM-align/TMalign_cpp.gz
+	docker exec -it venome-backend wget --no-check-certificate https://seq2fun.dcmb.med.umich.edu//TM-align/TMalign_cpp.gz
 	docker exec -it venome-backend mkdir tmalign
 	docker exec -it venome-backend gzip -d TMalign_cpp.gz
 	docker exec -it venome-backend mv TMalign_cpp tmalign/tmalign
