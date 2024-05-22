@@ -38,12 +38,6 @@ function rm_volume() {
   start
 }
 
-# runs db from scratch from the init.sql file, but first backs up the existing db
-function reload_init_sql() {
-  rm_volume
-  start
-}
-
 function sql_date_backup() {
   docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome --inserts > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 }
@@ -60,7 +54,7 @@ function sql_delete() {
 	rm_volume
 }
 
-function sql_load() {
+function sql_source() {
 	if [ "$1" != "" ]; then
 		docker exec -t venome-postgres psql --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome -c "$(cat $1)"
 	else
@@ -68,10 +62,10 @@ function sql_load() {
 	fi
 }
 
-function sql_delete_and_load() {
+function sql_reload() {
 	sql_delete 
-	sleep 1 # not sure why this works
-	sql_load $1
+	sleep 1 # not sure why this works, but a delay is needed oddly sql_delete takes time to finish
+	sql_source $1
 }
 
 function restart_venv() {
@@ -116,26 +110,20 @@ function refresh_packages() {
 }
 
 
-# only update dependencies and reload init sql
-function soft_restart() {
-	stop
-	refresh_packages
-	reload_init_sql
-}
-
 # complete from scratch rebuild
-function hard_restart() {
+function rebuild_from_scratch() {
 	stop
 	docker compose -f $COMPOSE_CONFIG up --build -d	
-	reload_init_sql
 }
 
-function upload_all() {
-	cd galaxy && python3 upload_all.py
+function add_venom_lab_proteins() {
+	cd galaxy
+	python3 upload_all.py
 }
 
-function delete_all() {
-	cd galaxy && python3 delete_all.py && soft_restart
+function remove_venom_lab_proteins() {
+	cd galaxy
+	python3 delete_all.py 
 }
 
 function add_foldseek() {
