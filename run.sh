@@ -78,7 +78,7 @@ function backup() {
 	if [ "$1" != "" ]; then
 		mkdir $1
 		sql_dump $1/dump.sql
-		docker cp venome-backend:/app/src/data/ $1
+		docker cp venome-backend:/app/src/stored_proteins/ $1
 	else
 		echo "ERROR: backup name not specified."
 	fi
@@ -86,8 +86,9 @@ function backup() {
 
 function reload_from_backup() {
 	if [ "$1" != "" ]; then
-		docker exec -t venome-backend rm -fr src/data # remove what's already there
-		docker cp $1/data venome-backend:/app/src/ # send over our backup files to docker
+		docker exec -t venome-backend rm -fr src/stored_proteins/* # remove what's already there
+		docker cp $1/stored_proteins/ venome-backend:/app/src/ # send over our backup files to docker
+		sleep 5
 		sql_reload  $1/dump.sql # reload from the schema
 	else
 		echo "ERROR: backup name not specified."

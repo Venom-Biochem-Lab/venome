@@ -56,7 +56,7 @@ def decode_base64(b64_header_and_data: str):
 
 
 def stored_pdb_file_name(protein_name: str):
-    return os.path.join("src/data/pdbAlphaFold", protein_name) + ".pdb"
+    return os.path.join("src/stored_proteins", protein_name) + ".pdb"
 
 
 def parse_protein_pdb(name: str, file_contents: str = "", encoding="str"):
