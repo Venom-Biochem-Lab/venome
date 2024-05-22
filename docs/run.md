@@ -20,7 +20,7 @@ Commands from [`run.sh`](../run.sh) listed below with descriptions for how to us
 
 > [!IMPORTANT]
 > Use the `-p` flag right after the `<cmd>` for production mode. This will change the default [`docker-compose.yml`](../docker-compose.yml) to [`docker-compose-prod.yml`](../docker-compose-prod.yml) in the [`run.sh`](../run.sh).
-> For example you can run `./run.sh start -p` to build in production mode. Or to source the schema with the init.sql you can do `./run.sh sql_reload -p backend/init.sql`.
+> For example you can run `./run.sh start -p` to build in production mode. Or to source the schema with the init.sql you can do `./run.sh reload_from_backup -p backups/v0.0.2`.
 
 ### Build commands
 
@@ -36,15 +36,15 @@ Commands from [`run.sh`](../run.sh) listed below with descriptions for how to us
 
 ### Database commands
 
-Note that for production mode, if there is a second argument like `<filename>` it follows the `-p` flag. For example `./run.sh sql_reload -p backend/init.sql`. If you're running in default dev mode, ignore this. Also try to save the backups under the `backups/` folder and make sure to choose a unique name if you're backing up stuff.
+Note that for production mode, if there is a second argument like `<filename>` it follows the `-p` flag. For example `./run.sh reload_from_backup -p backups/init.sql`. If you're running in default dev mode, ignore this. Also try to save the backups under the `backups/` folder and make sure to choose a unique name if you're backing up stuff.
 
 |  ./run.sh `<cmd>` |  what it does  |
 |---|---|
 |  `psql` | Opens up a direct terminal into the database to execute SQL commands live |
 |  `backup <backupname>` | Dumps the sql schema and data + copies all the protein .pdb files into a new directory of name `<backupname>`|
 |  `reload_from_backup <backupname>` | Deletes all the current database reloads from the `backupname` generated from the `backup` command above. |
-|  `sql_reload <filename>` | Deletes all the database and sources the `<filename>`. Example: `./run.sh sql_reload backend/init.sql`.|
-|  `sql_source <filename>` | Sources/executes the `<filename>` on the db. Example: `./run.sh sql_source backend/init.sql`.|
+|  `sql_reload <filename>` | Deletes all the database and sources the `<filename>`. Example: `./run.sh sql_reload backups/v0.0.2/dump.sql`.|
+|  `sql_source <filename>` | Sources/executes the `<filename>` on the db. Example: `./run.sh sql_source backups/v0.0.2/dump.sql`.|
 |  `sql_delete` | Deletes all database contents.|
 |  `sql_dump <filname>` | Dumps the current db contents and schema to `<filename>`. Example: `./run.sh sql_dump example.sql` will dump the db to `example.sql`.|
 |  `sql_date_backup` | Dumps the current db contents and schema to `backend/backups` with the current timestamp as filename. |
