@@ -11,7 +11,7 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 
 -   [⚡️ Quick Start](#️⚡️-quick-start) below to quickly run the development server locally
 -   [`docs/`](./docs/) for in depth help or details
-	- [`run.md`](./run.md) for how to use our [`run.sh`](./run.sh) build script
+	- [`run.md`](./docs/run.md) for how to use our [`run.sh`](./run.sh) build script
 	- [`overview.md`](./docs/overview.md) for an in depth overview for developers (if you're the next group working on this, start here)
 	- [`frontend.md`](./docs/frontend.md) for the **frontend** architecture and help
 	- [`backend.md`](./docs/backend.md) for the **backend** architecture and help
