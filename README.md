@@ -9,7 +9,7 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 
 **Quick Links**
 
--   [⚡️ Quick Start](#️⚡️-quick-start) below to quickly run the development server locally
+-   [Dev Quick Start](#️dev-quick-start) below to quickly run the development server locally
 -   [`docs/`](./docs/) for in depth help or details
 	- [`run.md`](./docs/run.md) for how to use our [`run.sh`](./run.sh) build script
 	- [`overview.md`](./docs/overview.md) for an in depth overview for developers (if you're the next group working on this, start here)
@@ -21,7 +21,7 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 	- [`deployment.md`](./docs/deployment.md) for how to deploy to production
 	- [`build.md`](./docs/build.md) for more details on building for development and production
 
-## ️⚡️ Quick Start
+## Dev Quick Start
 
 This section tells you how to run the Venome website in four easy steps.
 
