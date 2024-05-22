@@ -210,7 +210,7 @@ def search_species():
     response_model=list[SimilarProtein],
 )
 def search_venome_similar(protein_name: str):
-    venome_folder = "/app/src/stored_proteins/"  # relative to docker filepath
+    venome_folder = "/app/src/data/stored_proteins/"  # relative to docker filepath
     # ignore the first since it's itself as the most similar
     try:
         similar = easy_search(
