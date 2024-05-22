@@ -2,7 +2,6 @@
 -- IMPORTANT
 -- This file only gets run once, when the database is created.
 -- If you need to revise this file read:
---      To rerun this file, you'll need to do `sh run.sh reload_init_sql`
 --      Keep in mind this will backup the data to `backend/backups` folder and wipe everything in the docker container DB
 
 -- Note: "Numeric" data types have arbitrary precision which are good for calculations, which seems ideal for this project.

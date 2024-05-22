@@ -33,10 +33,11 @@ function gen_api() {
 
 # clears the postgres persistent storage
 function rm_volume() {
-  stop
-  docker volume rm venome_postgres_data
-  start
+	stop
+	docker volume rm venome_postgres_data
+	start
 }
+
 
 function sql_date_backup() {
   docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome --inserts > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
@@ -55,8 +56,13 @@ function sql_delete() {
 }
 
 function sql_source() {
+	# holy shit this is scuffed
+	# in production mode, need to copy over stuff
 	if [ "$1" != "" ]; then
-		docker exec -t venome-postgres psql --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome -c "$(cat $1)"
+	 	temp_file=temp.sql
+		docker cp $1 venome-postgres:/$temp_file # send over the sql file to postgres server
+		docker exec -t venome-postgres psql --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome -f $temp_file # execute the sql file
+		docker exec -t venome-postgres rm -f $temp_file
 	else
 		echo "ERROR: .sql file not specified."
 	fi
@@ -64,8 +70,28 @@ function sql_source() {
 
 function sql_reload() {
 	sql_delete 
-	sleep 1 # not sure why this works, but a delay is needed oddly sql_delete takes time to finish
+	sleep 5 # not sure why this works, but a delay is needed oddly sql_delete takes time to finish
 	sql_source $1
+}
+
+function backup() {
+	if [ "$1" != "" ]; then
+		mkdir $1
+		sql_dump $1/dump.sql
+		docker cp venome-backend:/app/src/data/ $1
+	else
+		echo "ERROR: backup name not specified."
+	fi
+}
+
+function reload_from_backup() {
+	if [ "$1" != "" ]; then
+		docker exec -t venome-backend rm -fr src/data # remove what's already there
+		docker cp $1/data venome-backend:/app/src/ # send over our backup files to docker
+		sql_reload  $1/dump.sql # reload from the schema
+	else
+		echo "ERROR: backup name not specified."
+	fi
 }
 
 function restart_venv() {

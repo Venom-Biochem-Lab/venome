@@ -36,11 +36,13 @@ Commands from [`run.sh`](../run.sh) listed below with descriptions for how to us
 
 ### Database commands
 
-Note that for production mode, if there is a second argument like `<filename>` it follows the `-p` flag. For example `./run.sh sql_reload -p backend/init.sql`. If you're running in default dev mode, ignore this.
+Note that for production mode, if there is a second argument like `<filename>` it follows the `-p` flag. For example `./run.sh sql_reload -p backend/init.sql`. If you're running in default dev mode, ignore this. Also try to save the backups under the `backups/` folder and make sure to choose a unique name if you're backing up stuff.
 
 |  ./run.sh `<cmd>` |  what it does  |
 |---|---|
 |  `psql` | Opens up a direct terminal into the database to execute SQL commands live |
+|  `backup <backupname>` | Dumps the sql schema and data + copies all the protein .pdb files into a new directory of name `<backupname>`|
+|  `reload_from_backup <backupname>` | Deletes all the current database reloads from the `backupname` generated from the `backup` command above. |
 |  `sql_reload <filename>` | Deletes all the database and sources the `<filename>`. Example: `./run.sh sql_reload backend/init.sql`.|
 |  `sql_source <filename>` | Sources/executes the `<filename>` on the db. Example: `./run.sh sql_source backend/init.sql`.|
 |  `sql_delete` | Deletes all database contents.|
