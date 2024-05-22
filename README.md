@@ -16,6 +16,7 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 	- [`frontend.md`](./docs/frontend.md) for the **frontend** architecture and help
 	- [`backend.md`](./docs/backend.md) for the **backend** architecture and help
 	- [`database.md`](./docs/database.md) for the **database** architecture and help
+	- [`api.md`](./docs/api.md) for how to create backend endpoints and connect them to the frontend
 	- [`auth.md`](./docs/auth.md) for how we did authentication and limitations
 	- [`deployment.md`](./docs/deployment.md) for how to deploy to production
 	- [`build.md`](./docs/build.md) for more details on building for development and production
