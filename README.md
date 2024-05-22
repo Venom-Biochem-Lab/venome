@@ -9,7 +9,7 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 
 **Quick Links**
 
--   [Dev Quick Start](#️dev-quick-start) below to quickly run the development server locally
+-   [Dev Quick Start](#dev-quick-start) below to quickly run the development server locally
 -   [`docs/`](./docs/) for in depth help or details
 	- [`run.md`](./docs/run.md) for how to use our [`run.sh`](./run.sh) build script
 	- [`overview.md`](./docs/overview.md) for an in depth overview for developers (if you're the next group working on this, start here)
