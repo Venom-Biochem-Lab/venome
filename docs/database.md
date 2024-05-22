@@ -1,5 +1,28 @@
 ﻿# Database
 
+## Backing up data
+
+You can easily backup data with 
+
+```bash
+./run.sh backup backups/your_backup_name_here
+```
+
+then load from an existing snapshot with
+
+```bash
+./run.sh reload_from_backup backups/your_backup_name_here
+```
+or from production mode
+
+
+```diff
+-./run.sh reload_from_backup backups/your_backup_name_here
++./run.sh reload_from_backup -p backups/your_backup_name_here
+```
+
+See [`run.md`](./run.md) for more info.
+
 ## Using with Python API Server
 
 ### Access
