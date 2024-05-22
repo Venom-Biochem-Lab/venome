@@ -13,12 +13,10 @@ then load from an existing snapshot with
 ```bash
 ./run.sh reload_from_backup backups/your_backup_name_here
 ```
-or from production mode
-
+or from production container mode
 
 ```diff
--./run.sh reload_from_backup backups/your_backup_name_here
-+./run.sh reload_from_backup -p backups/your_backup_name_here
+./run.sh reload_from_backup -p backups/your_backup_name_here
 ```
 
 See [`run.md`](./run.md) for more info.
