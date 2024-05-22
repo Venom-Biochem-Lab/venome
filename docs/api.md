@@ -72,7 +72,7 @@ From here, you can use the testResponse like you could any other JSON object in 
 ```svelte
 <div>
     <b>Test Response:</b>
-    {testResponse.hello_there}
+    {testResponse.helloThere}
     <b>The Echo:</b>
     {echo}
 </div>
