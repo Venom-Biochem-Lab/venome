@@ -1,33 +1,21 @@
 import requests
 import os
+import zipfile
+from master_venom_galaxy import (
+    get_login_token,
+    get_protein_names_in_zip,
+    MASTER_VENOM_GALAXY_ZIP,
+    MASTER_VENOM_GALAXY_DIR,
+)
 
 CONTENT = "From the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) and predicted using [AlphaFold](https://github.com/google-deepmind/alphafold)."
 REFS = ""
-DIR = "./master_venom_galaxy"
 
 
-def unzip_box():
-    os.system(f"unzip {DIR}.zip")
-
-
-def remove_box():
-    os.system(f"rm -rf {DIR}")
-
-
-def get_login_token():
-    info = {
-        "email": "test",
-        "password": "test"
-    }
-    res = requests.post("http://localhost:8000/users/login", json=info)
-    if res.json()['error']:
-        print("Login error:", res.json()['error'])
-        exit()
-    return res.json()['token']
-
-
-def upload_protein_file(path, name, species_name, content="", refs="", desc="", token=""):
-    with open(path, "r") as f:
+def upload_protein_file(
+    path, name, species_name, content="", refs="", desc="", token=""
+):
+    with open(os.path.join(".", path), "r") as f:
         pdb_file_str = f.read()
         payload = {
             "name": name,
@@ -37,38 +25,37 @@ def upload_protein_file(path, name, species_name, content="", refs="", desc="", 
             "pdb_file_str": pdb_file_str,
             "description": desc,
         }
-        out = requests.post("http://localhost:8000/protein/upload", json=payload, headers={
-
-            "authorization":"Bearer {}".format(token)
-        })
+        out = requests.post(
+            "http://localhost:8000/protein/upload",
+            json=payload,
+            headers={"authorization": "Bearer {}".format(token)},
+        )
         return out
 
 
-def upload_all():
-    token=get_login_token()
-    unzip_box()
-    available_species = {
-        "Gh": "ganaspis hookeri",
-        "Lb": "leptopilina boulardi",
-        "Lh": "leptopilina heterotoma",
-        "*": "unknown",
-    }
-    for fn in os.listdir(DIR):
-        if fn.endswith(".pdb"):
-            full_path = os.path.join(DIR, fn)
-            name = fn.split(".")[0].replace("_", " ")
-            species_name = available_species[fn[:2]]
+if __name__ == "__main__":
+    with zipfile.ZipFile(MASTER_VENOM_GALAXY_ZIP, "r") as z:
+        z.extractall()  # unzip
+
+        available_species = {
+            "Gh": "ganaspis hookeri",
+            "Lb": "leptopilina boulardi",
+            "Lh": "leptopilina heterotoma",
+            "*": "unknown",
+        }
+        token = get_login_token()
+        for protein_name, filepath in get_protein_names_in_zip(z):
+            species_name = available_species[protein_name[:2]]
             upload_protein_file(
-                full_path,
-                name,
+                filepath,
+                protein_name,
                 species_name,
                 content=CONTENT,
                 refs=REFS,
-                desc="from the venom lab at osu",
+                desc=f"{protein_name.replace('_', ' ')} from the {species_name} wasp venom",
                 token=token,
             )
-            print("uploaded", full_path, name, species_name)
-    remove_box()
+            print("uploaded", protein_name, species_name)
 
-
-upload_all()
+        # delete unzipped files
+        os.system(f"rm -rf {MASTER_VENOM_GALAXY_DIR}")
