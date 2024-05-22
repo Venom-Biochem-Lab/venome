@@ -51,7 +51,7 @@ Set up the database schema with
 🎉🥳 You're done! Go to http://localhost:5173 to see the website live.
 
 
-**(optional data upload)**
+**(optional addons)**
 
 Optionally you can upload all the venom lab proteins by running
 
@@ -60,6 +60,12 @@ Optionally you can upload all the venom lab proteins by running
 ```
 you will have to have python and `pip3 install requests` for this step.
 
+You can also add foldseek similarity search and TM Alignment with
+
+```bash
+./run.sh add_foldseek
+./run.sh add_tmalign
+```
 ### Local Development Environment
 
 If you would like to have autocomplete and other nice development features, keep reading.
