@@ -29,6 +29,8 @@ services:
             DB_NAME: venome
             DB_USER: myuser
             DB_PASSWORD: mypassword
+        volumes:
+            - stored_proteins:/app/src/stored_proteins # so the inserted .pdb files persist
         command: poetry run uvicorn --factory src.server:export_app_for_docker --host 0.0.0.0 --timeout-keep-alive 75
 
     postgres:
@@ -47,3 +49,4 @@ services:
 
 volumes:
     postgres_data:
+    stored_proteins:
