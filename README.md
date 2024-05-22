@@ -11,16 +11,18 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 
 -   [⚡️ Quick Start](#️⚡️-quick-start) below to quickly run the development server locally
 -   [`docs/`](./docs/) for in depth help or details
-	- [`overview.md`](./docs/overview.md) for an in depth overview for developers (if you're the next group working on this, start here)
 	- [`run.md`](./run.md) for how to use our [`run.sh`](./run.sh) build script
+	- [`overview.md`](./docs/overview.md) for an in depth overview for developers (if you're the next group working on this, start here)
 	- [`frontend.md`](./docs/frontend.md) for the **frontend** architecture and help
 	- [`backend.md`](./docs/backend.md) for the **backend** architecture and help
-	- [`auth.md`](./docs/auth.md) for how we did authentication 
-	- [`deployment.md`](./docs/deployment.md) for how to deploy to the internet
+	- [`database.md`](./docs/database.md) for the **database** architecture and help
+	- [`auth.md`](./docs/auth.md) for how we did authentication and limitations
+	- [`deployment.md`](./docs/deployment.md) for how to deploy to production
+	- [`build.md`](./docs/build.md) for more details on building for development and production
 
 ## ️⚡️ Quick Start
 
-This section tells you how to run the Venome website in three easy steps.
+This section tells you how to run the Venome website in four easy steps.
 
 **1. Install Docker**
 
@@ -32,20 +34,30 @@ A quick way to install Docker is by installing [Docker Desktop](https://www.dock
 Execute the [`run.sh`](./run.sh) script in your terminal with the command
 
 ```bash
-./run.sh quickstart
+./run.sh start
 ```
 
-**3. View the Website**
+**3. Setup the Database**
 
-Then navigate to http://localhost:5173 to see the frontend in action.
+Set up the database schema with 
 
-**(optional)**
+```bash
+./run.sh sql_source backend/init.sql
+```
+
+**4. View the website**
+
+🎉🥳 You're done! Go to http://localhost:5173 to see the website live.
+
+
+**(optional data upload)**
 
 Optionally you can upload all the venom lab proteins by running
 
 ```bash
-./run.sh upload_all
+./run.sh add_venom_lab_proteins
 ```
+you will have to have python and `pip3 install requests` for this step.
 
 ### Local Development Environment
 

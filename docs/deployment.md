@@ -2,7 +2,9 @@
 
 To deploy venome we use the Oregon State [Center for Quantitative Life Sciences (CQLS)](https://cqls.oregonstate.edu/) servers. They have a linux virtual machine that we can ssh into and expose our application to the internet.
 
-## `ssh`ing into the VM
+## Getting into the CQLS server
+
+### `ssh`ing into the VM
 
 **1. Make an account through CQLS**
 
@@ -37,15 +39,23 @@ and enter your OSU ONID password again.
 
 ✅ Success you are in!
 
-## Weird issues I've encountered
+### Weird issues I've encountered
 
-### CQLS cloning repo
+#### CQLS cloning repo
 
 If you need to reclone the repo, make sure to use the https link and the not ssh link for the github repo link. No clue why but the ssh link hangs forever.
 
-### Proxy server
+#### Proxy server
 
 For some reason, if you are on a proxy server, docker can't connect to the internet at all. To fix this, you need to point docker to what the $http_proxy enviroment variables says with https://docs.docker.com/config/daemon/systemd/. Follow those instructions. You might also need to update the docker/config.json with the same info. In my case there was a config.json in ~/.docker/config.json and in /etc/docker/config.json. No clue why there are multiple, but just make sure they all agree and restart the daemon and docker. 
 
+You'll need to restart docker and the daemon if you change the config with `sudo systemctl daemon-reload` and `sudo systemctl restart docker`.
+
+#### Apache config
+
+I'm still having issue with the config. Update when I get things working.
 
 
+## Production build
+
+For deployment, we use the production build scripts. Please see [`build.md`](./build.md) for how to run the docker container in production mode.
