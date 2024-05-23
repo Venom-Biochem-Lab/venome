@@ -5,68 +5,56 @@ The [`run.sh`](../run.sh) contains all the commands to run the backend, frontend
 You can easily call a function defined in the [`run.sh`](../run.sh) by calling
 
 ```bash
-sh run.sh <cmd>
+./ run.sh <cmd>
 ```
 
-or
+or for production mode
 
 ```bash
-./run.sh <cmd>
+./run.sh <cmd> -p
 ```
 
-## Common Uses
+## Command reference
 
-**starting up**
+Commands from [`run.sh`](../run.sh) listed below with descriptions for how to use it.
 
-```bash
-./run.sh start
-```
+> [!IMPORTANT]
+> Use the `-p` flag right after the `<cmd>` for production mode. This will change the default [`docker-compose.yml`](../docker-compose.yml) to [`docker-compose-prod.yml`](../docker-compose-prod.yml) in the [`run.sh`](../run.sh).
+> For example you can run `./run.sh start -p` to build in production mode. Or to load from a backup with production you can do `./run.sh reload_from_backup -p backups/v0.0.2`.
 
-**starting with foldseek and tmalign**
-```bash
-./run.sh quickstart
-```
+### Build commands
 
-**If you're having big errors and have tried everything. Start over from scratch with**
-
-```bash
-./run.sh hard_restart
-```
-
-**If you want to restart everything without nuking the whole project, try a softer version**
-
-
-```bash
-./run.sh soft_restart
-```
-
-
-**If you changed the [`init.sql`](../backend/init.sql) and you're not seeing any changes**
-
-```bash
-./run.sh reload_init_sql
-```
-
-## More Commands
-
-|  `<cmd>` |  what it does  |
+|  ./run.sh `<cmd>` |  what it does  |
 |---|---|
+|  `gen_api` |  Creates/Generates the frontend api code based on the FastAPI endpoints [`frontend/src/lib/backend/openapi/`](../frontend/src/lib/openapi/). Note that the docker needs to be running. |
 |  `start` |  Starts/runs the docker container where edits to the backend or frontend will hot reload |
-|  `quickstart` | Starts/runs the docker container as above, and installs foldseek / tmalign. |
 |  `stop` |   Stops the docker container |
-|  `soft_restart` |  Updates or adds packages, reloads the database from [`init.sql`](../backend/init.sql). |
-|  `hard_restart` |  Builds the docker container from scratch and starts it, do this if you're having errors that even `soft_restart` can't fix |
+|  `restart` |   Stops then starts the docker container. |
+|  `restart_from_scratch` |  Nukes the docker and rebuilds everything from scratch. |
 |  `refresh_packages` |   Updates or adds new packages in frontend and backend, needs to be run every time you add a new package locally |
-|  `gen_api` |  Creates/Generates the frontend api code based on the backend endpoints |
-|  `reload_init_sql` |   When you change the the schema in [`init.sql`](../backend/init.sql), this reloads it, otherwise your changes won't show up in the docker |
-|  `sql_dump` | Dumps the current db contents and schema into [`backups/`](../backend/backups/).|
+
+
+### Database commands
+
+Note that for production mode, if there is a second argument like `<filename>` it follows the `-p` flag. For example `./run.sh reload_from_backup -p backups/v0.0.2`. If you're running in default dev mode, ignore this. Also try to save the backups under the `backups/` folder and make sure to choose a unique name if you're backing up stuff.
+
+|  ./run.sh `<cmd>` |  what it does  |
+|---|---|
 |  `psql` | Opens up a direct terminal into the database to execute SQL commands live |
-|  `upload_all` |  Uploads all the pdb files to the system via POST requests |
-|  `delete_all` |  Deletes all protein entries and restarts the server from scratch |
+|  `backup <backupname>` | Dumps the sql schema and data + copies all the protein .pdb files into a new directory of name `<backupname>`|
+|  `reload_from_backup <backupname>` | Deletes all the current database reloads from the `backupname` generated from the `backup` command above. |
+|  `sql_reload <filename>` | Deletes all the database and sources the `<filename>`. Example: `./run.sh sql_reload backups/v0.0.2/dump.sql`.|
+|  `sql_source <filename>` | Sources/executes the `<filename>` on the db. Example: `./run.sh sql_source backups/v0.0.2/dump.sql`.|
+|  `sql_delete` | Deletes all database contents.|
+|  `sql_dump <filname>` | Dumps the current db contents and schema to `<filename>`. Example: `./run.sh sql_dump example.sql` will dump the db to `example.sql`.|
+|  `sql_date_backup` | Dumps the current db contents and schema to `backend/backups` with the current timestamp as filename. |
+
+### Addons
+|  ./runsh `<cmd>` |  what it does  |
+|---|---|
 |  `add_foldseek` |  installs foldseek onto the docker container via wget |
 |  `remove_foldseek` |  deletes foldseek from the docker container |
 |  `add_tmalign` | installs tm align onto the docker container via wget |
 |  `remove_tmalign` | deletes tmalign from the docker container |
 
-There are actually many more functions, so please check out [`run.sh`](../run.sh).
 

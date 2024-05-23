@@ -1,5 +1,26 @@
 ﻿# Database
 
+## Backing up data
+
+You can easily backup data with 
+
+```bash
+./run.sh backup backups/your_backup_name_here
+```
+
+then load from an existing snapshot with
+
+```bash
+./run.sh reload_from_backup backups/your_backup_name_here
+```
+or from production container mode
+
+```diff
+./run.sh reload_from_backup -p backups/your_backup_name_here
+```
+
+See [`run.md`](./run.md) for more info.
+
 ## Using with Python API Server
 
 ### Access
@@ -60,24 +81,3 @@ You should get access to the psql shell now, where you can run stuff like
 
 
 If you have errors, make sure the docker container is already running (`./run.sh start` cmd).
-
-## Backups
-If you plan to make any glaring changes, make sure to make backups/sql dumps with
-
-```bash
-sh run.sh sql_dump
-```
-and verify the backup succeeded by checking the  [`backend/backups/`](../backend/backups/README.md).
-
-## Reloading from [`init.sql`](../backend/init.sql)
-
-> [!WARNING]
-> Reloading this file will override the existing data and schema in the running db
-
-The [`init.sql`](../backend/init.sql) only gets loaded on the first run of docker. It stops running this file on subsequent docker runs.
-
-To reload the docker db with this file, simply run
-
-```bash
-sh run.sh reload_init_sql
-```

@@ -33,16 +33,11 @@ function gen_api() {
 
 # clears the postgres persistent storage
 function rm_volume() {
-  stop
-  docker volume rm venome_postgres_data
-  start
+	stop
+	docker volume rm venome_postgres_data
+	start
 }
 
-# runs db from scratch from the init.sql file, but first backs up the existing db
-function reload_init_sql() {
-  rm_volume
-  start
-}
 
 function sql_date_backup() {
   docker exec -t venome-postgres pg_dump --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome --inserts > backend/backups/dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
@@ -60,18 +55,44 @@ function sql_delete() {
 	rm_volume
 }
 
-function sql_load() {
+function sql_source() {
+	# holy shit this is scuffed
+	# in production mode, need to copy over stuff
 	if [ "$1" != "" ]; then
-		docker exec -t venome-postgres psql --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome -c "$(cat $1)"
+	 	temp_file=temp.sql
+		docker cp $1 venome-postgres:/$temp_file # send over the sql file to postgres server
+		docker exec -t venome-postgres psql --dbname=postgresql://myuser:mypassword@0.0.0.0:5432/venome -f $temp_file # execute the sql file
+		docker exec -t venome-postgres rm -f $temp_file
 	else
 		echo "ERROR: .sql file not specified."
 	fi
 }
 
-function sql_delete_and_load() {
+function sql_reload() {
 	sql_delete 
-	sleep 1 # not sure why this works
-	sql_load $1
+	sleep 5 # not sure why this works, but a delay is needed oddly sql_delete takes time to finish
+	sql_source $1
+}
+
+function backup() {
+	if [ "$1" != "" ]; then
+		mkdir $1
+		sql_dump $1/dump.sql
+		docker cp venome-backend:/app/src/data/stored_proteins/ $1
+	else
+		echo "ERROR: backup name not specified."
+	fi
+}
+
+function reload_from_backup() {
+	if [ "$1" != "" ]; then
+		docker exec -t venome-backend rm -fr src/data/stored_proteins # remove what's already there
+		docker cp $1/stored_proteins/ venome-backend:/app/src/data/stored_proteins/ # send over our backup files to docker
+		sleep 5
+		sql_reload  $1/dump.sql # reload from the schema
+	else
+		echo "ERROR: backup name not specified."
+	fi
 }
 
 function restart_venv() {
@@ -115,31 +136,14 @@ function refresh_packages() {
 	restart
 }
 
-
-# only update dependencies and reload init sql
-function soft_restart() {
-	stop
-	refresh_packages
-	reload_init_sql
-}
-
 # complete from scratch rebuild
-function hard_restart() {
+function restart_from_scratch() {
 	stop
 	docker compose -f $COMPOSE_CONFIG up --build -d	
-	reload_init_sql
-}
-
-function upload_all() {
-	cd galaxy && python3 upload_all.py
-}
-
-function delete_all() {
-	cd galaxy && python3 delete_all.py && soft_restart
 }
 
 function add_foldseek() {
-	docker exec -it venome-backend wget https://mmseqs.com/foldseek/foldseek-linux-sse2.tar.gz
+	docker exec -it venome-backend wget --no-check-certificate https://mmseqs.com/foldseek/foldseek-linux-sse2.tar.gz
 	docker exec -it venome-backend tar -xvf foldseek-linux-sse2.tar.gz
 	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz
 }
@@ -150,7 +154,7 @@ function remove_foldseek() {
 }
 
 function add_tmalign() {
-	docker exec -it venome-backend wget https://seq2fun.dcmb.med.umich.edu//TM-align/TMalign_cpp.gz
+	docker exec -it venome-backend wget --no-check-certificate https://seq2fun.dcmb.med.umich.edu//TM-align/TMalign_cpp.gz
 	docker exec -it venome-backend mkdir tmalign
 	docker exec -it venome-backend gzip -d TMalign_cpp.gz
 	docker exec -it venome-backend mv TMalign_cpp tmalign/tmalign

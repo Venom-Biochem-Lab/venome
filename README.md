@@ -9,18 +9,21 @@ In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](ht
 
 **Quick Links**
 
--   [⚡️ Quick Start](#️⚡️-quick-start) below to quickly run the development server locally
+-   [Dev Quick Start](#dev-quick-start) below to quickly run the development server locally
 -   [`docs/`](./docs/) for in depth help or details
+	- [`run.md`](./docs/run.md) for how to use our [`run.sh`](./run.sh) build script
 	- [`overview.md`](./docs/overview.md) for an in depth overview for developers (if you're the next group working on this, start here)
-	- [`run.md`](./run.md) for how to use our [`run.sh`](./run.sh) build script
 	- [`frontend.md`](./docs/frontend.md) for the **frontend** architecture and help
 	- [`backend.md`](./docs/backend.md) for the **backend** architecture and help
-	- [`auth.md`](./docs/auth.md) for how we did authentication 
-	- [`deployment.md`](./docs/deployment.md) for how to deploy to the internet
+	- [`database.md`](./docs/database.md) for the **database** architecture and help
+	- [`api.md`](./docs/api.md) for how to create backend endpoints and connect them to the frontend
+	- [`auth.md`](./docs/auth.md) for how we did authentication and limitations
+	- [`deployment.md`](./docs/deployment.md) for how to deploy to production
+	- [`build.md`](./docs/build.md) for more details on building for development and production
 
-## ️⚡️ Quick Start
+## Dev Quick Start
 
-This section tells you how to run the Venome website in three easy steps.
+This section tells you how to run the Venome website in four easy steps.
 
 **1. Install Docker**
 
@@ -32,20 +35,31 @@ A quick way to install Docker is by installing [Docker Desktop](https://www.dock
 Execute the [`run.sh`](./run.sh) script in your terminal with the command
 
 ```bash
-./run.sh quickstart
+./run.sh start
 ```
 
-**3. View the Website**
+**3. Setup the Database**
 
-Then navigate to http://localhost:5173 to see the frontend in action.
-
-**(optional)**
-
-Optionally you can upload all the venom lab proteins by running
+Load the existing data and database schema with 
 
 ```bash
-./run.sh upload_all
+./run.sh reload_from_backup backups/v0.0.2
 ```
+
+**4. View the website**
+
+🎉🥳 You're done! Go to http://localhost:5173 to see the website live.
+
+
+**(optional addons)**
+
+You can also add foldseek similarity search and TM Alignment with
+
+```bash
+./run.sh add_foldseek
+./run.sh add_tmalign
+```
+
 
 ### Local Development Environment
 

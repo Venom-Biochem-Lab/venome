@@ -1,8 +1,3 @@
-# Video Overviews
-
-1. Installation: https://drive.google.com/file/d/1gLsz08U_brD-3WGMxDqsqqSM9GdNGJQc/view?usp=sharing
-2. ...
-
 # Text Version Overview
 
 This document outlines all our design choices and architecture decisions. It also points you in the right direction to get started developing. 
@@ -110,9 +105,19 @@ See [`Protein.svelte`](../frontend/src/routes/Protein.svelte) for more concrete 
 
 So you basically know everything about the frontend, so I'll pivot to only passing over the backend. The backend actually also houses a postgreSQL database. From python you can connect to a database and make queries to it. Please see examples like in [`search.py`](../backend/src/api/search.py) where I import Database and use it.
 
-This database is set up in the docker container and named venome. When the docker initially builds, it loads the [`init.sql`](../backend/init.sql) which describes the schema of our database. If you change the init.sql file, it won't automatically change the database. You'll need to manually restart the entire docker from scratch `./run.sh hard_restart` or simply reload the init.sql file only with `./run.sh reload_init_sql`. Note that these operations lose all the data stored forever.
+This database is set up in the docker container and named venome. When the docker initially builds, the database is completely empty.
+
+To load in the schema and data, load in a snapshot from the [`backups/`](../backups/) folder. 
+
+For example
+```bash
+./run.sh reload_from_backup backups/v0.0.2
+```
+to load a snapshot 
+
+```bash
+./run.sh backup backups/your_new_backup
+```
+to make a new backup.
 
 Please see the [`backend.md`](./backend.md) for more explanation.
-
-
-
