@@ -1,4 +1,3 @@
-import os
 from .setup import disable_cors, init_fastapi_app, serve_endpoints
 from .api import users, search, protein, articles
 
