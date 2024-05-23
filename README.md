@@ -1,7 +1,7 @@
 <img src="./docs/assets/logo-v3.svg" alt="venome title" />
 
 
-![Github Actions CI tests](https://github.com/xnought/venome/actions/workflows/ci.yml/badge.svg)
+![Github Actions CI tests](https://github.com/venom-biochem-lab/venome/actions/workflows/ci.yml/badge.svg)
 
 A website to store, visualize, and analyze venom proteins.
 
