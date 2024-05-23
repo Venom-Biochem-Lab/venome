@@ -3,6 +3,8 @@
 
 ![Github Actions CI tests](https://github.com/venom-biochem-lab/venome/actions/workflows/ci.yml/badge.svg)
 
+**🟢 Live deployment**: https://venome.cqls.oregonstate.edu
+
 A website to store, visualize, and analyze venom proteins. In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
 <video autoplay loop src="https://github.com/Venom-Biochem-Lab/venome/assets/65095341/7f0c2fdf-2d06-462a-a57d-2cb043d8141a" ></video>
