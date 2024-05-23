@@ -31,7 +31,7 @@
 		{
 			title: "Completely Open Source",
 			desc: "This sites code is completely open source on GitHub.",
-			href: "https://github.com/xnought/venome",
+			href: "https://github.com/venom-biochem-lab/venome",
 		},
 	];
 
