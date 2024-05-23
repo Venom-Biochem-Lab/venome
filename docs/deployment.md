@@ -45,7 +45,7 @@ and enter your OSU ONID password again.
 
 If you need to reclone the repo, make sure to use the https link and the not ssh link for the github repo link. No clue why but the ssh link hangs forever.
 
-#### Proxy server
+#### internet connection issues
 
 For some reason, if you are on a proxy server, docker can't connect to the internet at all. To fix this, you need to point docker to what the $http_proxy enviroment variables says with https://docs.docker.com/config/daemon/systemd/. Follow those instructions. You might also need to update the docker/config.json with the same info. In my case there was a config.json in ~/.docker/config.json and in /etc/docker/config.json. No clue why there are multiple, but just make sure they all agree and restart the daemon and docker. 
 
@@ -53,9 +53,28 @@ You'll need to restart docker and the daemon if you change the config with `sudo
 
 #### Apache config
 
-I'm still having issue with the config. Update when I get things working.
+Go to the `etc/httpd/conf/` directory and find the `httpd.conf` configuration file.
 
+Add a reverse proxy so that the server directs user traffic to our running production build 
 
-## Production build
+```txt
+ProxyPass /backend/ http://localhost:8000/
+ProxyPassReverse /backend/ http://localhost:8000/
+ProxyPass / http://localhost:5173/
+ProxyPassReverse / http://localhost:5173/
+```
+
+You might need to sudo vim to actually be able to edit these files. Once you do this restart the apache server with `sudo service httpd restart`.
+
+## CQLS Production build
 
 For deployment, we use the production build scripts. Please see [`build.md`](./build.md) for how to run the docker container in production mode.
+
+You first need to change the [`frontend/buildConstants.ts`](../frontend/buildConstants.ts) variable named BACKEND_URL to the URL your frontend will be requesting to. In this case change it to https://venome.cqls.oregonstate.edu/backend since that what the frontend will need to call to when deployed.
+
+Then you can build the entire container in production
+
+```bash
+./run.sh start -p
+./run.sh reload_from_backup -p backups/v0.0.2 # or whatever backup you want
+```

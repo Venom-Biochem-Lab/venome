@@ -11,8 +11,6 @@ services:
             - docker_node_modules:/app/node_modules/
         ports:
             - "5173:5173"
-        environment:
-            PUBLIC_BACKEND_URL: http://localhost:8000
         command: ["yarn", "dev", "--", "--host", "0.0.0.0"]
     backend:
         container_name: venome-backend
