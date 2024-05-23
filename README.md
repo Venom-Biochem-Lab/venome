@@ -3,9 +3,11 @@
 
 ![Github Actions CI tests](https://github.com/venom-biochem-lab/venome/actions/workflows/ci.yml/badge.svg)
 
-A website to store, visualize, and analyze venom proteins.
+A website to store, visualize, and analyze venom proteins. In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
-In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
+
+This project started as a 2023-2024 Senior Computer Science Capstone project at Oregon State University. See our [OSU 2024 Engineering Capstone poster](https://github.com/Venom-Biochem-Lab/venome-poster/blob/main/posters/2024.TheUnknownVenome.CS.094.pdf) or our [public landing page](https://venom-biochem-lab.github.io/venome-poster/) for more info.
+
 
 **Quick Links**
 
