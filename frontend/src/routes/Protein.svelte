@@ -152,10 +152,7 @@
 							outline
 							size="xs"
 							color="light"
-							on:click={() =>
-								navigate(
-									backendUrl(`protein/pdb/${entry?.name}`)
-								)}
+							href={backendUrl(`protein/pdb/${entry?.name}`)}
 							>Download .pdb file<DownloadOutline
 								size="sm"
 								class="ml-1"

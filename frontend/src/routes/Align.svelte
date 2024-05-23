@@ -175,8 +175,7 @@
 						color="light"
 						outline
 						size="xs"
-						on:click={() =>
-							navigate(backendUrl(`protein/pdb/${combined}`))}
+						href={backendUrl(`protein/pdb/${combined}`)}
 						>Download aligned .pdb file<DownloadOutline
 							size="sm"
 							class="ml-2"
