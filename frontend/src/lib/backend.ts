@@ -19,5 +19,5 @@ export function clearToken() {
 }
 
 export function backendUrl(endpoint: string) {
-	return `${BACKEND_REQUEST_URL}/${endpoint}/`; // the / at the end is neccesary for apache reverse proxy to know
+	return `${BACKEND_REQUEST_URL}/${endpoint}`;
 }
