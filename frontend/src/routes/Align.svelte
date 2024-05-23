@@ -3,7 +3,7 @@
 	import { onMount } from "svelte";
 	import {
 		Backend,
-		BACKEND_URL,
+		backendUrl,
 		type SimilarProtein,
 		type ProteinEntry,
 		type TMAlignInfo,
@@ -176,7 +176,7 @@
 						outline
 						size="xs"
 						on:click={() =>
-							navigate(`${BACKEND_URL}/protein/pdb/${combined}`)}
+							navigate(backendUrl(`protein/pdb/${combined}`))}
 						>Download aligned .pdb file<DownloadOutline
 							size="sm"
 							class="ml-2"
@@ -187,7 +187,7 @@
 			<div class="z-999">
 				<Molstar
 					format="pdb"
-					url="{BACKEND_URL}/protein/pdb/{combined}"
+					url={backendUrl(`protein/pdb/${combined}`)}
 					width={1000}
 					height={900}
 				/>

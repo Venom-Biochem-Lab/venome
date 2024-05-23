@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Molstar from "../Molstar.svelte";
 	import {
-		BACKEND_URL,
+		backendUrl,
 		Backend,
 		setToken,
 		type ProteinEntry,
@@ -105,7 +105,9 @@
 				</div>
 				<div>
 					<Molstar
-						url={`${BACKEND_URL}/protein/pdb/${name}${alignedWithName ? "/" + alignedWithName : ""}`}
+						url={backendUrl(
+							`protein/pdb/${name}${alignedWithName ? "/" + alignedWithName : ""}`
+						)}
 						{width}
 						{height}
 						zIndex={1}

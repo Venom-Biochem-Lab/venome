@@ -1,4 +1,4 @@
-import { BACKEND_URL } from "./backend";
+import { backendUrl } from "./backend";
 import { PDBeMolstarPlugin } from "../../venome-molstar/lib";
 import type { InitParams } from "../../venome-molstar/lib/spec";
 import type { QueryParam } from "../../venome-molstar/lib/helpers";
@@ -64,7 +64,7 @@ async function delay(ms: number) {
 
 export const defaultInitParams = (name: string): Partial<InitParams> => ({
 	customData: {
-		url: `${BACKEND_URL}/protein/pdb/${name}`,
+		url: backendUrl(`protein/pdb/${name}`),
 		format: "pdb",
 		binary: false,
 	},

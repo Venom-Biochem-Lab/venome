@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, BACKEND_URL, type ProteinEntry } from "../lib/backend";
+	import { Backend, backendUrl, type ProteinEntry } from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
 	import { Button } from "flowbite-svelte";
 	import Markdown from "../lib/Markdown.svelte";
@@ -154,7 +154,7 @@
 							color="light"
 							on:click={() =>
 								navigate(
-									`${BACKEND_URL}/protein/pdb/${entry?.name}`
+									backendUrl(`protein/pdb/${entry?.name}`)
 								)}
 							>Download .pdb file<DownloadOutline
 								size="sm"
@@ -164,7 +164,7 @@
 					</div>
 					<Molstar
 						format="pdb"
-						url="http://localhost:8000/protein/pdb/{entry.name}"
+						url={backendUrl(`protein/pdb/${entry.name}`)}
 						width={400}
 						height={350}
 						{chainColors}

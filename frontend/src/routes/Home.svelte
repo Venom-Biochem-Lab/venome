@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { BACKEND_URL, Backend, type ProteinEntry } from "../lib/backend";
+	import { backendUrl, Backend, type ProteinEntry } from "../lib/backend";
 	import BigNavLink from "../lib/BigNavLink.svelte";
 	import Molstar from "../lib/Molstar.svelte";
 	import ProteinLinkCard from "../lib/ProteinLinkCard.svelte";
@@ -101,7 +101,9 @@
 							<Molstar
 								spin
 								format="pdb"
-								url="{BACKEND_URL}/protein/pdb/{randomProtein.name}"
+								url={backendUrl(
+									`protein/pdb/${randomProtein.name}`
+								)}
 								width={375}
 								height={350}
 								zIndex={990}

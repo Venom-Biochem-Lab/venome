@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ProteinLinkCard from "../lib/ProteinLinkCard.svelte";
 	import { onMount } from "svelte";
-	import { Backend, BACKEND_URL, type ProteinEntry } from "../lib/backend";
+	import { Backend, backendUrl, type ProteinEntry } from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { DownloadOutline } from "flowbite-svelte-icons";
@@ -47,9 +47,7 @@
 						outline
 						size="xs"
 						on:click={() =>
-							navigate(
-								`${BACKEND_URL}/protein/pdb/${entry?.name}`
-							)}
+							navigate(backendUrl(`/protein/pdb/${entry?.name}`))}
 						>Download .pdb file<DownloadOutline
 							size="sm"
 							class="ml-2"
@@ -60,7 +58,7 @@
 			<div class="z-999 flex flex-col">
 				<Molstar
 					format="pdb"
-					url="{BACKEND_URL}/protein/pdb/{entry.name}"
+					url={backendUrl(`protein/pdb/${entry.name}`)}
 					{chainColors}
 					width={1000}
 					height={900}

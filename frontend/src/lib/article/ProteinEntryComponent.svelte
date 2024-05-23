@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import Molstar from "../Molstar.svelte";
-	import { BACKEND_URL, Backend, type ProteinEntry } from "../backend";
+	import { backendUrl, Backend, type ProteinEntry } from "../backend";
 	import ProteinLinkCard from "../ProteinLinkCard.svelte";
 	export let data: {
 		name: string;
@@ -38,7 +38,9 @@
 	</div>
 	<div>
 		<Molstar
-			url={`${BACKEND_URL}/protein/pdb/${data.name}${data.alignName ? "/" + data.alignName : ""}`}
+			url={backendUrl(
+				`protein/pdb/${data.name}${data.alignName ? "/" + data.alignName : ""}`
+			)}
 			width={data.width ?? 500}
 			height={data.height ?? 350}
 			zIndex={1}
