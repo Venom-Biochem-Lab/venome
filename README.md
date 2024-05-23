@@ -5,6 +5,8 @@
 
 A website to store, visualize, and analyze venom proteins. In collaboration with the [Venom Biochemistry & Molecular Biology Laboratory](https://venombiochemistrylab.weebly.com/) at Oregon State University 🦫.
 
+<video autoplay loop src="https://github.com/Venom-Biochem-Lab/venome/assets/65095341/7f0c2fdf-2d06-462a-a57d-2cb043d8141a" ></video>
+
 
 This project started as a 2023-2024 Senior Computer Science Capstone project at Oregon State University. See our [OSU 2024 Engineering Capstone poster](https://github.com/Venom-Biochem-Lab/venome-poster/blob/main/posters/2024.TheUnknownVenome.CS.094.pdf) or our [public landing page](https://venom-biochem-lab.github.io/venome-poster/) for more info.
 
