@@ -1,4 +1,4 @@
-# Todo
+# Future Work for next group (Todo)
 
 This is from the 2023-2024 capstone group to the future groups about stuff we wanted to do, but didn't have enough time to.
 
