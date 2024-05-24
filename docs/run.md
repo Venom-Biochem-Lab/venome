@@ -42,7 +42,7 @@ Note that for production mode, if there is a second argument like `<filename>` i
 |---|---|
 |  `psql` | Opens up a direct terminal into the database to execute SQL commands live |
 |  `backup <backupname>` | Dumps the sql schema and data + copies all the protein .pdb files into a new directory of name `<backupname>`|
-|  `reload_from_backup <backupname>` | Deletes all the current database reloads from the `backupname` generated from the `backup` command above. Note that this also deletes foldseek and tmalign, so you'll need to add those again.|
+|  `reload_from_backup <backupname>` | Deletes all the current database reloads from the `backupname` generated from the `backup` command above.|
 |  `sql_reload <filename>` | Deletes all the database and sources the `<filename>`. Example: `./run.sh sql_reload backups/v0.0.2/dump.sql`.|
 |  `sql_source <filename>` | Sources/executes the `<filename>` on the db. Example: `./run.sh sql_source backups/v0.0.2/dump.sql`.|
 |  `sql_delete` | Deletes all database contents.|
