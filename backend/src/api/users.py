@@ -45,9 +45,15 @@ def login(body: LoginBody):
             return LoginResponse(token="", error="Server error.")
 
 
-# THIS METHOD IS NOT WORKING YET
-@router.post("/users/signup", response_model=None)
-def signup(body: LoginBody):
-    # I used this method to print out the hash and manually put into the database as users
-    log.warn(f"{body.email} {bcrypt.hash(body.password)}")
-    raise HTTPException(404, "signup not implemented yet")
+# THIS METHOD IS NOT WORKING YET and email is treated as username
+@router.post("/users/admin/signup", response_model=None)
+def admin_signup(body: LoginBody):
+    # currently raise exception, since we don't have a frontend and we don't want people to create admin accounts this easily
+    raise HTTPException(404, "signup not secure so not executing")
+    with Database() as db:
+        hashed_password = bcrypt.hash(body.password)
+        query = """INSERT INTO users(username, email, pword, admin) VALUES (%s, %s, %s, %s);"""
+        try:
+            db.execute(query, [body.email, body.email, hashed_password, True])
+        except Exception:
+            raise HTTPException(501, "signup insert failed")
