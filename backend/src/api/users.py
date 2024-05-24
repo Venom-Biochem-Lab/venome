@@ -4,6 +4,7 @@ from passlib.hash import bcrypt
 from ..api_types import LoginBody, LoginResponse
 from ..db import Database
 from ..auth import generate_auth_token
+from fastapi.exceptions import HTTPException
 
 router = APIRouter()
 
@@ -42,3 +43,11 @@ def login(body: LoginBody):
             log.error(e)
             # TODO: Return something better than query error
             return LoginResponse(token="", error="Server error.")
+
+
+# THIS METHOD IS NOT WORKING YET
+@router.post("/users/signup", response_model=None)
+def signup(body: LoginBody):
+    # I used this method to print out the hash and manually put into the database as users
+    log.warn(f"{body.email} {bcrypt.hash(body.password)}")
+    raise HTTPException(404, "signup not implemented yet")
