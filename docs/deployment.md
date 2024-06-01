@@ -78,3 +78,27 @@ Then you can build the entire container in production
 ./run.sh start -p
 ./run.sh reload_from_backup -p backups/v0.0.2 # or whatever backup you want
 ```
+
+## Backup
+
+On the server you can simply make a backup with any name you want like new_backup as 
+
+```bash
+./run.sh backup -p backups/new_backup
+```
+
+## Downloading backups from the server
+
+First you need to make a backup which I described in the last section, then logout of the venome-pvt shell connection. From your local machine make sure you are either on the Oregon State Internet or through a VPN. Then
+
+```bash
+sftp your_cqls_username@hpc.cqls.oregonstate.edu
+```
+
+Then download the specific backup (in this case downloading v0.0.2, but could pick any one)
+
+```bash
+get -R venome/backups/v0.0.2
+```
+
+I would save this to a central box or google drive so that you can save backups over time.
