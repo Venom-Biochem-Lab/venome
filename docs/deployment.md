@@ -39,6 +39,14 @@ and enter your OSU ONID password again.
 
 ✅ Success you are in!
 
+When you do 
+
+```bash
+ls
+```
+
+You should see the `venome` project already there. If you don't, that's because the user `home/bb/bertuccd/` originally cloned the repo and ran the docker. Please contact the admin so that these files can be shared in a group with you too. As of now there was no better solution other than one person cloning and running the code. You might need to come up with a better shared solution if nothing comes up.
+
 ### Weird issues I've encountered
 
 #### CQLS cloning repo
