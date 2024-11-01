@@ -23,7 +23,7 @@
 			<div
 				class="article"
 				on:click={() => {
-					navigate(`/article/${a.title}`);
+					navigate(`/article/${a.id}`);
 				}}
 			>
 				{#if a.datePublished}

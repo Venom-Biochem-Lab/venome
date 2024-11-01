@@ -45,12 +45,12 @@ class Article(CamelModel):
     ]
 
 
-def get_text_components(db: Database, title: str):
+def get_text_components(db: Database, article_id: int):
     query = """SELECT components.id, components.component_order, text_components.markdown FROM components
                JOIN text_components ON text_components.component_id = components.id
-               WHERE components.article_id = (SELECT id FROM articles WHERE title = %s);
+               WHERE components.article_id = %s;
                 """
-    res = db.execute_return(query, [title])
+    res = db.execute_return(query, [article_id])
     if res is not None:
         return [
             ArticleTextComponent(id=i, component_order=c, markdown=m)
@@ -59,12 +59,12 @@ def get_text_components(db: Database, title: str):
     return []
 
 
-def get_protein_components(db: Database, title: str):
+def get_protein_components(db: Database, article_id: int):
     query = """SELECT components.id, components.component_order, protein_components.name, protein_components.aligned_with_name FROM components
                JOIN protein_components ON protein_components.component_id = components.id
-               WHERE components.article_id = (SELECT id FROM articles WHERE title = %s);
+               WHERE components.article_id = %s;
                 """
-    res = db.execute_return(query, [title])
+    res = db.execute_return(query, [article_id])
     if res is not None:
         return [
             ArticleProteinComponent(
@@ -75,12 +75,12 @@ def get_protein_components(db: Database, title: str):
     return []
 
 
-def get_image_components(db: Database, title: str):
+def get_image_components(db: Database, article_id: int):
     query = """SELECT components.id, components.component_order, image_components.src, image_components.width, image_components.height FROM components
                JOIN image_components ON image_components.component_id = components.id
-               WHERE components.article_id = (SELECT id FROM articles WHERE title = %s);
+               WHERE components.article_id = %s;
                 """
-    res = db.execute_return(query, [title])
+    res = db.execute_return(query, [article_id])
     if res is not None:
         return [
             ArticleImageComponent(
@@ -95,25 +95,25 @@ def get_image_components(db: Database, title: str):
     return []
 
 
-def get_article_metadata(db: Database, title: str) -> tuple[int, str, str, str]:
-    query = """SELECT id, description, date_published, refs FROM articles WHERE title = %s;"""
-    out = db.execute_return(query, [title])
+def get_article_metadata(db: Database, article_id: int) -> tuple[str, str, str, str]:
+    query = """SELECT title, description, date_published, refs FROM articles WHERE id = %s;"""
+    out = db.execute_return(query, [article_id])
     if out is not None:
-        [id, description, date_published, refs] = out[0]
-        return id, description, str(date_published), refs
+        [title, description, date_published, refs] = out[0]
+        return title, description, str(date_published), refs
     else:
         raise Exception("Nothing returned")
 
 
-@router.get("/article/meta/{title:str}", response_model=Article)
-def get_article(title: str):
+@router.get("/article/meta/{article_id:int}", response_model=Article)
+def get_article(article_id: int):
     """get_article
 
     Args:
-        title (str): title of the article
+        id (int): ID of the article
 
     Raises:
-        HTTPException: status 404 if the article is not found by the given title
+        HTTPException: status 404 if the article is not found by the given ID
         HTTPException: status 500 if any other errors occur
 
     Returns:
@@ -122,15 +122,15 @@ def get_article(title: str):
 
     with Database() as db:
         try:
-            # this will fail if the article title does not exist
-            id, description, date_published, refs = get_article_metadata(db, title)
+            # this will fail if the article id does not exist
+            title, description, date_published, refs = get_article_metadata(db, article_id)
         except Exception as e:
             raise HTTPException(404, detail=str(e))
 
         try:
-            text_components = get_text_components(db, title)
-            protein_components = get_protein_components(db, title)
-            image_components = get_image_components(db, title)
+            text_components = get_text_components(db, article_id)
+            protein_components = get_protein_components(db, article_id)
+            image_components = get_image_components(db, article_id)
             ordered_components = sorted(
                 [*text_components, *protein_components, *image_components],
                 key=lambda x: x.component_order,
@@ -139,7 +139,7 @@ def get_article(title: str):
             raise HTTPException(500, detail=str(e))
 
         return Article(
-            id=id,
+            id=article_id,
             title=title,
             ordered_components=ordered_components,
             description=description,
@@ -188,13 +188,13 @@ def upload_article(body: ArticleUpload, req: Request):
             raise HTTPException(500, detail=str(e))
 
 
-@router.delete("/article/meta/{title:str}")
-def delete_article(title: str, req: Request):
+@router.delete("/article/meta/{article_id:int}")
+def delete_article(article_id: int, req: Request):
     requires_authentication(req)
     with Database() as db:
         try:
-            query = """DELETE FROM articles WHERE title=%s;"""
-            db.execute(query, [title])
+            query = """DELETE FROM articles WHERE id=%s;"""
+            db.execute(query, [article_id])
         except Exception as e:
             raise HTTPException(500, detail=str(e))
 

@@ -47,13 +47,13 @@
 		<!-- all things articles -->
 		<Route path="/articles"><Articles /></Route>
 		<Route path="/article/:id" let:params
-			><Article articleTitle={params.id} /></Route
+			><Article articleID={params.id} /></Route
 		>
 		<Route path="/article/edit/:id" let:params
-			><Article articleTitle={params.id} editMode />
+			><Article articleID={params.id} editMode />
 		</Route>
 		<Route path="/article/meta/edit/:id" let:params
-			><EditArticle articleTitle={params.id} />
+			><EditArticle articleID={params.id} />
 		</Route>
 		<Route path="/upload/article"><UploadArticle /></Route>
 

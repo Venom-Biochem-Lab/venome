@@ -21,7 +21,7 @@
 	import References from "../lib/References.svelte";
 	import Markdown from "../lib/Markdown.svelte";
 
-	export let articleTitle: string;
+	export let articleID: number;
 	export let editMode = false;
 
 	const textWidth = "800px";
@@ -40,7 +40,7 @@
 
 	async function refreshArticle() {
 		try {
-			article = await Backend.getArticle(articleTitle);
+			article = await Backend.getArticle(articleID);
 		} catch (e) {
 			console.error(e);
 			notFound = true;
@@ -60,7 +60,7 @@
 								outline
 								size="xs"
 								on:click={async () => {
-									navigate(`/article/${articleTitle}`);
+									navigate(`/article/${articleID}`);
 								}}
 								><ArrowLeftOutline class="mr-1" size="sm" />Back
 								to viewing
@@ -75,7 +75,7 @@
 								outline
 								size="xs"
 								on:click={async () => {
-									navigate(`/article/edit/${articleTitle}`);
+									navigate(`/article/edit/${articleID}`);
 								}}
 								><EditOutline class="mr-1" size="sm" />Edit
 								Article
@@ -87,7 +87,7 @@
 								size="xs"
 								on:click={async () => {
 									navigate(
-										`/article/meta/edit/${articleTitle}`
+										`/article/meta/edit/${articleID}`
 									);
 								}}
 								><EditOutline class="mr-1" size="sm" />Edit
@@ -197,7 +197,7 @@
 										size="xs"
 										on:click={async () => {
 											navigate(
-												`/article/meta/edit/${articleTitle}`
+												`/article/meta/edit/${articleID}`
 											);
 										}}
 										><EditOutline
@@ -214,7 +214,7 @@
 			</div>
 		</div>
 	{:else if notFound}
-		{articleTitle} not found
+		{articleID} not found
 	{/if}
 </section>
 
