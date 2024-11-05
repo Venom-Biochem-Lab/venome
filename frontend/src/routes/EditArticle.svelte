@@ -4,7 +4,7 @@
 	import { Backend, setToken, type Article } from "../lib/backend";
 	import { onMount } from "svelte";
     import { user } from "../lib/stores/user";
-	export let articleTitle: string;
+	export let articleID: number;
 
 	let title: string = "";
 	let description: string = "";
@@ -22,7 +22,7 @@
 		}
         
 		try {
-			article = await Backend.getArticle(articleTitle);
+			article = await Backend.getArticle(articleID);
 		} catch (e) {
 			console.error(e);
 			articlesExists = false;
@@ -136,7 +136,7 @@
 				on:click={async () => {
 					try {
 						setToken();
-						await Backend.deleteArticle(article.title);
+						await Backend.deleteArticle(article.id);
 						navigate(`/articles`);
 					} catch (e) {
 						console.error(e);
@@ -145,7 +145,7 @@
 			>
 		</div>
 	{:else}
-		Article with the title '{articleTitle}' does not exist. So cannot be
+		Article with the title '{articleID}' does not exist. So cannot be
 		edited.
 	{/if}
 </section>

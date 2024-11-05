@@ -51,6 +51,25 @@ export class DefaultService {
         });
     }
     /**
+     * Admin Signup
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static adminSignup(
+        requestBody: LoginBody,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/users/admin/signup',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
      * Search Proteins
      * @param requestBody
      * @returns SearchProteinsResults Successful Response
@@ -369,26 +388,26 @@ export class DefaultService {
      * get_article
      *
      * Args:
-     * title (str): title of the article
+     * id (int): ID of the article
      *
      * Raises:
-     * HTTPException: status 404 if the article is not found by the given title
+     * HTTPException: status 404 if the article is not found by the given ID
      * HTTPException: status 500 if any other errors occur
      *
      * Returns:
      * Article
-     * @param title
+     * @param articleId
      * @returns Article Successful Response
      * @throws ApiError
      */
     public static getArticle(
-        title: string,
+        articleId: number,
     ): CancelablePromise<Article> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/article/meta/{title}',
+            url: '/article/meta/{article_id}',
             path: {
-                'title': title,
+                'article_id': articleId,
             },
             errors: {
                 422: `Validation Error`,
@@ -397,18 +416,18 @@ export class DefaultService {
     }
     /**
      * Delete Article
-     * @param title
+     * @param articleId
      * @returns any Successful Response
      * @throws ApiError
      */
     public static deleteArticle(
-        title: string,
+        articleId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/article/meta/{title}',
+            url: '/article/meta/{article_id}',
             path: {
-                'title': title,
+                'article_id': articleId,
             },
             errors: {
                 422: `Validation Error`,
