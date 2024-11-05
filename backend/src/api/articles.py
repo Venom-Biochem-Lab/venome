@@ -123,7 +123,9 @@ def get_article(article_id: int):
     with Database() as db:
         try:
             # this will fail if the article id does not exist
-            title, description, date_published, refs = get_article_metadata(db, article_id)
+            title, description, date_published, refs = get_article_metadata(
+                db, article_id
+            )
         except Exception as e:
             raise HTTPException(404, detail=str(e))
 
