@@ -1,12 +1,25 @@
 from fastapi import APIRouter
 import logging as log
 from passlib.hash import bcrypt
-from ..api_types import LoginBody, LoginResponse
+from ..api_types import SignupBody, SignupResponse, LoginBody, LoginResponse
 from ..db import Database
 from ..auth import generate_auth_token
 from fastapi.exceptions import HTTPException
 
 router = APIRouter()
+
+
+@router.post("/users/signup", response_model=SignupResponse | None)
+def signup(body: SignupBody):
+    with Database() as db:
+        hashed_password = bcrypt.hash(body.password)
+        query = """INSERT INTO users(username, email, pword, admin) VALUES (%s, %s, %s, false);"""
+        try:
+            db.execute(query, [body.username, body.email, hashed_password])
+            return SignupResponse(error="")
+        except Exception as e:
+            log.error(e)
+            return SignupResponse(error="Server error.")
 
 
 @router.post("/users/login", response_model=LoginResponse | None)

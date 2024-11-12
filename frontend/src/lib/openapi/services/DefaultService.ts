@@ -19,6 +19,8 @@ import type { ProteinEntry } from '../models/ProteinEntry';
 import type { RangeFilter } from '../models/RangeFilter';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
+import type { SignupBody } from '../models/SignupBody';
+import type { SignupResponse } from '../models/SignupResponse';
 import type { SimilarProtein } from '../models/SimilarProtein';
 import type { TMAlignInfo } from '../models/TMAlignInfo';
 import type { UploadArticleImageComponent } from '../models/UploadArticleImageComponent';
@@ -31,6 +33,25 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class DefaultService {
+    /**
+     * Signup
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static signup(
+        requestBody: SignupBody,
+    ): CancelablePromise<(SignupResponse | null)> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/users/signup',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
     /**
      * Login
      * @param requestBody

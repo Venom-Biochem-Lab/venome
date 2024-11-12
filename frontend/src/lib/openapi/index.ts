@@ -28,6 +28,8 @@ export type { ProteinEntry } from './models/ProteinEntry';
 export type { RangeFilter } from './models/RangeFilter';
 export type { SearchProteinsBody } from './models/SearchProteinsBody';
 export type { SearchProteinsResults } from './models/SearchProteinsResults';
+export type { SignupBody } from './models/SignupBody';
+export type { SignupResponse } from './models/SignupResponse';
 export type { SimilarProtein } from './models/SimilarProtein';
 export type { TMAlignInfo } from './models/TMAlignInfo';
 export type { UploadArticleImageComponent } from './models/UploadArticleImageComponent';
