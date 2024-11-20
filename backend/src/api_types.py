@@ -69,6 +69,16 @@ class EditBody(CamelModel):
     new_description: str | None = None
 
 
+class SignupBody(CamelModel):
+    username: str
+    email: str
+    password: str
+
+
+class SignupResponse(CamelModel):
+    error: str
+
+
 class LoginBody(CamelModel):
     email: str
     password: str

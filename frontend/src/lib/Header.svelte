@@ -3,6 +3,7 @@
 	import { onMount } from "svelte";
 	import {
 		UserOutline,
+		UserAddOutline,
 		NewspapperSolid,
 		UploadSolid,
 	} from "flowbite-svelte-icons";
@@ -45,14 +46,28 @@
 		</div>
 	</div>
 
-	<a href="/login" class="flex items-center gap-1 mr-5">
-		<UserOutline size="lg" />
+	<div class="user-container">
+		<!-- svelte-ignore empty-block -->
 		{#if $user.loggedIn}
-			Logout
+			<!-- TODO: User Profile Page -->
 		{:else}
-			Login
+			<a href="/signup" class="signup flex items-center mr-5">
+				<UserAddOutline size="lg" />
+				Sign Up
+			</a>
 		{/if}
-	</a>
+
+
+		<a href="/login" class="login flex items-center gap-1 mr-5">
+			<UserOutline size="lg" />
+			{#if $user.loggedIn}
+				Logout
+			{:else}
+				Login
+			{/if}
+		</a>
+	</div>
+
 </header>
 <div style="height: 60px;" />
 
@@ -84,6 +99,25 @@
 		font-size: 18px;
 		font-weight: 300;
 		margin-left: 10px;
+	}
+
+	.user-container {
+		display: flex;
+		height: 60px;
+		align-items: center;
+	}
+
+	.signup {
+		background-color: var(--primary-700);
+		color: white;
+		border-radius: 5px;
+		padding: 5px 10px;
+	}
+
+	.login {
+		border: 1px solid var(--primary-700);
+		border-radius: 5px;
+		padding: 4px 9px;
 	}
 
 	a {

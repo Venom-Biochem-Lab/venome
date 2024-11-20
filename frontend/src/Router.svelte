@@ -5,6 +5,7 @@
 	import Proteins from "./routes/Proteins.svelte";
 	import UploadProtein from "./routes/UploadProtein.svelte";
 	import Login from "./routes/Login.svelte";
+	import Signup from "./routes/Signup.svelte";
 	import Protein from "./routes/Protein.svelte";
 	import Error from "./routes/Error.svelte";
 	import Edit from "./routes/Edit.svelte";
@@ -27,6 +28,7 @@
 		<Route path="/"><Home /></Route>
 		<Route path="/proteins"><Proteins /></Route>
 		<Route path="/login"><Login /></Route>
+		<Route path="/signup"><Signup /></Route>
 		<Route path="/upload"><Upload /></Route>
 
 		<!-- all things proteins -->
