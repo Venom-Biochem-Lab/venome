@@ -25,20 +25,35 @@
 	import LegendpLddt from "../lib/LegendpLDDT.svelte";
 
 	export let urlId: string;
+	let urlId2: string;
 	let entry: ProteinEntry | null = null;
+	let entry2: ProteinEntry | null = null;
 	let error = false;
 	let chainColors: ChainColors = {};
 	let searchOpen = false;
+	let currentEntry: ProteinEntry | null = null;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
 		console.log("Requesting", urlId, "info from backend");
+		urlId2 = 'Gh_comp10207_c0_seq2';
 
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
 		if (entry == null) error = true;
+
+		entry2 = await Backend.getProteinEntry(urlId2);
+		if (entry2 == null) error = true;
+
+		currentEntry = entry;
 	});
+
+	//to switch the visualization between alphafold2 and alphafold3
+	function toggleProtien() {
+		currentEntry = currentEntry === entry ? entry2 : entry;
+	}
+
 </script>
 
 <svelte:head>
@@ -74,10 +89,10 @@
 			<EntryCard title="Computed Insights">
 				<div class="grid grid-cols-2">
 					<b>Length</b>
-					<div><code>{entry.length}</code></div>
+					<div><code>{currentEntry.length}</code></div>
 
 					<b>Mass (Da)</b>
-					<div><code>{numberWithCommas(entry.mass)}</code></div>
+					<div><code>{numberWithCommas(currentEntry.mass)}</code></div>
 				</div>
 				<div class="mt-3">
 					<Accordion>
@@ -90,8 +105,8 @@
 							>
 							{#if searchOpen}
 								<SimilarProteins
-									queryProteinName={entry.name}
-									length={entry.length}
+									queryProteinName={currentEntry.name}
+									length={currentEntry.length}
 								/>
 							{/if}
 						</AccordionItem>
@@ -126,12 +141,14 @@
 							{entry.speciesName}
 						</div>
 						<b>Method</b>
-						<div>AlphaFold 2</div>
+						<div>
+							{currentEntry === entry ? "AlphaFold 2" : "AlphaFold 3"}
+						</div>
 						<b>Date Published</b>
 						<div>
 							<code
-								>{entry.datePublished
-									? dbDateToMonthDayYear(entry.datePublished)
+								>{currentEntry.datePublished
+									? dbDateToMonthDayYear(currentEntry.datePublished)
 									: "n/a"}</code
 							>
 						</div>
@@ -142,17 +159,27 @@
 							color="light"
 							outline
 							on:click={() =>
-								navigate(`/fullscreen/${entry?.name}`)}
+								navigate(`/fullscreen/${currentEntry?.name}`)}
 							>Fullscreen <ExpandOutline
 								class="ml-1"
 								size="sm"
 							/></Button
 						>
 						<Button
+							size="xs"
+							color="light"
+							outline
+							on:click={() => toggleProtien()}
+							>
+								{currentEntry === entry ? "Switch to AlphaFold 3" : "Switch to AlphaFold 2"}
+							</Button
+						>
+
+						<Button
 							outline
 							size="xs"
 							color="light"
-							href={backendUrl(`protein/pdb/${entry?.name}`)}
+							href={backendUrl(`protein/pdb/${currentEntry?.name}`)}
 							>Download .pdb file<DownloadOutline
 								size="sm"
 								class="ml-1"
@@ -161,7 +188,7 @@
 					</div>
 					<Molstar
 						format="pdb"
-						url={backendUrl(`protein/pdb/${entry.name}`)}
+						url={backendUrl(`protein/pdb/${currentEntry.name}`)}
 						width={400}
 						height={350}
 						{chainColors}
@@ -174,7 +201,7 @@
 						]}
 					/>
 
-					<LegendpLddt bind:chainColors proteinName={entry.name} />
+					<LegendpLddt bind:chainColors proteinName={currentEntry.name} />
 				</EntryCard>
 			</div>
 		</div>
