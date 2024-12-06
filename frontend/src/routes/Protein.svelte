@@ -38,19 +38,25 @@
 		// Request the protein from backend given ID
 		console.log("Requesting", urlId, "info from backend");
 		urlId2 = 'Gh_comp10207_c0_seq2';
+		console.log("urlid2", urlId2)
 
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
-		if (entry == null) error = true;
-
-		entry2 = await Backend.getProteinEntry(urlId2);
-		if (entry2 == null) error = true;
-
 		currentEntry = entry;
+
+		console.log(entry)
+
+		//making a copy for testing the toggle
+		//entry2 = { ...entry };
+		entry2 = await Backend.getProteinEntry(urlId2);
+		console.log(entry2)
+		if (entry == null || entry2 == null) error = true;
+
+		console.log("Error:", error)
 	});
 
 	//to switch the visualization between alphafold2 and alphafold3
-	function toggleProtien() {
+	function toggleProtein() {
 		currentEntry = currentEntry === entry ? entry2 : entry;
 	}
 
@@ -61,7 +67,7 @@
 </svelte:head>
 
 <section class="flex gap-10 p-5">
-	{#if entry}
+	{#if currentEntry}
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
 			<h1 id="title">
@@ -169,7 +175,7 @@
 							size="xs"
 							color="light"
 							outline
-							on:click={() => toggleProtien()}
+							on:click={() => toggleProtein()}
 							>
 								{currentEntry === entry ? "Switch to AlphaFold 3" : "Switch to AlphaFold 2"}
 							</Button
