@@ -38,6 +38,8 @@ export type { UploadArticleTextComponent } from './models/UploadArticleTextCompo
 export type { UploadBody } from './models/UploadBody';
 export { UploadError } from './models/UploadError';
 export type { UploadPNGBody } from './models/UploadPNGBody';
+export type { UserResponse } from './models/UserResponse';
+export type { UsersResponse } from './models/UsersResponse';
 export type { ValidationError } from './models/ValidationError';
 
 export { DefaultService } from './services/DefaultService';

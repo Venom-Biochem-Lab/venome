@@ -1,7 +1,15 @@
 from fastapi import APIRouter
 import logging as log
 from passlib.hash import bcrypt
-from ..api_types import SignupBody, SignupResponse, LoginBody, LoginResponse
+from ..api_types import (
+    SignupBody,
+    SignupResponse,
+    LoginBody,
+    LoginResponse,
+    UsersResponse,
+    UserResponse,
+)
+
 from ..db import Database
 from ..auth import generate_auth_token
 from fastapi.exceptions import HTTPException
@@ -70,3 +78,19 @@ def admin_signup(body: LoginBody):
             db.execute(query, [body.email, body.email, hashed_password, True])
         except Exception:
             raise HTTPException(501, "signup insert failed")
+
+
+@router.get("/users/", response_model=UsersResponse)
+def get_users():
+    with Database() as db:
+        query = """SELECT username, email, admin FROM users;"""
+        users_list = db.execute_return(query)
+        if users_list is not None:
+            return UsersResponse(
+                users=[
+                    UserResponse(username=user[0], email=user[1], admin=user[2])
+                    for user in users_list
+                ]
+            )
+        else:
+            return UsersResponse(users=[])

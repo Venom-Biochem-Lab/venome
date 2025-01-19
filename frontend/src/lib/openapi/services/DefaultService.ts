@@ -29,6 +29,7 @@ import type { UploadArticleTextComponent } from '../models/UploadArticleTextComp
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { UploadPNGBody } from '../models/UploadPNGBody';
+import type { UsersResponse } from '../models/UsersResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -88,6 +89,17 @@ export class DefaultService {
             errors: {
                 422: `Validation Error`,
             },
+        });
+    }
+    /**
+     * Get Users
+     * @returns UsersResponse Successful Response
+     * @throws ApiError
+     */
+    public static getUsers(): CancelablePromise<UsersResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/',
         });
     }
     /**

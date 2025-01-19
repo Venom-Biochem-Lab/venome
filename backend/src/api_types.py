@@ -96,3 +96,13 @@ class CompareBody(CamelModel):
 
 class CompareResponse(CamelModel):
     file: list[str]
+
+
+class UserResponse(CamelModel):
+    username: str
+    email: str
+    admin: bool
+
+
+class UsersResponse(CamelModel):
+    users: list[UserResponse]
