@@ -17,6 +17,7 @@
 	import EditArticle from "./routes/EditArticle.svelte";
 	import Upload from "./routes/Upload.svelte";
 	import FullScreen from "./routes/FullScreen.svelte";
+	import UserList from "./routes/UserList.svelte";
 </script>
 
 <Router>
@@ -29,6 +30,7 @@
 		<Route path="/proteins"><Proteins /></Route>
 		<Route path="/login"><Login /></Route>
 		<Route path="/signup"><Signup /></Route>
+		<Route path="/users"><UserList /></Route>
 		<Route path="/upload"><Upload /></Route>
 
 		<!-- all things proteins -->
