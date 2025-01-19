@@ -1,18 +1,22 @@
-from fastapi import APIRouter
+"""Adds routes for user management to FastAPI."""
+
 import logging as log
+
+from fastapi import APIRouter
+from fastapi.exceptions import HTTPException
 from passlib.hash import bcrypt
-from ..api_types import (
-    SignupBody,
-    SignupResponse,
+from src.api_types import (
     LoginBody,
     LoginResponse,
-    UsersResponse,
+    SignupBody,
+    SignupResponse,
+    UserIDResponse,
     UserResponse,
+    UsersResponse,
+    UserBody,
 )
-
-from ..db import Database
-from ..auth import generate_auth_token
-from fastapi.exceptions import HTTPException
+from src.auth import generate_auth_token
+from src.db import Database
 
 router = APIRouter()
 
@@ -83,14 +87,76 @@ def admin_signup(body: LoginBody):
 @router.get("/users/", response_model=UsersResponse)
 def get_users():
     with Database() as db:
-        query = """SELECT username, email, admin FROM users;"""
+        query = """SELECT id, username, email, admin FROM users;"""
         users_list = db.execute_return(query)
         if users_list is not None:
+            users_list.sort(key=lambda user: user[0])
             return UsersResponse(
                 users=[
-                    UserResponse(username=user[0], email=user[1], admin=user[2])
+                    UserResponse(
+                        id=user[0], username=user[1], email=user[2], admin=user[3]
+                    )
                     for user in users_list
                 ]
             )
         else:
             return UsersResponse(users=[])
+
+
+@router.get("/user/id/{username}", response_model=UserIDResponse)
+def get_user_id(username: str):
+    with Database() as db:
+        query = """SELECT id FROM users WHERE username = %s;"""
+        user_id = db.execute_return(query, [username])
+        if user_id is not None:
+            return UserIDResponse(id=user_id[0][0])
+        else:
+            return UserIDResponse(id=-1)
+
+
+@router.get("/user/{id}", response_model=UserResponse)
+def get_user(user_id: int):
+    with Database() as db:
+        query = """SELECT id, username, email, admin FROM users WHERE id = %s;"""
+        user = db.execute_return(query, [user_id])
+        if user is not None:
+            return UserResponse(
+                id=user[0][0], username=user[0][1], email=user[0][2], admin=user[0][3]
+            )
+        else:
+            return UserResponse(id=user_id, username="", email="", admin=False)
+
+
+@router.put("/user/{id}", response_model=None)
+def edit_user(user_id: int, body: UserBody):
+    with Database() as db:
+        query = """UPDATE users SET """
+        arg_list = []
+        if body.username is not None:
+            query += """username = %s, """
+            arg_list.append(body.username)
+        if body.email is not None:
+            query += """email = %s, """
+            arg_list.append(body.email)
+        if body.admin is not None:
+            query += """admin = %s, """
+            arg_list.append(body.admin)
+        query = query[:-2] + """ WHERE id = %s;"""
+        try:
+            db.execute(query, arg_list + [user_id])
+        except Exception as e:
+            log.error(e)
+            return None
+        return None
+
+
+@router.delete("/user/{id}", response_model=None)
+def delete_user(user_id: int):
+    with Database() as db:
+        query = """DELETE FROM users WHERE id = %s;"""
+        try:
+            db.execute(query, [user_id])
+        except Exception as e:
+            log.error(e)
+            return None
+        return None

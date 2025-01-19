@@ -99,6 +99,7 @@ class CompareResponse(CamelModel):
 
 
 class UserResponse(CamelModel):
+    id: int
     username: str
     email: str
     admin: bool
@@ -106,3 +107,15 @@ class UserResponse(CamelModel):
 
 class UsersResponse(CamelModel):
     users: list[UserResponse]
+
+
+class UserIDResponse(CamelModel):
+    id: int
+
+
+class UserBody(CamelModel):
+    id: int
+    username: str | None = None
+    email: str | None = None
+    admin: bool | None = None
+    password: str | None = None
