@@ -40,11 +40,18 @@ class PDB:
     def mass_daltons(self):
         return molecular_weight(seq="".join(self.amino_acids()), seq_type="protein")
 
+    @property
+    def num_atoms(self) -> int:
+        return len(self.atoms())
+
     def amino_acids(self, one_letter_code=True):
         return [
             seq1(residue.resname) if one_letter_code else residue.resname
             for residue in self.structure.get_residues()
         ]
+
+    def atoms(self, one):
+        return self.structure.get_atoms()
 
 
 def decode_base64(b64_header_and_data: str):
