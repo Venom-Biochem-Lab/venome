@@ -41,33 +41,35 @@ def login(body: LoginBody):
             email = body.email
             password = body.password
 
-            query = (
-                """SELECT users.pword, users.admin FROM users WHERE users.email = %s;"""
-            )
+            query = """SELECT users.pword, users.admin, users.id FROM users WHERE users.email = %s;"""
             entry_sql = db.execute_return(query, [email])
 
             # Returns "incorrect email/password" message if there is no such account.
             if entry_sql is None or len(entry_sql) == 0:
-                return LoginResponse(token="", error="Invalid Email or Password")
+                return LoginResponse(
+                    token="", user_id=0, error="Invalid Email or Password"
+                )
 
             # Grabs the stored hash and admin status.
-            password_hash, admin = entry_sql[0]
+            password_hash, admin, user_id = entry_sql[0]
 
             # Returns "incorrect email/password" message if password is incorrect.
             if not bcrypt.verify(password, password_hash):
-                return LoginResponse(token="", error="Invalid Email or Password")
+                return LoginResponse(
+                    token="", user_id=0, error="Invalid Email or Password"
+                )
 
             # Generates the token and returns
             token = generate_auth_token(email, admin)
             log.warn(
                 f"Giving token: {token}",
             )
-            return LoginResponse(token=token, error="")
+            return LoginResponse(token=token, user_id=user_id, error="")
 
         except Exception as e:
             log.error(e)
             # TODO: Return something better than query error
-            return LoginResponse(token="", error="Server error.")
+            return LoginResponse(token="", user_id=0, error="Server error.")
 
 
 # THIS METHOD IS NOT WORKING YET and email is treated as username

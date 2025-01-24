@@ -14,7 +14,7 @@
 		clearToken();
 		Cookies.remove("auth");
 		$user.loggedIn = false;
-		$user.username = "";
+		$user.id = "";
 		$user.admin = false;
 	});
 
@@ -48,10 +48,14 @@
 			} else if (result["token"] != "") {
 				// User entered the correct username and password.
 				console.log("Response received. Token: " + result["token"]);
-				Cookies.set("auth", result["token"]);
+				
+				let isAdmin = (await Backend.getUser(result["userId"])).admin
 				$user.loggedIn = true;
-				$user.username = email;
-				$user.admin = true;
+				$user.id = result["userId"];
+				$user.admin = isAdmin;
+				Cookies.set("auth", result["token"]);
+				Cookies.set("id", result["userId"])
+				Cookies.set("admin", isAdmin.toString())
 				navigate(`/proteins`);
 			} else {
 				// User got a result, but both the error and token field are empty. This indicates a bug on our end.

@@ -86,6 +86,7 @@ class LoginBody(CamelModel):
 
 class LoginResponse(CamelModel):
     token: str
+    user_id: int
     error: str
 
 
