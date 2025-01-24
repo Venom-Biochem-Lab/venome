@@ -13,7 +13,7 @@
     onMount(async () => {
 		if (!$user.loggedIn) {
 			alert(
-				"You are not logged in. You are being redirected to home. TODO: Make this better."
+				"You are not logged in. You are being redirected to home."
 			);
 			navigate("/");
 		}
