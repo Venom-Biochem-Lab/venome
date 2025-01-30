@@ -10,6 +10,7 @@
 	let email: string = "";
 	let password: string = "";
 	$: formValid = email.length > 0 && password.length > 0;
+    let loginError: boolean = false;
 
 	/**
 	 * Gets run on pressing "Signup" button or form submit (pressing enter)
@@ -34,7 +35,8 @@
 				// API returned an error. This means there was an errror in the signup process.
 				// @todo Display this in a better way than an alert popup.
 				console.log("Response received. Error: " + result["error"]);
-				alert(result["error"]);
+                loginError = true;
+				// alert(result["error"]);
 			} else {
                 // Signup Successful
                 console.log("Account Created.")
@@ -85,12 +87,22 @@
     <form on:submit|preventDefault={submitForm} class="flex gap-5 flex-col p-5">
         <div>
             <Label for="username">Username</Label>
-            <Input
-                id="username"
-                style="width: 300px;"
-                bind:value={username}
-                placeholder="Enter your username..."
-            />
+            {#if loginError == false}
+                <Input
+                    id="username"
+                    style="width: 300px;"
+                    bind:value={username}
+                    placeholder="Enter your username..."
+                />
+                {:else}
+                    <Input
+                        id="username"
+                        style="width: 300px; border: 1px solid red"
+                        bind:value={username}
+                        placeholder="Enter your username..."
+                />
+                    <p style="color: red;">Error with username, try again</p>
+            {/if}
         </div>
 
         <div>
@@ -138,3 +150,4 @@
 		color: var(--primary-800);
 	}
 </style>
+
