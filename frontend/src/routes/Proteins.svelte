@@ -160,6 +160,9 @@
 		{:else}
 			<DelayedSpinner text="Fetching Properties to Filter By" textRight />
 		{/if}
+		
+		<br><br>
+		<h2 class="text-primary-900 mb-2">Sort by</h2>
 	</div>
 
 	<div id="view">
@@ -199,6 +202,7 @@
 		{/if}
 	</div>
 </section>
+
 
 <style>
 	section {
