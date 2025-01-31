@@ -192,6 +192,17 @@ def search_range_mass():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/search/range/atoms", response_model=RangeFilter)
+def search_range_atoms():
+    try:
+        with Database() as db:
+            query = """SELECT min(atoms), max(atoms) FROM proteins"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/search/species", response_model=list[str] | None)
 def search_species():

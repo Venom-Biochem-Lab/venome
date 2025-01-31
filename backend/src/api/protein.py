@@ -50,7 +50,7 @@ class PDB:
             for residue in self.structure.get_residues()
         ]
 
-    def atoms(self, one):
+    def atoms(self):
         return self.structure.get_atoms()
 
 
@@ -175,6 +175,7 @@ def get_protein_entry(protein_name: str):
                               proteins.description,
                               proteins.length, 
                               proteins.mass, 
+                              proteins.atoms,
                               proteins.content, 
                               proteins.refs, 
                               species.name,
@@ -194,6 +195,7 @@ def get_protein_entry(protein_name: str):
                     description,
                     length,
                     mass,
+                    atoms,
                     content,
                     refs,
                     species_name,
@@ -214,6 +216,7 @@ def get_protein_entry(protein_name: str):
                     description=description,
                     length=length,
                     mass=mass,
+                    atoms=atoms,
                     content=content,
                     refs=refs,
                     species_name=species_name,
@@ -294,7 +297,7 @@ def upload_protein_entry(body: UploadBody, req: Request):
 
         try:
             # add the protein itself
-            query = """INSERT INTO proteins (name, description, length, mass, content, refs, species_id) 
+            query = """INSERT INTO proteins (name, description, length, mass, atoms, content, refs, species_id) 
                        VALUES (%s, %s, %s, %s, %s, %s, (SELECT id FROM species WHERE name = %s));"""
             db.execute(
                 query,
@@ -303,6 +306,7 @@ def upload_protein_entry(body: UploadBody, req: Request):
                     body.description,
                     pdb.num_amino_acids,
                     pdb.mass_daltons,
+                    pdb.num_atoms,
                     body.content,
                     body.refs,
                     body.species_name,
