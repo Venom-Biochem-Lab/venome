@@ -218,8 +218,7 @@
 				size="xs"
 				color="light"
 				on:click={resetSort}
-				>Reset Sort
-			</Button>
+			>Reset Sort</Button>
 		</div>
 	</div>
 
