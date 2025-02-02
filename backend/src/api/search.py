@@ -121,10 +121,10 @@ def search_proteins(body: SearchProteinsBody):
                 else "TRUE"  # show all scores
             )
 
-            #creating search by query insertion
+            # creating search by query insertion
             sort_clause = "(proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC"
 
-            #If sortBy is set, override the default sort
+            # If sortBy is set, override the default sort
             if body.sortBy == "lengthAsc":
                 sort_clause = "proteins_scores.length ASC"
             elif body.sortBy == "lengthDesc":
@@ -135,7 +135,7 @@ def search_proteins(body: SearchProteinsBody):
                 sort_clause = "proteins_scores.mass DESC"
 
             # note that we have a sub query since postgres can't do where clauses on aliased tables
-            entries_query = f"""
+            entries_query = """
                 SELECT 
                     proteins_scores.name, 
                     proteins_scores.description, 
@@ -151,11 +151,13 @@ def search_proteins(body: SearchProteinsBody):
                     FROM proteins
                 ) as proteins_scores
                 JOIN species ON species.id = proteins_scores.species_id
-                WHERE {score_filter} {filter_clauses}
-                ORDER BY {sort_clause}
-                LIMIT {limit}
-                OFFSET {offset};
-                """ # numbers in order by correspond to weighting
+                WHERE {} {}
+                ORDER BY {}
+                LIMIT {}
+                OFFSET {};
+                """.format(
+                score_filter, filter_clauses, sort_clause, limit, offset
+            )  # numbers in order by correspond to weighting
             log.warn("EQ:" + entries_query)
             log.warn(filter_clauses)
             entries_result = db.execute_return(
