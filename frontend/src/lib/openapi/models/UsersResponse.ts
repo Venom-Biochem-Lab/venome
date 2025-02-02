@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LoginResponse = {
-    token: string;
-    userId: number;
-    error: string;
+import type { UserResponse } from './UserResponse';
+export type UsersResponse = {
+    users: Array<UserResponse>;
 };
 

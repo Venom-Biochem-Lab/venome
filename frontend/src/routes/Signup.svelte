@@ -61,8 +61,11 @@
                     console.log("Response received. Token: " + loginResult["token"]);
                     Cookies.set("auth", loginResult["token"]);
                     $user.loggedIn = true;
-                    $user.username = email;
-                    $user.admin = true;
+                    $user.id = loginResult["userId"];
+                    $user.admin = false;
+                    
+                    Cookies.set("id", loginResult["userId"])
+				    Cookies.set("admin", "false")
                     navigate(`/proteins`);
                 } else {
                     // User got a result, but both the error and token field are empty. This indicates a bug on our end.

@@ -2,9 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LoginResponse = {
-    token: string;
-    userId: number;
-    error: string;
+export type UserResponse = {
+    id: number;
+    username: string;
+    email: string;
+    admin: boolean;
 };
 

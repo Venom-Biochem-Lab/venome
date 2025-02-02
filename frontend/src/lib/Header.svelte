@@ -21,6 +21,15 @@
 		if (Cookies.get("auth")) {
 			$user.loggedIn = true;
 		}
+		
+		if (Cookies.get("admin")){
+			$user.admin = (Cookies.get("admin") === "true")
+		}
+
+		let user_id = Cookies.get("id")
+		if ( user_id != undefined){
+			$user.id = parseInt(user_id)
+		}
 	});
 </script>
 

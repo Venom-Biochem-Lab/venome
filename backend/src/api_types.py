@@ -86,6 +86,7 @@ class LoginBody(CamelModel):
 
 class LoginResponse(CamelModel):
     token: str
+    user_id: int
     error: str
 
 
@@ -96,3 +97,26 @@ class CompareBody(CamelModel):
 
 class CompareResponse(CamelModel):
     file: list[str]
+
+
+class UserResponse(CamelModel):
+    id: int
+    username: str
+    email: str
+    admin: bool
+
+
+class UsersResponse(CamelModel):
+    users: list[UserResponse]
+
+
+class UserIDResponse(CamelModel):
+    id: int
+
+
+class UserBody(CamelModel):
+    id: int
+    username: str | None = None
+    email: str | None = None
+    admin: bool | None = None
+    password: str | None = None
