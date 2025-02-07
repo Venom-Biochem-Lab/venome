@@ -31,6 +31,7 @@ class SearchProteinsBody(CamelModel):
     mass_filter: RangeFilter | None = None
     proteinsPerPage: int | None = None
     page: int | None = None
+    sortBy: str | None = None
 
 
 class SearchProteinsResults(CamelModel):
@@ -119,26 +120,43 @@ def search_proteins(body: SearchProteinsBody):
                 if len(text_query) > 0
                 else "TRUE"  # show all scores
             )
-            # cursed shit, edit this at some point
+
+            # creating search by query insertion
+            sort_clause = "(proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC"
+
+            # If sortBy is set, override the default sort
+            if body.sortBy == "lengthAsc":
+                sort_clause = "proteins_scores.length ASC"
+            elif body.sortBy == "lengthDesc":
+                sort_clause = "proteins_scores.length DESC"
+            elif body.sortBy == "massAsc":
+                sort_clause = "proteins_scores.mass ASC"
+            elif body.sortBy == "massDesc":
+                sort_clause = "proteins_scores.mass DESC"
+
             # note that we have a sub query since postgres can't do where clauses on aliased tables
-            entries_query = """SELECT proteins_scores.name, 
-                                      proteins_scores.description, 
-                                      proteins_scores.length, 
-                                      proteins_scores.mass, 
-                                      species.name,
-                                      proteins_scores.thumbnail
-                                FROM (SELECT *, 
-                                             similarity(name, %s) as name_score, 
-                                             similarity(description, %s) as desc_score,
-                                             similarity(content, %s) as content_score
-                                     FROM proteins) as proteins_scores
-                                JOIN species ON species.id = proteins_scores.species_id
-                                WHERE {} {}
-                                ORDER BY (proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC
-                                LIMIT {}
-                                OFFSET {};
-                                """.format(
-                score_filter, filter_clauses, limit, offset
+            entries_query = """
+                SELECT 
+                    proteins_scores.name, 
+                    proteins_scores.description, 
+                    proteins_scores.length, 
+                    proteins_scores.mass, 
+                    species.name,
+                    proteins_scores.thumbnail
+                FROM (
+                    SELECT *, 
+                        similarity(name, %s) as name_score, 
+                        similarity(description, %s) as desc_score,
+                        similarity(content, %s) as content_score
+                    FROM proteins
+                ) as proteins_scores
+                JOIN species ON species.id = proteins_scores.species_id
+                WHERE {} {}
+                ORDER BY {}
+                LIMIT {}
+                OFFSET {};
+                """.format(
+                score_filter, filter_clauses, sort_clause, limit, offset
             )  # numbers in order by correspond to weighting
             log.warn("EQ:" + entries_query)
             log.warn(filter_clauses)
