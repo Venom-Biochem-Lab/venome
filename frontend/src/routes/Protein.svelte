@@ -33,6 +33,9 @@
 	let searchOpen = false;
 	let currentEntry: ProteinEntry | null = null;
 
+	///TODO
+	//EXPIRIEMENTAL MODELS
+
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
