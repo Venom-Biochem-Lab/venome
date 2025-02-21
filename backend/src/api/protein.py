@@ -7,7 +7,14 @@ from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 
-from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
+from ..api_types import (
+    ProteinEntry,
+    ProteinBody,
+    UploadError,
+    EditBody,
+    CamelModel,
+    UploadBody,
+)
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
 from io import BytesIO
@@ -55,6 +62,7 @@ class PDB:
 
     def atoms(self):
         return self.structure.get_atoms()
+
 
 def decode_base64(b64_header_and_data: str):
     """Converts a base64 string to bytes"""
@@ -475,8 +483,8 @@ def upload_protein_png(body: UploadPNGBody, req: Request):
 
 
 # None return means success
-@router.post("/protein/upload", response_model=UploadError | None)
-def upload_protein_entry(body: UploadBody, req: Request):
+@router.post("/protein/add", response_model=UploadError | None)
+def add_protein_entry(body: ProteinBody, req: Request):
     requires_authentication(req)
 
     body.name = format_protein_name(body.name)
@@ -532,6 +540,23 @@ def upload_protein_entry(body: UploadBody, req: Request):
             return UploadError.QUERY_ERROR
 
 
+@router.post("/protein/upload", response_model=UploadError | None)
+def upload_protein_entry(body: UploadBody, req: Request):
+    # Wrapper that adds a protein entry then creates an approved request
+    requires_authentication(req)
+    error = add_protein_entry(body, req)
+    if error is None:
+        with Database() as db:
+            try:
+                query = """INSERT INTO requests (user_id, protein_id, status_type, comment) 
+                           VALUES (%s, (SELECT id FROM proteins WHERE name = %s), 'Approved', 'Added by admin');"""
+                db.execute(query, [body.user_id, body.name])
+            except Exception as e:
+                log.error(e)
+                return UploadError.QUERY_ERROR
+    return error
+
+
 class ProteinEditSuccess(CamelModel):
     edited_name: str
 
@@ -553,7 +578,7 @@ def edit_protein_entry(body: EditBody, req: Request):
         if body.new_name != body.old_name:
             os.rename(
                 stored_pdb_file_name(body.old_name), stored_pdb_file_name(body.new_name)
-            )  
+            )
         with Database() as db:
             name_changed = False
             if body.new_name != body.old_name:

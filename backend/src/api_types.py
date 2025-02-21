@@ -40,6 +40,15 @@ class AllEntries(CamelModel):
     protein_entries: list[ProteinEntry]
 
 
+class ProteinBody(CamelModel):
+    name: str
+    description: str
+    species_name: str
+    content: str  # markdown content from user
+    refs: str  # references used in content (bibtex form)
+    pdb_file_str: str
+
+
 class UploadBody(CamelModel):
     name: str
     description: str
@@ -47,6 +56,7 @@ class UploadBody(CamelModel):
     content: str  # markdown content from user
     refs: str  # references used in content (bibtex form)
     pdb_file_str: str
+    user_id: int
 
 
 class UploadError(str, enum.Enum):

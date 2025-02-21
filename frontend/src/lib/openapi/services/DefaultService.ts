@@ -14,6 +14,7 @@ import type { InsertComponent } from "../models/InsertComponent";
 import type { LoginBody } from "../models/LoginBody";
 import type { LoginResponse } from "../models/LoginResponse";
 import type { MoveComponent } from "../models/MoveComponent";
+import type { ProteinBody } from "../models/ProteinBody";
 import type { ProteinEditSuccess } from "../models/ProteinEditSuccess";
 import type { ProteinEntry } from "../models/ProteinEntry";
 import type { RangeFilter } from "../models/RangeFilter";
@@ -436,6 +437,25 @@ export class DefaultService {
 		return __request(OpenAPI, {
 			method: "POST",
 			url: "/protein/upload/png",
+			body: requestBody,
+			mediaType: "application/json",
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+	/**
+	 * Add Protein Entry
+	 * @param requestBody
+	 * @returns any Successful Response
+	 * @throws ApiError
+	 */
+	public static addProteinEntry(
+		requestBody: ProteinBody
+	): CancelablePromise<UploadError | null> {
+		return __request(OpenAPI, {
+			method: "POST",
+			url: "/protein/add",
 			body: requestBody,
 			mediaType: "application/json",
 			errors: {
