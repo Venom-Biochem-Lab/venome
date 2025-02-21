@@ -10,5 +10,6 @@ export type SearchProteinsBody = {
     massFilter?: (RangeFilter | null);
     proteinsPerPage?: (number | null);
     page?: (number | null);
+    sortBy?: (string | null);
 };
 

@@ -387,6 +387,41 @@ export class DefaultService {
         });
     }
     /**
+     * Get All Protein Entries
+     * Get all protein entries
+     * Returns: List of ProteinEntry objects
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getAllProteinEntries(): CancelablePromise<Array<ProteinEntry>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/entries',
+        });
+    }
+    /**
+     * Get All Pending Protein Entries
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getAllPendingProteinEntries(): CancelablePromise<Array<ProteinEntry>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/entries/pending',
+        });
+    }
+    /**
+     * Get All Denied Protein Entries
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getAllDeniedProteinEntries(): CancelablePromise<Array<ProteinEntry>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/entries/denied',
+        });
+    }
+    /**
      * Upload Protein Png
      * @param requestBody
      * @returns any Successful Response
