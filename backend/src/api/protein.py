@@ -14,6 +14,8 @@ from ..api_types import (
     EditBody,
     CamelModel,
     UploadBody,
+    RequestBody,
+    AuthType,
 )
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
@@ -241,7 +243,7 @@ def get_protein_entry(protein_name: str):
 # TODO: add permissions so only the creator can delete not just anyone
 @router.delete("/protein/entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
         # remove protein
@@ -331,7 +333,7 @@ def get_all_protein_entries():
 
 @router.get("/protein/entries/pending", response_model=list[ProteinEntry])
 def get_all_pending_protein_entries(req: Request):
-    # requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             query = """SELECT
@@ -402,7 +404,7 @@ def get_all_pending_protein_entries(req: Request):
 
 @router.get("/protein/entries/denied", response_model=list[ProteinEntry])
 def get_all_denied_protein_entries(req: Request):
-    # requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             query = """SELECT 
@@ -473,7 +475,7 @@ def get_all_denied_protein_entries(req: Request):
 
 @router.post("/protein/upload/png", response_model=None)
 def upload_protein_png(body: UploadPNGBody, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.USER, req)
     with Database() as db:
         try:
             query = """UPDATE proteins SET thumbnail = %s WHERE name = %s"""
@@ -485,7 +487,7 @@ def upload_protein_png(body: UploadPNGBody, req: Request):
 # None return means success
 @router.post("/protein/add", response_model=UploadError | None)
 def add_protein_entry(body: ProteinBody, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.USER, req)
 
     body.name = format_protein_name(body.name)
     # check that the name is not already taken in the DB
@@ -543,7 +545,7 @@ def add_protein_entry(body: ProteinBody, req: Request):
 @router.post("/protein/upload", response_model=UploadError | None)
 def upload_protein_entry(body: UploadBody, req: Request):
     # Wrapper that adds a protein entry then creates an approved request
-    requires_authentication(req)
+    requires_authentication(AuthType.USER, req)
     error = add_protein_entry(body, req)
     if error is None:
         with Database() as db:
@@ -551,6 +553,36 @@ def upload_protein_entry(body: UploadBody, req: Request):
                 query = """INSERT INTO requests (user_id, protein_id, status_type, comment) 
                            VALUES (%s, (SELECT id FROM proteins WHERE name = %s), 'Approved', 'Added by admin');"""
                 db.execute(query, [body.user_id, body.name])
+            except Exception as e:
+                log.error(e)
+                return UploadError.QUERY_ERROR
+    return error
+
+
+@router.post("/protein/request", response_model=UploadError | None)
+def request_protein_entry(body: RequestBody, req: Request):
+    requires_authentication(AuthType.USER, req)
+    error = add_protein_entry(body.protein, req)
+    if error is None:
+        with Database() as db:
+            try:
+                query = """
+                        INSERT INTO requests
+                        (
+                            user_id,
+                            protein_id,
+                            status_type,
+                            comment
+                        )
+                        VALUES
+                        (
+                            %s,
+                            (SELECT id FROM proteins WHERE name = %s),
+                            'Pending',
+                            %s
+                        );
+                        """
+                db.execute(query, [body.user_id, body.protein.name, body.comment])
             except Exception as e:
                 log.error(e)
                 return UploadError.QUERY_ERROR
@@ -570,7 +602,7 @@ def edit_protein_entry(body: EditBody, req: Request):
 
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     try:
         # replace spaces in the name with underscores
         body.old_name = format_protein_name(body.old_name)

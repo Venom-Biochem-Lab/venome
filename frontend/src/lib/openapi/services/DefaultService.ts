@@ -18,6 +18,7 @@ import type { ProteinBody } from "../models/ProteinBody";
 import type { ProteinEditSuccess } from "../models/ProteinEditSuccess";
 import type { ProteinEntry } from "../models/ProteinEntry";
 import type { RangeFilter } from "../models/RangeFilter";
+import type { RequestBody } from "../models/RequestBody";
 import type { SearchProteinsBody } from "../models/SearchProteinsBody";
 import type { SearchProteinsResults } from "../models/SearchProteinsResults";
 import type { SignupBody } from "../models/SignupBody";
@@ -475,6 +476,25 @@ export class DefaultService {
 		return __request(OpenAPI, {
 			method: "POST",
 			url: "/protein/upload",
+			body: requestBody,
+			mediaType: "application/json",
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+	/**
+	 * Request Protein Entry
+	 * @param requestBody
+	 * @returns any Successful Response
+	 * @throws ApiError
+	 */
+	public static requestProteinEntry(
+		requestBody: RequestBody
+	): CancelablePromise<UploadError | null> {
+		return __request(OpenAPI, {
+			method: "POST",
+			url: "/protein/request",
 			body: requestBody,
 			mediaType: "application/json",
 			errors: {
