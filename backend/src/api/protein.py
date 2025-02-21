@@ -7,7 +7,14 @@ from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 
-from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
+from ..api_types import (
+    ProteinEntry,
+    ProteinBody,
+    UploadError,
+    EditBody,
+    CamelModel,
+    UploadBody,
+)
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
 from io import BytesIO
@@ -463,8 +470,8 @@ def upload_protein_png(body: UploadPNGBody, req: Request):
 
 
 # None return means success
-@router.post("/protein/upload", response_model=UploadError | None)
-def upload_protein_entry(body: UploadBody, req: Request):
+@router.post("/protein/add", response_model=UploadError | None)
+def add_protein_entry(body: ProteinBody, req: Request):
     requires_authentication(req)
 
     body.name = format_protein_name(body.name)
@@ -502,7 +509,8 @@ def upload_protein_entry(body: UploadBody, req: Request):
         try:
             # add the protein itself
             query = """INSERT INTO proteins (name, description, length, mass, content, refs, species_id) 
-                       VALUES (%s, %s, %s, %s, %s, %s, (SELECT id FROM species WHERE name = %s));"""
+                       VALUES (%s, %s, %s, %s, %s, %s, (SELECT id FROM species WHERE name = %s));
+                       """
             db.execute(
                 query,
                 [
@@ -518,6 +526,23 @@ def upload_protein_entry(body: UploadBody, req: Request):
         except Exception:
             log.warn("Failed to insert into proteins table")
             return UploadError.QUERY_ERROR
+
+
+@router.post("/protein/upload", response_model=UploadError | None)
+def upload_protein_entry(body: UploadBody, req: Request):
+    # Wrapper that adds a protein entry then creates an approved request
+    requires_authentication(req)
+    error = add_protein_entry(body, req)
+    if error is None:
+        with Database() as db:
+            try:
+                query = """INSERT INTO requests (user_id, protein_id, status_type, comment) 
+                           VALUES (%s, (SELECT id FROM proteins WHERE name = %s), 'Approved', 'Added by admin');"""
+                db.execute(query, [body.user_id, body.name])
+            except Exception as e:
+                log.error(e)
+                return UploadError.QUERY_ERROR
+    return error
 
 
 class ProteinEditSuccess(CamelModel):

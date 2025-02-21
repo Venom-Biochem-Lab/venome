@@ -23,6 +23,7 @@ export { InsertComponent } from './models/InsertComponent';
 export type { LoginBody } from './models/LoginBody';
 export type { LoginResponse } from './models/LoginResponse';
 export { MoveComponent } from './models/MoveComponent';
+export type { ProteinBody } from './models/ProteinBody';
 export type { ProteinEditSuccess } from './models/ProteinEditSuccess';
 export type { ProteinEntry } from './models/ProteinEntry';
 export type { RangeFilter } from './models/RangeFilter';
