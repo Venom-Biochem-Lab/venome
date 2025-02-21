@@ -79,6 +79,13 @@ class EditBody(CamelModel):
     new_description: str | None = None
 
 
+class RequestBody(CamelModel):
+    user_id: int
+    comment: str
+    status: str
+    protein: ProteinBody
+
+
 class SignupBody(CamelModel):
     username: str
     email: str
@@ -130,3 +137,8 @@ class UserBody(CamelModel):
     email: str | None = None
     admin: bool | None = None
     password: str | None = None
+
+
+class AuthType(str, enum.Enum):
+    ADMIN = "ADMIN"
+    USER = "USER"
