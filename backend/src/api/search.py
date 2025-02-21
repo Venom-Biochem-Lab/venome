@@ -157,7 +157,12 @@ def search_proteins(body: SearchProteinsBody):
                         similarity(name, %s) as name_score, 
                         similarity(description, %s) as desc_score,
                         similarity(content, %s) as content_score
-                    FROM proteins
+                    FROM proteins WHERE EXISTS (
+                            SELECT 1 
+                            FROM requests 
+                            WHERE protein_id = proteins.id 
+                            AND status_type = 'Approved'
+                        )
                 ) as proteins_scores
                 JOIN species ON species.id = proteins_scores.species_id
                 WHERE {} {}
@@ -201,7 +206,12 @@ def search_proteins(body: SearchProteinsBody):
 def search_range_length():
     try:
         with Database() as db:
-            query = """SELECT min(length), max(length) FROM proteins"""
+            query = """SELECT min(length), max(length) FROM proteins WHERE EXISTS (
+                            SELECT 1 
+                            FROM requests 
+                            WHERE protein_id = proteins.id 
+                            AND status_type = 'Approved'
+                        )"""
             entry_sql = db.execute_return(query)
             if entry_sql is not None:
                 return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
@@ -213,7 +223,12 @@ def search_range_length():
 def search_range_mass():
     try:
         with Database() as db:
-            query = """SELECT min(mass), max(mass) FROM proteins"""
+            query = """SELECT min(mass), max(mass) FROM proteins WHERE EXISTS (
+                            SELECT 1 
+                            FROM requests 
+                            WHERE protein_id = proteins.id 
+                            AND status_type = 'Approved'
+                        )"""
             entry_sql = db.execute_return(query)
             if entry_sql is not None:
                 return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
