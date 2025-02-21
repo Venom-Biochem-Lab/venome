@@ -1,6 +1,6 @@
 # Text Version Overview
 
-This document outlines all our design choices and architecture decisions. It also points you in the right direction to get started developing. 
+This document outlines all our design choices and architecture decisions. It also points you in the right direction to get started developing.
 
 But before you read the overview, if you're new, at the very least, get the website running which is described in the [⚡️ Quick Start](../README.md#️⚡️-quick-start) Section.
 
@@ -14,7 +14,6 @@ The [`frontend`](../frontend/) is the website itself. It's the user interface th
 
 The [`backend`](../backend/) sits behind the [`frontend`](../frontend/). To be accurate, the [`frontend`](../frontend/) makes requests to the [`backend`](../backend/), and the [`backend`](../backend/) sends back responses.
 
-
 ## Second pass
 
 The [`frontend`](../frontend/) is what runs on your browser. So you've guessed it, its JavaScript and HTML.
@@ -25,7 +24,6 @@ Svelte is a hybrid of the two that makes writing reactive user interfaces with c
 
 The [`backend`](../backend/) is what our frontend makes HTTP requests to. Like `GET` or `POST` requests. Our backend runs Python and [FastAPI](https://fastapi.tiangolo.com/) as the HTTP server. FastAPI is the library that handles all the requests.
 
-
 ## Third pass
 
 The Svelte [`frontend`](../frontend/)'s entry point is [`frontend/src/App.svelte`](../frontend/src/App.svelte). You can think of this as the web app that you see. As you can see there isn't much there, there is just a `<Router />` component.
@@ -34,7 +32,7 @@ The `<Router />` or [`frontend/src/Router.svelte`](../frontend/src/Router.svelte
 
 One example, the home route `/`, which is the default, corresponds to `<Route path="/"><Home /></Route>`. All this says is when the user has the URL `/`, Svelte will mount/render the `<Home />` component.
 
-The entire Svelte frontend is rendered this way using. 
+The entire Svelte frontend is rendered this way using.
 
 The Python/FastAPI [`backend`](../backend/)'s main file is [`backend/src/server.py`](../backend/src/server.py). This is the file python runs to run the entire backend. As you can see, this file really only calls one function `serve_endpoints()` which serves the HTTP endpoints defined in the [`backend/src/api/`](../backend/src/api/) folder
 
@@ -42,7 +40,7 @@ The entire HTTP backend runs through these defined endpoints.
 
 ## Fourth pass
 
-The Svelte [`frontend`](../frontend/) defines all the routes like I said in the [`frontend/src/Router.svelte`](../frontend/src/Router.svelte) component. For organizational purposes, all the sub components which correspond to a route declaration are kept in the [`frontend/src/routes/`](../frontend/src/routes/) folder. The rest of the frontend code that are not routes live in the  [`frontend/src/lib/`](../frontend/src/lib/) folder.
+The Svelte [`frontend`](../frontend/) defines all the routes like I said in the [`frontend/src/Router.svelte`](../frontend/src/Router.svelte) component. For organizational purposes, all the sub components which correspond to a route declaration are kept in the [`frontend/src/routes/`](../frontend/src/routes/) folder. The rest of the frontend code that are not routes live in the [`frontend/src/lib/`](../frontend/src/lib/) folder.
 
 To give you one example, the [`frontend/src/routes/Protein.svelte`](../frontend/src/routes/Protein.svelte) corresponds to a particular `/protein/` route. But within this Protein Svelte component, I reference other useful shared code, like [`frontend/src/lib/Molstar.svelte`](../frontend/src/lib/Molstar.svelte) which renders proteins in 3D.
 
@@ -71,7 +69,7 @@ This entire 5th pass is dedicated to how we request data from the [`backend`](..
 
 Like I said, we make HTTP requests in the frontend, but you check our entire frontend you won't find a single `fetch()` request.
 
-We use a library called `openapi-typescript-codegen` which reads the Python endpoint definition and generates/compiles each as a frontend function we can simply import. 
+We use a library called `openapi-typescript-codegen` which reads the Python endpoint definition and generates/compiles each as a frontend function we can simply import.
 
 For example, take the `POST` endpoint for how we search for proteins in [`search.py`](../backend/src/api/search.py) at `/search/proteins` which is defined like
 
@@ -100,24 +98,26 @@ See [`Protein.svelte`](../frontend/src/routes/Protein.svelte) for more concrete 
 > [!IMPORTANT]
 > On every change the a backend endpoint (response_model, name, endpoint) you will need to run `./run.sh gen_api` again to regenerate the frontend fetch wrapper functions
 
-
 ## Sixth pass
 
 So you basically know everything about the frontend, so I'll pivot to only passing over the backend. The backend actually also houses a postgreSQL database. From python you can connect to a database and make queries to it. Please see examples like in [`search.py`](../backend/src/api/search.py) where I import Database and use it.
 
 This database is set up in the docker container and named venome. When the docker initially builds, the database is completely empty.
 
-To load in the schema and data, load in a snapshot from the [`backups/`](../backups/) folder. 
+To load in the schema and data, load in a snapshot from the [`backups/`](../backups/) folder.
 
 For example
+
 ```bash
-./run.sh reload_from_backup backups/v0.0.2
+./run.sh reload_from_backup backups/v0.0.3
 ```
-to load a snapshot 
+
+to load a snapshot
 
 ```bash
 ./run.sh backup backups/your_new_backup
 ```
+
 to make a new backup.
 
 Please see the [`backend.md`](./backend.md) for more explanation.

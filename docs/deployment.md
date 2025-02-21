@@ -16,11 +16,12 @@ Once you make an account, ask Nate or Michael to email the admin (Ken) about add
 
 You'll need to `ssh` into a few servers to get in. `your_assigned_port` is an integer and should be given to you upon registration of your CQLS account through email. `your_cqls_username` is simply your CQLS username you entered when registering.
 
-First 
+First
 
 ```bash
 ssh -p your_assigned_port your_cqls_username@shell.cqls.oregonstate.edu
 ```
+
 and enter your CQLS password
 
 Then once you are in
@@ -28,6 +29,7 @@ Then once you are in
 ```bash
 ssh hpc.cqls.oregonstate.edu
 ```
+
 and enter your OSU ONID password, not your CQLS password this time.
 
 Then finally
@@ -35,11 +37,12 @@ Then finally
 ```bash
 ssh venome-pvt
 ```
+
 and enter your OSU ONID password again.
 
 ✅ Success you are in!
 
-When you do 
+When you do
 
 ```bash
 ls
@@ -55,7 +58,7 @@ If you need to reclone the repo, make sure to use the https link and the not ssh
 
 #### internet connection issues
 
-For some reason, if you are on a proxy server, docker can't connect to the internet at all. To fix this, you need to point docker to what the $http_proxy enviroment variables says with https://docs.docker.com/config/daemon/systemd/. Follow those instructions. You might also need to update the docker/config.json with the same info. In my case there was a config.json in ~/.docker/config.json and in /etc/docker/config.json. No clue why there are multiple, but just make sure they all agree and restart the daemon and docker. 
+For some reason, if you are on a proxy server, docker can't connect to the internet at all. To fix this, you need to point docker to what the $http_proxy enviroment variables says with https://docs.docker.com/config/daemon/systemd/. Follow those instructions. You might also need to update the docker/config.json with the same info. In my case there was a config.json in ~/.docker/config.json and in /etc/docker/config.json. No clue why there are multiple, but just make sure they all agree and restart the daemon and docker.
 
 You'll need to restart docker and the daemon if you change the config with `sudo systemctl daemon-reload` and `sudo systemctl restart docker`.
 
@@ -63,7 +66,7 @@ You'll need to restart docker and the daemon if you change the config with `sudo
 
 Go to the `etc/httpd/conf/` directory and find the `httpd.conf` configuration file.
 
-Add a reverse proxy so that the server directs user traffic to our running production build 
+Add a reverse proxy so that the server directs user traffic to our running production build
 
 ```txt
 ProxyPass /backend/ http://localhost:8000/
@@ -84,12 +87,12 @@ Then you can build the entire container in production
 
 ```bash
 ./run.sh start -p
-./run.sh reload_from_backup -p backups/v0.0.2 # or whatever backup you want
+./run.sh reload_from_backup -p backups/v0.0.3 # or whatever backup you want
 ```
 
 ## Backup
 
-On the server you can simply make a backup with any name you want like new_backup as 
+On the server you can simply make a backup with any name you want like new_backup as
 
 ```bash
 ./run.sh backup -p backups/new_backup
@@ -106,7 +109,7 @@ sftp your_cqls_username@hpc.cqls.oregonstate.edu
 Then download the specific backup (in this case downloading v0.0.2, but could pick any one)
 
 ```bash
-get -R venome/backups/v0.0.2
+get -R venome/backups/v0.0.3
 ```
 
 I would save this to a central box or google drive so that you can save backups over time.
