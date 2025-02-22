@@ -14,9 +14,12 @@ from src.api_types import (
     UserResponse,
     UsersResponse,
     UserBody,
+    AuthType,
 )
 from src.auth import generate_auth_token
 from src.db import Database
+from ..auth import requires_authentication
+from fastapi.requests import Request
 
 router = APIRouter()
 
@@ -87,7 +90,8 @@ def admin_signup(body: LoginBody):
 
 
 @router.get("/users/", response_model=UsersResponse)
-def get_users():
+def get_users(req: Request):
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         query = """SELECT id, username, email, admin FROM users;"""
         users_list = db.execute_return(query)
@@ -130,7 +134,8 @@ def get_user(user_id: int):
 
 
 @router.put("/user/{id}", response_model=None)
-def edit_user(user_id: int, body: UserBody):
+def edit_user(user_id: int, body: UserBody, req: Request):
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         query = """UPDATE users SET """
         arg_list = []
@@ -153,7 +158,8 @@ def edit_user(user_id: int, body: UserBody):
 
 
 @router.delete("/user/{id}", response_model=None)
-def delete_user(user_id: int):
+def delete_user(user_id: int, req: Request):
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         query = """DELETE FROM users WHERE id = %s;"""
         try:

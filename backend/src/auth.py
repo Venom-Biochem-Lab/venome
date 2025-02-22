@@ -39,6 +39,7 @@ def authenticate_token(token):
 # Use this function with a request if you want.
 def requires_authentication(type: AuthType, req: Request):
     # no header at all
+    print(req.headers["authorization"])
     if "authorization" not in req.headers:
         raise HTTPException(status_code=403, detail="Unauthorized")
 
