@@ -2,12 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ProteinBody } from './ProteinBody';
 import type { RequestStatus } from './RequestStatus';
-export type RequestBody = {
-    userId: number;
-    comment: string;
+export type RequestBodyEdit = {
+    requestId: number;
     status: RequestStatus;
-    protein: ProteinBody;
 };
 

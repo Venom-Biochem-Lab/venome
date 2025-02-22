@@ -16,6 +16,9 @@ from ..api_types import (
     UploadBody,
     RequestBody,
     AuthType,
+    RequestStatus,
+    FullProteinInfo,
+    RequestBodyEdit,
 )
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
@@ -587,6 +590,74 @@ def request_protein_entry(body: RequestBody, req: Request):
                 log.error(e)
                 return UploadError.QUERY_ERROR
     return error
+
+
+@router.put("/protein/request/", response_model=UploadError | None)
+def edit_request_status(body: RequestBodyEdit, req: Request):
+    requires_authentication(AuthType.ADMIN, req)
+    with Database() as db:
+        try:
+            query = """UPDATE requests SET status_type = %s WHERE id = %s"""
+            db.execute(query, [body.status, body.request_id])
+        except Exception as e:
+            log.error(e)
+            return UploadError.QUERY_ERROR
+
+    return None
+
+
+@router.get("/protein/request/entries", response_model=list[FullProteinInfo])
+def get_all_request_entries(req: Request):
+    requires_authentication(AuthType.ADMIN, req)
+    with Database() as db:
+        try:
+            query = """SELECT * FROM full_protein_info ORDER BY "request_date" desc, "request_id";"""
+            entries_sql = db.execute_return(query)
+
+            # if we got a result back
+            if entries_sql is not None and len(entries_sql) != 0:
+                entries = []
+                for entry in entries_sql:
+                    (
+                        protein_id,
+                        protein_name,
+                        protein_content,
+                        species,
+                        request_id,
+                        user_id,
+                        username,
+                        request_date,
+                        request_status,
+                        comment,
+                    ) = entry
+
+                    if comment is None:
+                        comment = ""
+
+                    if request_date is None:
+                        request_date = ""
+
+                    entries.append(
+                        FullProteinInfo(
+                            protein_id=protein_id,
+                            protein_name=protein_name,
+                            protein_content=protein_content,
+                            request_id=request_id,
+                            species=species,
+                            user_id=user_id,
+                            username=username,
+                            request_date=str(request_date),
+                            request_status=request_status,
+                            comment=comment,
+                        )
+                    )
+                return entries
+            else:
+                return []
+
+        except Exception as e:
+            log.error(e)
+            return []
 
 
 class ProteinEditSuccess(CamelModel):

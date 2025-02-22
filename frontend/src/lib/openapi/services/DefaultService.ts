@@ -9,6 +9,7 @@ import type { EditArticleMetadata } from "../models/EditArticleMetadata";
 import type { EditArticleProteinComponent } from "../models/EditArticleProteinComponent";
 import type { EditArticleTextComponent } from "../models/EditArticleTextComponent";
 import type { EditBody } from "../models/EditBody";
+import type { FullProteinInfo } from "../models/FullProteinInfo";
 import type { InsertBlankComponentEnd } from "../models/InsertBlankComponentEnd";
 import type { InsertComponent } from "../models/InsertComponent";
 import type { LoginBody } from "../models/LoginBody";
@@ -19,6 +20,7 @@ import type { ProteinEditSuccess } from "../models/ProteinEditSuccess";
 import type { ProteinEntry } from "../models/ProteinEntry";
 import type { RangeFilter } from "../models/RangeFilter";
 import type { RequestBody } from "../models/RequestBody";
+import type { RequestBodyEdit } from "../models/RequestBodyEdit";
 import type { SearchProteinsBody } from "../models/SearchProteinsBody";
 import type { SearchProteinsResults } from "../models/SearchProteinsResults";
 import type { SignupBody } from "../models/SignupBody";
@@ -500,6 +502,38 @@ export class DefaultService {
 			errors: {
 				422: `Validation Error`,
 			},
+		});
+	}
+	/**
+	 * Edit Request Status
+	 * @param requestBody
+	 * @returns any Successful Response
+	 * @throws ApiError
+	 */
+	public static editRequestStatus(
+		requestBody: RequestBodyEdit
+	): CancelablePromise<UploadError | null> {
+		return __request(OpenAPI, {
+			method: "PUT",
+			url: "/protein/request/",
+			body: requestBody,
+			mediaType: "application/json",
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+	/**
+	 * Get All Request Entries
+	 * @returns FullProteinInfo Successful Response
+	 * @throws ApiError
+	 */
+	public static getAllRequestEntries(): CancelablePromise<
+		Array<FullProteinInfo>
+	> {
+		return __request(OpenAPI, {
+			method: "GET",
+			url: "/protein/request/entries",
 		});
 	}
 	/**
