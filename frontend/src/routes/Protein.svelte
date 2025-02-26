@@ -83,7 +83,7 @@
 					<div><code>{numberWithCommas(entry.atoms)}</code></div>
 				</div>
 				<div class="mt-3">
-					<Accordion>.
+					<Accordion>
 						<AccordionItem bind:open={searchOpen}>
 							<span slot="header" style="font-size: 18px;"
 								>3D Similar Proteins <span
