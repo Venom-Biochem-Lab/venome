@@ -40,12 +40,21 @@ class PDB:
     def mass_daltons(self):
         return molecular_weight(seq="".join(self.amino_acids()), seq_type="protein")
 
+    @property
+    def num_atoms(self) -> int:
+        count = 0
+        for atom in self.atoms():
+            count += 1
+        return count
+
     def amino_acids(self, one_letter_code=True):
         return [
             seq1(residue.resname) if one_letter_code else residue.resname
             for residue in self.structure.get_residues()
         ]
 
+    def atoms(self):
+        return self.structure.get_atoms()
 
 def decode_base64(b64_header_and_data: str):
     """Converts a base64 string to bytes"""
@@ -168,6 +177,7 @@ def get_protein_entry(protein_name: str):
                               proteins.description,
                               proteins.length, 
                               proteins.mass, 
+                              proteins.atoms,
                               proteins.content, 
                               proteins.refs, 
                               species.name,
@@ -187,6 +197,7 @@ def get_protein_entry(protein_name: str):
                     description,
                     length,
                     mass,
+                    atoms,
                     content,
                     refs,
                     species_name,
@@ -207,6 +218,7 @@ def get_protein_entry(protein_name: str):
                     description=description,
                     length=length,
                     mass=mass,
+                    atoms=atoms,
                     content=content,
                     refs=refs,
                     species_name=species_name,
@@ -264,7 +276,6 @@ def upload_protein_entry(body: UploadBody, req: Request):
         pdb = parse_protein_pdb(body.name, body.pdb_file_str)
     except Exception:
         return UploadError.PARSE_ERROR
-
     try:
         # write to file to data/ folder
         with open(stored_pdb_file_name(pdb.name), "w") as f:
@@ -287,8 +298,8 @@ def upload_protein_entry(body: UploadBody, req: Request):
 
         try:
             # add the protein itself
-            query = """INSERT INTO proteins (name, description, length, mass, content, refs, species_id) 
-                       VALUES (%s, %s, %s, %s, %s, %s, (SELECT id FROM species WHERE name = %s));"""
+            query = """INSERT INTO proteins (name, description, length, mass, atoms, content, refs, species_id) 
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, (SELECT id FROM species WHERE name = %s));"""
             db.execute(
                 query,
                 [
@@ -296,6 +307,7 @@ def upload_protein_entry(body: UploadBody, req: Request):
                     body.description,
                     pdb.num_amino_acids,
                     pdb.mass_daltons,
+                    pdb.num_atoms,
                     body.content,
                     body.refs,
                     body.species_name,
@@ -324,12 +336,10 @@ def edit_protein_entry(body: EditBody, req: Request):
         # replace spaces in the name with underscores
         body.old_name = format_protein_name(body.old_name)
         body.new_name = format_protein_name(body.new_name)
-
         if body.new_name != body.old_name:
             os.rename(
                 stored_pdb_file_name(body.old_name), stored_pdb_file_name(body.new_name)
-            )
-
+            )  
         with Database() as db:
             name_changed = False
             if body.new_name != body.old_name:
@@ -469,17 +479,19 @@ def get_random_protein():
                         proteins.name,
                         proteins.length, 
                         proteins.mass, 
+                        proteins.atoms,
                         proteins.description, 
                         species.name as species_name 
                        FROM proteins TABLESAMPLE SYSTEM_ROWS(1)
                        JOIN species ON species.id = proteins.species_id;"""
             res = db.execute_return(query)
             if res is not None:
-                name, length, mass, description, species_name = res[0]
+                name, length, mass, atoms, description, species_name = res[0]
                 return ProteinEntry(
                     name=name,
                     length=length,
                     mass=mass,
+                    atoms=atoms,
                     description=description,
                     species_name=species_name,
                 )

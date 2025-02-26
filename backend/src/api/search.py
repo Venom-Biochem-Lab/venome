@@ -29,6 +29,7 @@ class SearchProteinsBody(CamelModel):
     species_filter: str | None = None
     length_filter: RangeFilter | None = None
     mass_filter: RangeFilter | None = None
+    atoms_filter: RangeFilter | None = None
     proteinsPerPage: int | None = None
     page: int | None = None
     sortBy: str | None = None
@@ -85,11 +86,13 @@ def gen_sql_filters(
     species_filter: str | None,
     length_filter: RangeFilter | None = None,
     mass_filter: RangeFilter | None = None,
+    atoms_filter: RangeFilter | None = None,
 ) -> str:
     filters = [
         category_where_clause(f"{species_table}.name", species_filter),
         range_where_clause(f"{proteins_table}.length", length_filter),
         range_where_clause(f"{proteins_table}.mass", mass_filter),
+        range_where_clause(f"{proteins_table}.atoms", atoms_filter)
     ]
     return " AND " + combine_where_clauses(filters) if any(filters) else ""
 
@@ -113,6 +116,7 @@ def search_proteins(body: SearchProteinsBody):
                 body.species_filter,
                 body.length_filter,
                 body.mass_filter,
+                body.atoms_filter,
             )
             threshold = 0
             score_filter = (
@@ -133,6 +137,10 @@ def search_proteins(body: SearchProteinsBody):
                 sort_clause = "proteins_scores.mass ASC"
             elif body.sortBy == "massDesc":
                 sort_clause = "proteins_scores.mass DESC"
+            elif body.sortBy == "atomsAsc":
+                sort_clause = "proteins_scores.atoms ASC"
+            elif body.sortBy == "atomsDesc":
+                sort_clause = "proteins_scores.atoms DESC"
 
             # note that we have a sub query since postgres can't do where clauses on aliased tables
             entries_query = """
@@ -140,7 +148,8 @@ def search_proteins(body: SearchProteinsBody):
                     proteins_scores.name, 
                     proteins_scores.description, 
                     proteins_scores.length, 
-                    proteins_scores.mass, 
+                    proteins_scores.mass,
+                    proteins_scores.atoms, 
                     species.name,
                     proteins_scores.thumbnail
                 FROM (
@@ -171,13 +180,14 @@ def search_proteins(body: SearchProteinsBody):
                             name=name,
                             length=length,
                             mass=mass,
+                            atoms=atoms,
                             species_name=species_name,
                             thumbnail=bytea_to_str(thumbnail_bytes)
                             if thumbnail_bytes is not None
                             else None,
                             description=description,
                         )
-                        for name, description, length, mass, species_name, thumbnail_bytes in entries_result
+                        for name, description, length, mass, atoms, species_name, thumbnail_bytes in entries_result
                     ],
                     total_found=len(entries_result),
                 )
@@ -204,6 +214,17 @@ def search_range_mass():
     try:
         with Database() as db:
             query = """SELECT min(mass), max(mass) FROM proteins"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/search/range/atoms", response_model=RangeFilter)
+def search_range_atoms():
+    try:
+        with Database() as db:
+            query = """SELECT min(atoms), max(atoms) FROM proteins"""
             entry_sql = db.execute_return(query)
             if entry_sql is not None:
                 return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
