@@ -26,6 +26,7 @@
 
 	export let urlId: string;
 	let entry: ProteinEntry | null = null;
+	let contributor = "";
 	let error = false;
 	let chainColors: ChainColors = {};
 	let searchOpen = false;
@@ -38,6 +39,8 @@
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
 		if (entry == null) error = true;
+
+		contributor = (await Backend.getProteinEntryUser(urlId)).username;
 	});
 </script>
 
@@ -59,9 +62,9 @@
 						on:click={async () => {
 							navigate(`/protein/edit/${entry?.name}`);
 						}}
-						><EditOutline class="mr-1" size="sm" />Edit Protein
-						Entry</Button
 					>
+						<EditOutline class="mr-1" size="sm" />Edit Protein Entry
+					</Button>
 				{/if}
 			</h1>
 
@@ -85,12 +88,13 @@
 				<div class="mt-3">
 					<Accordion>
 						<AccordionItem bind:open={searchOpen}>
-							<span slot="header" style="font-size: 18px;"
-								>3D Similar Proteins <span
+							<span slot="header" style="font-size: 18px;">
+								3D Similar Proteins <span
 									style="font-weight: 300; font-size: 15px;"
-									>(click to compute with Foldseek)</span
-								></span
-							>
+								>
+									(click to compute with Foldseek)
+								</span>
+							</span>
 							{#if searchOpen}
 								<SimilarProteins
 									queryProteinName={entry.name}
@@ -122,21 +126,25 @@
 					<div
 						id="info-grid"
 						class="grid grid-cols-2 mb-2"
-						style="width: 400px;"
+						style="width: 220px;"
 					>
 						<b>Organism</b>
 						<div>
 							{entry.speciesName}
 						</div>
+						<b>Contributor</b>
+						<div>
+							{contributor}
+						</div>
 						<b>Method</b>
 						<div>AlphaFold 2</div>
 						<b>Date Published</b>
 						<div>
-							<code
-								>{entry.datePublished
+							<code>
+								{entry.datePublished
 									? dbDateToMonthDayYear(entry.datePublished)
-									: "n/a"}</code
-							>
+									: "n/a"}
+							</code>
 						</div>
 					</div>
 					<div style="width: 100%;" class="mb-2 flex justify-between">
@@ -144,23 +152,18 @@
 							size="xs"
 							color="light"
 							outline
-							on:click={() =>
-								navigate(`/fullscreen/${entry?.name}`)}
-							>Fullscreen <ExpandOutline
-								class="ml-1"
-								size="sm"
-							/></Button
+							on:click={() => navigate(`/fullscreen/${entry?.name}`)}
 						>
+							Fullscreen <ExpandOutline class="ml-1" size="sm" />
+						</Button>
 						<Button
 							outline
 							size="xs"
 							color="light"
 							href={backendUrl(`protein/pdb/${entry?.name}`)}
-							>Download .pdb file<DownloadOutline
-								size="sm"
-								class="ml-1"
-							/></Button
 						>
+							Download .pdb file<DownloadOutline size="sm" class="ml-1" />
+						</Button>
 					</div>
 					<Molstar
 						format="pdb"
@@ -187,7 +190,9 @@
 	{:else if error}
 		<!-- if we error out, tell the user the id is shiza -->
 		<h1>Error</h1>
-		<p>Could not find a protein with the id <code>{urlId}</code></p>
+		<p>
+			Could not find a protein with the id <code>{urlId}</code>
+		</p>
 	{/if}
 </section>
 
