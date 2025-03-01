@@ -27,8 +27,9 @@ function stop() {
 # generates the api bridge between frontend and backend
 function gen_api() {
 	cd frontend
-	yarn openapi && docker compose -f $COMPOSE_CONFIG restart frontend
+	yarn openapi
 	cd ..
+	docker compose -f $COMPOSE_CONFIG restart frontend
 }
 
 # clears the postgres persistent storage
