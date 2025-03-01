@@ -134,8 +134,8 @@ export class DefaultService {
 	public static getUser(userId: number): CancelablePromise<UserResponse> {
 		return __request(OpenAPI, {
 			method: "GET",
-			url: "/user/{id}",
-			query: {
+			url: "/user/{user_id}",
+			path: {
 				user_id: userId,
 			},
 			errors: {
@@ -156,8 +156,8 @@ export class DefaultService {
 	): CancelablePromise<any> {
 		return __request(OpenAPI, {
 			method: "PUT",
-			url: "/user/{id}",
-			query: {
+			url: "/user/{user_id}",
+			path: {
 				user_id: userId,
 			},
 			body: requestBody,
@@ -176,8 +176,28 @@ export class DefaultService {
 	public static deleteUser(userId: number): CancelablePromise<any> {
 		return __request(OpenAPI, {
 			method: "DELETE",
-			url: "/user/{id}",
-			query: {
+			url: "/user/{user_id}",
+			path: {
+				user_id: userId,
+			},
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+	/**
+	 * Get User Proteins
+	 * @param userId
+	 * @returns any Successful Response
+	 * @throws ApiError
+	 */
+	public static getUserProteins(
+		userId: number
+	): CancelablePromise<Array<string> | null> {
+		return __request(OpenAPI, {
+			method: "GET",
+			url: "/user/{user_id}/proteins",
+			path: {
 				user_id: userId,
 			},
 			errors: {
@@ -224,17 +244,6 @@ export class DefaultService {
 		return __request(OpenAPI, {
 			method: "GET",
 			url: "/search/range/mass",
-		});
-	}
-	/**
-	 * Search Range Atoms
-	 * @returns RangeFilter Successful Response
-	 * @throws ApiError
-	 */
-	public static searchRangeAtoms(): CancelablePromise<RangeFilter> {
-		return __request(OpenAPI, {
-			method: "GET",
-			url: "/search/range/atoms",
 		});
 	}
 	/**
@@ -381,6 +390,26 @@ export class DefaultService {
 		return __request(OpenAPI, {
 			method: "DELETE",
 			url: "/protein/entry/{protein_name}",
+			path: {
+				protein_name: proteinName,
+			},
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+	/**
+	 * Get Protein Entry User
+	 * @param proteinName
+	 * @returns UserResponse Successful Response
+	 * @throws ApiError
+	 */
+	public static getProteinEntryUser(
+		proteinName: string
+	): CancelablePromise<UserResponse> {
+		return __request(OpenAPI, {
+			method: "GET",
+			url: "/protein/entry/{protein_name}/user",
 			path: {
 				protein_name: proteinName,
 			},

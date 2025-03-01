@@ -19,6 +19,7 @@ from ..api_types import (
     RequestStatus,
     FullProteinInfo,
     RequestBodyEdit,
+    UserResponse,
 )
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
@@ -239,6 +240,26 @@ def get_protein_entry(protein_name: str):
                     date_published=date_published,
                 )
 
+        except Exception as e:
+            log.error(e)
+
+
+@router.get("/protein/entry/{protein_name:str}/user", response_model=UserResponse)
+def get_protein_entry_user(protein_name: str):
+    with Database() as db:
+        try:
+            query = """SELECT users.id, users.username, users.email, users.admin
+                       FROM users
+                       JOIN requests ON requests.user_id = users.id
+                       JOIN proteins ON proteins.id = requests.protein_id
+                       WHERE proteins.name = %s;"""
+            user_sql = db.execute_return(query, [protein_name])
+
+            if user_sql is not None and len(user_sql) != 0:
+                user = user_sql[0]
+                return UserResponse(
+                    id=user[0], username=user[1], email=user[2], admin=user[3]
+                )
         except Exception as e:
             log.error(e)
 

@@ -15,6 +15,7 @@ from src.api_types import (
     UsersResponse,
     UserBody,
     AuthType,
+    FullProteinInfo,
 )
 from src.auth import generate_auth_token
 from src.db import Database
@@ -120,7 +121,7 @@ def get_user_id(username: str):
             return UserIDResponse(id=-1)
 
 
-@router.get("/user/{id}", response_model=UserResponse)
+@router.get("/user/{user_id}", response_model=UserResponse)
 def get_user(user_id: int):
     with Database() as db:
         query = """SELECT id, username, email, admin FROM users WHERE id = %s;"""
@@ -133,7 +134,22 @@ def get_user(user_id: int):
             return UserResponse(id=user_id, username="", email="", admin=False)
 
 
-@router.put("/user/{id}", response_model=None)
+@router.get("/user/{user_id}/proteins", response_model=list[str] | None)
+def get_user_proteins(user_id: int):
+    with Database() as db:
+        try:
+            query = """SELECT proteins.name from proteins JOIN requests ON proteins.id = requests.protein_id WHERE requests.user_id = %s;"""
+            proteins = db.execute_return(query, [user_id])
+            if proteins is not None:
+                return [protein[0] for protein in proteins]
+            else:
+                return None
+        except Exception as e:
+            log.error(e)
+            return None
+
+
+@router.put("/user/{user_id}", response_model=None)
 def edit_user(user_id: int, body: UserBody, req: Request):
     requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
@@ -157,7 +173,7 @@ def edit_user(user_id: int, body: UserBody, req: Request):
         return None
 
 
-@router.delete("/user/{id}", response_model=None)
+@router.delete("/user/{user_id}", response_model=None)
 def delete_user(user_id: int, req: Request):
     requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
