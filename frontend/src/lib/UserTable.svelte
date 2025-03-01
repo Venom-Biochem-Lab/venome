@@ -10,6 +10,8 @@
 	import { TrashBinSolid } from "flowbite-svelte-icons";
 
 	let userList: UserResponse[] = [];
+	let proteins: String[][] = [];
+	let showProteins: Boolean[] = [];
 	let unique = {};
 
 	export let reloadTable: () => void;
@@ -18,6 +20,20 @@
 		setToken();
 		const response = await Backend.getUsers();
 		userList = response.users;
+
+		for (let i = 0; i < userList.length; i++) {
+			const user = userList[i];
+			const id = user.id;
+			const proteinList = (await Backend.getUserProteins(id)) ?? [""];
+			proteins[user.id] = proteinList;
+			if (proteinList.length > 10) {
+				showProteins[user.id] = false;
+			} else {
+				showProteins[user.id] = true;
+			}
+		}
+		console.log(userList);
+		console.log(proteins);
 	});
 
 	async function getID(username: string) {
@@ -83,23 +99,44 @@
 {#each userList as user}
 	<tr>
 		<td>
-			<button on:click={deleteUser(user.username)}>
+			<button on:click={() => deleteUser(user.username)}>
 				<TrashBinSolid></TrashBinSolid>
 			</button>
 			{user.username}
-			<button on:click={editUsername(user.username)}>Edit Username</button>
+			<button on:click={() => editUsername(user.username)}>
+				Edit Username
+			</button>
 		</td>
 		<td>
 			{user.email}
-			<button on:click={editEmail(user.username, user.email)}>
+			<button on:click={() => editEmail(user.username, user.email)}>
 				Edit Email
 			</button>
 		</td>
 		<td class="admin">
 			{user.admin.toString()}
-			<button on:click={editRole(user.username)}>Toggle Admin</button>
+			<button on:click={() => editRole(user.username)}>Toggle Admin</button>
 		</td>
-		<td></td>
+		<td>
+			{#if proteins[user.id]}
+				{#if proteins[user.id].length == 0}
+					No proteins submitted
+				{:else if showProteins[user.id]}
+					<button on:click={() => (showProteins[user.id] = false)}>
+						Show Less
+					</button>
+					<div class="proteins">
+						{#each proteins[user.id] as protein}
+							<a href="/protein/{[protein]}">{protein}</a>
+						{/each}
+					</div>
+				{:else}
+					<button on:click={() => (showProteins[user.id] = true)}>
+						Show More
+					</button>
+				{/if}
+			{/if}
+		</td>
 	</tr>
 {/each}
 
@@ -122,5 +159,10 @@
 		background-color: hsla(205, 57%, 23%, 0.35);
 		border-radius: 15px;
 		padding: 5px;
+	}
+
+	.proteins {
+		display: flex;
+		flex-direction: column;
 	}
 </style>

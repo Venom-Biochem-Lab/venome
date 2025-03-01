@@ -7,11 +7,10 @@
 	let unique = {};
 
 	function reloadTable() {
- 		unique = {};
+		unique = {};
 	}
 
 	onMount(async () => {
-		console.log($user)
 		if (!$user.admin) {
 			alert(
 				"You are not an admin. You are being redirected to home. TODO: Make this better."
@@ -20,16 +19,17 @@
 		}
 	});
 </script>
+
 <svelte:head>
 	<title>User List</title>
 </svelte:head>
 
 <div class="userlist">
 	<table>
-	<!-- Allows only the table to be reloaded, rather than the whole site. #key checks if a unique item is changed, and every {} is unique so it is reloaded when the function is called. -->
-	{#key unique}
-		<UserTable {reloadTable} />
-	{/key}
+		<!-- Allows only the table to be reloaded, rather than the whole site. #key checks if a unique item is changed, and every {} is unique so it is reloaded when the function is called. -->
+		{#key unique}
+			<UserTable {reloadTable} />
+		{/key}
 	</table>
 </div>
 
@@ -41,6 +41,6 @@
 
 	table {
 		width: 95%;
-		margin:30px auto;
+		margin: 30px auto;
 	}
 </style>
