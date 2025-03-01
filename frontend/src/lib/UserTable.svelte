@@ -30,7 +30,7 @@
 		if (!choice) {
 			return;
 		}
-		F;
+		setToken();
 		const id = await getID(username);
 		await Backend.deleteUser(id);
 		reloadTable();
