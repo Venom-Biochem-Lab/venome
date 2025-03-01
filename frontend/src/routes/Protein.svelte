@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, backendUrl, type ProteinEntry } from "../lib/backend";
+	import {
+		Backend,
+		backendUrl,
+		RequestStatus,
+		type ProteinEntry,
+	} from "../lib/backend";
 	import Molstar from "../lib/Molstar.svelte";
 	import { Button } from "flowbite-svelte";
 	import Markdown from "../lib/Markdown.svelte";
@@ -27,6 +32,7 @@
 	export let urlId: string;
 	let entry: ProteinEntry | null = null;
 	let contributor = "";
+	let status: RequestStatus = RequestStatus.PENDING;
 	let error = false;
 	let chainColors: ChainColors = {};
 	let searchOpen = false;
@@ -41,6 +47,8 @@
 		if (entry == null) error = true;
 
 		contributor = (await Backend.getProteinEntryUser(urlId)).username;
+
+		status = await Backend.getProteinStatus(urlId);
 	});
 </script>
 
@@ -126,7 +134,7 @@
 					<div
 						id="info-grid"
 						class="grid grid-cols-2 mb-2"
-						style="width: 220px;"
+						style="width: 220px; gap: 10px;"
 					>
 						<b>Organism</b>
 						<div>
@@ -135,6 +143,10 @@
 						<b>Contributor</b>
 						<div>
 							{contributor}
+						</div>
+						<b>Status</b>
+						<div>
+							{status}
 						</div>
 						<b>Method</b>
 						<div>AlphaFold 2</div>

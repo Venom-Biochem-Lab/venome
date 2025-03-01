@@ -583,6 +583,27 @@ def upload_protein_entry(body: UploadBody, req: Request):
     return error
 
 
+@router.get("/protein/{protein_name}/request", response_model=RequestStatus)
+def get_protein_status(protein_name: str, req: Request):
+    with Database() as db:
+        try:
+            query = """SELECT status_type FROM requests WHERE protein_id = (SELECT id FROM proteins WHERE name = %s);"""
+            status_sql = db.execute_return(query, [protein_name])
+
+            if status_sql is not None and len(status_sql) != 0:
+                if status_sql[0][0] == "Approved":
+                    return RequestStatus.APPROVED
+                elif status_sql[0][0] == "Pending":
+                    return RequestStatus.PENDING
+                elif status_sql[0][0] == "Denied":
+                    return RequestStatus.DENIED
+            else:
+                return RequestStatus.PENDING
+        except Exception as e:
+            log.error(e)
+            return RequestStatus.PENDING
+
+
 @router.post("/protein/request", response_model=UploadError | None)
 def request_protein_entry(body: RequestBody, req: Request):
     requires_authentication(AuthType.USER, req)

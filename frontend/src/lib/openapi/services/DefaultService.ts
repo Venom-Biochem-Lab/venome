@@ -21,6 +21,7 @@ import type { ProteinEntry } from "../models/ProteinEntry";
 import type { RangeFilter } from "../models/RangeFilter";
 import type { RequestBody } from "../models/RequestBody";
 import type { RequestBodyEdit } from "../models/RequestBodyEdit";
+import type { RequestStatus } from "../models/RequestStatus";
 import type { SearchProteinsBody } from "../models/SearchProteinsBody";
 import type { SearchProteinsResults } from "../models/SearchProteinsResults";
 import type { SignupBody } from "../models/SignupBody";
@@ -509,6 +510,26 @@ export class DefaultService {
 			url: "/protein/upload",
 			body: requestBody,
 			mediaType: "application/json",
+			errors: {
+				422: `Validation Error`,
+			},
+		});
+	}
+	/**
+	 * Get Protein Status
+	 * @param proteinName
+	 * @returns RequestStatus Successful Response
+	 * @throws ApiError
+	 */
+	public static getProteinStatus(
+		proteinName: string
+	): CancelablePromise<RequestStatus> {
+		return __request(OpenAPI, {
+			method: "GET",
+			url: "/protein/{protein_name}/request",
+			path: {
+				protein_name: proteinName,
+			},
 			errors: {
 				422: `Validation Error`,
 			},
