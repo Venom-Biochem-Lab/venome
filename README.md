@@ -49,7 +49,7 @@ Execute the [`run.sh`](./run.sh) script in your terminal with the command
 Load the existing data and database schema with 
 
 ```bash
-./run.sh reload_from_backup backups/v0.0.2
+./run.sh reload_from_backup backups/v0.0.2.1
 ```
 
 **4. View the website**
