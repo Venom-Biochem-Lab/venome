@@ -81,6 +81,9 @@
 
 					<b>Mass (Da)</b>
 					<div><code>{numberWithCommas(entry.mass)}</code></div>
+
+					<b>Atoms</b>
+					<div><code>{numberWithCommas(entry.atoms)}</code></div>
 				</div>
 				<div class="mt-3">
 					<Accordion>
