@@ -9,7 +9,7 @@
 		undoFormatProteinName,
 		dbDateToMonthDayYear,
 	} from "../lib/format";
-	import { navigate } from "svelte-routing";
+	import { navigate } from "svelte-routing";  // Correct import
 	import References from "../lib/References.svelte";
 	import {
 		EditOutline,
@@ -22,22 +22,26 @@
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
 	import type { ChainColors } from "../lib/venomeMolstarUtils";
-	import LegendpLddt from "../lib/LegendpLDDT.svelte";
+	import LegendpLddt from "../lib/LegendpLddt.svelte";
 
-	export let urlId: string;
+	export let urlId; //  Receive protein name as a prop
 	let entry: ProteinEntry | null = null;
 	let error = false;
 	let chainColors: ChainColors = {};
 	let searchOpen = false;
 
-	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
-		// Request the protein from backend given ID
-		console.log("Requesting", urlId, "info from backend");
-
-		entry = await Backend.getProteinEntry(urlId);
-		// if we could not find the entry, the id is garbo
-		if (entry == null) error = true;
+		if (urlId) { // Important: Only fetch if urlId is defined
+			try {
+				entry = await Backend.getProteinEntry(urlId);
+				if (!entry) {
+					error = true; // Set error state if no protein found
+				}
+			} catch (err) {
+				error = true;
+				console.error("Error fetching protein:", err); // Log the error
+			}
+		}
 	});
 </script>
 
@@ -48,7 +52,6 @@
 <section class="flex gap-10 p-5">
 	{#if entry}
 		<div id="left-side">
-			<!-- TITLE AND DESCRIPTION -->
 			<h1 id="title">
 				{undoFormatProteinName(entry.name)}
 				{#if $user.loggedIn}
@@ -56,7 +59,7 @@
 						color="light"
 						outline
 						size="xs"
-						on:click={async () => {
+						on:click={() => {
 							navigate(`/protein/edit/${entry?.name}`);
 						}}
 						><EditOutline class="mr-1" size="sm" />Edit Protein
@@ -99,14 +102,12 @@
 				</div>
 			</EntryCard>
 
-			<!-- Article / Wiki entry -->
 			{#if entry.content}
 				<EntryCard title="Article">
 					<Markdown text={entry.content} />
 				</EntryCard>
 			{/if}
 
-			<!-- References -->
 			{#if entry.refs}
 				<EntryCard title="References">
 					<References bibtex={entry.refs} />
@@ -179,10 +180,8 @@
 			</div>
 		</div>
 	{:else if !error}
-		<!-- Otherwise, tell user we tell the user we are loading -->
 		<h1><DelayedSpinner text="Loading Protein Entry" /></h1>
-	{:else if error}
-		<!-- if we error out, tell the user the id is shiza -->
+	{:else}
 		<h1>Error</h1>
 		<p>Could not find a protein with the id <code>{urlId}</code></p>
 	{/if}

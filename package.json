@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "svelte-navigator": "^3.2.2"
+  }
+}
