@@ -35,18 +35,42 @@
 		},
 	];
 
-	const numRandomProteins = 4;
+	const numRandomProteins = 2;
 	const homeColorScheme = [
 		colorScheme[0],
 		colorScheme[1],
 		d3.schemeSet1[1],
 		d3.schemeSet1[0],
-	]; // add more colors here if you increase numRandomProteins
-	let randomProteins: ProteinEntry[] = new Array(2).fill(undefined);
+	];
+	let randomProteins: ProteinEntry[] = new Array(numRandomProteins).fill(undefined);
+	let randomProteinHref: string = "";
+
+	$: randomProteinButton = {
+		title: "Random Protein",
+		desc: "View a random protein from the database",
+		href: randomProteinHref,
+	};
+
+	async function getRandomProteinUrl(): Promise<string> {
+		try {
+			const randomProtein = await Backend.getRandomProtein();
+			if (randomProtein) {
+				return `/protein/${randomProtein.name}`;
+			} else {
+				console.warn("No protein found.");
+				return "/proteins";
+			}
+		} catch (error) {
+			console.error("Error fetching random protein:", error);
+			return "/proteins";
+		}
+	}
+
 	onMount(async () => {
 		for (let i = 0; i < randomProteins.length; i++) {
 			randomProteins[i] = await Backend.getRandomProtein();
 		}
+		randomProteinHref = await getRandomProteinUrl();
 	});
 </script>
 
@@ -75,7 +99,7 @@
 <section class="p-5 flex gap-5 flex-col">
 	<div class="flex justify-center">
 		<div class="flex gap-5 flex-wrap">
-			{#each quickLinks as q}
+			{#each [...quickLinks, randomProteinButton] as q}
 				<BigNavLink {...q} />
 			{/each}
 		</div>
@@ -91,38 +115,40 @@
 			</div>
 			<div class="flex gap-5 flex-wrap content-start">
 				{#each randomProteins.filter((d) => d !== undefined) as randomProtein, i}
-					{@const hexColor = homeColorScheme[i]}
-					<div class="flex gap-5 flex-col">
-						<ProteinLinkCard
-							color={hexColor}
-							entry={randomProtein}
-						/>
-						<div>
-							<Molstar
-								spin
-								format="pdb"
-								url={backendUrl(
-									`protein/pdb/${randomProtein.name}`
-								)}
-								width={375}
-								height={350}
-								zIndex={990}
-								hideCanvasControls={[
-									"animation",
-									"controlToggle",
-									"selection",
-									"expand",
-									"controlInfo",
-								]}
-								chainColors={{
-									A: colorEntireChain(
-										jsColorToResidueColor(hexColor),
-										randomProtein.length
-									),
-								}}
+					{#if randomProtein}
+						{@const hexColor = homeColorScheme[i]}
+						<div class="flex gap-5 flex-col">
+							<ProteinLinkCard
+								color={hexColor}
+								entry={randomProtein}
 							/>
+							<div>
+								<Molstar
+									spin
+									format="pdb"
+									url={backendUrl(
+										`protein/pdb/${randomProtein.name}`
+									)}
+									width={375}
+									height={350}
+									zIndex={990}
+									hideCanvasControls={[
+										"animation",
+										"controlToggle",
+										"selection",
+										"expand",
+										"controlInfo",
+									]}
+									chainColors={{
+										A: colorEntireChain(
+											jsColorToResidueColor(hexColor),
+											randomProtein.length
+										),
+									}}
+								/>
+							</div>
 						</div>
-					</div>
+					{/if}
 				{/each}
 			</div>
 		</div>

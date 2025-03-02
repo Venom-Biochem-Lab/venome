@@ -1,24 +1,31 @@
 <script lang="ts">
-	import { navigate } from "svelte-routing";
+	export let title: string = "TITLE";
+	export let desc: string = "DESCRIPTION";
+	export let href: string = "";
+	export let width: number = 400;
+	export let onClick: (() => void) | undefined = undefined; //  onClick prop
 
-	export let width = 400;
-	export let title = "TITLE";
-	export let desc = "DESCRIPTION";
-	export let href = "";
 	let hovering = false;
+
+	function handleClick(event: MouseEvent) {
+		if (onClick) {
+			event.preventDefault(); // Prevent *default* link behavior
+			onClick();  // Call the custom onClick handler
+		}
+		//  No else clause needed. If onClick is NOT defined,
+        // the default link behavior (following the href) will occur.
+	}
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div
-	style="width: {width}px; "
+<a
+	style="width: {width}px; display: block; text-decoration: none; cursor: pointer;"
 	class="big-nav-link"
-	on:click={() => {
-		navigate(href);
-	}}
-	on:mouseenter={() => (hovering = true)}
+	href={href}
+	on:click={handleClick}  on:mouseenter={() => (hovering = true)}
 	on:mouseleave={() => (hovering = false)}
 	title="Click to go to {href}"
+	target={href.startsWith("http") ? "_blank" : "_self"}
+	rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
 >
 	<div>
 		<div class="title-nav">{title}</div>
@@ -41,7 +48,7 @@
 			/>
 		</svg>
 	</div>
-</div>
+</a>
 
 <style>
 	.arrow-icon {
@@ -66,10 +73,6 @@
 		padding-top: 20px;
 		padding-bottom: 20px;
 		transition: all 0.2s ease-in-out;
-	}
-	.big-nav-link:hover {
-		cursor: pointer;
-		background-color: hsla(205, 57%, 23%, 0.2);
 	}
 
 	.title-nav {
