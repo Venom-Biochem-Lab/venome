@@ -27,8 +27,9 @@ function stop() {
 # generates the api bridge between frontend and backend
 function gen_api() {
 	cd frontend
-	yarn openapi && docker compose -f $COMPOSE_CONFIG restart frontend
+	yarn openapi
 	cd ..
+	docker compose -f $COMPOSE_CONFIG restart frontend
 }
 
 # clears the postgres persistent storage
@@ -143,13 +144,13 @@ function restart_from_scratch() {
 }
 
 function add_foldseek() {
-	docker exec -it venome-backend wget --no-check-certificate https://mmseqs.com/foldseek/foldseek-linux-sse2.tar.gz
-	docker exec -it venome-backend tar -xvf foldseek-linux-sse2.tar.gz
-	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz
+	docker exec -it venome-backend wget --no-check-certificate https://mmseqs.com/foldseek/foldseek-linux-sse41.tar.gz
+	docker exec -it venome-backend tar -xvf foldseek-linux-sse41.tar.gz
+	docker exec -it venome-backend rm -f foldseek-linux-sse41.tar.gz
 }
 
 function remove_foldseek() {
-	docker exec -it venome-backend rm -f foldseek-linux-sse2.tar.gz*
+	docker exec -it venome-backend rm -f foldseek-linux-sse41.tar.gz*
 	docker exec -it venome-backend rm -fr foldseek/
 }
 

@@ -7,46 +7,62 @@
 		UploadSolid,
 	} from "flowbite-svelte-icons";
 	import { navigate } from "svelte-routing";
-    import { onMount } from "svelte";
-    import { user } from "../lib/stores/user";
+	import { onMount } from "svelte";
+	import { user } from "../lib/stores/user";
 
-    onMount(async () => {
+	onMount(async () => {
 		if (!$user.loggedIn) {
-			alert(
-				"You are not logged in. You are being redirected to home."
-			);
+			alert("You are not logged in. You are being redirected to home.");
 			navigate("/");
 		}
-    })
+	});
 </script>
 
 <section class="p-5">
-	<div class="large-text">Upload</div>
+	{#if $user.admin}
+		<div class="large-text">Upload</div>
+	{:else}
+		<div class="large-text">Request</div>
+	{/if}
 	<br />
-	<div class="flex gap-5">
+	{#if $user.admin}
+		<div class="flex gap-5">
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div class="option" on:click={() => navigate("upload/protein")}>
+				<div class="big-text flex gap-1 items-center">
+					<UploadSolid size="lg" /> Upload a new Protein
+				</div>
+				<div>
+					If you want to upload a new .pdb protein to Venome, <b>Click here.</b>
+				</div>
+			</div>
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div class="option" on:click={() => navigate("upload/article")}>
+				<div class="big-text flex gap-1 items-center">
+					<CirclePlusSolid size="lg" /> Create a new Article
+				</div>
+				<div>
+					If you want to create a new article, <b>Click here</b>
+					.
+				</div>
+			</div>
+		</div>
+	{:else}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<div class="option" on:click={() => navigate("upload/protein")}>
 			<div class="big-text flex gap-1 items-center">
-				<UploadSolid size="lg" /> Upload a new Protein
+				<UploadSolid size="lg" /> Request a new Protein
 			</div>
 			<div>
-				If you want to upload a new .pdb protein to Venome, <b
-					>Click here.</b
-				>
+				If you want to request adding a new .pdb protein to Venome, <b>
+					Click here.
+				</b>
 			</div>
 		</div>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<div class="option" on:click={() => navigate("upload/article")}>
-			<div class="big-text flex gap-1 items-center">
-				<CirclePlusSolid size="lg" /> Create a new Article
-			</div>
-			<div>
-				If you want to create a new article, <b>Click here</b>.
-			</div>
-		</div>
-	</div>
+	{/if}
 </section>
 
 <style>

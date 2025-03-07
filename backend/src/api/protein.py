@@ -7,7 +7,20 @@ from Bio.SeqUtils import molecular_weight, seq1
 from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 
-from ..api_types import ProteinEntry, UploadBody, UploadError, EditBody, CamelModel
+from ..api_types import (
+    ProteinEntry,
+    ProteinBody,
+    UploadError,
+    EditBody,
+    CamelModel,
+    UploadBody,
+    RequestBody,
+    AuthType,
+    RequestStatus,
+    FullProteinInfo,
+    RequestBodyEdit,
+    UserResponse,
+)
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
 from io import BytesIO
@@ -55,6 +68,7 @@ class PDB:
 
     def atoms(self):
         return self.structure.get_atoms()
+
 
 def decode_base64(b64_header_and_data: str):
     """Converts a base64 string to bytes"""
@@ -230,10 +244,30 @@ def get_protein_entry(protein_name: str):
             log.error(e)
 
 
+@router.get("/protein/entry/{protein_name:str}/user", response_model=UserResponse)
+def get_protein_entry_user(protein_name: str):
+    with Database() as db:
+        try:
+            query = """SELECT users.id, users.username, users.email, users.admin
+                       FROM users
+                       JOIN requests ON requests.user_id = users.id
+                       JOIN proteins ON proteins.id = requests.protein_id
+                       WHERE proteins.name = %s;"""
+            user_sql = db.execute_return(query, [protein_name])
+
+            if user_sql is not None and len(user_sql) != 0:
+                user = user_sql[0]
+                return UserResponse(
+                    id=user[0], username=user[1], email=user[2], admin=user[3]
+                )
+        except Exception as e:
+            log.error(e)
+
+
 # TODO: add permissions so only the creator can delete not just anyone
 @router.delete("/protein/entry/{protein_name:str}", response_model=None)
 def delete_protein_entry(protein_name: str, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     # Todo, have a meaningful error if the delete fails
     with Database() as db:
         # remove protein
@@ -249,9 +283,223 @@ def delete_protein_entry(protein_name: str, req: Request):
             log.error(e)
 
 
+@router.get("/protein/entries", response_model=list[ProteinEntry])
+def get_all_protein_entries():
+    """Get all protein entries
+    Returns: List of ProteinEntry objects
+    """
+    with Database() as db:
+        try:
+            query = """SELECT
+                        proteins.name,
+                        proteins.description,
+                        proteins.length,
+                        proteins.mass,
+                        proteins.content,
+                        proteins.refs,
+                        species.name,
+                        proteins.thumbnail,
+                        proteins.date_published
+                        FROM proteins
+                        JOIN species ON species.id = proteins.species_id
+                        WHERE EXISTS (
+                            SELECT 1
+                            FROM requests
+                            WHERE protein_id = proteins.id
+                            AND status_type = 'Approved'
+                        );"""
+            entries_sql = db.execute_return(query)
+
+            # if we got a result back
+            if entries_sql is not None and len(entries_sql) != 0:
+                entries = []
+                for entry in entries_sql:
+                    (
+                        name,
+                        description,
+                        length,
+                        mass,
+                        content,
+                        refs,
+                        species_name,
+                        thumbnail,
+                        date_published,
+                    ) = entry
+
+                    if thumbnail is not None:
+                        # if byte arrays are present, decode them into a string
+                        thumbnail = bytea_to_str(thumbnail)
+
+                    if date_published is not None:
+                        # forces the datetime object into a linux utc string
+                        date_published = str(date_published)
+
+                    entries.append(
+                        ProteinEntry(
+                            name=name,
+                            description=description,
+                            length=length,
+                            mass=mass,
+                            content=content,
+                            refs=refs,
+                            species_name=species_name,
+                            thumbnail=thumbnail,
+                            date_published=date_published,
+                        )
+                    )
+                return entries
+            else:
+                return []
+
+        except Exception as e:
+            log.error(e)
+
+
+@router.get("/protein/entries/pending", response_model=list[ProteinEntry])
+def get_all_pending_protein_entries(req: Request):
+    requires_authentication(AuthType.ADMIN, req)
+    with Database() as db:
+        try:
+            query = """SELECT
+                        proteins.name,
+                        proteins.description,
+                        proteins.length,
+                        proteins.mass,
+                        proteins.content,
+                        proteins.refs,
+                        species.name,
+                        proteins.thumbnail,
+                        proteins.date_published
+                        FROM proteins
+                        JOIN species ON species.id = proteins.species_id
+                        WHERE EXISTS (
+                            SELECT 1
+                            FROM requests
+                            WHERE protein_id = proteins.id
+                            AND status_type = 'Pending'
+                        );"""
+            entries_sql = db.execute_return(query)
+
+            # if we got a result back
+            if entries_sql is not None and len(entries_sql) != 0:
+                entries = []
+                for entry in entries_sql:
+                    (
+                        name,
+                        description,
+                        length,
+                        mass,
+                        content,
+                        refs,
+                        species_name,
+                        thumbnail,
+                        date_published,
+                    ) = entry
+
+                    if thumbnail is not None:
+                        # if byte arrays are present, decode them into a string
+                        thumbnail = bytea_to_str(thumbnail)
+
+                    if date_published is not None:
+                        # forces the datetime object into a linux utc string
+                        date_published = str(date_published)
+
+                    entries.append(
+                        ProteinEntry(
+                            name=name,
+                            description=description,
+                            length=length,
+                            mass=mass,
+                            content=content,
+                            refs=refs,
+                            species_name=species_name,
+                            thumbnail=thumbnail,
+                            date_published=date_published,
+                        )
+                    )
+                return entries
+            else:
+                return []
+
+        except Exception as e:
+            log.error(e)
+            return []
+
+
+@router.get("/protein/entries/denied", response_model=list[ProteinEntry])
+def get_all_denied_protein_entries(req: Request):
+    requires_authentication(AuthType.ADMIN, req)
+    with Database() as db:
+        try:
+            query = """SELECT 
+                        proteins.name, 
+                        proteins.description, 
+                        proteins.length, 
+                        proteins.mass, 
+                        proteins.content, 
+                        proteins.refs, 
+                        species.name,
+                        proteins.thumbnail,
+                        proteins.date_published
+                        FROM proteins
+                        JOIN species ON species.id = proteins.species_id
+                        WHERE EXISTS (
+                            SELECT 1
+                            FROM requests
+                            WHERE protein_id = proteins.id
+                            AND status_type = 'Denied'
+                        );"""
+            entries_sql = db.execute_return(query)
+
+            # if we got a result back
+            if entries_sql is not None and len(entries_sql) != 0:
+                entries = []
+                for entry in entries_sql:
+                    (
+                        name,
+                        description,
+                        length,
+                        mass,
+                        content,
+                        refs,
+                        species_name,
+                        thumbnail,
+                        date_published,
+                    ) = entry
+
+                    if thumbnail is not None:
+                        # if byte arrays are present, decode them into a string
+                        thumbnail = bytea_to_str(thumbnail)
+
+                    if date_published is not None:
+                        # forces the datetime object into a linux utc string
+                        date_published = str(date_published)
+
+                    entries.append(
+                        ProteinEntry(
+                            name=name,
+                            description=description,
+                            length=length,
+                            mass=mass,
+                            content=content,
+                            refs=refs,
+                            species_name=species_name,
+                            thumbnail=thumbnail,
+                            date_published=date_published,
+                        )
+                    )
+                return entries
+            else:
+                return []
+
+        except Exception as e:
+            log.error(e)
+            return []
+
+
 @router.post("/protein/upload/png", response_model=None)
 def upload_protein_png(body: UploadPNGBody, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.USER, req)
     with Database() as db:
         try:
             query = """UPDATE proteins SET thumbnail = %s WHERE name = %s"""
@@ -261,9 +509,9 @@ def upload_protein_png(body: UploadPNGBody, req: Request):
 
 
 # None return means success
-@router.post("/protein/upload", response_model=UploadError | None)
-def upload_protein_entry(body: UploadBody, req: Request):
-    requires_authentication(req)
+@router.post("/protein/add", response_model=UploadError | None)
+def add_protein_entry(body: ProteinBody, req: Request):
+    requires_authentication(AuthType.USER, req)
 
     body.name = format_protein_name(body.name)
     # check that the name is not already taken in the DB
@@ -313,9 +561,146 @@ def upload_protein_entry(body: UploadBody, req: Request):
                     body.species_name,
                 ],
             )
-        except Exception:
+        except Exception as e:
             log.warn("Failed to insert into proteins table")
+            log.error(e)
             return UploadError.QUERY_ERROR
+
+
+@router.post("/protein/upload", response_model=UploadError | None)
+def upload_protein_entry(body: UploadBody, req: Request):
+    # Wrapper that adds a protein entry then creates an approved request
+    requires_authentication(AuthType.USER, req)
+    error = add_protein_entry(body, req)
+    if error is None:
+        with Database() as db:
+            try:
+                query = """INSERT INTO requests (user_id, protein_id, status_type, comment) 
+                           VALUES (%s, (SELECT id FROM proteins WHERE name = %s), 'Approved', 'Added by admin');"""
+                db.execute(query, [body.user_id, body.name])
+            except Exception as e:
+                log.error(e)
+                return UploadError.QUERY_ERROR
+    return error
+
+
+@router.get("/protein/{protein_name}/request", response_model=RequestStatus)
+def get_protein_status(protein_name: str, req: Request):
+    with Database() as db:
+        try:
+            query = """SELECT status_type FROM requests WHERE protein_id = (SELECT id FROM proteins WHERE name = %s);"""
+            status_sql = db.execute_return(query, [protein_name])
+
+            if status_sql is not None and len(status_sql) != 0:
+                if status_sql[0][0] == "Approved":
+                    return RequestStatus.APPROVED
+                elif status_sql[0][0] == "Pending":
+                    return RequestStatus.PENDING
+                elif status_sql[0][0] == "Denied":
+                    return RequestStatus.DENIED
+            else:
+                return RequestStatus.PENDING
+        except Exception as e:
+            log.error(e)
+            return RequestStatus.PENDING
+
+
+@router.post("/protein/request", response_model=UploadError | None)
+def request_protein_entry(body: RequestBody, req: Request):
+    requires_authentication(AuthType.USER, req)
+    error = add_protein_entry(body.protein, req)
+    if error is None:
+        with Database() as db:
+            try:
+                query = """
+                        INSERT INTO requests
+                        (
+                            user_id,
+                            protein_id,
+                            status_type,
+                            comment
+                        )
+                        VALUES
+                        (
+                            %s,
+                            (SELECT id FROM proteins WHERE name = %s),
+                            'Pending',
+                            %s
+                        );
+                        """
+                db.execute(query, [body.user_id, body.protein.name, body.comment])
+            except Exception as e:
+                log.error(e)
+                return UploadError.QUERY_ERROR
+    return error
+
+
+@router.put("/protein/request/", response_model=UploadError | None)
+def edit_request_status(body: RequestBodyEdit, req: Request):
+    requires_authentication(AuthType.ADMIN, req)
+    with Database() as db:
+        try:
+            query = """UPDATE requests SET status_type = %s WHERE id = %s"""
+            db.execute(query, [body.status, body.request_id])
+        except Exception as e:
+            log.error(e)
+            return UploadError.QUERY_ERROR
+
+    return None
+
+
+@router.get("/protein/request/entries", response_model=list[FullProteinInfo])
+def get_all_request_entries(req: Request):
+    requires_authentication(AuthType.ADMIN, req)
+    with Database() as db:
+        try:
+            query = """SELECT * FROM full_protein_info ORDER BY "request_date" desc, "request_id";"""
+            entries_sql = db.execute_return(query)
+
+            # if we got a result back
+            if entries_sql is not None and len(entries_sql) != 0:
+                entries = []
+                for entry in entries_sql:
+                    (
+                        protein_id,
+                        protein_name,
+                        protein_content,
+                        species,
+                        request_id,
+                        user_id,
+                        username,
+                        request_date,
+                        request_status,
+                        comment,
+                    ) = entry
+
+                    if comment is None:
+                        comment = ""
+
+                    if request_date is None:
+                        request_date = ""
+
+                    entries.append(
+                        FullProteinInfo(
+                            protein_id=protein_id,
+                            protein_name=protein_name,
+                            protein_content=protein_content,
+                            request_id=request_id,
+                            species=species,
+                            user_id=user_id,
+                            username=username,
+                            request_date=str(request_date),
+                            request_status=request_status,
+                            comment=comment,
+                        )
+                    )
+                return entries
+            else:
+                return []
+
+        except Exception as e:
+            log.error(e)
+            return []
 
 
 class ProteinEditSuccess(CamelModel):
@@ -331,7 +716,7 @@ def edit_protein_entry(body: EditBody, req: Request):
 
     # check that the name is not already taken in the DB
     # TODO: check if permission so we don't have people overriding other people's names
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     try:
         # replace spaces in the name with underscores
         body.old_name = format_protein_name(body.old_name)
@@ -339,7 +724,7 @@ def edit_protein_entry(body: EditBody, req: Request):
         if body.new_name != body.old_name:
             os.rename(
                 stored_pdb_file_name(body.old_name), stored_pdb_file_name(body.new_name)
-            )  
+            )
         with Database() as db:
             name_changed = False
             if body.new_name != body.old_name:
