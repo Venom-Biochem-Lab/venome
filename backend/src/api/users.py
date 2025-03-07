@@ -15,7 +15,6 @@ from src.api_types import (
     UsersResponse,
     UserBody,
     AuthType,
-    FullProteinInfo,
 )
 from src.auth import generate_auth_token
 from src.db import Database
