@@ -51,7 +51,12 @@
 			</a>
 			{#if $user.loggedIn}
 				<a href="/upload" class="flex items-center gap-1">
-					<UploadSolid size="lg" />Upload
+					<UploadSolid size="lg" />
+					{#if $user.admin}
+						Upload
+					{:else}
+						Request
+					{/if}
 				</a>
 			{/if}
 		</div>

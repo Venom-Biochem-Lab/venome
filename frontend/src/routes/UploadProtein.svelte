@@ -123,7 +123,11 @@
 </script>
 
 <svelte:head>
-	<title>Venome Upload</title>
+	{#if $user.admin}
+		<title>Venome Upload</title>
+	{:else}
+		<title>Venome Request</title>
+	{/if}
 </svelte:head>
 
 <section class="p-5">
