@@ -56,6 +56,7 @@ class PDB:
     def atoms(self):
         return self.structure.get_atoms()
 
+
 def decode_base64(b64_header_and_data: str):
     """Converts a base64 string to bytes"""
     # only decode after the header (data:application/octet-stream;base64,)
@@ -339,7 +340,7 @@ def edit_protein_entry(body: EditBody, req: Request):
         if body.new_name != body.old_name:
             os.rename(
                 stored_pdb_file_name(body.old_name), stored_pdb_file_name(body.new_name)
-            )  
+            )
         with Database() as db:
             name_changed = False
             if body.new_name != body.old_name:

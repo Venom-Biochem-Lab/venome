@@ -220,6 +220,7 @@ def search_range_mass():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/search/range/atoms", response_model=RangeFilter)
 def search_range_atoms():
     try:
