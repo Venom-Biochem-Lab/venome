@@ -24,10 +24,8 @@ def authenticate_token(token):
     try:
         # Valid token is always is in the form "Bearer [token]", so we need to slice off the "Bearer" portion.
         sliced_token = token[7:]
-        log.warn(sliced_token)
         decoded = jwt.decode(sliced_token, secret_key, algorithms=["HS256"])
         log.warn("Valid token")
-        log.warn(decoded)
         return decoded
 
     # If the token is invalid, return None.

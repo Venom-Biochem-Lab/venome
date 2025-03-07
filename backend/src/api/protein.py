@@ -561,8 +561,9 @@ def add_protein_entry(body: ProteinBody, req: Request):
                     body.species_name,
                 ],
             )
-        except Exception:
+        except Exception as e:
             log.warn("Failed to insert into proteins table")
+            log.error(e)
             return UploadError.QUERY_ERROR
 
 
