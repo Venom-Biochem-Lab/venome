@@ -92,7 +92,7 @@ def gen_sql_filters(
         category_where_clause(f"{species_table}.name", species_filter),
         range_where_clause(f"{proteins_table}.length", length_filter),
         range_where_clause(f"{proteins_table}.mass", mass_filter),
-        range_where_clause(f"{proteins_table}.atoms", atoms_filter)
+        range_where_clause(f"{proteins_table}.atoms", atoms_filter),
     ]
     return " AND " + combine_where_clauses(filters) if any(filters) else ""
 
