@@ -261,6 +261,44 @@ def search_species():
 
 
 @router.get(
+    "/search/pdb/similar/{protein_name:str}",
+    response_model=list[SimilarProtein],
+)
+def search_pdb_similar(protein_name: str):
+    pdb_folder = "/app/pdb"  # relative to docker filepath
+    # ignore the first since it's itself as the most similar
+    try:
+        similar = easy_search(
+            stored_pdb_file_name(protein_name),
+            pdb_folder,
+            out_format="target,prob,evalue,qstart,qend",
+        )  # qend,qstart refer to alignment
+        formatted = [
+            SimilarProtein(
+                name=name.rstrip(".pdb"),
+                prob=prob,
+                evalue=evalue,
+                qstart=qstart,
+                qend=qend,
+                alntmscore=0,
+            )
+            for [name, prob, evalue, qstart, qend] in similar
+        ]
+    except Exception:
+        raise HTTPException(404, "Error in 'foldseek easy-search' command")
+
+    try:
+        # populate protein descriptions for the similar proteins
+        descriptions = get_descriptions([s.name for s in formatted])
+        if descriptions is not None:
+            for f, d in zip(formatted, descriptions):
+                f.description = d
+    except Exception:
+        raise HTTPException(500, "Error getting protein descriptions")
+
+    return formatted
+
+@router.get(
     "/search/venome/similar/{protein_name:str}",
     response_model=list[SimilarProtein],
 )

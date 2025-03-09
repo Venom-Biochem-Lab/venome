@@ -23,6 +23,7 @@
 	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
+	import SimiliarProteinsPdb from "../lib/SimiliarProteinsPDB.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
@@ -36,6 +37,7 @@
 	let error = false;
 	let chainColors: ChainColors = {};
 	let searchOpen = false;
+	let searchOpenPDB = false;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
@@ -97,7 +99,7 @@
 					<Accordion>
 						<AccordionItem bind:open={searchOpen}>
 							<span slot="header" style="font-size: 18px;">
-								3D Similar Proteins <span
+								Find Similar Proteins in Venome DB <span
 									style="font-weight: 300; font-size: 15px;"
 								>
 									(click to compute with Foldseek)
@@ -105,6 +107,21 @@
 							</span>
 							{#if searchOpen}
 								<SimilarProteins
+									queryProteinName={entry.name}
+									length={entry.length}
+								/>
+							{/if}
+						</AccordionItem>
+						<AccordionItem bind:open={searchOpenPDB}>
+							<span slot="header" style="font-size: 18px;">
+								Find Similar Proteins in PDB <span
+									style="font-weight: 300; font-size: 15px;"
+								>
+									(click to compute with Foldseek)
+								</span>
+							</span>
+							{#if searchOpenPDB}
+								<SimiliarProteinsPdb
 									queryProteinName={entry.name}
 									length={entry.length}
 								/>
