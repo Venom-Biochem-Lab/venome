@@ -23,7 +23,7 @@
 	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
-	import SimiliarProteinsPdb from "../lib/SimiliarProteinsPDB.svelte";
+	import SimiliarProteinsPdb from "../lib/SimilarProteinsPDB.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
