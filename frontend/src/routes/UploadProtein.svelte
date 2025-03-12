@@ -33,6 +33,17 @@
 		species = await Backend.searchSpecies();
 	});
 
+	interface PDBFile {
+		type: 'af2' | 'af3' | 'experimental';
+		file: File | undefined;
+	}
+
+	let pdbFiles: PDBFile[] = [
+		{ type: 'af2', file: undefined },
+		{ type: 'af3', file: undefined },
+		{ type: 'experimental', file: undefined }
+	];
+
 	let name: string = "";
 	let description: string = "";
 	let content: string = "";
@@ -45,6 +56,13 @@
 
 	async function onUpload(userId: number) {
 		if (file === undefined || name === "") return; // no file selected
+
+		// Check if AF2 file exists
+		const af2File = pdbFiles.find(p => p.type === 'af2')?.file;
+			if (!af2File) {
+				uploadError = UploadError.AF2_REQUIRED;
+				return;
+			}
 
 		const pdbFileStr = await fileToString(file);
 		try {
@@ -77,6 +95,7 @@
 			}
 		} catch (e) {
 			console.log(e);
+			uploadError = UploadError.WRITE_ERROR;
 		}
 	}
 
@@ -196,14 +215,44 @@
 		{/if}
 
 		<div>
-			<Label for="file-upload" class="mb-2">Upload a PDB File *</Label>
-			<Fileupload id="file-upload" class="w-100" bind:files />
+			{#each pdbFiles as pdbFile}
+				<div class="mb-4">
+					<Label for={`file-upload-${pdbFile.type}`} class="mb-2">
+						Upload {pdbFile.type.toUpperCase()} PDB File {pdbFile.type === 'af2' ? '*' : '(optional)'}
+					</Label>
+					<Fileupload
+						id={`file-upload-${pdbFile.type}`}
+						class="w-100"
+						on:change={(e) => {
+							const files = e.target.files;
+							pdbFile.file = files?.[0];
+						}}
+					/>
+				</div>
+			{/each}
 		</div>
+
+		{#if uploadError}
+			<Helper color="red">
+				{#if uploadError === UploadError.NAME_NOT_UNIQUE}
+					This name already exists, please create a unique name and resubmit
+				{:else if uploadError === UploadError.AF2_REQUIRED}
+					An AF2 file is required for upload
+				{:else if uploadError === UploadError.PARSE_ERROR}
+					Failed to parse the uploaded file
+				{:else if uploadError === UploadError.WRITE_ERROR}
+					Failed to save the protein data
+				{:else}
+					{uploadError}
+				{/if}
+			</Helper>
+		{/if}
+
 		{#if !$user.admin}
 			<div>
 				<Button
 					on:click={() => onRequest($user.id)}
-					disabled={file === undefined || name === ""}
+					disabled={name === "" || !pdbFiles.some(p => p.type === 'af2' && p.file)}
 				>
 					Request Protein
 				</Button>
@@ -212,7 +261,7 @@
 			<div>
 				<Button
 					on:click={() => onUpload($user.id)}
-					disabled={file === undefined || name === ""}
+					disabled={name === "" || !pdbFiles.some(p => p.type === 'af2' && p.file)}
 				>
 					Upload and Publish Protein
 				</Button>
