@@ -53,6 +53,8 @@ class UploadError(str, enum.Enum):
     PARSE_ERROR = "PARSE_ERROR"
     WRITE_ERROR = "WRITE_ERROR"
     QUERY_ERROR = "QUERY_ERROR"
+    AF2_REQUIRED = "AF2_REQUIRED"  # Add this new error type
+    INVALID_FILE = "INVALID_FILE"
 
 
 class UploadStatus(CamelModel):
