@@ -18,17 +18,25 @@
 	let lengthExtent: { min: number; max: number };
 	let massFilter: { min: number; max: number } | undefined;
 	let massExtent: { min: number; max: number };
+	let atomsFilter: { min: number; max: number } | undefined;
+	let atomsExtent: { min: number; max: number };
+	
 	let filterResetCounter = 0;
 	let searchTop: HTMLFormElement;
 	let proteinsPerPage = 20; // The number of proteins to show per page
 	let page = 0;
+
+	let sortBy = "lengthAsc"; // default sort
+
 	onMount(async () => {
 		await search();
 		species = await Backend.searchSpecies();
 		lengthExtent = await Backend.searchRangeLength();
 		massExtent = await Backend.searchRangeMass();
+		atomsExtent = await Backend.searchRangeAtoms();
 		massFilter = massExtent;
 		lengthFilter = lengthExtent;
+		atomsFilter = atomsExtent;
 		console.log(page);
 	});
 
@@ -41,8 +49,10 @@
 			speciesFilter,
 			lengthFilter,
 			massFilter,
+			atomsFilter,
 			proteinsPerPage,
 			page,
+			sortBy,
 		}).then((d) => {
 			totalFound = d.totalFound;
 			if (totalFound === 0) {
@@ -60,8 +70,10 @@
 			speciesFilter,
 			lengthFilter,
 			massFilter,
+			atomsFilter,
 			proteinsPerPage,
 			page,
+			sortBy,
 		});
 		proteinEntries = result.proteinEntries;
 		totalFound = result.totalFound;
@@ -79,6 +91,11 @@
 		query = "";
 		page = 0;
 		filterResetCounter++; // Incrementing this so relevant components can be destroyed and re-created
+		await search();
+	}
+	async function resetSort() {
+		sortBy = "";
+		page = 0;
 		await search();
 	}
 
@@ -147,6 +164,22 @@
 				{/if}
 			</div>
 
+			<div>
+				<h3>Atoms</h3>
+				{#if atomsExtent && atomsFilter}
+					{#key filterResetCounter}
+						<RangerFilter
+							min={atomsExtent.min}
+							max={atomsExtent.max}
+							on:change={async ({ detail }) => {
+								atomsFilter = detail;
+								await searchAndResetPage();
+							}}
+						/>
+					{/key}
+				{/if}
+			</div>
+
 			<div class="mt-5">
 				<Button
 					on:click={async () => {
@@ -160,6 +193,74 @@
 		{:else}
 			<DelayedSpinner text="Fetching Properties to Filter By" textRight />
 		{/if}
+		
+		<br><br>
+		<h2 class="text-primary-900 mb-2">Sort by</h2>
+		<div>
+			<label class="flex items-center gap-2">
+				<input
+					type="radio"
+					bind:group={sortBy}
+					value="lengthAsc"
+					on:change={searchAndResetPage}
+				/>
+				<span>Length Ascending</span>
+			</label>
+			<label class="flex items-center gap-2">
+				<input
+					type="radio"
+					bind:group={sortBy}
+					value="lengthDesc"
+					on:change={searchAndResetPage}
+				/>
+				<span>Length Descending</span>
+			</label>
+			<label class="flex items-center gap-2">
+				<input
+					type="radio"
+					bind:group={sortBy}
+					value="massAsc"
+					on:change={searchAndResetPage}
+				/>
+				<span>Mass Ascending</span>
+			</label>
+			<label class="flex items-center gap-2">
+				<input
+					type="radio"
+					bind:group={sortBy}
+					value="massDesc"
+					on:change={searchAndResetPage}
+				/>
+				<span>Mass Descending</span>
+			</label>
+			<label class="flex items-center gap-2">
+				<input
+					type="radio"
+					bind:group={sortBy}
+					value="atomsAsc"
+					on:change={searchAndResetPage}
+				/>
+				<span>Atoms Ascending</span>
+			</label>
+			<label class="flex items-center gap-2">
+				<input
+					type="radio"
+					bind:group={sortBy}
+					value="atomsDesc"
+					on:change={searchAndResetPage}
+				/>
+				<span>Atoms Descending</span>
+			</label>
+		</div>
+
+		<div class="mt-3">
+			<Button
+				outline
+				size="xs"
+				color="light"
+				on:click={resetSort}
+			>Reset Sort</Button>
+		</div>
 	</div>
 
 	<div id="view">
@@ -199,6 +300,7 @@
 		{/if}
 	</div>
 </section>
+
 
 <style>
 	section {

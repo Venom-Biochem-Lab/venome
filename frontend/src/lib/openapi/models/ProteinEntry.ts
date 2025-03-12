@@ -6,6 +6,7 @@ export type ProteinEntry = {
     name: string;
     length: number;
     mass: number;
+    atoms: number;
     speciesName: string;
     content?: (string | null);
     refs?: (string | null);

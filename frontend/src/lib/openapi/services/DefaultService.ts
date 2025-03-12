@@ -9,16 +9,23 @@ import type { EditArticleMetadata } from '../models/EditArticleMetadata';
 import type { EditArticleProteinComponent } from '../models/EditArticleProteinComponent';
 import type { EditArticleTextComponent } from '../models/EditArticleTextComponent';
 import type { EditBody } from '../models/EditBody';
+import type { FullProteinInfo } from '../models/FullProteinInfo';
 import type { InsertBlankComponentEnd } from '../models/InsertBlankComponentEnd';
 import type { InsertComponent } from '../models/InsertComponent';
 import type { LoginBody } from '../models/LoginBody';
 import type { LoginResponse } from '../models/LoginResponse';
 import type { MoveComponent } from '../models/MoveComponent';
+import type { ProteinBody } from '../models/ProteinBody';
 import type { ProteinEditSuccess } from '../models/ProteinEditSuccess';
 import type { ProteinEntry } from '../models/ProteinEntry';
 import type { RangeFilter } from '../models/RangeFilter';
+import type { RequestBody } from '../models/RequestBody';
+import type { RequestBodyEdit } from '../models/RequestBodyEdit';
+import type { RequestStatus } from '../models/RequestStatus';
 import type { SearchProteinsBody } from '../models/SearchProteinsBody';
 import type { SearchProteinsResults } from '../models/SearchProteinsResults';
+import type { SignupBody } from '../models/SignupBody';
+import type { SignupResponse } from '../models/SignupResponse';
 import type { SimilarProtein } from '../models/SimilarProtein';
 import type { TMAlignInfo } from '../models/TMAlignInfo';
 import type { UploadArticleImageComponent } from '../models/UploadArticleImageComponent';
@@ -27,10 +34,33 @@ import type { UploadArticleTextComponent } from '../models/UploadArticleTextComp
 import type { UploadBody } from '../models/UploadBody';
 import type { UploadError } from '../models/UploadError';
 import type { UploadPNGBody } from '../models/UploadPNGBody';
+import type { UserBody } from '../models/UserBody';
+import type { UserIDResponse } from '../models/UserIDResponse';
+import type { UserResponse } from '../models/UserResponse';
+import type { UsersResponse } from '../models/UsersResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class DefaultService {
+    /**
+     * Signup
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static signup(
+        requestBody: SignupBody,
+    ): CancelablePromise<(SignupResponse | null)> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/users/signup',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
     /**
      * Login
      * @param requestBody
@@ -64,6 +94,121 @@ export class DefaultService {
             url: '/users/admin/signup',
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get Users
+     * @returns UsersResponse Successful Response
+     * @throws ApiError
+     */
+    public static getUsers(): CancelablePromise<UsersResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/',
+        });
+    }
+    /**
+     * Get User Id
+     * @param username
+     * @returns UserIDResponse Successful Response
+     * @throws ApiError
+     */
+    public static getUserId(
+        username: string,
+    ): CancelablePromise<UserIDResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/user/id/{username}',
+            path: {
+                'username': username,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get User
+     * @param userId
+     * @returns UserResponse Successful Response
+     * @throws ApiError
+     */
+    public static getUser(
+        userId: number,
+    ): CancelablePromise<UserResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/user/{user_id}',
+            path: {
+                'user_id': userId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit User
+     * @param userId
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editUser(
+        userId: number,
+        requestBody: UserBody,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/user/{user_id}',
+            path: {
+                'user_id': userId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Delete User
+     * @param userId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteUser(
+        userId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/user/{user_id}',
+            path: {
+                'user_id': userId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get User Proteins
+     * @param userId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getUserProteins(
+        userId: number,
+    ): CancelablePromise<(Array<string> | null)> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/user/{user_id}/proteins',
+            path: {
+                'user_id': userId,
+            },
             errors: {
                 422: `Validation Error`,
             },
@@ -108,6 +253,17 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/search/range/mass',
+        });
+    }
+    /**
+     * Search Range Atoms
+     * @returns RangeFilter Successful Response
+     * @throws ApiError
+     */
+    public static searchRangeAtoms(): CancelablePromise<RangeFilter> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/range/atoms',
         });
     }
     /**
@@ -267,6 +423,61 @@ export class DefaultService {
         });
     }
     /**
+     * Get Protein Entry User
+     * @param proteinName
+     * @returns UserResponse Successful Response
+     * @throws ApiError
+     */
+    public static getProteinEntryUser(
+        proteinName: string,
+    ): CancelablePromise<UserResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/entry/{protein_name}/user',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get All Protein Entries
+     * Get all protein entries
+     * Returns: List of ProteinEntry objects
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getAllProteinEntries(): CancelablePromise<Array<ProteinEntry>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/entries',
+        });
+    }
+    /**
+     * Get All Pending Protein Entries
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getAllPendingProteinEntries(): CancelablePromise<Array<ProteinEntry>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/entries/pending',
+        });
+    }
+    /**
+     * Get All Denied Protein Entries
+     * @returns ProteinEntry Successful Response
+     * @throws ApiError
+     */
+    public static getAllDeniedProteinEntries(): CancelablePromise<Array<ProteinEntry>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/entries/denied',
+        });
+    }
+    /**
      * Upload Protein Png
      * @param requestBody
      * @returns any Successful Response
@@ -278,6 +489,25 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/protein/upload/png',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Add Protein Entry
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static addProteinEntry(
+        requestBody: ProteinBody,
+    ): CancelablePromise<(UploadError | null)> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/protein/add',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -302,6 +532,75 @@ export class DefaultService {
             errors: {
                 422: `Validation Error`,
             },
+        });
+    }
+    /**
+     * Get Protein Status
+     * @param proteinName
+     * @returns RequestStatus Successful Response
+     * @throws ApiError
+     */
+    public static getProteinStatus(
+        proteinName: string,
+    ): CancelablePromise<RequestStatus> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/{protein_name}/request',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Request Protein Entry
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static requestProteinEntry(
+        requestBody: RequestBody,
+    ): CancelablePromise<(UploadError | null)> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/protein/request',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Edit Request Status
+     * @param requestBody
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static editRequestStatus(
+        requestBody: RequestBodyEdit,
+    ): CancelablePromise<(UploadError | null)> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/protein/request/',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Get All Request Entries
+     * @returns FullProteinInfo Successful Response
+     * @throws ApiError
+     */
+    public static getAllRequestEntries(): CancelablePromise<Array<FullProteinInfo>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/request/entries',
         });
     }
     /**

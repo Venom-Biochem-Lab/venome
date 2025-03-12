@@ -4,6 +4,7 @@
 /* eslint-disable */
 export type LoginResponse = {
     token: string;
+    userId: number;
     error: string;
 };
 

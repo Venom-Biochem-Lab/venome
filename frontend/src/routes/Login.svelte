@@ -14,7 +14,7 @@
 		clearToken();
 		Cookies.remove("auth");
 		$user.loggedIn = false;
-		$user.username = "";
+		$user.id = "";
 		$user.admin = false;
 	});
 
@@ -48,10 +48,14 @@
 			} else if (result["token"] != "") {
 				// User entered the correct username and password.
 				console.log("Response received. Token: " + result["token"]);
-				Cookies.set("auth", result["token"]);
+				
+				let isAdmin = (await Backend.getUser(result["userId"])).admin
 				$user.loggedIn = true;
-				$user.username = email;
-				$user.admin = true;
+				$user.id = result["userId"];
+				$user.admin = isAdmin;
+				Cookies.set("auth", result["token"]);
+				Cookies.set("id", result["userId"])
+				Cookies.set("admin", isAdmin.toString())
 				navigate(`/proteins`);
 			} else {
 				// User got a result, but both the error and token field are empty. This indicates a bug on our end.
@@ -73,29 +77,51 @@
 	<title>Login</title>
 </svelte:head>
 
-<form on:submit|preventDefault={submitForm} class="flex gap-5 flex-col p-5">
-	<div>
-		<Label for="email">Email</Label>
-		<Input
-			id="email"
-			style="width: 300px;"
-			bind:value={email}
-			placeholder="Enter your email..."
-		/>
-	</div>
+<div class="login">
+	<h1 class="text-2xl font-bold">Login to an existing account</h1>
+	<form on:submit|preventDefault={submitForm} class="flex gap-5 flex-col p-5">
+		<div>
+			<Label for="email">Email</Label>
+			<Input
+				id="email"
+				style="width: 300px;"
+				bind:value={email}
+				placeholder="Enter your email..."
+			/>
+		</div>
 
-	<div>
-		<Label for="password">Password</Label>
-		<Input
-			type="password"
-			id="password"
-			style="width: 300px;"
-			bind:value={password}
-			placeholder="Enter your password..."
-		/>
-	</div>
+		<div>
+			<Label for="password">Password</Label>
+			<Input
+				type="password"
+				id="password"
+				style="width: 300px;"
+				bind:value={password}
+				placeholder="Enter your password..."
+			/>
+		</div>
 
-	<div>
-		<Button size="lg" type="submit" disabled={!formValid}>Login</Button>
-	</div>
-</form>
+		<div>
+			<Button size="lg" type="submit" disabled={!formValid}>Login</Button>
+		</div>
+	</form>
+</div>
+
+<style>
+	.login {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background-color: hsla(205, 57%, 23%, 0.05);
+		border-radius: 10px;
+		width: 20%;
+		margin: 50px auto;
+		padding: 30px;
+	}
+
+	h1 {
+		font-size: 22px;
+		font-weight: 500;
+		color: var(--primary-800);
+	}
+</style>

@@ -29,8 +29,10 @@ class SearchProteinsBody(CamelModel):
     species_filter: str | None = None
     length_filter: RangeFilter | None = None
     mass_filter: RangeFilter | None = None
+    atoms_filter: RangeFilter | None = None
     proteinsPerPage: int | None = None
     page: int | None = None
+    sortBy: str | None = None
 
 
 class SearchProteinsResults(CamelModel):
@@ -84,11 +86,13 @@ def gen_sql_filters(
     species_filter: str | None,
     length_filter: RangeFilter | None = None,
     mass_filter: RangeFilter | None = None,
+    atoms_filter: RangeFilter | None = None,
 ) -> str:
     filters = [
         category_where_clause(f"{species_table}.name", species_filter),
         range_where_clause(f"{proteins_table}.length", length_filter),
         range_where_clause(f"{proteins_table}.mass", mass_filter),
+        range_where_clause(f"{proteins_table}.atoms", atoms_filter),
     ]
     return " AND " + combine_where_clauses(filters) if any(filters) else ""
 
@@ -112,6 +116,7 @@ def search_proteins(body: SearchProteinsBody):
                 body.species_filter,
                 body.length_filter,
                 body.mass_filter,
+                body.atoms_filter,
             )
             threshold = 0
             score_filter = (
@@ -119,26 +124,53 @@ def search_proteins(body: SearchProteinsBody):
                 if len(text_query) > 0
                 else "TRUE"  # show all scores
             )
-            # cursed shit, edit this at some point
+
+            # creating search by query insertion
+            sort_clause = "(proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC"
+
+            # If sortBy is set, override the default sort
+            if body.sortBy == "lengthAsc":
+                sort_clause = "proteins_scores.length ASC"
+            elif body.sortBy == "lengthDesc":
+                sort_clause = "proteins_scores.length DESC"
+            elif body.sortBy == "massAsc":
+                sort_clause = "proteins_scores.mass ASC"
+            elif body.sortBy == "massDesc":
+                sort_clause = "proteins_scores.mass DESC"
+            elif body.sortBy == "atomsAsc":
+                sort_clause = "proteins_scores.atoms ASC"
+            elif body.sortBy == "atomsDesc":
+                sort_clause = "proteins_scores.atoms DESC"
+
             # note that we have a sub query since postgres can't do where clauses on aliased tables
-            entries_query = """SELECT proteins_scores.name, 
-                                      proteins_scores.description, 
-                                      proteins_scores.length, 
-                                      proteins_scores.mass, 
-                                      species.name,
-                                      proteins_scores.thumbnail
-                                FROM (SELECT *, 
-                                             similarity(name, %s) as name_score, 
-                                             similarity(description, %s) as desc_score,
-                                             similarity(content, %s) as content_score
-                                     FROM proteins) as proteins_scores
-                                JOIN species ON species.id = proteins_scores.species_id
-                                WHERE {} {}
-                                ORDER BY (proteins_scores.name_score*4 + proteins_scores.desc_score*2 + proteins_scores.content_score) DESC
-                                LIMIT {}
-                                OFFSET {};
-                                """.format(
-                score_filter, filter_clauses, limit, offset
+            entries_query = """
+                SELECT 
+                    proteins_scores.name, 
+                    proteins_scores.description, 
+                    proteins_scores.length, 
+                    proteins_scores.mass,
+                    proteins_scores.atoms, 
+                    species.name,
+                    proteins_scores.thumbnail
+                FROM (
+                    SELECT *, 
+                        similarity(name, %s) as name_score, 
+                        similarity(description, %s) as desc_score,
+                        similarity(content, %s) as content_score
+                    FROM proteins WHERE EXISTS (
+                            SELECT 1 
+                            FROM requests 
+                            WHERE protein_id = proteins.id 
+                            AND status_type = 'Approved'
+                        )
+                ) as proteins_scores
+                JOIN species ON species.id = proteins_scores.species_id
+                WHERE {} {}
+                ORDER BY {}
+                LIMIT {}
+                OFFSET {};
+                """.format(
+                score_filter, filter_clauses, sort_clause, limit, offset
             )  # numbers in order by correspond to weighting
             log.warn("EQ:" + entries_query)
             log.warn(filter_clauses)
@@ -153,13 +185,14 @@ def search_proteins(body: SearchProteinsBody):
                             name=name,
                             length=length,
                             mass=mass,
+                            atoms=atoms,
                             species_name=species_name,
                             thumbnail=bytea_to_str(thumbnail_bytes)
                             if thumbnail_bytes is not None
                             else None,
                             description=description,
                         )
-                        for name, description, length, mass, species_name, thumbnail_bytes in entries_result
+                        for name, description, length, mass, atoms, species_name, thumbnail_bytes in entries_result
                     ],
                     total_found=len(entries_result),
                 )
@@ -173,7 +206,12 @@ def search_proteins(body: SearchProteinsBody):
 def search_range_length():
     try:
         with Database() as db:
-            query = """SELECT min(length), max(length) FROM proteins"""
+            query = """SELECT min(length), max(length) FROM proteins WHERE EXISTS (
+                            SELECT 1 
+                            FROM requests 
+                            WHERE protein_id = proteins.id 
+                            AND status_type = 'Approved'
+                        )"""
             entry_sql = db.execute_return(query)
             if entry_sql is not None:
                 return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
@@ -185,7 +223,24 @@ def search_range_length():
 def search_range_mass():
     try:
         with Database() as db:
-            query = """SELECT min(mass), max(mass) FROM proteins"""
+            query = """SELECT min(mass), max(mass) FROM proteins WHERE EXISTS (
+                            SELECT 1 
+                            FROM requests 
+                            WHERE protein_id = proteins.id 
+                            AND status_type = 'Approved'
+                        )"""
+            entry_sql = db.execute_return(query)
+            if entry_sql is not None:
+                return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/search/range/atoms", response_model=RangeFilter)
+def search_range_atoms():
+    try:
+        with Database() as db:
+            query = """SELECT min(atoms), max(atoms) FROM proteins"""
             entry_sql = db.execute_return(query)
             if entry_sql is not None:
                 return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
