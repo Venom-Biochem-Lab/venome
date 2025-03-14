@@ -35,6 +35,9 @@
 	<div class="light">
 		<b>Mass</b>: <code>{numberWithCommas(entry.mass, 0)}</code> Da
 	</div>
+	<div class="light">
+		<b>Atoms</b>: <code>{numberWithCommas(entry.atoms, 0)}</code>
+	</div>
 </Card>
 
 <style>
