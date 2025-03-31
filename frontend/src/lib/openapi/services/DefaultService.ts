@@ -976,4 +976,70 @@ export class DefaultService {
             },
         });
     }
+
+    /**
+     * Upload AF3 File
+     * @param proteinName
+     * @param af3FileStr
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static uploadAf3File(
+        proteinName: string,
+        af3FileStr: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/protein/upload/af3',
+            query: {
+                'protein_name': proteinName,
+                'af3_file_str': af3FileStr,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get AF3 File
+     * @param proteinName
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getAf3File(
+        proteinName: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/protein/af3/{protein_name}',
+            path: {
+                'protein_name': proteinName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Search Protein Names
+     * @param query
+     * @returns string[] Successful Response
+     * @throws ApiError
+     */
+    public static searchProteinNames(
+        query: string,
+    ): CancelablePromise<Array<string>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/search/protein-names',
+            query: {
+                'query': query,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
 }

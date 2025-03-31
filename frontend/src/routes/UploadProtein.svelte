@@ -55,22 +55,22 @@
 	$: file = files ? files[0] : undefined; // we're just concerned with one file
 
 	async function onUpload(userId: number) {
-		if (file === undefined || name === "") return; // no file selected
+		if (!pdbFiles.some(p => p.type === 'af2' && p.file)) {
+			uploadError = UploadError.AF2_REQUIRED;
+			return;
+		}
 
-		// Check if AF2 file exists
-		const af2File = pdbFiles.find(p => p.type === 'af2')?.file;
-			if (!af2File) {
-				uploadError = UploadError.AF2_REQUIRED;
-				return;
-			}
+		const af2FileStr = await fileToString(pdbFiles.find(p => p.type === 'af2')?.file);
+		const af3FileStr = pdbFiles.find(p => p.type === 'af3')?.file
+			? await fileToString(pdbFiles.find(p => p.type === 'af3')?.file)
+			: null;
 
-		const pdbFileStr = await fileToString(file);
 		try {
 			setToken();
 			const err = await Backend.uploadProteinEntry({
 				name,
 				description,
-				pdbFileStr,
+				pdbFileStr: af2FileStr,
 				content,
 				refs,
 				speciesName: selectedSpecies,
@@ -80,6 +80,9 @@
 				uploadError = err;
 				console.log(uploadError);
 			} else {
+				if (af3FileStr) {
+					await Backend.uploadAf3File(name, af3FileStr);
+				}
 				// success, we can also upload the png thumbnail
 				const dbProteinNameFormat = formatProteinName(name);
 				const b64 = await screenshotMolstar(
@@ -90,8 +93,6 @@
 					proteinName: dbProteinNameFormat,
 				});
 
-				// then go to its new protein page
-				navigate(`/protein/${dbProteinNameFormat}`);
 			}
 		} catch (e) {
 			console.log(e);
@@ -131,9 +132,7 @@
 					base64Encoding: b64,
 					proteinName: dbProteinNameFormat,
 				});
-
-				// then go to its new protein page
-				navigate(`/protein/${dbProteinNameFormat}`);
+				
 			}
 		} catch (e) {
 			console.log(e);
@@ -218,7 +217,7 @@
 			{#each pdbFiles as pdbFile}
 				<div class="mb-4">
 					<Label for={`file-upload-${pdbFile.type}`} class="mb-2">
-						Upload {pdbFile.type.toUpperCase()} PDB File {pdbFile.type === 'af2' ? '*' : '(optional)'}
+						Upload {pdbFile.type.toUpperCase()} File {pdbFile.type === 'af2' ? '*' : '(optional)'}
 					</Label>
 					<Fileupload
 						id={`file-upload-${pdbFile.type}`}

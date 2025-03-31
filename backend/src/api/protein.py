@@ -81,17 +81,21 @@ def decode_base64(b64_header_and_data: str):
 def stored_pdb_file_name(protein_name: str):
     return os.path.join("src/data/stored_proteins", protein_name) + ".pdb"
 
+def stored_af3_file_name(protein_name: str):
+    return os.path.join("src/data/stored_proteins/af3", protein_name) + ".cif"
 
-def parse_protein_pdb(name: str, file_contents: str = "", encoding="str"):
+def parse_protein_pdb(name: str, file_contents: str = "", encoding="str", file_type="pdb"):
     if encoding == "str":
         return PDB(file_contents, name)
     elif encoding == "b64":
         return PDB(decode_base64(file_contents), name)
     elif encoding == "file":
-        return PDB(open(stored_pdb_file_name(name), "r").read(), name)
+        if file_type == "pdb":
+            return PDB(open(stored_pdb_file_name(name), "r").read(), name)
+        elif file_type == "cif":
+            return PDB(open(stored_af3_file_name(name), "r").read(), name)
     else:
         raise ValueError(f"Invalid encoding: {encoding}")
-
 
 def format_protein_name(name: str):
     name = name.replace(" ", "_")
@@ -888,3 +892,40 @@ def get_random_protein():
         except Exception as e:
             log.error(e)
             raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/protein/upload/af3", response_model=UploadError | None)
+def upload_af3_file(protein_name: str, af3_file_str: str, req: Request):
+    """Upload an additional AF3 visualization for an existing protein."""
+    requires_authentication(AuthType.USER, req)
+
+    protein_name = format_protein_name(protein_name)
+    if not protein_name_found(protein_name):
+        raise HTTPException(status_code=404, detail="Protein not found")
+
+    try:
+        af3 = parse_protein_pdb(protein_name, af3_file_str, file_type="cif")
+        with open(stored_af3_file_name(protein_name), "w") as f:
+            f.write(af3.file_contents)
+    except ValueError as e:
+        log.error(f"Parsing error: {e}")
+        raise HTTPException(status_code=400, detail=f"Parsing error: {e}")
+    except IOError as e:
+        log.error(f"File write error: {e}")
+        raise HTTPException(status_code=500, detail=f"File write error: {e}")
+    except Exception as e:
+        log.error(f"Unexpected error: {e}")
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
+
+    return None
+
+@router.get("/protein/af3/{protein_name:str}")
+def get_af3_file(protein_name: str):
+    if protein_name_found(protein_name):
+        af3_path = stored_af3_file_name(protein_name)
+        if os.path.exists(af3_path):
+            return FileResponse(af3_path, filename=protein_name + ".cif")
+        else:
+            raise HTTPException(status_code=404, detail="AF3 file not found")
+    else:
+        raise HTTPException(status_code=404, detail="Protein not found")

@@ -28,6 +28,7 @@
 	import { AccordionItem, Accordion } from "flowbite-svelte";
 	import type { ChainColors } from "../lib/venomeMolstarUtils";
 	import LegendpLddt from "../lib/LegendpLDDT.svelte";
+    import { PDBeMolstarPlugin } from "../../venome-molstar/lib";
 
 	export let urlId: string;
 	let urlId2: string;
@@ -40,6 +41,14 @@
 	let searchOpen = false;
 	let currentEntry: ProteinEntry | null = null;
 
+	// this is the protein entry we are currently viewing
+	let current_format: string;
+	let hasAF3 = false;
+
+	// Ensure the Molstar component updates when toggling between AF2 and AF3
+	let molstarUrl = "";
+	let molstarFormat = "";
+
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
@@ -50,6 +59,7 @@
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
 		currentEntry = entry;
+		current_format = "pdb";
 
 		console.log(entry)
 
@@ -63,12 +73,28 @@
 
 		status = await Backend.getProteinStatus(urlId);
 
+		// Set initial Molstar visualization
+		molstarUrl = backendUrl(`protein/pdb/${urlId}`);
+		molstarFormat = "pdb";
+
+		// Check if AF3 is available
+		const af3Response = await fetch(backendUrl(`protein/af3/${urlId}`));
+		hasAF3 = af3Response.ok;
+
 		console.log("Error:", error)
 	});
 
 	//to switch the visualization between alphafold2 and alphafold3
 	function toggleProtein() {
-		currentEntry = currentEntry === entry ? entry2 : entry;
+		if (currentEntry === entry) {
+			currentEntry = entry2;
+			molstarUrl = backendUrl(`protein/af3/${urlId}`);
+			molstarFormat = "cif";
+		} else {
+			currentEntry = entry;
+			molstarUrl = backendUrl(`protein/pdb/${urlId}`);
+			molstarFormat = "pdb";
+		}
 	}
 
 </script>
@@ -195,14 +221,25 @@
 							outline
 							size="xs"
 							color="light"
-							href={backendUrl(`protein/pdb/${currentEntry?.name}`)}
+							href={backendUrl(`protein/${current_format === "pdb" ? "pdb" : "af3"}/${currentEntry?.name}`)}
 						>
-							Download .pdb file<DownloadOutline size="sm" class="ml-1" />
+							Download .{current_format} file<DownloadOutline size="sm" class="ml-1" />
 						</Button>
+						{#if hasAF3}
+							<Button
+								size="xs"
+								color="light"
+								outline
+								on:click={toggleProtein}
+							>
+								Toggle to {molstarFormat === "pdb" ? "AF3" : "AF2"}
+							</Button>
+						{/if}
 					</div>
+
 					<Molstar
-						format="pdb"
-						url={backendUrl(`protein/pdb/${currentEntry.name}`)}
+						format={molstarFormat}
+						url={molstarUrl}
 						width={400}
 						height={350}
 						{chainColors}
