@@ -6,6 +6,8 @@
 		UserAddOutline,
 		NewspapperSolid,
 		UploadSolid,
+		UsersSolid,
+		RectangleListSolid,
 	} from "flowbite-svelte-icons";
 	import { user } from "./stores/user";
 	import Cookies from "js-cookie";
@@ -21,14 +23,14 @@
 		if (Cookies.get("auth")) {
 			$user.loggedIn = true;
 		}
-		
-		if (Cookies.get("admin")){
-			$user.admin = (Cookies.get("admin") === "true")
+
+		if (Cookies.get("admin")) {
+			$user.admin = Cookies.get("admin") === "true";
 		}
 
-		let user_id = Cookies.get("id")
-		if ( user_id != undefined){
-			$user.id = parseInt(user_id)
+		let user_id = Cookies.get("id");
+		if (user_id != undefined) {
+			$user.id = parseInt(user_id);
 		}
 	});
 </script>
@@ -41,20 +43,40 @@
 			</a>
 		</div>
 		<div class="nav">
-			<a href="/proteins" class="flex items-center"
-				><ProteinIcon width={35} height={35} />Proteins</a
-			>
+			<a href="/proteins" class="flex items-center">
+				<ProteinIcon width={35} height={35} />Proteins
+			</a>
 			<a href="/articles" class="flex items-center gap-1">
-				<NewspapperSolid size="lg" />Articles</a
-			>
+				<NewspapperSolid size="lg" />Articles
+			</a>
 			{#if $user.loggedIn}
 				<a href="/upload" class="flex items-center gap-1">
-					<UploadSolid size="lg" />Upload</a
-				>
+					<UploadSolid size="lg" />
+					{#if $user.admin}
+						Upload
+					{:else}
+						Request
+					{/if}
+				</a>
 			{/if}
 		</div>
 	</div>
-
+	<div class="management-container">
+		{#if $user.admin}
+			<div class="box-outline">
+				<a href="/users" class="flex items-center gap-1 mr-5">
+					<UsersSolid size="lg" />Users
+				</a>
+				<a
+					href="/requests"
+					class="flex items
+			-center gap-1 mr-5"
+				>
+					<RectangleListSolid size="lg" />Requests
+				</a>
+			</div>
+		{/if}
+	</div>
 	<div class="user-container">
 		<!-- svelte-ignore empty-block -->
 		{#if $user.loggedIn}
@@ -66,7 +88,6 @@
 			</a>
 		{/if}
 
-
 		<a href="/login" class="login flex items-center gap-1 mr-5">
 			<UserOutline size="lg" />
 			{#if $user.loggedIn}
@@ -76,7 +97,6 @@
 			{/if}
 		</a>
 	</div>
-
 </header>
 <div style="height: 60px;" />
 
@@ -113,6 +133,19 @@
 	.user-container {
 		display: flex;
 		height: 60px;
+		align-items: center;
+	}
+	.management-container {
+		display: flex;
+		height: 60px;
+		align-items: center;
+	}
+
+	.box-outline {
+		border: 1px solid var(--primary-700);
+		border-radius: 5px;
+		padding: 5px;
+		display: flex;
 		align-items: center;
 	}
 

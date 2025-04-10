@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta
 from fastapi.requests import Request
 from fastapi import HTTPException
 import logging as log
+from .api_types import AuthType
 
 # TODO: This method of secret key generation is, obviously, extremely unsafe.
 # This needs to be changed.
@@ -23,10 +24,8 @@ def authenticate_token(token):
     try:
         # Valid token is always is in the form "Bearer [token]", so we need to slice off the "Bearer" portion.
         sliced_token = token[7:]
-        log.warn(sliced_token)
         decoded = jwt.decode(sliced_token, secret_key, algorithms=["HS256"])
         log.warn("Valid token")
-        log.warn(decoded)
         return decoded
 
     # If the token is invalid, return None.
@@ -36,15 +35,21 @@ def authenticate_token(token):
 
 
 # Use this function with a request if you want.
-def requires_authentication(req: Request):
+def requires_authentication(type: AuthType, req: Request):
     # no header at all
+    print(req.headers["authorization"])
     if "authorization" not in req.headers:
         raise HTTPException(status_code=403, detail="Unauthorized")
 
     # verify token is good if provided
     user_info = authenticate_token(req.headers["authorization"])
-    if not user_info or not user_info.get("admin"):
+    if not user_info:
         log.error("Unauthorized User")
         raise HTTPException(status_code=403, detail="Unauthorized")
-    else:
-        log.warn("User authorized.")
+
+    # Check if admin access is required
+    if type == AuthType.ADMIN and not user_info.get("admin"):
+        log.error("Admin access required")
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    log.warn("User authorized.")

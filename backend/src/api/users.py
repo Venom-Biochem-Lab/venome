@@ -14,9 +14,12 @@ from src.api_types import (
     UserResponse,
     UsersResponse,
     UserBody,
+    AuthType,
 )
 from src.auth import generate_auth_token
 from src.db import Database
+from ..auth import requires_authentication
+from fastapi.requests import Request
 
 router = APIRouter()
 
@@ -87,7 +90,8 @@ def admin_signup(body: LoginBody):
 
 
 @router.get("/users/", response_model=UsersResponse)
-def get_users():
+def get_users(req: Request):
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         query = """SELECT id, username, email, admin FROM users;"""
         users_list = db.execute_return(query)
@@ -116,7 +120,7 @@ def get_user_id(username: str):
             return UserIDResponse(id=-1)
 
 
-@router.get("/user/{id}", response_model=UserResponse)
+@router.get("/user/{user_id}", response_model=UserResponse)
 def get_user(user_id: int):
     with Database() as db:
         query = """SELECT id, username, email, admin FROM users WHERE id = %s;"""
@@ -129,8 +133,24 @@ def get_user(user_id: int):
             return UserResponse(id=user_id, username="", email="", admin=False)
 
 
-@router.put("/user/{id}", response_model=None)
-def edit_user(user_id: int, body: UserBody):
+@router.get("/user/{user_id}/proteins", response_model=list[str] | None)
+def get_user_proteins(user_id: int):
+    with Database() as db:
+        try:
+            query = """SELECT proteins.name from proteins JOIN requests ON proteins.id = requests.protein_id WHERE requests.user_id = %s;"""
+            proteins = db.execute_return(query, [user_id])
+            if proteins is not None:
+                return [protein[0] for protein in proteins]
+            else:
+                return None
+        except Exception as e:
+            log.error(e)
+            return None
+
+
+@router.put("/user/{user_id}", response_model=None)
+def edit_user(user_id: int, body: UserBody, req: Request):
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         query = """UPDATE users SET """
         arg_list = []
@@ -152,8 +172,9 @@ def edit_user(user_id: int, body: UserBody):
         return None
 
 
-@router.delete("/user/{id}", response_model=None)
-def delete_user(user_id: int):
+@router.delete("/user/{user_id}", response_model=None)
+def delete_user(user_id: int, req: Request):
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         query = """DELETE FROM users WHERE id = %s;"""
         try:

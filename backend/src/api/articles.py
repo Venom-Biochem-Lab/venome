@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from ..api_types import CamelModel
+from ..api_types import CamelModel, AuthType
 from ..db import Database, bytea_to_str, str_to_bytea
 from fastapi.exceptions import HTTPException
 from ..auth import requires_authentication
@@ -181,7 +181,7 @@ class ArticleUpload(CamelModel):
 
 @router.post("/article/meta/upload")
 def upload_article(body: ArticleUpload, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             query = """INSERT INTO articles (title, description) VALUES (%s, %s);"""
@@ -192,7 +192,7 @@ def upload_article(body: ArticleUpload, req: Request):
 
 @router.delete("/article/meta/{article_id:int}")
 def delete_article(article_id: int, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             query = """DELETE FROM articles WHERE id=%s;"""
@@ -210,7 +210,7 @@ class EditArticleMetadata(CamelModel):
 
 @router.put("/article/meta")
 def edit_article_metadata(body: EditArticleMetadata, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             if (
@@ -247,7 +247,7 @@ def dec_order(db: Database, article_id: int, component_order: int):
 
 @router.delete("/article/{article_id:int}/component/{component_id:int}")
 def delete_article_component(article_id: int, component_id: int, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             order = get_order_from_component_id(db, component_id)
@@ -300,7 +300,7 @@ class UploadArticleTextComponent(CamelModel):
 
 @router.post("/article/component/text")
 def upload_article_text_component(body: UploadArticleTextComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             component_id = insert_component_to_end(db, body.article_id)
@@ -318,7 +318,7 @@ class EditArticleTextComponent(CamelModel):
 
 @router.put("/article/component/text")
 def edit_article_text_component(body: EditArticleTextComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             query = """UPDATE text_components SET markdown=%s WHERE component_id=%s;"""
@@ -335,7 +335,7 @@ class UploadArticleProteinComponent(CamelModel):
 
 @router.post("/article/component/protein")
 def upload_article_protein_component(body: UploadArticleProteinComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
 
     # replaces spaces with underscore, which is how proteins are stored in the DB
     body.name = format_protein_name(body.name)
@@ -360,7 +360,7 @@ class EditArticleProteinComponent(CamelModel):
 
 @router.put("/article/component/protein")
 def edit_article_protein_component(body: EditArticleProteinComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
 
     # replaces spaces with underscore, which is how proteins are stored in the DB
     if body.new_name is not None:
@@ -388,7 +388,7 @@ class UploadArticleImageComponent(CamelModel):
 
 @router.post("/article/component/image")
 def upload_article_image_component(body: UploadArticleImageComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             component_id = insert_component_to_end(db, body.article_id)
@@ -416,7 +416,7 @@ class EditArticleImageComponent(CamelModel):
 
 @router.put("/article/component/image")
 def edit_article_image_component(body: EditArticleImageComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             if body.new_src is not None:
@@ -494,7 +494,7 @@ class InsertComponent(CamelModel):
 
 @router.post("/article/component/insert/above")
 def insert_component_above(body: InsertComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             id = insert_component_and_shift_rest_down(
@@ -539,7 +539,7 @@ class MoveComponent(CamelModel):
 
 @router.put("/article/component/move")
 def move_component(body: MoveComponent, req: Request):
-    requires_authentication(req)
+    requires_authentication(AuthType.ADMIN, req)
     with Database() as db:
         try:
             cur_order = get_order_from_component_id(db, body.component_id)

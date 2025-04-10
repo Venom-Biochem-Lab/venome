@@ -9,5 +9,6 @@ export type UploadBody = {
     content: string;
     refs: string;
     pdbFileStr: string;
+    userId: number;
 };
 

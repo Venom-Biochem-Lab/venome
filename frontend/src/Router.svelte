@@ -18,6 +18,7 @@
 	import Upload from "./routes/Upload.svelte";
 	import FullScreen from "./routes/FullScreen.svelte";
 	import UserList from "./routes/UserList.svelte";
+	import RequestList from "./routes/RequestList.svelte";
 </script>
 
 <Router>
@@ -31,33 +32,32 @@
 		<Route path="/login"><Login /></Route>
 		<Route path="/signup"><Signup /></Route>
 		<Route path="/users"><UserList /></Route>
+		<Route path="/requests"><RequestList /></Route>
 		<Route path="/upload"><Upload /></Route>
 
 		<!-- all things proteins -->
-		<Route path="/protein/:id" let:params
-			><Protein urlId={params.id} /></Route
-		>
-		<Route path="/protein/edit/:id" let:params
-			><Edit urlId={params.id} /></Route
-		>
+		<Route path="/protein/:id" let:params><Protein urlId={params.id} /></Route>
+		<Route path="/protein/edit/:id" let:params>
+			<Edit urlId={params.id} />
+		</Route>
 		<Route path="/upload/protein"><UploadProtein /></Route>
-		<Route path="/fullscreen/:id" let:params
-			><FullScreen proteinName={params.id} /></Route
-		>
-		<Route path="/align/:a/:b" let:params
-			><Align proteinA={params.a} proteinB={params.b} /></Route
-		>
+		<Route path="/fullscreen/:id" let:params>
+			<FullScreen proteinName={params.id} />
+		</Route>
+		<Route path="/align/:a/:b" let:params>
+			<Align proteinA={params.a} proteinB={params.b} />
+		</Route>
 
 		<!-- all things articles -->
 		<Route path="/articles"><Articles /></Route>
-		<Route path="/article/:id" let:params
-			><Article articleID={params.id} /></Route
-		>
-		<Route path="/article/edit/:id" let:params
-			><Article articleID={params.id} editMode />
+		<Route path="/article/:id" let:params>
+			<Article articleID={params.id} />
 		</Route>
-		<Route path="/article/meta/edit/:id" let:params
-			><EditArticle articleID={params.id} />
+		<Route path="/article/edit/:id" let:params>
+			<Article articleID={params.id} editMode />
+		</Route>
+		<Route path="/article/meta/edit/:id" let:params>
+			<EditArticle articleID={params.id} />
 		</Route>
 		<Route path="/upload/article"><UploadArticle /></Route>
 
