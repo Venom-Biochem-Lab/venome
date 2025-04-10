@@ -32,8 +32,8 @@ Linux and MacOS: Open your terminal, navigate to your Venome repository. In the 
 ```
 
 Windows: Windows doesn't nicely run shell scripts by itself. There are several options for running 
-them. The method covered here uses VSCode and Git Bash. In VSCode, open a terminal (either by clicking
-the Terminal menu at the top of the screen or by navigating to the Terminal tab of the console).
+them. The method covered here uses VSCode and Git Bash. 
+In VSCode, open a terminal (either by clicking the Terminal menu at the top of the screen or by navigating to the Terminal tab of the console).
 In the top right corner of the terminal, select the dropdown menu next to the "new terminal" button
 and select Git Bash. At last, you've managed to open up a bash shell on a Windows computer.
 
@@ -42,5 +42,27 @@ Navigate to the Venome repository and execute the following command:
 ```bash
 ./run.sh start
 ```
+This command will also start/run the Docker container
 
-**3. Load in the Database**
+**3. Accessing the Database**
+If you'd like to open a terminal directly into the database to execute SQL commands, execute the following command: 
+
+```bash
+./run.sh psql
+```
+For other commands relating to the database, see [ run.md ](..run.md) and [ database.md ](..database.md)
+
+## First Time Setup (Conclusion)
+The website should now be running locally. 
+
+## Production Build
+To run any command defined in [ run.sh ](..run.sh) in production mode, add a '-p' flag
+For example: 
+
+```bash
+./run.sh start -p
+```
+There are a few other key differences in production builds compared to development builds, explained in [ build.md ](..build.md)
+
+## Production Build (Conclusion) 
+The production build scripts are used for website deployment. For more information about website deployment, see [ deployment.md ](..deployment.md)
