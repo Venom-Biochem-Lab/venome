@@ -25,21 +25,25 @@
 	$: fetchProteinSuggestions(proteinName);
 
 	onMount(() => {
-		if (!$user.admin) {
+		if (!$user.loggedIn || !$user.admin) {
 			alert("You are not authorized to access this page.");
 			navigate("/");
 		}
-        console.log("UploadVisualization component mounted");
+		console.log("UploadVisualization component mounted");
 	});
 
 	async function onUploadVisualization() {
 		if (!proteinName || !af3File) {
-            uploadError = !proteinName ? UploadError.NAME_NOT_UNIQUE : UploadError.AF2_REQUIRED;
-            console.log("Validation failed:", uploadError);
-            return;
-        }
+			uploadError = !proteinName
+				? UploadError.NAME_NOT_UNIQUE
+				: UploadError.AF2_REQUIRED;
+			console.log("Validation failed:", uploadError);
+			return;
+		}
 
 		try {
+			//TAKE PROTEIN THATS IN SEARCH BAR
+			//DOUBLE CHECK IT EXISTS BEFORE UPLOADING
 			const af3FileStr = await fileToString(af3File);
 			setToken();
 			const err = await Backend.uploadAf3File(proteinName, af3FileStr);
@@ -64,18 +68,22 @@
 				bind:value={proteinName}
 				id="protein-name"
 				placeholder="Enter protein name"
-				/>
+			/>
 			{#if proteinSuggestions.length > 0}
-				<ul class="bg-white border border-gray-300 rounded mt-2">
-					{#each proteinSuggestions as suggestion}
-						<li
-							class="p-2 hover:bg-gray-100 cursor-pointer"
-							on:click={() => (proteinName = suggestion)}
-						>
-							{suggestion}
-						</li>
-					{/each}
-				</ul>
+				<div class="relative">
+					<ul
+						class="absolute w-full bg-white border border-gray-300 rounded mt-2 max-h-60 overflow-y-auto z-10"
+					>
+						{#each proteinSuggestions as suggestion}
+							<li
+								class="p-2 hover:bg-gray-100 cursor-pointer"
+								on:click={() => (proteinName = suggestion)}
+							>
+								{suggestion}
+							</li>
+						{/each}
+					</ul>
+				</div>
 			{/if}
 		</div>
 
@@ -104,7 +112,10 @@
 		{/if}
 
 		<div>
-			<Button on:click={onUploadVisualization} disabled={!proteinName || !af3File}>
+			<Button
+				on:click={onUploadVisualization}
+				disabled={!proteinName || !af3File}
+			>
 				Upload Visualization
 			</Button>
 		</div>

@@ -200,7 +200,9 @@
 		{/if}
 
 		<div>
-			<Label for="file-upload" class="mb-2">Upload a PDB File *</Label>
+			<Label for="file-upload" class="mb-2"
+				>Upload a AlphaFold 2 PDB File *</Label
+			>
 			<Fileupload id="file-upload" class="w-100" bind:files />
 		</div>
 		{#if !$user.admin}
