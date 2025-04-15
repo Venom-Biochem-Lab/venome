@@ -26,23 +26,12 @@
 	onMount(async () => {
 		if (!$user.loggedIn) {
 			alert(
-				"You are not logged in. You are being redirected to home. TODO: Make this better."
+				"You are not logged in. You are being redirected to home. TODO: Make this better.",
 			);
 			navigate("/");
 		}
 		species = await Backend.searchSpecies();
 	});
-
-	interface PDBFile {
-		type: 'af2' | 'af3' | 'experimental';
-		file: File | undefined;
-	}
-
-	let pdbFiles: PDBFile[] = [
-		{ type: 'af2', file: undefined },
-		{ type: 'af3', file: undefined },
-		{ type: 'experimental', file: undefined }
-	];
 
 	let name: string = "";
 	let description: string = "";
@@ -55,22 +44,15 @@
 	$: file = files ? files[0] : undefined; // we're just concerned with one file
 
 	async function onUpload(userId: number) {
-		if (!pdbFiles.some(p => p.type === 'af2' && p.file)) {
-			uploadError = UploadError.AF2_REQUIRED;
-			return;
-		}
+		if (file === undefined || name === "") return; // no file selected
 
-		const af2FileStr = await fileToString(pdbFiles.find(p => p.type === 'af2')?.file);
-		const af3FileStr = pdbFiles.find(p => p.type === 'af3')?.file
-			? await fileToString(pdbFiles.find(p => p.type === 'af3')?.file)
-			: null;
-
+		const pdbFileStr = await fileToString(file);
 		try {
 			setToken();
 			const err = await Backend.uploadProteinEntry({
 				name,
 				description,
-				pdbFileStr: af2FileStr,
+				pdbFileStr,
 				content,
 				refs,
 				speciesName: selectedSpecies,
@@ -80,23 +62,21 @@
 				uploadError = err;
 				console.log(uploadError);
 			} else {
-				if (af3FileStr) {
-					await Backend.uploadAf3File(name, af3FileStr);
-				}
 				// success, we can also upload the png thumbnail
 				const dbProteinNameFormat = formatProteinName(name);
 				const b64 = await screenshotMolstar(
-					defaultInitParams(dbProteinNameFormat)
+					defaultInitParams(dbProteinNameFormat),
 				);
 				await Backend.uploadProteinPng({
 					base64Encoding: b64,
 					proteinName: dbProteinNameFormat,
 				});
 
+				// then go to its new protein page
+				navigate(`/protein/${dbProteinNameFormat}`);
 			}
 		} catch (e) {
 			console.log(e);
-			uploadError = UploadError.WRITE_ERROR;
 		}
 	}
 
@@ -126,13 +106,15 @@
 				// success, we can also upload the png thumbnail
 				const dbProteinNameFormat = formatProteinName(name);
 				const b64 = await screenshotMolstar(
-					defaultInitParams(dbProteinNameFormat)
+					defaultInitParams(dbProteinNameFormat),
 				);
 				await Backend.uploadProteinPng({
 					base64Encoding: b64,
 					proteinName: dbProteinNameFormat,
 				});
-				
+
+				// then go to its new protein page
+				navigate(`/protein/${dbProteinNameFormat}`);
 			}
 		} catch (e) {
 			console.log(e);
@@ -167,13 +149,16 @@
 			/>
 			{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
 				<Helper class="mt-2" color="red">
-					This name already exists, please create a unique name and resubmit
+					This name already exists, please create a unique name and
+					resubmit
 				</Helper>
 			{/if}
 		</div>
 
 		<div>
-			<Label for="protein-desc" class="block mb-2">Protein Description</Label>
+			<Label for="protein-desc" class="block mb-2"
+				>Protein Description</Label
+			>
 			<Input
 				bind:value={description}
 				style="width: 600px"
@@ -184,11 +169,12 @@
 
 		<div class="flex gap-5 mb-2">
 			<div>
-				<Label for="species-select" class="mb-2">Select a Species</Label>
+				<Label for="species-select" class="mb-2">Select a Species</Label
+				>
 				{#if species}
 					<Select
 						id="species-select"
-						items={species.map(s => ({ name: s, value: s }))}
+						items={species.map((s) => ({ name: s, value: s }))}
 						bind:value={selectedSpecies}
 					/>
 				{:else}
@@ -214,44 +200,14 @@
 		{/if}
 
 		<div>
-			{#each pdbFiles as pdbFile}
-				<div class="mb-4">
-					<Label for={`file-upload-${pdbFile.type}`} class="mb-2">
-						Upload {pdbFile.type.toUpperCase()} File {pdbFile.type === 'af2' ? '*' : '(optional)'}
-					</Label>
-					<Fileupload
-						id={`file-upload-${pdbFile.type}`}
-						class="w-100"
-						on:change={(e) => {
-							const files = e.target.files;
-							pdbFile.file = files?.[0];
-						}}
-					/>
-				</div>
-			{/each}
+			<Label for="file-upload" class="mb-2">Upload a PDB File *</Label>
+			<Fileupload id="file-upload" class="w-100" bind:files />
 		</div>
-
-		{#if uploadError}
-			<Helper color="red">
-				{#if uploadError === UploadError.NAME_NOT_UNIQUE}
-					This name already exists, please create a unique name and resubmit
-				{:else if uploadError === UploadError.AF2_REQUIRED}
-					An AF2 file is required for upload
-				{:else if uploadError === UploadError.PARSE_ERROR}
-					Failed to parse the uploaded file
-				{:else if uploadError === UploadError.WRITE_ERROR}
-					Failed to save the protein data
-				{:else}
-					{uploadError}
-				{/if}
-			</Helper>
-		{/if}
-
 		{#if !$user.admin}
 			<div>
 				<Button
 					on:click={() => onRequest($user.id)}
-					disabled={name === "" || !pdbFiles.some(p => p.type === 'af2' && p.file)}
+					disabled={file === undefined || name === ""}
 				>
 					Request Protein
 				</Button>
@@ -260,7 +216,7 @@
 			<div>
 				<Button
 					on:click={() => onUpload($user.id)}
-					disabled={name === "" || !pdbFiles.some(p => p.type === 'af2' && p.file)}
+					disabled={file === undefined || name === ""}
 				>
 					Upload and Publish Protein
 				</Button>
