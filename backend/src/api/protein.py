@@ -919,6 +919,7 @@ def upload_af3_file(protein_name: str, af3_file_str: str, req: Request):
 
     return None
 
+#mv backend/src/data/stored_proteins/af3/gh_comp10_c1_seq1_model.cif backend/src/data/stored_proteins/af3/Gh_comp10_c1_seq1.cif
 @router.get("/protein/af3/{protein_name:str}")
 def get_af3_file(protein_name: str):
     if protein_name_found(protein_name):
