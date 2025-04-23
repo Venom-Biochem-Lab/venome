@@ -1,16 +1,18 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { Backend, UploadError, setToken } from "../lib/backend";
+	import { Backend, UploadError, setToken, backendUrl } from "../lib/backend";
 	import { Fileupload, Button, Input, Label, Helper } from "flowbite-svelte";
 	import { navigate } from "svelte-routing";
 	import { fileToString } from "../lib/format";
 	import { user } from "../lib/stores/user";
 	import { debounce } from "lodash";
+	import { OpenAPI } from "../lib/openapi";
 
 	let proteinName = "";
 	let af3File: File | undefined;
 	let uploadError: UploadError | undefined;
 	let proteinSuggestions: string[] = [];
+	let isUploading = false;
 
 	// Debounced function to fetch protein suggestions
 	const fetchProteinSuggestions = debounce(async (query: string) => {
@@ -33,39 +35,72 @@
 	});
 
 	async function onUploadVisualization() {
-		if (!proteinName || !af3File) {
-			uploadError = !proteinName
-				? UploadError.NAME_NOT_UNIQUE
-				: UploadError.AF2_REQUIRED;
-			console.log("Validation failed:", uploadError);
+		if (!af3File || !proteinName) {
+			uploadError = UploadError.PARSE_ERROR;
 			return;
 		}
 
+		isUploading = true;
+		uploadError = undefined;
+
 		try {
-			//TAKE PROTEIN THATS IN SEARCH BAR
-			//DOUBLE CHECK IT EXISTS BEFORE UPLOADING
-			const af3FileStr = await fileToString(af3File);
+			// Create form data
+			const formData = new FormData();
+			formData.append("protein_name", proteinName);
+			formData.append("file", af3File);
+
+			// Set auth token for the request
 			setToken();
-			const err = await Backend.uploadAf3File(proteinName, af3FileStr);
-			if (err) {
-				uploadError = err;
+
+			// Send request to backend
+			const response = await fetch(
+				`${backendUrl("protein/upload/af3")}`,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${OpenAPI.TOKEN}`,
+					},
+					body: formData,
+				},
+			);
+
+			if (!response.ok) {
+				const error = await response.json();
+				uploadError = error.detail || UploadError.WRITE_ERROR;
 			} else {
+				// Success - clear form
 				alert("Visualization uploaded successfully!");
-				navigate("/");
+				proteinName = "";
+				af3File = undefined;
+				proteinSuggestions = [];
 			}
-		} catch (e) {
-			console.log(e);
+		} catch (error) {
+			console.error("Upload error:", error);
 			uploadError = UploadError.WRITE_ERROR;
+		} finally {
+			isUploading = false;
 		}
 	}
 </script>
 
+<svelte:head>
+	<title>Venome Upload Visualization</title>
+</svelte:head>
+
 <section class="p-5">
 	<div class="w-500 flex flex-col gap-5">
 		<div>
-			<Label for="protein-name" class="block mb-2">Protein Name *</Label>
+			<Label
+				color={uploadError ? "red" : undefined}
+				for="protein-name"
+				class="block mb-2"
+			>
+				Protein Name *
+			</Label>
 			<Input
 				bind:value={proteinName}
+				color={uploadError ? "red" : "base"}
+				style="width: 300px"
 				id="protein-name"
 				placeholder="Enter protein name"
 			/>
@@ -85,10 +120,23 @@
 					</ul>
 				</div>
 			{/if}
+			{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
+				<Helper class="mt-2" color="red">
+					Protein name not found or already has a visualization.
+				</Helper>
+			{/if}
 		</div>
 
 		<div>
-			<Label for="af3-file" class="block mb-2">Upload AF3 File *</Label>
+			<Label
+				for="af3-file"
+				class="block mb-2"
+				color={uploadError && uploadError === UploadError.PARSE_ERROR
+					? "red"
+					: undefined}
+			>
+				Upload AF3 File *
+			</Label>
 			<Fileupload
 				id="af3-file"
 				class="w-100"
@@ -105,6 +153,8 @@
 					Protein name not found or already has a visualization.
 				{:else if uploadError === UploadError.WRITE_ERROR}
 					Failed to save the visualization file.
+				{:else if uploadError === UploadError.PARSE_ERROR}
+					Please select a valid protein name and AF3 file.
 				{:else}
 					{uploadError}
 				{/if}
@@ -114,9 +164,10 @@
 		<div>
 			<Button
 				on:click={onUploadVisualization}
-				disabled={!proteinName || !af3File}
+				disabled={!proteinName || !af3File || isUploading}
+				color="blue"
 			>
-				Upload Visualization
+				{isUploading ? "Uploading..." : "Upload Visualization"}
 			</Button>
 		</div>
 	</div>

@@ -1,5 +1,5 @@
 import logging as log
-import os
+import os, shutil
 from base64 import b64decode
 from io import StringIO
 from Bio.PDB import PDBParser
@@ -24,7 +24,7 @@ from ..api_types import (
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
 from io import BytesIO
-from fastapi import APIRouter
+from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.requests import Request
 import re
@@ -892,34 +892,10 @@ def get_random_protein():
         except Exception as e:
             log.error(e)
             raise HTTPException(status_code=500, detail=str(e))
+        
 
 
-@router.post("/protein/upload/af3", response_model=UploadError | None)
-def upload_af3_file(protein_name: str, af3_file_str: str, req: Request):
-    """Upload an additional AF3 visualization for an existing protein."""
-    requires_authentication(AuthType.USER, req)
-
-    protein_name = format_protein_name(protein_name)
-    if not protein_name_found(protein_name):
-        raise HTTPException(status_code=404, detail="Protein not found")
-
-    try:
-        af3 = parse_protein_pdb(protein_name, af3_file_str, file_type="cif")
-        with open(stored_af3_file_name(protein_name), "w") as f:
-            f.write(af3.file_contents)
-    except ValueError as e:
-        log.error(f"Parsing error: {e}")
-        raise HTTPException(status_code=400, detail=f"Parsing error: {e}")
-    except IOError as e:
-        log.error(f"File write error: {e}")
-        raise HTTPException(status_code=500, detail=f"File write error: {e}")
-    except Exception as e:
-        log.error(f"Unexpected error: {e}")
-        raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
-
-    return None
-
-#mv backend/src/data/stored_proteins/af3/gh_comp10_c1_seq1_model.cif backend/src/data/stored_proteins/af3/Gh_comp10_c1_seq1.cif
+#used in protein.svelte to check if af3 file exists for a specific protein
 @router.get("/protein/af3/{protein_name:str}")
 def get_af3_file(protein_name: str):
     if protein_name_found(protein_name):
@@ -930,3 +906,43 @@ def get_af3_file(protein_name: str):
             raise HTTPException(status_code=404, detail="AF3 file not found")
     else:
         raise HTTPException(status_code=404, detail="Protein not found")
+    
+
+
+#Upload af3
+#mv backend/src/data/stored_proteins/af3/gh_comp10_c1_seq1_model.cif backend/src/data/stored_proteins/af3/Gh_comp10_c1_seq1.cif
+@router.post("/protein/upload/af3", response_model=UploadError | None)
+async def upload_af3_file(
+    protein_name: str = Form(...),
+    file: UploadFile = File(...)
+):
+    """Upload an AF3 file for a protein visualization"""
+    try:
+        # Check if the protein exists in the database
+        if not protein_name_found(protein_name):
+            log.warning(f"Protein not found: {protein_name}")
+            return UploadError.NAME_NOT_UNIQUE
+        
+        # Create directory if it doesn't exist
+        af3_dir = os.path.join("src/data/stored_proteins/af3")
+        os.makedirs(af3_dir, exist_ok=True)
+        
+        # Save the file
+        file_path = stored_af3_file_name(protein_name)
+        
+        # Reset file pointer to beginning
+        await file.seek(0)
+        
+        # Read file content
+        content = await file.read()
+        
+        # Write to file with sync operation
+        with open(file_path, "wb") as f:
+            f.write(content)
+        
+        log.info(f"Successfully saved AF3 file for {protein_name}")
+        return None
+        
+    except Exception as e:
+        log.error(f"Failed to upload AF3 file: {str(e)}")
+        return UploadError.WRITE_ERROR
