@@ -319,6 +319,32 @@ export class DefaultService {
             });
         }
 
+	// For PDB Alignment. Currently not working
+
+    //             /**
+    //  * Search Venome Similar
+    //  * @param venomeLink
+    //  * @param pdbLink
+    //  * @returns SimilarProtein Successful Response
+    //  * @throws ApiError
+    //  */
+    //             public static getPDBLink(
+    //                 venomeLink: string,
+    //                 pdbLink: string
+    //             ): CancelablePromise<string> {
+    //                 return __request(OpenAPI, {
+    //                     method: 'GET',
+    //                     url: '/search/pdb/similarlink/{venome_protein}/{pdb_protein}',
+    //                     path: {
+    //                         'venome_protein': venomeLink,
+    //                         'pdb_protein': pdbLink
+    //                     },
+    //                     errors: {
+    //                         422: `Validation Error`,
+    //                     },
+    //                 });
+    //             }
+
     /**
      * Search Venome Similar Compare
      * @param proteinName

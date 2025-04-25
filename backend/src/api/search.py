@@ -80,6 +80,45 @@ def get_descriptions(protein_names: list[str]):
     return None
 
 
+# For PDB Alignment. Currently not working
+
+# @router.get(
+#     "/search/pdb/similarlink/{venome_protein:str}/{pdb_protein:str}",
+#     response_model=list[SimilarProtein],
+# )
+# def get_pdb_link(venome_protein: str, pdb_protein: str):
+#     pdb_url = "https://alignment.rcsb.org/api/v1/structures"
+#     query = {{
+#             "context": {
+#                 "mode": "pairwise",
+#                 "method": {
+#                 "name": "fatcat-rigid"
+#                 },
+#                 "structures": [
+#                 {
+#                     "entry_id": venome_protein,
+#                     "selection": {
+#                     "asym_id": "A"
+#                     }
+#                 },
+#                 {
+#                     "entry_id": pdb_protein,
+#                     "selection": {
+#                     "asym_id": "A"
+#                     }
+#                   }
+#                  ]
+#                 }
+#             }
+
+#     data = {"query": json.dumps(query)}
+
+#     response = requests.post(url=pdb_url, data=data)
+
+#     return response.text
+# }
+
+
 def gen_sql_filters(
     species_table: str,
     proteins_table: str,
@@ -297,6 +336,7 @@ def search_pdb_similar(protein_name: str):
         raise HTTPException(500, "Error getting protein descriptions")
 
     return formatted
+
 
 @router.get(
     "/search/venome/similar/{protein_name:str}",

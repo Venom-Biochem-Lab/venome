@@ -14,6 +14,22 @@
 	let similarProteins: SimilarProtein[];
 	let errorEncountered = false;
 	let maxEvalue: number;
+
+	// For PDB Alignment. Currently not working
+
+	// let venomeLink: string;
+	// let uuid: string;
+	// async function createLink(venomeProtein, pdbProtein){
+	// 	try{
+	// 		venomeLink = " https://venome.cqls.oregonstate.edu/backend/protein/pdb/" + venomeProtein;
+	// 		uuid = await Backend.getPDBLink(venomeLink, pdbProtein);
+	// 		window.
+	// 	} catch(e){
+	// 		console.error(e);
+	// 		errorEncountered = true;
+	// 	}
+	// }
+
 	onMount(async () => {
 		try {
 			console.log("mounted");
@@ -46,7 +62,6 @@
 				<th class="evalue-cell"> E-Value </th>
 				<th class="prob-cell"> Prob. Match</th>
 				<th class="region-cell"> Region of Similarity </th>
-				<th class="align-cell">TMAlign</th>
 			</tr>
 			{#each similarProteins as protein, i}
 				<tr class="pdb-row">
@@ -91,18 +106,6 @@
 								qstart={protein.qstart}
 								qend={protein.qend}
 							/>
-						</div>
-					</td>
-					<td>
-						<div class="align-cell">
-							<a
-								use:link
-								class="flex gap-2 items-center"
-								href="/align/{queryProteinName}/{protein.name}"
-								>Align <ArrowUpRightFromSquareOutline
-									size="sm"
-								/></a
-							>
 						</div>
 					</td>
 				</tr>
