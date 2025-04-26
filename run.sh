@@ -52,8 +52,11 @@ function sql_dump() {
 	fi
 }
 
+# Stops the running containers, then removes all data and images. 
+# THIS WILL DELETE EVERYTHING!!!
 function sql_delete() {
-	rm_volume
+	docker stop $(docker ps -a -q)
+	docker system prune -a
 }
 
 function sql_source() {
