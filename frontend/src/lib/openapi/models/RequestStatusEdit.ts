@@ -3,7 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { RequestStatus } from './RequestStatus';
-export type RequestBodyEdit = {
+/**
+ * Request body for editing request status.
+ */
+export type RequestStatusEdit = {
     requestId: number;
     status: RequestStatus;
 };

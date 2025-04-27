@@ -5,9 +5,12 @@
 import type { ArticleImageComponent } from './ArticleImageComponent';
 import type { ArticleProteinComponent } from './ArticleProteinComponent';
 import type { ArticleTextComponent } from './ArticleTextComponent';
-export type Article = {
+/**
+ * Represents an article with its components.
+ */
+export type ArticleEntry = {
     id: number;
-    title: string;
+    title?: (string | null);
     description?: (string | null);
     datePublished?: (string | null);
     refs?: (string | null);

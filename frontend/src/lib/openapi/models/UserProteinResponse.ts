@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type SignupResponse = {
-    error: string;
+/**
+ * Data model for user protein response.
+ */
+export type UserProteinResponse = {
+    proteins: Array<string>;
 };
 

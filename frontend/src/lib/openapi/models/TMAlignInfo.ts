@@ -2,6 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+/**
+ * Model for TM-align information.
+ */
 export type TMAlignInfo = {
     alignedLength: (string | null);
     rmsd: (string | null);

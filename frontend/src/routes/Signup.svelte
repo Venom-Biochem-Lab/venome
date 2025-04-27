@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Backend, clearToken, type SignupResponse, type LoginResponse } from "../lib/backend";
+	import { Backend, clearToken, type UserLoginResponse } from "../lib/backend";
 	import { Button, Label, Input } from "flowbite-svelte";
 	import Cookies from "js-cookie";
 	import { onMount } from "svelte";
@@ -15,69 +15,58 @@
 	/**
 	 * Gets run on pressing "Signup" button or form submit (pressing enter)
 	 */
-	let result: SignupResponse | null = null;
+
+    let loginResponse: UserLoginResponse;
 	async function submitForm() {
 		if (!formValid) return;
-		console.log("submitted");
+		console.log("Signup Submitted");
 		try {
 			// Makes call to /users/signup API endpoint, sending username and password in JSON format.
-			result = await Backend.signup({
+			await Backend.signup({
                 username,
 				email,
 				password,
 			});
+        } catch (e) {
+            alert([e]);
+            console.log(e);
+        }
 
-			if (result == null) {
-				// If result is null, log to console. Don't expect this would happen.
-				console.log("Response is null");
-				alert("NULL response. This is probably our fault.");
-			} else if (result["error"] != "") {
-				// API returned an error. This means there was an errror in the signup process.
-				// @todo Display this in a better way than an alert popup.
-				console.log("Response received. Error: " + result["error"]);
-                loginError = true;
-				// alert(result["error"]);
-			} else {
-                // Signup Successful
-                console.log("Account Created.")
-                
-                // Automatically login the user
-                let loginResult: LoginResponse | null = await Backend.login({
-                    email,
-                    password,
-                });
+        // Signup Successful
+        console.log("Account Created.")
+        
+        try {
+            // Automatically login the user
+            loginResponse = await Backend.login({
+                email,
+                password,
+            });
+        } catch (e) {
+            alert([e]);
+            console.log(e);
+        }
+        
 
-                if (loginResult == null) {
-                    // If result is null, log to console. Don't expect this would happen.
-                    console.log("Response is null");
-                    alert("NULL response. This is probably our fault.");
-                } else if (loginResult["error"] != "") {
-                    // API returned an error. This either means the account doesn't exist, or user entered wrong username / password.
-                    // @todo Display this in a better way than an alert popup.
-                    console.log("Response received. Error: " + loginResult["error"]);
-                    alert(loginResult["error"]);
-                } else if (loginResult["token"] != "") {
-                    // User entered the correct username and password.
-                    console.log("Response received. Token: " + loginResult["token"]);
-                    Cookies.set("auth", loginResult["token"]);
-                    $user.loggedIn = true;
-                    $user.id = loginResult["userId"];
-                    $user.admin = false;
-                    
-                    Cookies.set("id", loginResult["userId"])
-				    Cookies.set("admin", "false")
-                    navigate(`/proteins`);
-                } else {
-                    // User got a result, but both the error and token field are empty. This indicates a bug on our end.
-                    console.log(
-                        "Unexpected edge cage regarding user authentication."
-                    );
-                }
-			}
-		} catch (e) {
-			alert([e]);
-			console.log(e);
-		}
+        if (loginResponse["token"] != "") {
+            // User entered the correct username and password.
+            console.log("Response received. Token: " + loginResponse["token"]);
+            Cookies.set("auth", loginResponse["token"]);
+            $user.loggedIn = true;
+            $user.id = loginResponse["userId"];
+            $user.admin = false;
+            
+            Cookies.set("id", loginResponse["userId"].toString())
+            Cookies.set("admin", "false")
+            navigate(`/proteins`);
+        } else {
+            // User got a result, but both the error and token field are empty. This indicates a bug on our end.
+            console.log(
+                "Unexpected edge cage regarding user login after signup."
+            );
+            alert(
+                "Account was created, but there was an error logging in. Please try again."
+            )
+        }
 	}
 </script>
 

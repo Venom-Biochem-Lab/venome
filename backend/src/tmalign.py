@@ -1,26 +1,23 @@
-import subprocess
+"""TM-align wrapper"""
+
 import logging as log
 import os
 
-
-def bash_cmd(cmd: str | list[str]) -> str:
-    return subprocess.check_output(cmd, shell=True).decode()
+from src.util import bash_cmd
 
 
-TMALIGN_LOCATION = "/app/tmalign"
-TMALIGN_EXECUTABLE = f"{TMALIGN_LOCATION}/tmalign"
+TMALIGN_DIR = "/app/tmalign"
+TMALIGN_BIN = f"{TMALIGN_DIR}/tmalign"
 
 
 def assert_tmalign_installed():
-    if os.path.exists(TMALIGN_EXECUTABLE):
+    """Check if TM-align is installed and raise an error if not"""
+    if os.path.exists(TMALIGN_BIN):
         return
     else:
         raise ImportError(
-            "tm align executable not installed. Please install manually - Automatic install TODO."
+            "tmalign executable not installed. Try ./run.sh add_tmalign"
         )
-
-
-temp_dirs_active = 0
 
 
 class UniqueTempDir:
@@ -31,12 +28,16 @@ class UniqueTempDir:
     """
 
     def __init__(self, base_path):
+        self.active_dirs = 0
         self.base_path = base_path
+        self.temp_dir = ""
 
     def __enter__(self):
-        global temp_dirs_active
-        temp_dirs_active += 1
-        self.temp_dir = os.path.join(self.base_path, f"temp_dir_{temp_dirs_active}")
+        self.active_dirs += 1
+        self.temp_dir = os.path.join(
+            self.base_path,
+            f"temp_dir_{self.active_dirs}"
+        )
 
         # create the directory (and override existing one if exists)
         bash_cmd("rm -rf " + self.temp_dir)
@@ -45,95 +46,117 @@ class UniqueTempDir:
         return self.temp_dir
 
     def __exit__(self, *args):
-        global temp_dirs_active
-
-        # get rid of the temp directory
-        temp_dirs_active -= 1
+        self.active_dirs -= 1
         bash_cmd("rm -rf " + self.temp_dir)
 
 
 def tm_align(
-    protein_A: str, pdbA: str, protein_B: str, pdbB: str, type: str = "_all_atm"
+    protein_a: str,
+    pdb_a: str,
+    protein_b: str,
+    pdb_b: str,
+    filetype: str = "_all_atm"
 ):
     """
     Description:
-        Returns two overlaid, aligned, and colored PDB structures in a single PDB file.
+        Returns two overlaid, aligned, and colored PDB structures
+        in a single PDB file.
         The ones without extensions appear to be PDB files.
 
-    Params:
-        protein_A:
+    Args:
+        protein_a:
             The name of the first protein.
-        pdbA:
+        pdb_a:
             The filepath of the first protein.
-        protein_B:
+        protein_b:
             The name of the second protein.
-        pdbB:
+        pdb_b:
             The filepath of the second protein.
-        type:
-            The kind of file you want. Experiment with these! Defaults to _all_atm,
-            which shows alpha helices and beta sheets. Valid options include:
+        filetype:
+            The kind of file you want. Experiment with these!
+            Defaults to _all_atm, which shows alpha helices and beta sheets.
+
+            Valid options include:
                 "", "_all", "_all_atm", "_all_atm_lig", "_atm",
-                ".pml", "_all.pml", "_all_atm.pml", "all_atm_lig.pml", "_atm.pml"
+                ".pml", "_all.pml", "_all_atm.pml", "all_atm_lig.pml",
+                "_atm.pml"
     """
-    dir_name = protein_A + "-" + protein_B
-    full_path = f"{TMALIGN_LOCATION}/{dir_name}"
+    dir_name = protein_a + "-" + protein_b
+    full_path = f"{TMALIGN_DIR}/{dir_name}"
     out_file = full_path + "/output"
-    desired_file = out_file + type
+    desired_file = out_file + filetype
 
-    # If the directory already exists, then we've already run TM align for this protein pair. We can just return the file.
+    # If the directory already exists, then we've already run TM align
+    # for this protein pair. We can just return the file.
     if os.path.exists(full_path):
-        log.warn(f"Path {full_path} already exists. Do not need to run TM align.")
+        log.warning(
+            "Path %s already exists. Do not need to run TM align.",
+            full_path
+        )
 
-    # If the directory doesn't exist, then we need to run TM align and generate the files.
+    # If the directory doesn't exist, then we need to run TM align
+    # and generate the files.
     else:
-        log.warn(f"Path {full_path} does not exist. Creating directory and returning.")
-        cmd = f"{TMALIGN_EXECUTABLE} {pdbA} {pdbB} -o {out_file}"
+        log.warning(
+            "Path %s does not exist. Creating directory and returning.",
+            full_path
+        )
+        cmd = f"{TMALIGN_BIN} {pdb_a} {pdb_b} -o {out_file}"
         try:
             bash_cmd(f"mkdir {full_path}")
-            log.warn(f"Attempting to align now with cmd {cmd}")
+            log.warning("Attempting to align now with cmd %s", cmd)
             stdout = bash_cmd(cmd)
-            log.warn(stdout)
+            log.warning(stdout)
 
         except Exception as e:
-            log.warn(e)
+            log.warning(e)
             raise e
 
     return desired_file
 
 
-def tm_align_return(pdbA: str, pdbB: str, consoleOutput=False) -> str:
+def tm_align_return(pdb_a: str, pdb_b: str, console_output=False) -> str:
     """
     Description:
-        Returns two overlaid, aligned, and colored PDB structures in a single PDB file.
+        Returns two overlaid, aligned, and colored PDB structures
+        in a single PDB file.
         The ones without extensions appear to be PDB files.
 
-    Params:
-        pdbA:
+    Args:
+        pdb_a:
             The filepath of the first protein.
-        pdbB:
+        pdb_b:
             The filepath of the second protein.
-
-    Returns: the str contents of the pdbA superimposed on pdbB with TMAlgin
+        console_output:
+            If true, the output will be printed to the console.
+            If false, the output will be saved to a file.
+            Defaults to false.
+    Returns:
+        str: The path to the output file.
     """
 
     assert_tmalign_installed()
 
-    with UniqueTempDir(base_path=TMALIGN_LOCATION) as temp_dir_path:
+    with UniqueTempDir(base_path=TMALIGN_DIR) as temp_dir_path:
         try:
             output_location = os.path.join(temp_dir_path, "output")
-            cmd = f"{TMALIGN_EXECUTABLE} {pdbA} {pdbB} -o {output_location} > {output_location}.txt"
+            args = f"{pdb_a} {pdb_b} -o {output_location}"
+            cmd = f"{TMALIGN_BIN} {args} > {output_location}.txt"
             bash_cmd(cmd)
 
             tmalign_pdb_path = (
                 f"{output_location}_all_atm"
-                if not consoleOutput
+                if not console_output
                 else f"{output_location}.txt"
             )
 
-            with open(tmalign_pdb_path, "r") as tmalign_pdb_file:
+            with open(tmalign_pdb_path,
+                      "r",
+                      encoding="utf-8"
+                      ) as tmalign_pdb_file:
                 tmalign_pdb_file_str = tmalign_pdb_file.read()
                 return tmalign_pdb_file_str
 
         except Exception as e:
-            log.warn(e)
+            log.warning(e)
             raise e

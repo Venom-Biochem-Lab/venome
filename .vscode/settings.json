@@ -8,12 +8,43 @@
 	"python.analysis.typeCheckingMode": "basic",
 	"editor.formatOnSave": true,
 	"[python]": {
-		"editor.defaultFormatter": "charliermarsh.ruff"
+		"editor.defaultFormatter": "ms-python.autopep8"
 	},
 	"[json]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[svelte]": {
 		"editor.defaultFormatter": "svelte.svelte-vscode"
+	},
+	"cSpell.words": [
+		"bfactor",
+		"bfactors",
+		"bytea",
+		"checkpw",
+		"daltons",
+		"evalue",
+		"fasta",
+		"gensalt",
+		"hashpw",
+		"LDDT",
+		"plddt",
+		"qend",
+		"qstart",
+		"resname",
+		"RMSD",
+		"rns",
+		"TABLESAMPLE",
+		"TMALIGN",
+		"Venome"
+	],
+	"[dockerfile]": {
+		"editor.defaultFormatter": "ms-azuretools.vscode-docker"
+	},
+	"github.copilot.enable": {
+		"*": true,
+		"plaintext": true,
+		"markdown": false,
+		"scminput": false,
+		"yaml": false
 	}
 }

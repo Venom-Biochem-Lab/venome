@@ -2,16 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ComponentType } from './ComponentType';
+/**
+ * Data model for inserting a component into an article.
+ */
 export type InsertComponent = {
     articleId: number;
     componentId: number;
-    componentType?: InsertComponent.componentType;
+    componentType?: ComponentType;
 };
-export namespace InsertComponent {
-    export enum componentType {
-        TEXT = 'text',
-        IMAGE = 'image',
-        PROTEIN = 'protein',
-    }
-}
 

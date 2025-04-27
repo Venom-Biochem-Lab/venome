@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type SignupBody = {
-    username: string;
-    email: string;
-    password: string;
+/**
+ * Data model for uploading an article.
+ */
+export type ArticleUploadBody = {
+    title: string;
+    description?: (string | null);
 };
 

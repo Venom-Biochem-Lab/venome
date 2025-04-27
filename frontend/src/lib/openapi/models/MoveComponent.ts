@@ -2,15 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { MoveDirection } from './MoveDirection';
+/**
+ * Data model for moving a component within an article.
+ */
 export type MoveComponent = {
     articleId: number;
     componentId: number;
-    direction: MoveComponent.direction;
+    direction: MoveDirection;
 };
-export namespace MoveComponent {
-    export enum direction {
-        UP = 'up',
-        DOWN = 'down',
-    }
-}
 

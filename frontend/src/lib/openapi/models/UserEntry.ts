@@ -2,11 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserBody = {
+/**
+ * Data model for a single user in the database.
+ */
+export type UserEntry = {
     id: number;
-    username?: (string | null);
-    email?: (string | null);
-    admin?: (boolean | null);
-    password?: (string | null);
+    username: string;
+    email: string;
+    admin: boolean;
 };
 

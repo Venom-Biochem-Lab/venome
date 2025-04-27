@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UploadArticleImageComponent = {
+/**
+ * Data model for uploading image components to an article.
+ */
+export type ArticleImageUploadBody = {
     articleId: number;
     src: string;
     width?: (number | null);

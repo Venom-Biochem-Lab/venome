@@ -182,6 +182,15 @@ function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))
 }
 
+function create_secret(){
+	if [ "$1" != "" ]; then
+		echo "Creating .env file for secret key"
+		echo SECRET_KEY=$1 > backend/.env
+	else
+		echo "ERROR: Secret key not specified."
+	fi
+}
+
 # CALL THE COMMAND FROM THE COMMAND LINE ARGUMENT
 # 
 # for example `sh run.sh start` will run the start function

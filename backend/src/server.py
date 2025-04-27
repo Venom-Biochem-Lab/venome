@@ -1,5 +1,7 @@
-from .setup import disable_cors, init_fastapi_app, serve_endpoints
-from .api import users, search, protein, articles
+"""Initializes the FastAPI app and serves the endpoints."""
+
+from src.setup import disable_cors, init_fastapi_app, serve_endpoints
+from src.api import users, search, protein, articles
 
 
 app = init_fastapi_app()
@@ -8,7 +10,7 @@ disable_cors(
     origins=[
         "http://localhost:5173",
         "https://venome.cqls.oregonstate.edu",
-    ],  # lets these frontends request to the backend
+    ],
 )
 serve_endpoints(app, modules=[users, search, protein, articles])
 

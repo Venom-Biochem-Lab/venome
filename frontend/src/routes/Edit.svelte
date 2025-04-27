@@ -31,7 +31,7 @@
 	let ogSpecies: string;
 	let species: string;
 
-	let uploadError = "";
+	let proteinUploadError = "";
 	let entry: ProteinEntry | null = null;
 	let error = false;
 	let allSpecies: string[] | null;
@@ -89,18 +89,18 @@
 		<div class="w-500 flex flex-col gap-5">
 			<div>
 				<Label
-					color={uploadError ? "red" : undefined}
+					color={proteinUploadError ? "red" : undefined}
 					for="protein-name"
 					class="block mb-2">Protein Name</Label
 				>
 				<Input
 					bind:value={name}
-					color={uploadError ? "red" : "base"}
+					color={proteinUploadError ? "red" : "base"}
 					style="width: 300px"
 					id="protein-name"
 					placeholder="Name"
 				/>
-				{#if uploadError}
+				{#if proteinUploadError}
 					<Helper class="mt-2" color="red"
 						>This name already exists, please create a unique name
 						and resubmit</Helper
@@ -170,10 +170,10 @@
 								navigate(
 									`/protein/${editSuccessful.editedName}`
 								);
-								uploadError = ""; // no upload error to report
+								proteinUploadError = ""; // no upload error to report
 							} catch (e) {
 								// in this case, there was some edit error so we should display it
-								uploadError = String(e);
+								proteinUploadError = String(e);
 							}
 						}
 					}}

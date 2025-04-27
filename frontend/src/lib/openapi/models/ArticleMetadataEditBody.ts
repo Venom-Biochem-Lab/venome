@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EditArticleMetadata = {
+/**
+ * Data model for editing article metadata.
+ */
+export type ArticleMetadataEditBody = {
     articleTitle: string;
     newArticleTitle?: (string | null);
     newDescription?: (string | null);

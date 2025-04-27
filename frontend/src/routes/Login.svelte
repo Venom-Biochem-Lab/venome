@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Backend, clearToken, type LoginResponse } from "../lib/backend";
+	import { Backend, clearToken, type UserLoginResponse } from "../lib/backend";
 	import { Button, Label, Input } from "flowbite-svelte";
 	import Cookies from "js-cookie";
 	import { onMount } from "svelte";
@@ -14,7 +14,7 @@
 		clearToken();
 		Cookies.remove("auth");
 		$user.loggedIn = false;
-		$user.id = "";
+		$user.id = 0;
 		$user.admin = false;
 	});
 
@@ -25,50 +25,41 @@
 	/**
 	 * Gets run on pressing "Login" button or form submit (pressing enter)
 	 */
-	let result: LoginResponse | null = null;
+	let loginResponse: UserLoginResponse;
 	async function submitForm() {
 		if (!formValid) return;
 		console.log("submitted");
 		try {
 			// Makes call to /users/login API endpoint, sending username and password in JSON format.
-			result = await Backend.login({
+			loginResponse = await Backend.login({
 				email,
 				password,
 			});
 
-			if (result == null) {
-				// If result is null, log to console. Don't expect this would happen.
-				console.log("Response is null");
-				alert("NULL response. This is probably our fault.");
-			} else if (result["error"] != "") {
-				// API returned an error. This either means the account doesn't exist, or user entered wrong username / password.
-				// @todo Display this in a better way than an alert popup.
-				console.log("Response received. Error: " + result["error"]);
-				alert(result["error"]);
-			} else if (result["token"] != "") {
-				// User entered the correct username and password.
-				console.log("Response received. Token: " + result["token"]);
-				
-				let isAdmin = (await Backend.getUser(result["userId"])).admin
-				$user.loggedIn = true;
-				$user.id = result["userId"];
-				$user.admin = isAdmin;
-				Cookies.set("auth", result["token"]);
-				Cookies.set("id", result["userId"])
-				Cookies.set("admin", isAdmin.toString())
-				navigate(`/proteins`);
-			} else {
-				// User got a result, but both the error and token field are empty. This indicates a bug on our end.
-				console.log(
-					"Unexpected edge cage regarding user authentication."
-				);
-				alert(
-					"Unexpected edge cage regarding user authentication. This is probably our fault."
-				);
-			}
 		} catch (e) {
 			alert([e]);
 			console.log(e);
+		}
+		if (loginResponse["token"] != "") {
+			// User entered the correct username and password.
+			console.log("Response received. Token: " + loginResponse["token"]);
+			
+			let isAdmin = (await Backend.getUser(loginResponse["userId"])).admin
+			$user.loggedIn = true;
+			$user.id = loginResponse["userId"];
+			$user.admin = isAdmin;
+			Cookies.set("auth", loginResponse["token"]);
+			Cookies.set("id", loginResponse["userId"].toString())
+			Cookies.set("admin", isAdmin.toString())
+			navigate(`/proteins`);
+		} else {
+			// User got a result, but both the error and token field are empty. This indicates a bug on our end.
+			console.log(
+				"Unexpected edge cage regarding user authentication."
+			);
+			alert(
+				"Unexpected edge cage regarding user authentication. This is probably our fault."
+			);
 		}
 	}
 </script>

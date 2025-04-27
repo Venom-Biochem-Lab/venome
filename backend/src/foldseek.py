@@ -1,26 +1,23 @@
+"""Foldseek wrapper for easy-search"""
+
 import subprocess
 import logging as log
 import os
 
+from src.util import bash_cmd
 
-def bash_cmd(cmd: str | list[str]) -> str:
-    return subprocess.check_output(cmd, shell=True).decode()
-
-
-FOLDSEEK_LOCATION = "/app/foldseek"
-FOLDSEEK_EXECUTABLE = f"{FOLDSEEK_LOCATION}/bin/foldseek"
+FOLDSEEK_DIR = "/app/foldseek"
+FOLDSEEK_BIN = f"{FOLDSEEK_DIR}/bin/foldseek"
 
 
 def assert_foldseek_installed():
-    if os.path.exists(FOLDSEEK_EXECUTABLE):
+    """Check if foldseek is installed and raise an error if not"""
+    if os.path.exists(FOLDSEEK_BIN):
         return
     else:
         raise ImportError(
             "foldseek executable not installed. Try ./run.sh add_foldseek"
         )
-
-
-active_caches = 0
 
 
 class CreateUniqueDirName:
@@ -36,20 +33,23 @@ class CreateUniqueDirName:
     uses the global `active_caches` above to create a unique dir name
     """
 
+    def __init__(self):
+        self.caches = 0
+        self.temp_dir = ""
+
     def __enter__(self):
-        global active_caches
-        active_caches += 1
-        self.temp_dir = f"{FOLDSEEK_LOCATION}/temp_dir_{active_caches}"
+        self.caches += 1
+        self.temp_dir = f"{FOLDSEEK_DIR}/temp_dir_{self.caches}"
         return self.temp_dir
 
     def __exit__(self, *args):
-        global active_caches
-        active_caches -= 1
+        self.caches -= 1
         bash_cmd("rm -rf " + self.temp_dir)
 
 
 def parse_easy_search_output(filepath: str) -> list[list]:
-    with open(filepath, "r") as f:
+    """Parse the output of foldseek easy-search"""
+    with open(filepath, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
         parsed_lines = []
@@ -73,11 +73,17 @@ def easy_search(
     print_loading_info=False,
 ) -> list[list]:
     """easy_search just calls foldseek easy-search under the hood
-    TODO: use pybind to call the C++ function instead
 
+    Args:
+        query (str): the query file
+        target (str): the target file
+        out_format (str): the output format, default is "query,target,prob"
+        print_loading_info (bool): whether to print loading info
     Returns:
-        list[list]: a list of the matches from the search where the inner list is the same size as out_format
+        list[list]: a list of the matches from the search where
+        the inner list is the same size as out_format
     """
+    # TODO: use pybind to call the C++ function instead
 
     assert_foldseek_installed()
 
@@ -86,14 +92,18 @@ def easy_search(
 
         # Then call the easy-search
         flags = f"--format-output {out_format}" if out_format else ""
-        cmd = f"{FOLDSEEK_EXECUTABLE} easy-search {query} {target} {out_file} {temp_dir} {flags}"
+        args = f"{query} {target} {out_file} {temp_dir}"
+        cmd = f"{FOLDSEEK_BIN} easy-search {args} {flags}"
         try:
             stdout = bash_cmd(cmd)
-        except Exception as e:
-            log.warn(e)
+        except ValueError as e:
+            log.warning(e)
+            return []
+        except subprocess.CalledProcessError as e:
+            log.warning(e)
             return []
 
         if print_loading_info:
-            log.warn(stdout)
+            log.warning(stdout)
 
         return parse_easy_search_output(out_file)

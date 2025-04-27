@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EditBody = {
+/**
+ * Model for the protein edit request body.
+ */
+export type ProteinEditBody = {
     oldName: string;
     newName: string;
     oldSpeciesName: string;

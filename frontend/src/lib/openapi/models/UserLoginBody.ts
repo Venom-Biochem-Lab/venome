@@ -2,8 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ArticleUpload = {
-    title: string;
-    description?: (string | null);
+/**
+ * Data model for user login request.
+ */
+export type UserLoginBody = {
+    email: string;
+    password: string;
 };
 

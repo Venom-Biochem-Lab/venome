@@ -3,3 +3,4 @@ __pycache__/
 foldseek/
 tmalign/
 stored_proteins/
+.env

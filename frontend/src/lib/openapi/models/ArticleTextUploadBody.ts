@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UploadArticleTextComponent = {
+/**
+ * Data model for uploading text components to an article.
+ */
+export type ArticleTextUploadBody = {
     articleId: number;
     markdown: string;
 };

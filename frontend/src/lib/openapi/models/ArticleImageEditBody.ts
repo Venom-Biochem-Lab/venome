@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EditArticleImageComponent = {
+/**
+ * Data model for editing image components in an article.
+ */
+export type ArticleImageEditBody = {
     componentId: number;
     newSrc?: (string | null);
     newHeight?: (number | null);

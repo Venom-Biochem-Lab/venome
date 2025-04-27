@@ -2,6 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+/**
+ * Enum for request status.
+ */
 export enum RequestStatus {
     PENDING = 'Pending',
     APPROVED = 'Approved',

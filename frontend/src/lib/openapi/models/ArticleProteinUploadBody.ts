@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UploadArticleProteinComponent = {
+/**
+ * Data model for uploading protein components to an article.
+ */
+export type ArticleProteinUploadBody = {
     articleId: number;
     name: string;
     alignedWithName?: (string | null);

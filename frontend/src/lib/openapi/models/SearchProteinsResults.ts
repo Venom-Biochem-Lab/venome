@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ProteinEntry } from './ProteinEntry';
+/**
+ * Response body for search results.
+ */
 export type SearchProteinsResults = {
     totalFound: number;
     proteinEntries: Array<ProteinEntry>;

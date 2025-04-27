@@ -2,6 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+/**
+ * Data model for a similar protein.
+ */
 export type SimilarProtein = {
     name: string;
     prob: number;

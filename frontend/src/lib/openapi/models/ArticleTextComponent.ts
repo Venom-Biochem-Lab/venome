@@ -2,10 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ComponentType } from './ComponentType';
+/**
+ * Represents a text component in an article.
+ */
 export type ArticleTextComponent = {
     id: number;
-    componentType?: string;
-    componentOrder: number;
+    componentType?: ComponentType;
+    componentOrder?: number;
     markdown: string;
 };
 

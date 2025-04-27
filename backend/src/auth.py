@@ -1,43 +1,74 @@
-import jwt
+"""This module handles authentication and authorization for the application."""
+
 from datetime import datetime, timezone, timedelta
-from fastapi.requests import Request
-from fastapi import HTTPException
 import logging as log
-from .api_types import AuthType
+from os import getenv
 
-# TODO: This method of secret key generation is, obviously, extremely unsafe.
-# This needs to be changed.
-secret_key = "SuperSecret"
+from jwt import encode, decode
+from jwt.exceptions import InvalidTokenError, DecodeError
+
+from dotenv import load_dotenv
+
+from fastapi.requests import Request
+from fastapi.exceptions import HTTPException
+
+from src.user_types import UserAuthType
+
+load_dotenv()
+
+SECRET_KEY = getenv('SECRET_KEY')
 
 
-def generate_auth_token(user_id, admin):
+def generate_auth_token(email, admin):
+    """Create a JWT token for the user with the given email and admin status.
+
+    Args:
+        email (str): The user's email address.
+        admin (bool): Whether the user is an admin or not.
+    Returns:
+        str: The generated JWT token.
+    """
     payload = {
-        "email": user_id,
+        "email": email,
         "admin": admin,
         "exp": datetime.now(tz=timezone.utc) + timedelta(hours=24),
     }
-    return jwt.encode(payload, secret_key, algorithm="HS256")
+    return encode(payload, SECRET_KEY, algorithm="HS256")
 
 
 def authenticate_token(token):
-    # Return the decoded token if it's valid.
+    """Check if the token is valid and return the token if it is.
+
+    Args:
+        token (str): The token to authenticate.
+    Returns:
+        dict: The decoded token if valid, None otherwise.
+    """
     try:
-        # Valid token is always is in the form "Bearer [token]", so we need to slice off the "Bearer" portion.
+        # Valid token is always is in the form "Bearer [token]",
+        # so we need to slice off the "Bearer" portion.
         sliced_token = token[7:]
-        decoded = jwt.decode(sliced_token, secret_key, algorithms=["HS256"])
-        log.warn("Valid token")
+        decoded = decode(sliced_token, SECRET_KEY, algorithms=["HS256"])
+        log.warning("Valid token")
         return decoded
 
     # If the token is invalid, return None.
-    except Exception as err:
-        log.error("Invalid token:", err)
+    except (InvalidTokenError, DecodeError) as err:
+        log.error("Invalid token: %s", err)
         return None
 
 
 # Use this function with a request if you want.
-def requires_authentication(type: AuthType, req: Request):
+def requires_authentication(auth_type: UserAuthType, req: Request):
+    """Check if the request has a valid token and
+    if the user has the correct role.
+
+    Args:
+        auth_type (UserAuthType): The type of authentication required.
+        req (Request): The request object.
+    """
+
     # no header at all
-    print(req.headers["authorization"])
     if "authorization" not in req.headers:
         raise HTTPException(status_code=403, detail="Unauthorized")
 
@@ -48,8 +79,8 @@ def requires_authentication(type: AuthType, req: Request):
         raise HTTPException(status_code=403, detail="Unauthorized")
 
     # Check if admin access is required
-    if type == AuthType.ADMIN and not user_info.get("admin"):
+    if auth_type == UserAuthType.ADMIN and not user_info.get("admin"):
         log.error("Admin access required")
         raise HTTPException(status_code=403, detail="Admin access required")
 
-    log.warn("User authorized.")
+    log.warning("User authorized.")

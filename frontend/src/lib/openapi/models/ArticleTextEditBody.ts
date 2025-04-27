@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EditArticleProteinComponent = {
+/**
+ * Data model for editing text components in an article.
+ */
+export type ArticleTextEditBody = {
     componentId: number;
-    newName?: (string | null);
-    newAlignedWithName?: (string | null);
+    newMarkdown: string;
 };
 

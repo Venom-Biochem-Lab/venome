@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { RequestStatus } from './RequestStatus';
+/**
+ * Full protein information for the request page.
+ */
 export type FullProteinInfo = {
     proteinId: number;
     proteinName: string;

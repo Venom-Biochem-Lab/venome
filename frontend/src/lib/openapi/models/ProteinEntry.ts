@@ -2,6 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+/**
+ * Model for protein entry in the database.
+ */
 export type ProteinEntry = {
     name: string;
     length: number;
@@ -13,5 +16,6 @@ export type ProteinEntry = {
     thumbnail?: (string | null);
     description?: (string | null);
     datePublished?: (string | null);
+    pdbFileStr?: (string | null);
 };
 

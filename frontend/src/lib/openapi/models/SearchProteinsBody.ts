@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { RangeFilter } from './RangeFilter';
+/**
+ * Request body for searching proteins.
+ */
 export type SearchProteinsBody = {
     query: string;
     speciesFilter?: (string | null);

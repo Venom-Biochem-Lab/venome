@@ -2,9 +2,12 @@
 	import { onMount } from "svelte";
 	import {
 		Backend,
-		type Article,
+		ComponentType,
+		type ArticleEntry,
 		setToken,
-		InsertBlankComponentEnd,
+		type ArticleTextComponent,
+		type ArticleImageComponent,
+		type ArticleProteinComponent
 	} from "../lib/backend";
 	import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 	import {
@@ -26,7 +29,7 @@
 
 	const textWidth = "800px";
 	let dropdownOpen = false;
-	let article: Article;
+	let article: ArticleEntry;
 	let notFound = false;
 	onMount(async () => {
         if (editMode && !$user.loggedIn) {
@@ -45,6 +48,18 @@
 			console.error(e);
 			notFound = true;
 		}
+	}
+
+	function castToTextComponent(component: any): ArticleTextComponent {
+		return component as ArticleTextComponent;
+	}
+
+	function castToImageComponent(component: any): ArticleImageComponent {
+		return component as ArticleImageComponent;
+	}
+
+	function castToProteinComponent(component: any): ArticleProteinComponent {
+		return component as ArticleProteinComponent;
 	}
 </script>
 
@@ -110,30 +125,30 @@
 				</div>
 				{#each article.orderedComponents as c (c.id)}
 					<div style="position: relative;">
-						{#if c.componentType === "text"}
+						{#if c.componentType === ComponentType.TEXT}
 							<div style="width: {textWidth};">
 								<TextComponent
 									articleId={article.id}
 									{editMode}
-									markdown={c.markdown}
+									markdown={castToTextComponent(c).markdown}
 									id={c.id}
 									on:change={async () => {
 										await refreshArticle();
 									}}
 								/>
 							</div>
-						{:else if c.componentType === "protein"}
+						{:else if c.componentType === ComponentType.PROTEIN}
 							<ProteinComponent
 								articleId={article.id}
 								{editMode}
 								id={c.id}
-								name={c.name}
-								alignedWithName={c.alignedWithName}
+								name={castToProteinComponent(c).name}
+								alignedWithName={castToProteinComponent(c).alignedWithName}
 								on:change={async () => {
 									await refreshArticle();
 								}}
 							/>
-						{:else if c.componentType === "image"}
+						{:else if c.componentType === ComponentType.IMAGE}
 							<div
 								style="width: {textWidth};"
 								class="flex justify-center"
@@ -142,9 +157,9 @@
 									articleId={article.id}
 									{editMode}
 									id={c.id}
-									src={c.src}
-									height={c.height}
-									width={c.width}
+									src={castToImageComponent(c).src}
+									height={castToImageComponent(c).height}
+									width={castToImageComponent(c).width}
 									on:change={async () => {
 										await refreshArticle();
 									}}
@@ -163,7 +178,7 @@
 							><PlusOutline /> Add Component</Button
 						>
 						<Dropdown open={dropdownOpen}>
-							{#each Object.entries(InsertBlankComponentEnd.componentType) as [name, t]}
+							{#each Object.entries(ComponentType) as [name, t]}
 								<DropdownItem
 									on:click={async () => {
 										try {

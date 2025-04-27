@@ -3,7 +3,7 @@
 		screenshotMolstar,
 		defaultInitParams,
 	} from "../lib/venomeMolstarUtils";
-	import { Backend, UploadError, setToken } from "../lib/backend";
+	import { Backend, setToken, RequestStatus } from "../lib/backend";
 	import {
 		Fileupload,
 		Button,
@@ -18,6 +18,7 @@
 	import { onMount } from "svelte";
 	import Cookies from "js-cookie";
 	import { user } from "../lib/stores/user";
+	import Error from "./Error.svelte";
 
 	let species: string[] | null;
 	let selectedSpecies: string = "unknown";
@@ -37,9 +38,9 @@
 	let description: string = "";
 	let content: string = "";
 	let comment: string = "";
-	let requestStatus: string = "Pending";
+	let requestStatus: RequestStatus = RequestStatus.PENDING
 	let files: FileList | undefined; // bind:files on the Fileupload
-	let uploadError: UploadError | undefined;
+	let uploadError: Boolean = false
 	let refs = "";
 	$: file = files ? files[0] : undefined; // we're just concerned with one file
 
@@ -49,7 +50,7 @@
 		const pdbFileStr = await fileToString(file);
 		try {
 			setToken();
-			const err = await Backend.uploadProteinEntry({
+			await Backend.uploadProteinEntry({
 				name,
 				description,
 				pdbFileStr,
@@ -58,24 +59,22 @@
 				speciesName: selectedSpecies,
 				userId,
 			});
-			if (err) {
-				uploadError = err;
-				console.log(uploadError);
-			} else {
-				// success, we can also upload the png thumbnail
-				const dbProteinNameFormat = formatProteinName(name);
-				const b64 = await screenshotMolstar(
-					defaultInitParams(dbProteinNameFormat)
-				);
-				await Backend.uploadProteinPng({
-					base64Encoding: b64,
-					proteinName: dbProteinNameFormat,
-				});
+			// success, we can also upload the png thumbnail
+			const dbProteinNameFormat = formatProteinName(name);
+			const b64 = await screenshotMolstar(
+				defaultInitParams(dbProteinNameFormat)
+			);
+			await Backend.uploadProteinPng({
+				base64Encoding: b64,
+				proteinName: dbProteinNameFormat,
+			});
 
-				// then go to its new protein page
-				navigate(`/protein/${dbProteinNameFormat}`);
+			// then go to its new protein page
+			navigate(`/protein/${dbProteinNameFormat}`);
+		} catch (e: any) {
+			if (e.contains("exists")){
+				uploadError = true;
 			}
-		} catch (e) {
 			console.log(e);
 		}
 	}
@@ -97,28 +96,25 @@
 					content,
 					refs,
 					speciesName: selectedSpecies,
+					userId: userId
 				},
 			});
-			if (err) {
-				uploadError = err;
-				console.log(uploadError);
-			} else {
-				// success, we can also upload the png thumbnail
-				const dbProteinNameFormat = formatProteinName(name);
-				const b64 = await screenshotMolstar(
-					defaultInitParams(dbProteinNameFormat)
-				);
-				await Backend.uploadProteinPng({
-					base64Encoding: b64,
-					proteinName: dbProteinNameFormat,
-				});
+			// success, we can also upload the png thumbnail
+			const dbProteinNameFormat = formatProteinName(name);
+			const b64 = await screenshotMolstar(
+				defaultInitParams(dbProteinNameFormat)
+			);
+			await Backend.uploadProteinPng({
+				base64Encoding: b64,
+				proteinName: dbProteinNameFormat,
+			});
 
-				// then go to its new protein page
-				navigate(`/protein/${dbProteinNameFormat}`);
-			}
+			// then go to its new protein page
+			navigate(`/protein/${dbProteinNameFormat}`);
 		} catch (e) {
 			console.log(e);
 		}
+
 	}
 </script>
 
@@ -147,7 +143,7 @@
 				id="protein-name"
 				placeholder="Name"
 			/>
-			{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
+			{#if uploadError}
 				<Helper class="mt-2" color="red">
 					This name already exists, please create a unique name and resubmit
 				</Helper>

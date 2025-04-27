@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Data model for user ID response.
+ * Enum for the direction of component movement in an article.
  */
-export type UserIDResponse = {
-    id: number;
-};
-
+export enum MoveDirection {
+    UP = 'up',
+    DOWN = 'down',
+}

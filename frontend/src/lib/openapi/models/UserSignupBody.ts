@@ -2,7 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LoginBody = {
+/**
+ * Data model for user signup request.
+ */
+export type UserSignupBody = {
+    username: string;
     email: string;
     password: string;
 };

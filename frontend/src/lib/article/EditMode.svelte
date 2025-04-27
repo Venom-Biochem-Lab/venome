@@ -12,8 +12,8 @@
 	} from "flowbite-svelte-icons";
 	import {
 		Backend,
-		InsertComponent,
-		MoveComponent,
+		type InsertComponent,
+		type MoveComponent,
 		setToken,
 	} from "../backend";
 

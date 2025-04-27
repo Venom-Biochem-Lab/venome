@@ -2,8 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EditArticleTextComponent = {
-    componentId: number;
-    newMarkdown: string;
+/**
+ * Data model for user login response.
+ */
+export type UserLoginResponse = {
+    token: string;
+    userId: number;
 };
 

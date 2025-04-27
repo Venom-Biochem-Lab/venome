@@ -2,15 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ComponentType } from './ComponentType';
+/**
+ * Data model for inserting a blank component at the end of an article.
+ */
 export type InsertBlankComponentEnd = {
     articleId: number;
-    componentType?: InsertBlankComponentEnd.componentType;
+    componentType?: ComponentType;
 };
-export namespace InsertBlankComponentEnd {
-    export enum componentType {
-        TEXT = 'text',
-        IMAGE = 'image',
-        PROTEIN = 'protein',
-    }
-}
 

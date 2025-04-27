@@ -2,12 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ComponentType } from './ComponentType';
+/**
+ * Represents an image component in an article.
+ */
 export type ArticleImageComponent = {
     id: number;
-    componentType?: string;
-    componentOrder: number;
+    componentType?: ComponentType;
+    componentOrder?: number;
     src: string;
-    width?: (number | null);
-    height?: (number | null);
+    width: number;
+    height: number;
 };
 
