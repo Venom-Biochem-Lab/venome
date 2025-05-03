@@ -2,6 +2,7 @@
 name: ci
 
 on:
+    workflow_dispatch:
     push:
         branches:
             - main
@@ -23,6 +24,21 @@ jobs:
     test:
         runs-on: ubuntu-latest
 
+        services:
+             postgres:
+                 image: postgres:13
+                 env:
+                     POSTGRES_USER: myuser
+                     POSTGRES_PASSWORD: mypassword
+                     POSTGRES_DB: venome
+                 ports:
+                     - 5432:5432
+                 options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+        
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -65,7 +81,23 @@ jobs:
                   cd frontend/
                   npm i
 
-            - name: Test Backend
+            - name: Apply schema
               run: |
-                  cd backend/
+                    psql -h localhost -U myuser -d venome -f backups/v0.0.3/dump.sql
+              env:
+                  PGPASSWORD: mypassword
+
+
+            - name: Test Backend
+              working-directory: backend
+              env:
+                  PYTHONPATH: ../
+                  DATABASE_URL: postgres://myuser:mypassword@localhost:5432/venome
+                  DB_HOST: localhost
+                  DB_PORT: 5432
+                  DB_NAME: venome
+                  DB_USER: myuser
+                  DB_PASSWORD: mypassword
+              run: |
                   poetry run pytest
+                  
