@@ -297,6 +297,54 @@ export class DefaultService {
             },
         });
     }
+
+        /**
+     * Search Venome Similar
+     * @param proteinName
+     * @returns SimilarProtein Successful Response
+     * @throws ApiError
+     */
+        public static searchPDBSimilar(
+            proteinName: string,
+        ): CancelablePromise<Array<SimilarProtein>> {
+            return __request(OpenAPI, {
+                method: 'GET',
+                url: '/search/pdb/similar/{protein_name}',
+                path: {
+                    'protein_name': proteinName,
+                },
+                errors: {
+                    422: `Validation Error`,
+                },
+            });
+        }
+
+	// For PDB Alignment. Currently not working
+
+    //             /**
+    //  * Search Venome Similar
+    //  * @param venomeLink
+    //  * @param pdbLink
+    //  * @returns SimilarProtein Successful Response
+    //  * @throws ApiError
+    //  */
+    //             public static getPDBLink(
+    //                 venomeLink: string,
+    //                 pdbLink: string
+    //             ): CancelablePromise<string> {
+    //                 return __request(OpenAPI, {
+    //                     method: 'GET',
+    //                     url: '/search/pdb/similarlink/{venome_protein}/{pdb_protein}',
+    //                     path: {
+    //                         'venome_protein': venomeLink,
+    //                         'pdb_protein': pdbLink
+    //                     },
+    //                     errors: {
+    //                         422: `Validation Error`,
+    //                     },
+    //                 });
+    //             }
+
     /**
      * Search Venome Similar Compare
      * @param proteinName
