@@ -99,7 +99,7 @@
 					<Accordion>
 						<AccordionItem bind:open={searchOpen}>
 							<span slot="header" style="font-size: 18px;">
-								Find Similar Proteins in Venome DB <span
+								3D Similar Proteins in Venome DB <span
 									style="font-weight: 300; font-size: 15px;"
 								>
 									(click to compute with Foldseek)
@@ -114,7 +114,7 @@
 						</AccordionItem>
 						<AccordionItem bind:open={searchOpenPDB}>
 							<span slot="header" style="font-size: 18px;">
-								Find Similar Proteins in PDB <span
+								3D Similar Proteins in PDB <span
 									style="font-weight: 300; font-size: 15px;"
 								>
 									(click to compute with Foldseek)
