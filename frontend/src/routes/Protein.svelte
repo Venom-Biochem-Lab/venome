@@ -35,11 +35,9 @@
 	let entry: ProteinEntry | null = null;
 	let contributor = "";
 	let status: RequestStatus = RequestStatus.PENDING;
-	let entry2: ProteinEntry | null = null;
 	let error = false;
 	let chainColors: ChainColors = {};
 	let searchOpen = false;
-	let currentEntry: ProteinEntry | null = null;
 
 	// this is the protein entry we are currently viewing
 	let current_format: string;
@@ -58,16 +56,9 @@
 
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
-		currentEntry = entry;
 		current_format = "pdb";
 
 		console.log(entry)
-
-		//making a copy for testing the toggle
-		//entry2 = { ...entry };
-		entry2 = await Backend.getProteinEntry(urlId2);
-		console.log(entry2)
-		if (entry == null || entry2 == null) error = true;
 
 		contributor = (await Backend.getProteinEntryUser(urlId)).username;
 
@@ -86,12 +77,10 @@
 
 	//to switch the visualization between alphafold2 and alphafold3
 	function toggleProtein() {
-		if (currentEntry === entry) {
-			currentEntry = entry2;
+		if (molstarFormat === "pdb") {
 			molstarUrl = backendUrl(`protein/af3/${urlId}`);
 			molstarFormat = "cif";
 		} else {
-			currentEntry = entry;
 			molstarUrl = backendUrl(`protein/pdb/${urlId}`);
 			molstarFormat = "pdb";
 		}
@@ -104,7 +93,7 @@
 </svelte:head>
 
 <section class="flex gap-10 p-5">
-	{#if currentEntry}
+	{#if entry}
 		<div id="left-side">
 			<!-- TITLE AND DESCRIPTION -->
 			<h1 id="title">
@@ -132,13 +121,13 @@
 			<EntryCard title="Computed Insights">
 				<div class="grid grid-cols-2">
 					<b>Length</b>
-					<div><code>{currentEntry.length}</code></div>
+					<div><code>{entry.length}</code></div>
 
 					<b>Mass (Da)</b>
-					<div><code>{numberWithCommas(currentEntry.mass)}</code></div>
+					<div><code>{numberWithCommas(entry.mass)}</code></div>
 
 					<b>Atoms</b>
-					<div><code>{numberWithCommas(currentEntry.atoms)}</code></div>
+					<div><code>{numberWithCommas(entry.atoms)}</code></div>
 				</div>
 				<div class="mt-3">
 					<Accordion>
@@ -152,8 +141,8 @@
 							</span>
 							{#if searchOpen}
 								<SimilarProteins
-									queryProteinName={currentEntry.name}
-									length={currentEntry.length}
+									queryProteinName={entry.name}
+									length={entry.length}
 								/>
 							{/if}
 						</AccordionItem>
@@ -197,13 +186,13 @@
 						</div>
 						<b>Method</b>
 						<div>
-							{currentEntry === entry ? "AlphaFold 2" : "AlphaFold 3"}
+							{molstarFormat === "pdb" ? "AlphaFold 2" : "AlphaFold 3"}
 						</div>
 						<b>Date Published</b>
 						<div>
 							<code
-								>{currentEntry.datePublished
-									? dbDateToMonthDayYear(currentEntry.datePublished)
+								>{entry.datePublished
+									? dbDateToMonthDayYear(entry.datePublished)
 									: "n/a"}</code
 							>
 						</div>
@@ -213,7 +202,7 @@
 							size="xs"
 							color="light"
 							outline
-							on:click={() => navigate(`/fullscreen/${currentEntry?.name}`)}
+							on:click={() => navigate(`/fullscreen/${entry?.name}`)}
 						>
 							Fullscreen <ExpandOutline class="ml-1" size="sm" />
 						</Button>
@@ -221,7 +210,7 @@
 							outline
 							size="xs"
 							color="light"
-							href={backendUrl(`protein/${current_format === "pdb" ? "pdb" : "af3"}/${currentEntry?.name}`)}
+							href={backendUrl(`protein/${current_format === "pdb" ? "pdb" : "af3"}/${entry?.name}`)}
 						>
 							Download .{current_format} file<DownloadOutline size="sm" class="ml-1" />
 						</Button>
@@ -252,7 +241,7 @@
 						]}
 					/>
 
-					<LegendpLddt bind:chainColors proteinName={currentEntry.name} />
+					<LegendpLddt bind:chainColors proteinName={entry.name} />
 				</EntryCard>
 			</div>
 		</div>

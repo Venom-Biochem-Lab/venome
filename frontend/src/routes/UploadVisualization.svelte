@@ -135,7 +135,7 @@
 					? "red"
 					: undefined}
 			>
-				Upload AF3 File *
+				Upload .cif AF3 File
 			</Label>
 			<Fileupload
 				id="af3-file"
