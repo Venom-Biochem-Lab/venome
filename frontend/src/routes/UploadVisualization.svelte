@@ -46,7 +46,7 @@
 		try {
 			// Create form data
 			const formData = new FormData();
-			formData.append("protein_name", proteinName);
+			formData.append("protein_name", proteinName); //get protein name from search bar to make sure its correct
 			formData.append("file", af3File);
 
 			// Set auth token for the request
@@ -65,10 +65,14 @@
 			);
 
 			if (!response.ok) {
-				const error = await response.json();
-				uploadError = error.detail || UploadError.WRITE_ERROR;
+				const errorResponse = await response.json();
+				//handels backend failures, and when protein name isnt found
+				uploadError =
+					typeof errorResponse === "string"
+						? errorResponse
+						: errorResponse.detail || UploadError.WRITE_ERROR;
 			} else {
-				// Success - clear form
+				//worked fine
 				alert("Visualization uploaded successfully!");
 				proteinName = "";
 				af3File = undefined;
@@ -120,11 +124,6 @@
 					</ul>
 				</div>
 			{/if}
-			{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
-				<Helper class="mt-2" color="red">
-					Protein name not found or already has a visualization.
-				</Helper>
-			{/if}
 		</div>
 
 		<div>
@@ -150,7 +149,12 @@
 		{#if uploadError}
 			<Helper color="red">
 				{#if uploadError === UploadError.NAME_NOT_UNIQUE}
-					Protein name not found or already has a visualization.
+					Protein name not found, please search and select using the
+					dropdown. *Needs to have an AF2 .pdb upload before adding
+					AF3 visualization.
+				{:else if uploadError === UploadError.AF3_ALREADY_EXISTS}
+					There is already another AF3 upload for this protein. To
+					delete it, go to the protein page edit it as an admin.
 				{:else if uploadError === UploadError.WRITE_ERROR}
 					Failed to save the visualization file.
 				{:else if uploadError === UploadError.PARSE_ERROR}

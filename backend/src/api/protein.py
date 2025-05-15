@@ -920,15 +920,19 @@ async def upload_af3_file(
     try:
         # Check if the protein exists in the database
         if not protein_name_found(protein_name):
-            log.warning(f"Protein not found: {protein_name}")
-            return UploadError.NAME_NOT_UNIQUE
+            log.warning(f"Protein not found when uploading af3: {protein_name}")
+            raise HTTPException(status_code=400, detail=UploadError.NAME_NOT_UNIQUE) 
+            #have return fail when protein not found ^^
+
+        #check if af3 upload already exists
+        file_path = stored_af3_file_name(protein_name)
+        if os.path.exists(file_path):
+            log.warning(f"AF3 file already exists for protein: {protein_name}")
+            raise HTTPException(status_code=400, detail=UploadError.AF3_ALREADY_EXISTS)
         
-        # Create directory if it doesn't exist
+        #create af3 storage dir if not already
         af3_dir = os.path.join("src/data/stored_proteins/af3")
         os.makedirs(af3_dir, exist_ok=True)
-        
-        # Save the file
-        file_path = stored_af3_file_name(protein_name)
         
         # Reset file pointer to beginning
         await file.seek(0)
@@ -944,5 +948,35 @@ async def upload_af3_file(
         return None
         
     except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
         log.error(f"Failed to upload AF3 file: {str(e)}")
-        return UploadError.WRITE_ERROR
+        raise HTTPException(status_code=500, detail=UploadError.WRITE_ERROR)
+    
+
+#matching function to delete af3 uplaod
+@router.delete("/protein/af3/{protein_name:str}", response_model=None)
+async def delete_af3_file(protein_name: str, req: Request):
+    """Delete an AF3 file for a protein visualization"""
+    requires_authentication(AuthType.ADMIN, req)
+    
+    try:
+        # Check if the protein exists in the database
+        if not protein_name_found(protein_name):
+            raise HTTPException(status_code=404, detail="Protein not found")
+            
+        # Check if AF3 file exists
+        file_path = stored_af3_file_name(protein_name)
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail="AF3 file not found")
+        
+        # Delete the file
+        os.remove(file_path)
+        log.info(f"Successfully deleted AF3 file for {protein_name}")
+        return None
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        log.error(f"Failed to delete AF3 file: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to delete AF3 file")
