@@ -1,5 +1,5 @@
 import logging as log
-import os, shutil
+import os
 from base64 import b64decode
 from io import StringIO
 from Bio.PDB import PDBParser
