@@ -59,7 +59,7 @@ def login(body: LoginBody):
             # Returns "incorrect email/password" message if password is incorrect.
             if not bcrypt.verify(password, password_hash):
                 return LoginResponse(
-                    token="", user_id=0, error="Invalid Email or Password"
+                    token="", user_id=0, error="Invalid Password"
                 )
 
             # Generates the token and returns
