@@ -48,6 +48,16 @@
 					.
 				</div>
 			</div>
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div class="option" on:click={() => navigate("upload/visualization")}>
+				<div class="big-text flex gap-1 items-center">
+					<CirclePlusSolid size="lg" /> Add Visualization
+				</div>
+				<div>
+					If you want to add a visualization to an existing protein, <b>Click here.</b>
+				</div>
+			</div>
 		</div>
 	{:else}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->

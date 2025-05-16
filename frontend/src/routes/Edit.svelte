@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { Backend, setToken, type ProteinEntry } from "../lib/backend";
+	import {
+		Backend,
+		setToken,
+		backendUrl,
+		type ProteinEntry,
+	} from "../lib/backend";
 	import {
 		Button,
 		Input,
@@ -13,6 +18,7 @@
 	import ArticleEditor from "../lib/ArticleEditor.svelte";
 	import { user } from "../lib/stores/user";
 	import { undoFormatProteinName } from "../lib/format";
+	import { OpenAPI } from "../lib/openapi";
 
 	// key difference, here we get the information, then populate it in the upload form that can be edited
 	// and reuploaded/edited
@@ -35,12 +41,38 @@
 	let entry: ProteinEntry | null = null;
 	let error = false;
 	let allSpecies: string[] | null;
+	let hasAF3 = false;
+
+	async function deleteAF3() {
+		try {
+			setToken();
+			const response = await fetch(
+				`${backendUrl(`protein/af3/${urlId}`)}`,
+				{
+					method: "DELETE",
+					headers: {
+						Authorization: `Bearer ${OpenAPI.TOKEN}`,
+					},
+				},
+			);
+
+			if (response.ok) {
+				hasAF3 = false;
+				alert("AF3 visualization deleted successfully!");
+			} else {
+				alert("Failed to delete AF3 visualization");
+			}
+		} catch (e) {
+			console.error("Error deleting AF3:", e);
+			alert("Error deleting AF3 visualization");
+		}
+	}
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		if (!$user.loggedIn) {
 			alert(
-				"You are not logged in. You are being redirected to home. TODO: Make this better."
+				"You are not logged in. You are being redirected to home. TODO: Make this better.",
 			);
 			navigate("/");
 		}
@@ -71,6 +103,19 @@
 		}
 
 		allSpecies = await Backend.searchSpecies();
+
+		//check if has af3 uploaded already
+		try {
+			const response = await fetch(
+				`${backendUrl(`protein/af3/${urlId}`)}`,
+				{
+					method: "HEAD",
+				},
+			);
+			hasAF3 = response.ok;
+		} catch (e) {
+			hasAF3 = false;
+		}
 	});
 	$: changed =
 		name !== ogName ||
@@ -143,6 +188,32 @@
 			<div>
 				<ArticleEditor bind:content bind:refs />
 			</div>
+			{#if hasAF3}
+				<div>
+					<Button id="del-af3" color="red"
+						>Delete AF3 Visualization</Button
+					>
+					<Popover
+						arrow={false}
+						placement="right-end"
+						trigger="click"
+						triggeredBy="#del-af3"
+						title="Confirm"
+					>
+						<div>
+							Are you sure you want to delete the AF3
+							visualization?
+							<br />
+							The visualization will be deleted forever.
+						</div>
+						<div class="mt-2">
+							<Button color="red" size="sm" on:click={deleteAF3}
+								>Confirm Delete</Button
+							>
+						</div>
+					</Popover>
+				</div>
+			{/if}
 			<div>
 				<Button
 					on:click={async () => {
@@ -168,7 +239,7 @@
 									});
 								// success, so we can go back, but now with the new name stored in the db.
 								navigate(
-									`/protein/${editSuccessful.editedName}`
+									`/protein/${editSuccessful.editedName}`,
 								);
 								uploadError = ""; // no upload error to report
 							} catch (e) {

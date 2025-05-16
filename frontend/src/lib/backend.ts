@@ -21,3 +21,4 @@ export function clearToken() {
 export function backendUrl(endpoint: string) {
 	return `${BACKEND_REQUEST_URL}/${endpoint}`;
 }
+

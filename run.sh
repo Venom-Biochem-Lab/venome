@@ -154,7 +154,7 @@ function remove_foldseek() {
 	docker exec -it venome-backend rm -fr foldseek/
 }
 
-# NOTE: Only run this if you are on a linux machine. Otherwise paste the command into your Docker terminal backend
+#This needs to be run within the terminal in the backend/ directory to have this work on windows.
 function add_pdb_database(){
 	docker exec -it venome-backend foldseek/bin/foldseek databases PDB pdb PDBproteins
 }
