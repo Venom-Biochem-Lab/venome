@@ -415,7 +415,8 @@ def search_venome_similar_compare(protein_name: str, protein_compare: str):
 
     return formatted[0]
 
-#used to autofill suggested searches in bar in IploadVisualiza...
+
+# used to autofill suggested searches in bar in IploadVisualiza...
 @router.get("/search/protein-names", response_model=list[str])
 def search_protein_names(query: str):
     """Fetch protein names that start with the given query."""
