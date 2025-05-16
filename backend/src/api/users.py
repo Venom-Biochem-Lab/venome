@@ -125,7 +125,7 @@ def get_user(user_id: int):
     with Database() as db:
         query = """SELECT id, username, email, admin FROM users WHERE id = %s;"""
         user = db.execute_return(query, [user_id])
-        if user is not None:
+        if user is not None and len(user) > 0:
             return UserResponse(
                 id=user[0][0], username=user[0][1], email=user[0][2], admin=user[0][3]
             )
