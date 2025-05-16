@@ -23,12 +23,13 @@
 	} from "flowbite-svelte-icons";
 	import EntryCard from "../lib/EntryCard.svelte";
 	import SimilarProteins from "../lib/SimilarProteins.svelte";
+	import SimiliarProteinsPdb from "../lib/SimilarProteinsPDB.svelte";
 	import DelayedSpinner from "../lib/DelayedSpinner.svelte";
 	import { user } from "../lib/stores/user";
 	import { AccordionItem, Accordion } from "flowbite-svelte";
 	import type { ChainColors } from "../lib/venomeMolstarUtils";
 	import LegendpLddt from "../lib/LegendpLDDT.svelte";
-    import { PDBeMolstarPlugin } from "../../venome-molstar/lib";
+	import { PDBeMolstarPlugin } from "../../venome-molstar/lib";
 
 	export let urlId: string;
 	let urlId2: string;
@@ -46,19 +47,20 @@
 	// Ensure the Molstar component updates when toggling between AF2 and AF3
 	let molstarUrl = "";
 	let molstarFormat = "";
+	let searchOpenPDB = false;
 
 	// when this component mounts, request protein wikipedia entry from backend
 	onMount(async () => {
 		// Request the protein from backend given ID
 		console.log("Requesting", urlId, "info from backend");
-		urlId2 = 'Gh_comp10207_c0_seq2';
-		console.log("urlid2", urlId2)
+		urlId2 = "Gh_comp10207_c0_seq2";
+		console.log("urlid2", urlId2);
 
 		entry = await Backend.getProteinEntry(urlId);
 		// if we could not find the entry, the id is garbo
 		current_format = "pdb";
 
-		console.log(entry)
+		console.log(entry);
 
 		contributor = (await Backend.getProteinEntryUser(urlId)).username;
 
@@ -72,7 +74,7 @@
 		const af3Response = await fetch(backendUrl(`protein/af3/${urlId}`));
 		hasAF3 = af3Response.ok;
 
-		console.log("Error:", error)
+		console.log("Error:", error);
 	});
 
 	//to switch the visualization between alphafold2 and alphafold3
@@ -85,7 +87,6 @@
 			molstarFormat = "pdb";
 		}
 	}
-
 </script>
 
 <svelte:head>
@@ -133,7 +134,7 @@
 					<Accordion>
 						<AccordionItem bind:open={searchOpen}>
 							<span slot="header" style="font-size: 18px;">
-								3D Similar Proteins <span
+								3D Similar Proteins in Venome DB <span
 									style="font-weight: 300; font-size: 15px;"
 								>
 									(click to compute with Foldseek)
@@ -141,6 +142,21 @@
 							</span>
 							{#if searchOpen}
 								<SimilarProteins
+									queryProteinName={entry.name}
+									length={entry.length}
+								/>
+							{/if}
+						</AccordionItem>
+						<AccordionItem bind:open={searchOpenPDB}>
+							<span slot="header" style="font-size: 18px;">
+								3D Similar Proteins in PDB <span
+									style="font-weight: 300; font-size: 15px;"
+								>
+									(click to compute with Foldseek)
+								</span>
+							</span>
+							{#if searchOpenPDB}
+								<SimiliarProteinsPdb
 									queryProteinName={entry.name}
 									length={entry.length}
 								/>
@@ -186,7 +202,9 @@
 						</div>
 						<b>Method</b>
 						<div>
-							{molstarFormat === "pdb" ? "AlphaFold 2" : "AlphaFold 3"}
+							{molstarFormat === "pdb"
+								? "AlphaFold 2"
+								: "AlphaFold 3"}
 						</div>
 						<b>Date Published</b>
 						<div>
@@ -202,7 +220,8 @@
 							size="xs"
 							color="light"
 							outline
-							on:click={() => navigate(`/fullscreen/${entry?.name}`)}
+							on:click={() =>
+								navigate(`/fullscreen/${entry?.name}`)}
 						>
 							Fullscreen <ExpandOutline class="ml-1" size="sm" />
 						</Button>
@@ -210,9 +229,14 @@
 							outline
 							size="xs"
 							color="light"
-							href={backendUrl(`protein/${current_format === "pdb" ? "pdb" : "af3"}/${entry?.name}`)}
+							href={backendUrl(
+								`protein/${current_format === "pdb" ? "pdb" : "af3"}/${entry?.name}`,
+							)}
 						>
-							Download .{current_format} file<DownloadOutline size="sm" class="ml-1" />
+							Download .{current_format} file<DownloadOutline
+								size="sm"
+								class="ml-1"
+							/>
 						</Button>
 						{#if hasAF3}
 							<Button
@@ -221,7 +245,9 @@
 								outline
 								on:click={toggleProtein}
 							>
-								Toggle to {molstarFormat === "pdb" ? "AF3" : "AF2"}
+								Toggle to {molstarFormat === "pdb"
+									? "AF3"
+									: "AF2"}
 							</Button>
 						{/if}
 					</div>

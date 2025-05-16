@@ -45,6 +45,10 @@
 							<b>Mass</b>:
 							<code>{numberWithCommas(entry.mass)}</code>
 						</div>
+						<div>
+							<b>Atoms</b>:
+							<code>{numberWithCommas(entry.atoms)}</code>
+						</div>
 					</div>
 				</div>
 			</div>
