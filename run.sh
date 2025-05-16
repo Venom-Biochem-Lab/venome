@@ -154,6 +154,16 @@ function remove_foldseek() {
 	docker exec -it venome-backend rm -fr foldseek/
 }
 
+function add_pdb_database(){
+	docker exec -it venome-backend foldseek/bin/foldseek databases PDB pdb PDBproteins
+}
+
+function remove_pdb_database(){
+	cd backend
+	rm -rf PDBproteins
+	rm -rf pdb*
+}
+
 function add_tmalign() {
 	docker exec -it venome-backend wget --no-check-certificate https://seq2fun.dcmb.med.umich.edu//TM-align/TMalign_cpp.gz
 	docker exec -it venome-backend mkdir tmalign

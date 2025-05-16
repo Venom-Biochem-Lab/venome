@@ -42,7 +42,7 @@ Execute the [`run.sh`](./run.sh) script in your terminal with the command
 
 **3. Setup the Database**
 
-Load the existing data and database schema with
+Load the existing data and database schema with. Choose one below
 ```bash 
 ./run.sh reload_from_backup backips/v0.0.3
 ./run.sh reload_from_backup backups/v0.1-af3
