@@ -32,6 +32,12 @@ def test_get_users():
     assert len(response.users) == 2
     assert response.users[0].username == "test_user1"
 
+def test_get_user_proteins():
+    response: list[str] = get_user_proteins(1)
+    assert len(response) == 3
+    response: list[str] = get_user_proteins(2)
+    assert len(response) == 0
+
 #successfully attempt to create an account
 def test_account_creation():
     body = SignupBody(username="test_user3", email="test@email.com", password="test")
