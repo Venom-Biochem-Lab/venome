@@ -458,9 +458,9 @@ ALTER TABLE ONLY public.requests ALTER COLUMN id SET DEFAULT nextval('public.req
 -- Dummy Data for Name: proteins; Type: TABLE DATA; Schema: public; Owner: myuser
 --
 
-INSERT INTO public.proteins VALUES (1, 'test_seq1', 'fake approved sequence for testing', 1, 1.1, 1, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 1, '\x64', '2024-05-22 04:17:26.928835+00');
-INSERT INTO public.proteins VALUES (2, 'test_seq2', 'fake approved sequence for testing', 2, 2.2, 2, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:27.987764+00');
-INSERT INTO public.proteins VALUES (3, 'test_seq3', 'fake approved sequence for testing', 3, 3.3, 3, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 1, '\x64', '2024-05-22 04:17:28.421996+00');
+INSERT INTO public.proteins VALUES (1, 'test_seq1', 'fake approved sequence for testing', 1, 3.3, 1, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 1, '\x64', '2024-05-22 04:17:26.928835+00');
+INSERT INTO public.proteins VALUES (2, 'test_seq2', 'fake approved sequence for testing', 2, 2.2, 5, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:27.987764+00');
+INSERT INTO public.proteins VALUES (3, 'test_seq3', 'fake approved sequence for testing', 3, 1.1, 3, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 1, '\x64', '2024-05-22 04:17:28.421996+00');
 INSERT INTO public.proteins VALUES (4, 'test_seq4', 'fake pending sequence for testing', 4, 4.4, 4, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:28.421996+00');
 INSERT INTO public.proteins VALUES (5, 'test_seq5', 'fake pending sequence for testing', 5, 5.5, 5, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:28.421996+00');
 INSERT INTO public.proteins VALUES (6, 'test_seq6', 'fake denied sequence for testing', 6, 6.6, 6, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:28.421996+00');
