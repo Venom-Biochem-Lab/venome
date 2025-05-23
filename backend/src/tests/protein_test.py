@@ -15,6 +15,7 @@ from src.api_types import (
     ProteinEntry,
     ProteinBody,
     UploadError,
+    UserResponse,
     RequestStatus,
     RequestBodyEdit,
     RequestBody,
@@ -41,7 +42,7 @@ def create_dummy_request() -> Request:
 def test_delete_protein_entry():
     req = create_dummy_request()
     delete_protein_entry("test_seq7", req)
-    assert get_protein_entry("test_seq7") == None
+    assert get_protein_entry("test_seq7") is None
 
 
 def test_get_all_entries():
@@ -62,9 +63,9 @@ def test_get_all_denied_entries():
 
 
 def test_protein_name_search():
-    assert protein_name_found("test_seq1") == True
-    assert protein_name_found("test_seq2") == True
-    assert protein_name_found("fake_protein_that_doesnt_exist") == False
+    assert protein_name_found("test_seq1")
+    assert protein_name_found("test_seq2")
+    assert not protein_name_found("fake_protein_that_doesnt_exist")
 
 
 def test_get_entry():

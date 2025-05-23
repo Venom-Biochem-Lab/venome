@@ -5,7 +5,7 @@ from src.api.users import (
     get_users,
     login,
     delete_user,
-    edit_user,
+    # edit_user,
     get_user_proteins,
 )
 from src.api_types import (
@@ -16,7 +16,7 @@ from src.api_types import (
     LoginBody,
     LoginResponse,
     UsersResponse,
-    UserBody,
+    # UserBody,
 )
 from starlette.requests import Request
 from starlette.types import Scope
