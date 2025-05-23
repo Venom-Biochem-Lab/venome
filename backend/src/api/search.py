@@ -240,7 +240,12 @@ def search_range_mass():
 def search_range_atoms():
     try:
         with Database() as db:
-            query = """SELECT min(atoms), max(atoms) FROM proteins"""
+            query = """SELECT min(atoms), max(atoms) FROM proteins WHERE EXISTS (
+                            SELECT 1 
+                            FROM requests 
+                            WHERE protein_id = proteins.id 
+                            AND status_type = 'Approved'
+                        )"""
             entry_sql = db.execute_return(query)
             if entry_sql is not None:
                 return RangeFilter(min=entry_sql[0][0], max=entry_sql[0][1])
