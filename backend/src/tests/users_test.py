@@ -1,11 +1,11 @@
 from src.api.users import (
-    signup, 
-    get_user_id, 
-    get_user, 
-    get_users, 
-    login, 
-    delete_user, 
-    edit_user, 
+    signup,
+    get_user_id,
+    get_user,
+    get_users,
+    login,
+    delete_user,
+    edit_user,
     get_user_proteins,
 )
 from src.api_types import (
@@ -35,11 +35,13 @@ def create_dummy_request() -> Request:
     }
     return Request(scope)
 
+
 def test_get_users():
     req = create_dummy_request()
     response: UsersResponse = get_users(req)
     assert len(response.users) == 2
     assert response.users[0].username == "test_user1"
+
 
 def test_get_user_proteins():
     response: list[str] = get_user_proteins(1)
@@ -47,7 +49,8 @@ def test_get_user_proteins():
     response: list[str] = get_user_proteins(2)
     assert len(response) == 4
 
-#successfully attempt to create an account
+
+# successfully attempt to create an account
 def test_account_creation():
     body = SignupBody(username="test_user3", email="test@email.com", password="test")
     response: SignupResponse = signup(body)
@@ -55,11 +58,13 @@ def test_account_creation():
     id: UserIDResponse = get_user_id("test_user3")
     assert id.id != -1
 
-#attempt to create an account with an already taken username
+
+# attempt to create an account with an already taken username
 def test_account_creation_2():
     body = SignupBody(username="test_user2", email="test2@test.com", password="test")
     response: SignupResponse = signup(body)
     assert response.error == "Server error."
+
 
 # attempt to create an account with an already taken email
 def test_account_creation_3():
@@ -69,14 +74,16 @@ def test_account_creation_3():
     id: UserIDResponse = get_user_id("test_user4")
     assert id.id == -1
 
-#successfully attempt to login
+
+# successfully attempt to login
 def test_login():
     body = LoginBody(email="test@email.com", password="test")
     response: LoginResponse = login(body)
     assert response.user_id != 0
     assert response.token != ""
 
-#fail to login with bad username
+
+# fail to login with bad username
 def test_login_2():
     body = LoginBody(email="fake@email.com", password="test")
     response: LoginResponse = login(body)
@@ -84,12 +91,14 @@ def test_login_2():
     assert response.token == ""
     assert response.error == "Invalid Email or Password"
 
-#fail to login with bad password
+
+# fail to login with bad password
 def test_login_3():
     body = LoginBody(email="test@email.com", password="fake")
     response: LoginResponse = login(body)
     assert response.user_id == 0
     assert response.error == "Invalid Password"
+
 
 def test_get_user():
     response: UserResponse = get_user(1)
@@ -98,6 +107,7 @@ def test_get_user():
     response: UserResponse = get_user(999)
     assert response.username == ""
     assert response.email == ""
+
 
 '''#successfully edit user
 def test_edit_user():
