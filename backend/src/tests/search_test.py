@@ -55,6 +55,8 @@ def test_search_proteins2():
 
 
 # test different filters
+# note: each SearchProteinsBody has multiple filters as it throws an error if there is only one
+# this is not an issue in production as all 3 filters will always be in the SearchProteinsBody
 def test_search_proteins3():
     filter = RangeFilter(min=1, max=2)
     request = SearchProteinsBody(

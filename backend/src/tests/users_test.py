@@ -43,6 +43,7 @@ def test_get_users():
     assert response.users[0].username == "test_user1"
 
 
+# this function checks all proteins, not just the approved ones
 def test_get_user_proteins():
     response: list[str] = get_user_proteins(1)
     assert len(response) == 2
@@ -109,6 +110,7 @@ def test_get_user():
     assert response.email == ""
 
 
+# I believe this function is currently broken, issue #305 on GitHub
 '''#successfully edit user
 def test_edit_user():
     req = create_dummy_request()

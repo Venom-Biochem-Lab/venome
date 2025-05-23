@@ -167,6 +167,7 @@ def test_get_protein_status():
     assert response3 == RequestStatus.DENIED
 
 
+# successfully edit request status
 def test_edit_request_status():
     req = create_dummy_request()
     body = RequestBodyEdit(request_id=4, status=RequestStatus.DENIED)
@@ -174,8 +175,3 @@ def test_edit_request_status():
     assert response is None
     status_response: RequestStatus = get_protein_status("test_seq4", req)
     assert status_response == RequestStatus.DENIED
-
-
-# MAKE SURE WE SAVE THE ARTICLE WHEN UPLOADING NEW UPDATE!!!
-# add more users and proteins to the sql file so that when the ones get deleted it still works
-# or just change to ci.yml to run the tests one by oneit
