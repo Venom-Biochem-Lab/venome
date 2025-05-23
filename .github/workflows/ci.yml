@@ -83,7 +83,7 @@ jobs:
 
             - name: Apply schema
               run: |
-                    psql -h localhost -U myuser -d venome -f backups/v0.0.3/dump.sql
+                    psql -h localhost -U myuser -d venome -f backups/v0.0.3/test_schema.sql
               env:
                   PGPASSWORD: mypassword
 
