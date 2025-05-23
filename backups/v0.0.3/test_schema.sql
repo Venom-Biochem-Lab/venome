@@ -464,6 +464,7 @@ INSERT INTO public.proteins VALUES (3, 'test_seq3', 'fake approved sequence for 
 INSERT INTO public.proteins VALUES (4, 'test_seq4', 'fake pending sequence for testing', 4, 4.4, 4, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:28.421996+00');
 INSERT INTO public.proteins VALUES (5, 'test_seq5', 'fake pending sequence for testing', 5, 5.5, 5, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:28.421996+00');
 INSERT INTO public.proteins VALUES (6, 'test_seq6', 'fake denied sequence for testing', 6, 6.6, 6, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:28.421996+00');
+INSERT INTO public.proteins VALUES (7, 'test_seq7', 'fake approved sequence for testing that get deleted', 1, 2.2, 1, 'From the [Testing Laboratory](https://venombiochemistrylab.weebly.com/)', '', 2, '\x64', '2024-05-22 04:17:28.421996+00');
 
 -- Add dummy requests for proteins.
 INSERT INTO public.requests (
@@ -477,6 +478,7 @@ INSERT INTO public.requests VALUES (3, 2, 3, '2024-05-22 04:17:28.421996+00', 'O
 INSERT INTO public.requests VALUES (4, 2, 4, '2024-05-22 04:17:28.421996+00', 'test protein', 'Pending');
 INSERT INTO public.requests VALUES (5, 2, 5, '2024-05-22 04:17:28.421996+00','test protein', 'Pending');
 INSERT INTO public.requests VALUES (6, 2, 6, '2024-05-22 04:17:28.421996+00', 'test protein', 'Denied');
+INSERT INTO public.requests VALUES (7, 1, 7, '2024-05-22 04:17:28.421996+00', 'test protein', 'Approved');
 -- View with at a glance info about a protein
 DROP VIEW full_protein_info;
 

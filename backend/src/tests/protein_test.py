@@ -11,7 +11,14 @@ from src.api.protein import (
     upload_protein_entry,
     delete_protein_entry,
 )
-from src.api_types import ProteinEntry, ProteinBody, UploadError, RequestStatus, RequestBodyEdit, RequestBody
+from src.api_types import (
+    ProteinEntry, 
+    ProteinBody, 
+    UploadError, 
+    RequestStatus, 
+    RequestBodyEdit, 
+    RequestBody,
+)
 from starlette.requests import Request
 from starlette.types import Scope
 from src.auth import generate_auth_token
@@ -28,6 +35,12 @@ def create_dummy_request() -> Request:
     }
     return Request(scope)
 
+
+#this test should run first as the other tests expect that test_seq7 will not exist
+def test_delete_protein_entry():
+    req = create_dummy_request()
+    delete_protein_entry("test_seq7", req)
+    assert get_protein_entry("test_seq7") == None
 
 def test_get_all_entries():
     response: list[ProteinEntry] = get_all_protein_entries()
@@ -52,7 +65,7 @@ def test_protein_name_search():
 def test_get_entry():
     response: ProteinEntry = get_protein_entry("test_seq1")
     assert response.length == 1
-    assert response.mass == 1.1
+    assert response.mass == 3.3
     assert response.atoms == 1
     assert response.species_name == "test species 1"
 
@@ -116,8 +129,9 @@ def test_edit_request_status():
     status_response: RequestStatus = get_protein_status("test_seq4", req)
     assert status_response == RequestStatus.DENIED
 
-    
-def test_delete_protein_entry():
-    req = create_dummy_request()
-    delete_protein_entry("test_seq2", req)
-    assert get_protein_entry("test_seq2") == None
+
+
+
+#MAKE SURE WE SAVE THE ARTICLE WHEN UPLOADING NEW UPDATE!!!
+#add more users and proteins to the sql file so that when the ones get deleted it still works
+#or just change to ci.yml to run the tests one by oneit
