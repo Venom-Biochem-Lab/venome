@@ -30,6 +30,9 @@ export function formatProteinName(name: string) {
 export function undoFormatProteinName(name: string) {
 	return name.replaceAll("_", " ");
 }
+export function undoFormatProteinPDB(name: string){
+	return name.substring(0,4);
+}
 
 /**
  * @param date for example: '2024-04-03 18:52:04.878603+00:00'
