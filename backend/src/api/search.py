@@ -80,6 +80,45 @@ def get_descriptions(protein_names: list[str]):
     return None
 
 
+# For PDB Alignment. Currently not working
+
+# @router.get(
+#     "/search/pdb/similarlink/{venome_protein:str}/{pdb_protein:str}",
+#     response_model=list[SimilarProtein],
+# )
+# def get_pdb_link(venome_protein: str, pdb_protein: str):
+#     pdb_url = "https://alignment.rcsb.org/api/v1/structures"
+#     query = {{
+#             "context": {
+#                 "mode": "pairwise",
+#                 "method": {
+#                 "name": "fatcat-rigid"
+#                 },
+#                 "structures": [
+#                 {
+#                     "entry_id": venome_protein,
+#                     "selection": {
+#                     "asym_id": "A"
+#                     }
+#                 },
+#                 {
+#                     "entry_id": pdb_protein,
+#                     "selection": {
+#                     "asym_id": "A"
+#                     }
+#                   }
+#                  ]
+#                 }
+#             }
+
+#     data = {"query": json.dumps(query)}
+
+#     response = requests.post(url=pdb_url, data=data)
+
+#     return response.text
+# }
+
+
 def gen_sql_filters(
     species_table: str,
     proteins_table: str,
@@ -263,6 +302,45 @@ def search_species():
                 return [d[0] for d in entry_sql]
     except Exception:
         return
+
+
+@router.get(
+    "/search/pdb/similar/{protein_name:str}",
+    response_model=list[SimilarProtein],
+)
+def search_pdb_similar(protein_name: str):
+    pdb_folder = "/app/pdb"  # relative to docker filepath
+    # ignore the first since it's itself as the most similar
+    try:
+        similar = easy_search(
+            stored_pdb_file_name(protein_name),
+            pdb_folder,
+            out_format="target,prob,evalue,qstart,qend",
+        )  # qend,qstart refer to alignment
+        formatted = [
+            SimilarProtein(
+                name=name.rstrip(".pdb"),
+                prob=prob,
+                evalue=evalue,
+                qstart=qstart,
+                qend=qend,
+                alntmscore=0,
+            )
+            for [name, prob, evalue, qstart, qend] in similar
+        ]
+    except Exception:
+        raise HTTPException(404, "Error in 'foldseek easy-search' command")
+
+    try:
+        # populate protein descriptions for the similar proteins
+        descriptions = get_descriptions([s.name for s in formatted])
+        if descriptions is not None:
+            for f, d in zip(formatted, descriptions):
+                f.description = d
+    except Exception:
+        raise HTTPException(500, "Error getting protein descriptions")
+
+    return formatted
 
 
 @router.get(
