@@ -1,9 +1,9 @@
-# [ tutorial.sh ](..tutorial.sh)
+# [ tutorial.md ](..tutorial.md)
 
 
 ##
 
-The [ tutorial.sh ](..tutorial.sh) contains more detailed instructions for running Venome.
+The [ tutorial.md ](..tutorial.md) contains more detailed instructions for running Venome.
 For a quick-start guide, please see [ README.md ](..README.md)
 
 ## First Time Setup
