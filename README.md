@@ -54,11 +54,12 @@ Load the existing data and database schema with
 
 **(optional addons)**
 
-You can also add foldseek similarity search and TM Alignment with
+You can also add foldseek similarity search, pdb comparisons, and TM Alignment with
 
 ```bash
 ./run.sh add_foldseek
 ./run.sh add_tmalign
+./run.sh add_pdb_database
 ```
 
 ### Local Development Environment
