@@ -58,9 +58,7 @@ def login(body: LoginBody):
 
             # Returns "incorrect email/password" message if password is incorrect.
             if not bcrypt.verify(password, password_hash):
-                return LoginResponse(
-                    token="", user_id=0, error="Invalid Email or Password"
-                )
+                return LoginResponse(token="", user_id=0, error="Invalid Password")
 
             # Generates the token and returns
             token = generate_auth_token(email, admin)
@@ -95,7 +93,7 @@ def get_users(req: Request):
     with Database() as db:
         query = """SELECT id, username, email, admin FROM users;"""
         users_list = db.execute_return(query)
-        if users_list is not None:
+        if users_list is not None and len(users_list) > 0:
             users_list.sort(key=lambda user: user[0])
             return UsersResponse(
                 users=[
@@ -114,7 +112,7 @@ def get_user_id(username: str):
     with Database() as db:
         query = """SELECT id FROM users WHERE username = %s;"""
         user_id = db.execute_return(query, [username])
-        if user_id is not None:
+        if user_id is not None and len(user_id) > 0:
             return UserIDResponse(id=user_id[0][0])
         else:
             return UserIDResponse(id=-1)
@@ -125,7 +123,7 @@ def get_user(user_id: int):
     with Database() as db:
         query = """SELECT id, username, email, admin FROM users WHERE id = %s;"""
         user = db.execute_return(query, [user_id])
-        if user is not None:
+        if user is not None and len(user) > 0:
             return UserResponse(
                 id=user[0][0], username=user[0][1], email=user[0][2], admin=user[0][3]
             )
