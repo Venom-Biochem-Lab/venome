@@ -16,6 +16,7 @@ biopython = "^1.81"
 PyJWT = "^2.8.0"
 passlib = "^1.7.4"
 python-multipart = "*"
+dotenv = "^0.9.9"
 
 
 [tool.poetry.group.dev.dependencies]
