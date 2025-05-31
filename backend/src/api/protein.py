@@ -915,8 +915,11 @@ def get_af3_file(protein_name: str):
 # Upload af3
 # mv backend/src/data/stored_proteins/af3/gh_comp10_c1_seq1_model.cif backend/src/data/stored_proteins/af3/Gh_comp10_c1_seq1.cif
 @router.post("/protein/upload/af3", response_model=UploadError | None)
-async def upload_af3_file(protein_name: str = Form(...), file: UploadFile = File(...)):
+async def upload_af3_file(req: Request, protein_name: str = Form(...), file: UploadFile = File(...)):
     """Upload an AF3 file for a protein visualization"""
+    #Check for admin
+    requires_authentication(AuthType.ADMIN, req)
+
     try:
         # Check if the protein exists in the database
         if not protein_name_found(protein_name):
