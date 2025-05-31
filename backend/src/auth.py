@@ -1,13 +1,15 @@
 import jwt
+from os import getenv
 from datetime import datetime, timezone, timedelta
 from fastapi.requests import Request
 from fastapi import HTTPException
 import logging as log
 from .api_types import AuthType
+from dotenv import load_dotenv
 
-# TODO: This method of secret key generation is, obviously, extremely unsafe.
-# This needs to be changed.
-secret_key = "SuperSecret"
+load_dotenv()
+
+SECRET_KEY = getenv("SECRET_KEY")
 
 
 def generate_auth_token(user_id, admin):
@@ -16,7 +18,7 @@ def generate_auth_token(user_id, admin):
         "admin": admin,
         "exp": datetime.now(tz=timezone.utc) + timedelta(hours=24),
     }
-    return jwt.encode(payload, secret_key, algorithm="HS256")
+    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
 
 def authenticate_token(token):
@@ -24,7 +26,7 @@ def authenticate_token(token):
     try:
         # Valid token is always is in the form "Bearer [token]", so we need to slice off the "Bearer" portion.
         sliced_token = token[7:]
-        decoded = jwt.decode(sliced_token, secret_key, algorithms=["HS256"])
+        decoded = jwt.decode(sliced_token, SECRET_KEY, algorithms=["HS256"])
         log.warn("Valid token")
         return decoded
 

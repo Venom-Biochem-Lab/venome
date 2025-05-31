@@ -98,6 +98,7 @@ jobs:
                   DB_NAME: venome
                   DB_USER: myuser
                   DB_PASSWORD: mypassword
+                  SECRET_KEY: test_secret_key
               run: |
                   poetry run pytest
                   
