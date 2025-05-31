@@ -26,21 +26,30 @@ This project started as a 2023-2024 Senior Computer Science Capstone project at 
 
 ## Dev Quick Start
 
-This section tells you how to run the Venome website in four easy steps.
+This section tells you how to run the Venome website in five easy steps.
 
 **1. Install Docker**
 
 A quick way to install Docker is by installing [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 
-**2. Build the Website**
+**2. Setup Environment Variable**
 
-Execute the [`run.sh`](./run.sh) script in your terminal with the command
+Create the secret key needed to encode user passwords by executing the
+[`run.sh`](./run.sh) script in your terminal with the command
+
+```bash
+  ./run.sh create_secret [YOUR_KEY_HERE]
+```
+
+**3. Build the Website**
+
+Start the server with
 
 ```bash
 ./run.sh start
 ```
 
-**3. Setup the Database**
+**4. Setup the Database**
 
 Load the existing data and database schema with
 
@@ -48,18 +57,17 @@ Load the existing data and database schema with
 ./run.sh reload_from_backup backups/v0.0.3
 ```
 
-**4. View the website**
+**5. View the website**
 
 🎉🥳 You're done! Go to http://localhost:5173 to see the website live.
 
 **(optional addons)**
 
-You can also add foldseek similarity search, pdb comparisons, and TM Alignment with
+You can also add foldseek similarity search and TM Alignment with
 
 ```bash
 ./run.sh add_foldseek
 ./run.sh add_tmalign
-./run.sh add_pdb_database
 ```
 
 ### Local Development Environment

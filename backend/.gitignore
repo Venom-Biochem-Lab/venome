@@ -5,3 +5,4 @@ tmalign/
 stored_proteins/
 PDBproteins/
 pdb*
+.env
