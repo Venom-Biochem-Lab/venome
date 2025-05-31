@@ -64,6 +64,8 @@ class UploadError(str, enum.Enum):
     PARSE_ERROR = "PARSE_ERROR"
     WRITE_ERROR = "WRITE_ERROR"
     QUERY_ERROR = "QUERY_ERROR"
+    AF3_ALREADY_EXISTS = "AF3_ALREADY_EXISTS"
+    INVALID_FILE = "INVALID_FILE"
 
 
 class UploadStatus(CamelModel):

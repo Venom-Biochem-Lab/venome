@@ -24,7 +24,7 @@ from ..api_types import (
 from ..tmalign import tm_align_return
 from ..auth import requires_authentication
 from io import BytesIO
-from fastapi import APIRouter
+from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.requests import Request
 import re
@@ -82,13 +82,22 @@ def stored_pdb_file_name(protein_name: str):
     return os.path.join("src/data/stored_proteins", protein_name) + ".pdb"
 
 
-def parse_protein_pdb(name: str, file_contents: str = "", encoding="str"):
+def stored_af3_file_name(protein_name: str):
+    return os.path.join("src/data/stored_proteins/af3", protein_name) + ".cif"
+
+
+def parse_protein_pdb(
+    name: str, file_contents: str = "", encoding="str", file_type="pdb"
+):
     if encoding == "str":
         return PDB(file_contents, name)
     elif encoding == "b64":
         return PDB(decode_base64(file_contents), name)
     elif encoding == "file":
-        return PDB(open(stored_pdb_file_name(name), "r").read(), name)
+        if file_type == "pdb":
+            return PDB(open(stored_pdb_file_name(name), "r").read(), name)
+        elif file_type == "cif":
+            return PDB(open(stored_af3_file_name(name), "r").read(), name)
     else:
         raise ValueError(f"Invalid encoding: {encoding}")
 
@@ -897,3 +906,91 @@ def get_random_protein():
         except Exception as e:
             log.error(e)
             raise HTTPException(status_code=500, detail=str(e))
+
+
+# used in protein.svelte to check if af3 file exists for a specific protein
+@router.get("/protein/af3/{protein_name:str}")
+def get_af3_file(protein_name: str):
+    if protein_name_found(protein_name):
+        af3_path = stored_af3_file_name(protein_name)
+        if os.path.exists(af3_path):
+            return FileResponse(af3_path, filename=protein_name + ".cif")
+        else:
+            raise HTTPException(status_code=404, detail="AF3 file not found")
+    else:
+        raise HTTPException(status_code=404, detail="Protein not found")
+
+
+# Upload af3
+# mv backend/src/data/stored_proteins/af3/gh_comp10_c1_seq1_model.cif backend/src/data/stored_proteins/af3/Gh_comp10_c1_seq1.cif
+@router.post("/protein/upload/af3", response_model=UploadError | None)
+async def upload_af3_file(
+    req: Request, protein_name: str = Form(...), file: UploadFile = File(...)
+):
+    """Upload an AF3 file for a protein visualization"""
+    # Check for admin
+    requires_authentication(AuthType.ADMIN, req)
+
+    try:
+        # Check if the protein exists in the database
+        if not protein_name_found(protein_name):
+            log.warning(f"Protein not found when uploading af3: {protein_name}")
+            raise HTTPException(status_code=400, detail=UploadError.NAME_NOT_UNIQUE)
+            # have return fail when protein not found ^^
+
+        # check if af3 upload already exists
+        file_path = stored_af3_file_name(protein_name)
+        if os.path.exists(file_path):
+            log.warning(f"AF3 file already exists for protein: {protein_name}")
+            raise HTTPException(status_code=400, detail=UploadError.AF3_ALREADY_EXISTS)
+
+        # create af3 storage dir if not already
+        af3_dir = os.path.join("src/data/stored_proteins/af3")
+        os.makedirs(af3_dir, exist_ok=True)
+
+        # Reset file pointer to beginning
+        await file.seek(0)
+
+        # Read file content
+        content = await file.read()
+
+        # Write to file with sync operation
+        with open(file_path, "wb") as f:
+            f.write(content)
+
+        log.info(f"Successfully saved AF3 file for {protein_name}")
+        return None
+
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        log.error(f"Failed to upload AF3 file: {str(e)}")
+        raise HTTPException(status_code=500, detail=UploadError.WRITE_ERROR)
+
+
+# matching function to delete af3 uplaod
+@router.delete("/protein/af3/{protein_name:str}", response_model=None)
+async def delete_af3_file(protein_name: str, req: Request):
+    """Delete an AF3 file for a protein visualization"""
+    requires_authentication(AuthType.ADMIN, req)
+
+    try:
+        # Check if the protein exists in the database
+        if not protein_name_found(protein_name):
+            raise HTTPException(status_code=404, detail="Protein not found")
+
+        # Check if AF3 file exists
+        file_path = stored_af3_file_name(protein_name)
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail="AF3 file not found")
+
+        # Delete the file
+        os.remove(file_path)
+        log.info(f"Successfully deleted AF3 file for {protein_name}")
+        return None
+
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        log.error(f"Failed to delete AF3 file: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to delete AF3 file")

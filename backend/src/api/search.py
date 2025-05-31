@@ -419,3 +419,18 @@ def search_venome_similar_compare(protein_name: str, protein_compare: str):
         raise HTTPException(500, "Error getting protein descriptions")
 
     return formatted[0]
+
+
+# used to autofill suggested searches in bar in IploadVisualiza...
+@router.get("/search/protein-names", response_model=list[str])
+def search_protein_names(query: str):
+    """Fetch protein names that start with the given query."""
+    sanitized_query = sanitize_query(query) + "%"
+    try:
+        with Database() as db:
+            query = """SELECT name FROM proteins WHERE name ILIKE %s LIMIT 200"""
+            result = db.execute_return(query, [sanitized_query])
+            return [row[0] for row in result] if result else []
+    except Exception as e:
+        log.error(e)
+        raise HTTPException(status_code=500, detail="Error fetching protein names")

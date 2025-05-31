@@ -26,7 +26,7 @@
 	onMount(async () => {
 		if (!$user.loggedIn) {
 			alert(
-				"You are not logged in. You are being redirected to home. TODO: Make this better."
+				"You are not logged in. You are being redirected to home. TODO: Make this better.",
 			);
 			navigate("/");
 		}
@@ -65,7 +65,7 @@
 				// success, we can also upload the png thumbnail
 				const dbProteinNameFormat = formatProteinName(name);
 				const b64 = await screenshotMolstar(
-					defaultInitParams(dbProteinNameFormat)
+					defaultInitParams(dbProteinNameFormat),
 				);
 				await Backend.uploadProteinPng({
 					base64Encoding: b64,
@@ -106,7 +106,7 @@
 				// success, we can also upload the png thumbnail
 				const dbProteinNameFormat = formatProteinName(name);
 				const b64 = await screenshotMolstar(
-					defaultInitParams(dbProteinNameFormat)
+					defaultInitParams(dbProteinNameFormat),
 				);
 				await Backend.uploadProteinPng({
 					base64Encoding: b64,
@@ -149,13 +149,16 @@
 			/>
 			{#if uploadError && uploadError === UploadError.NAME_NOT_UNIQUE}
 				<Helper class="mt-2" color="red">
-					This name already exists, please create a unique name and resubmit
+					This name already exists, please create a unique name and
+					resubmit
 				</Helper>
 			{/if}
 		</div>
 
 		<div>
-			<Label for="protein-desc" class="block mb-2">Protein Description</Label>
+			<Label for="protein-desc" class="block mb-2"
+				>Protein Description</Label
+			>
 			<Input
 				bind:value={description}
 				style="width: 600px"
@@ -166,11 +169,12 @@
 
 		<div class="flex gap-5 mb-2">
 			<div>
-				<Label for="species-select" class="mb-2">Select a Species</Label>
+				<Label for="species-select" class="mb-2">Select a Species</Label
+				>
 				{#if species}
 					<Select
 						id="species-select"
-						items={species.map(s => ({ name: s, value: s }))}
+						items={species.map((s) => ({ name: s, value: s }))}
 						bind:value={selectedSpecies}
 					/>
 				{:else}
@@ -196,7 +200,9 @@
 		{/if}
 
 		<div>
-			<Label for="file-upload" class="mb-2">Upload a PDB File *</Label>
+			<Label for="file-upload" class="mb-2"
+				>Upload a AlphaFold 2 PDB File *</Label
+			>
 			<Fileupload id="file-upload" class="w-100" bind:files />
 		</div>
 		{#if !$user.admin}

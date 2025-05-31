@@ -19,6 +19,7 @@
 	import FullScreen from "./routes/FullScreen.svelte";
 	import UserList from "./routes/UserList.svelte";
 	import RequestList from "./routes/RequestList.svelte";
+	import UploadVisualization from "./routes/UploadVisualization.svelte";
 </script>
 
 <Router>
@@ -60,6 +61,7 @@
 			<EditArticle articleID={params.id} />
 		</Route>
 		<Route path="/upload/article"><UploadArticle /></Route>
+		<Route path="/upload/visualization"><UploadVisualization /></Route>
 
 		<!-- other -->
 		<Route path="/force-upload-thumbnails"><ForceUploadThumbnails /></Route>

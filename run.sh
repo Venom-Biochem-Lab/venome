@@ -154,7 +154,11 @@ function remove_foldseek() {
 	docker exec -it venome-backend rm -fr foldseek/
 }
 
+
+#This needs to be run within the terminal in the backend/ directory to have this work on windows.
+=======
 # NOTE: Only run this if you are on a linux machine. Otherwise paste the command into your Docker terminal backend
+
 function add_pdb_database(){
 	docker exec -it venome-backend foldseek/bin/foldseek databases PDB pdb PDBproteins
 }
@@ -193,6 +197,7 @@ function scrape_func_names() {
 	functions=($(grep -oE 'function[[:space:]]+[a-zA-Z_][a-zA-Z_0-9]*' ./run.sh | sed 's/function[[:space:]]*//'))
 }
 
+=======
 function create_secret(){
 	if [ "$1" != "" ]; then
 		echo "Creating .env file for secret key"
