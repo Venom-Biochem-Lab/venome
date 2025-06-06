@@ -3,17 +3,19 @@ version: "3"
 services:
     frontend:
         container_name: venome-frontend
-        build:
-            context: ./frontend
-            dockerfile: Dockerfile.prod
+        # image: venome-frontend:prod
+        build: #
+            context: ./frontend #
+            dockerfile: Dockerfile.prod #
         ports:
             - "5173:5173"
         command: yarn preview -- --host 0.0.0.0 --port 5173
     backend:
         container_name: venome-backend
-        build:
-            context: ./backend
-            dockerfile: Dockerfile
+        # image: venome-backend:prod
+        build: #
+            context: ./backend #
+            dockerfile: Dockerfile #
         ports:
             - "8000:8000"
         depends_on:

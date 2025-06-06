@@ -10,7 +10,9 @@ To deploy venome we use the Oregon State [Center for Quantitative Life Sciences 
 
 First you need to have an account through CQLS. So first sign up https://shell.cqls.oregonstate.edu/access/ to get access. I'd reccomend you make the CQLS username just your ONID one.
 
-Once you make an account, ask Nate or Michael to email the admin (Ken) about adding you to our venome linux VM. Otherwise, you won't have access.
+Once you make an account, ask Nate or Michael to email the admin (Ken) about adding you to our venome linux VM, and the docker group for venome. Otherwise, you won't have access.
+
+When i was deploying in 2025, kennric@cqls.oregonstate.edu was very helpful. You should be good with venome docker privilages and access to the venome VM. Along with an account for the more general cqls hpc as laid our above.
 
 **2. `ssh`**
 
@@ -48,9 +50,10 @@ When you do
 ls
 ```
 
-You should see the `venome` project already there. If you don't, that's because the user `home/bb/bertuccd/` originally cloned the repo and ran the docker. Please contact the admin so that these files can be shared in a group with you too. As of now there was no better solution other than one person cloning and running the code. You might need to come up with a better shared solution if nothing comes up.
+You should see the 'Venome' project in there. If not, it is within the /data/ folder on the VM. If its not there I would reach out the cqls admin as mentioned above for more information on its possible location.
 
 ### Weird issues I've encountered
+
 
 #### CQLS cloning repo
 
@@ -86,8 +89,9 @@ You first need to change the [`frontend/buildConstants.ts`](../frontend/buildCon
 Then you can build the entire container in production
 
 ```bash
+./run.sh ./run.sh create_secret [YOUR_KEY_HERE] #create encryption key for user passwords, can be anything
 ./run.sh start -p
-./run.sh reload_from_backup -p backups/v0.0.3 # or whatever backup you want
+./run.sh reload_from_backup -p backups/v0.1-af3 # or whatever backup you want
 ```
 
 ## Backup
@@ -109,7 +113,32 @@ sftp your_cqls_username@hpc.cqls.oregonstate.edu
 Then download the specific backup (in this case downloading v0.0.2, but could pick any one)
 
 ```bash
-get -R venome/backups/v0.0.3
+get -R venome/backups/v0.1-af3
 ```
 
 I would save this to a central box or google drive so that you can save backups over time.
+
+
+## ISSUES WITH PRODUCTION DEPLOYMENT
+
+2025 - Ran into issues when trying to './run.sh start -p' the server, as yarn and pip could not install anything from a network error. I ended up creating the docker images on my mac, and uploading the images to the vm, and then deploying. see below for steps.
+
+IMPORTANT- Make sure your buildConstants.ts file have the correct backend url when building image locally. Also comment out the build sections in the docker-compose-prod.yml, and unccoment the image sections on the deployment server.
+```bash
+docker build --platform linux/amd64 -t venome-frontend:prod -f frontend/Dockerfile.prod frontend/
+docker build --platform linux/amd64 -t venome-backend:prod backend/
+
+docker save venome-frontend:prod | gzip > venome-frontend-prod.tar.gz
+docker save venome-backend:prod | gzip > venome-backend-prod.tar.gz
+
+#use your hpc account here
+scp venome-frontend-prod.tar.gz venome-backend-prod.tar.gz [USERACCOUNT]@hpc.cqls.oregonstate.edu:~/
+
+#login to hpc deployment server
+cd /data/venome #or wherever venome is
+mv ~/venome-*.tar.gz .
+
+docker load < venome-frontend-prod.tar.gz
+docker load < venome-backend-prod.tar.gz
+```
+Continue deployment as usual with ./run.sh start -p
